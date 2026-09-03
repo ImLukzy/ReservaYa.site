@@ -1,0 +1,26 @@
+---
+// Page: register
+import BaseLayout from "../layouts/BaseLayout.astro";
+import RegisterForm from "../components/RegisterForm.astro";
+---
+
+<BaseLayout
+  title="Registro | ReservaYa"
+  description="Crea tu cuenta en ReservaYa"
+  robots="noindex, follow"
+>
+
+  <section class="min-h-[80vh] flex items-center justify-center px-4 py-12" style="background: radial-gradient(circle at top, color-mix(in srgb, var(--accent-main) 18%, transparent), transparent 42%), linear-gradient(135deg, var(--bg-muted), var(--bg-main));">
+    <div class="w-full max-w-md rounded-3xl shadow-2xl p-8 md:p-10" style="background: var(--bg-card); border: 1px solid var(--border-main);">
+      <div class="text-center mb-8">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background: linear-gradient(135deg, var(--accent-main), #211112);">🏟️</div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--text-main);">
+        Crea tu cuenta en ReservaYa
+        </h1>
+        <p class="mt-2 text-sm" style="color: var(--text-muted);">Empieza a reservar tu próxima cancha.</p>
+      </div>
+      <RegisterForm />
+    </div>
+  </section>
+
+</BaseLayout>

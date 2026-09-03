@@ -1,0 +1,100 @@
+---
+// Layout: ContentLayout
+import BaseLayout from "./BaseLayout.astro";
+
+const { title, description, image } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} image={image}>
+  <section class="py-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs uppercase tracking-[0.24em] mb-4"
+          style="color: var(--text-soft);"
+        >
+          Sobre ReservaYa
+        </p>
+        <h2
+          class="text-3xl md:text-4xl font-semibold tracking-tight mb-6"
+          style="color: var(--text-main);"
+        >
+          {title}
+        </h2>
+        {description && (
+          <p class="text-lg leading-relaxed mb-8" style="color: var(--text-muted);">
+            {description}
+          </p>
+        )}
+        <div class="content-block">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  :global(.content-block) {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  :global(.content-block h1) {
+    display: none;
+  }
+
+  :global(.content-block h2) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+  }
+
+  :global(.content-block h3) {
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  :global(.content-block p) {
+    margin-bottom: 1rem;
+  }
+
+  :global(.content-block img) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 1.5rem;
+    border: 1px solid var(--border-main);
+    box-shadow: 0 24px 60px -48px rgba(15, 23, 42, 0.45);
+    margin: 1.5rem 0 2rem;
+  }
+
+  :global(.content-block p > img) {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global(.content-block ul) {
+    margin: 1rem 0 1.5rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+
+  :global(.content-block li) {
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.content-block strong) {
+    color: var(--text-main);
+  }
+</style>

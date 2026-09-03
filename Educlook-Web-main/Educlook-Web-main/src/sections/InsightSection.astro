@@ -1,0 +1,68 @@
+---
+// Section: InsightSection
+const cards = [
+  {
+    title: "Talleres creativos para marcas emergentes",
+    image:
+      "/images/unsplash/photo-1521737604893-d14cc237f11d.jpg",
+    href: "/recursos/guias"
+  },
+  {
+    title: "Marketing digital para pequenas empresas: decisiones que si convierten",
+    image:
+      "/images/unsplash/photo-1553877522-43269d4ea984.jpg",
+    href: "/comparar/wordpress"
+  },
+  {
+    title: "Presupuesto web para negocios: pasos, plantilla y prioridades",
+    image:
+      "/images/unsplash/photo-1454165804606-c3d57bc86b40.jpg",
+    href: "/recursos/plantillas"
+  }
+];
+---
+
+<section class="py-20" id="insights">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-3xl mx-auto text-center mb-12">
+      <p class="text-xs uppercase tracking-[0.28em] mb-4" style="color: var(--text-soft);">
+        Ideas y crecimiento
+      </p>
+      <h2 class="text-3xl md:text-4xl font-semibold tracking-tight" style="color: var(--text-main);">
+        Consejos para jugar y administrar mejor
+      </h2>
+      <p class="text-lg leading-relaxed mt-4" style="color: var(--text-muted);">
+        Visita nuestro centro de ayuda para encontrar consejos prácticos que te ayuden a
+        reservar tu cancha y organizar los horarios con claridad.
+      </p>
+    </div>
+
+    <div class="grid gap-10 md:grid-cols-3">
+      {cards.map((card) => (
+        <article class="group space-y-4">
+          <div class="overflow-hidden rounded-2xl border border-gray-200/70 dark:border-gray-800/70 bg-white/90 dark:bg-gray-950/80 shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:shadow-lg">
+            <img
+              src={card.image}
+              alt={card.title}
+              class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+              loading="lazy" decoding="async"
+              width="1200"
+              height="900"
+            />
+          </div>
+          <h3 class="text-xl font-semibold leading-snug" style="color: var(--text-main);">
+            {card.title}
+          </h3>
+          <a
+            href={card.href}
+            class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] font-semibold"
+            style="color: var(--accent-main);"
+          >
+            Leer mas <span aria-hidden="true">&rarr;</span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+

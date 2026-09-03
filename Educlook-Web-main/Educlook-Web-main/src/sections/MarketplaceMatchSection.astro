@@ -1,0 +1,630 @@
+﻿---
+// Section: MarketplaceMatchSection
+const profiles = [
+  { value: 'futbol', label: 'Fútbol' },
+  { value: 'tenis', label: 'Tenis' },
+  { value: 'basquet', label: 'Básquet' },
+  { value: 'voley', label: 'Vóley' }
+];
+
+const goals = [
+  { value: 'fin', label: 'Fin de semana' },
+  { value: 'noche', label: 'Horario nocturno' },
+  { value: 'manana', label: 'Por la mañana' },
+  { value: 'semana', label: 'Entre semana' }
+];
+
+const urgencies = [
+  { value: 'alta', label: 'Hoy-Mañana' },
+  { value: 'media', label: 'Esta semana' },
+  { value: 'baja', label: 'Con anticipación' }
+];
+---
+
+<section class="py-20" id="matchmaker-reservaya">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] items-start">
+      <div class="space-y-6">
+        <p class="text-xs uppercase tracking-[0.24em]" style="color: var(--text-soft);">Encuentra tu cancha</p>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight" style="color: var(--text-main);">
+          Encuentra la cancha correcta para tu equipo
+        </h2>
+        <p class="text-lg leading-relaxed" style="color: var(--text-muted);">
+          Este buscador cruza tu tipo de partido con disponibilidad y te propone las canchas
+          más adecuadas. No es un formulario genérico: es una recomendación accionable para reservar hoy.
+        </p>
+
+        <form id="matchmaker-form" class="grid gap-4 rounded-2xl border p-5" style="border-color: var(--border-main); background: color-mix(in srgb, var(--bg-card) 95%, transparent);">
+          <div>
+            <label for="mm-profile" class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Tipo de negocio</label>
+            <select id="mm-profile" class="mt-2 w-full rounded-xl border px-4 py-2.5 text-sm" style="background: var(--bg-main); border-color: var(--border-main); color: var(--text-main);">
+              {profiles.map((profile) => (
+                <option value={profile.value}>{profile.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label for="mm-goal" class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Objetivo principal</label>
+            <select id="mm-goal" class="mt-2 w-full rounded-xl border px-4 py-2.5 text-sm" style="background: var(--bg-main); border-color: var(--border-main); color: var(--text-main);">
+              {goals.map((goal) => (
+                <option value={goal.value}>{goal.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label for="mm-urgency" class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Urgencia</label>
+            <select id="mm-urgency" class="mt-2 w-full rounded-xl border px-4 py-2.5 text-sm" style="background: var(--bg-main); border-color: var(--border-main); color: var(--text-main);">
+              {urgencies.map((urgency) => (
+                <option value={urgency.value}>{urgency.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label for="mm-budget" class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">
+              Presupuesto mensual estimado
+            </label>
+            <input id="mm-budget" type="range" min="800" max="6000" step="100" value="2200" class="mt-3 w-full" />
+            <p class="mt-1 text-sm" style="color: var(--text-muted);">S/ <strong data-budget-label style="color: var(--text-main);">2200</strong></p>
+          </div>
+
+          <button type="submit" data-calc-btn class="mt-2 inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold transition" style="background: var(--accent-main); color: var(--accent-contrast);">
+            Calcular recomendacion
+          </button>
+          <p class="text-xs" data-calc-status style="color: var(--text-soft);">Listo para calcular.</p>
+        </form>
+      </div>
+
+      <div class="space-y-5">
+        <article class="rounded-2xl border p-4 md:p-5" style="border-color: var(--border-main); background: color-mix(in srgb, var(--accent-main) 6%, var(--bg-card) 94%);">
+          <div class="mt-2">
+            <article id="match-result">
+          <p class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Resultado recomendado</p>
+          <h3 class="mt-2 text-2xl font-semibold" data-title style="color: var(--text-main);">Plan Growth UX</h3>
+          <p class="mt-2 text-sm" data-summary style="color: var(--text-muted);">
+            Arquitectura de conversion + landing orientada a resultados con medicion desde el primer dia.
+          </p>
+
+          <div class="mt-4 grid gap-2 sm:grid-cols-3">
+            <div class="rounded-xl border p-3" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Score de ajuste</p>
+              <p class="text-lg font-semibold" data-score style="color: var(--text-main);">92%</p>
+              <div class="mt-2 h-1.5 rounded-full overflow-hidden" style="background: color-mix(in srgb, var(--accent-main) 14%, transparent);">
+                <span data-score-bar class="block h-full rounded-full" style="width: 92%; background: var(--accent-main);"></span>
+              </div>
+            </div>
+            <div class="rounded-xl border p-3" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Tiempo estimado</p>
+              <p class="text-lg font-semibold" data-time style="color: var(--text-main);">4-6 semanas</p>
+            </div>
+            <div class="rounded-xl border p-3" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Prioridad</p>
+              <p class="text-lg font-semibold" data-priority style="color: var(--text-main);">Alta</p>
+            </div>
+          </div>
+
+          <div class="mt-2 grid gap-2 sm:grid-cols-3">
+            <div class="rounded-xl border p-3" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Leads esperados</p>
+              <p class="text-lg font-semibold" data-kpi-leads style="color: var(--text-main);">+24%</p>
+            </div>
+            <div class="rounded-xl border p-3" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Conversion estimada</p>
+              <p class="text-lg font-semibold" data-kpi-cvr style="color: var(--text-main);">+17%</p>
+            </div>
+            <div class="rounded-xl border p-3" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Tiempo a valor</p>
+              <p class="text-lg font-semibold" data-kpi-t2v style="color: var(--text-main);">14 dias</p>
+            </div>
+          </div>
+
+          <details class="mt-4 rounded-xl border p-3" style="border-color: var(--border-main);">
+            <summary class="cursor-pointer text-xs uppercase tracking-[0.2em] select-none" style="color: var(--text-soft);">Ver detalle tecnico</summary>
+            <div class="mt-3">
+              <p class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Ruta sugerida</p>
+              <ul class="mt-2 space-y-2 text-sm" data-roadmap style="color: var(--text-muted);"></ul>
+            </div>
+            <div class="mt-3">
+              <p class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Por que esta recomendacion</p>
+              <ul class="mt-2 space-y-2 text-sm" data-reasons style="color: var(--text-muted);"></ul>
+            </div>
+            <div class="mt-3">
+              <p class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Escenarios alternativos</p>
+              <div class="mt-2 grid gap-3" data-alternatives></div>
+            </div>
+          </details>
+
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <a href="/marketplace/cliente#hablar-asesor" class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold" style="background: var(--accent-main); color: var(--accent-contrast);">
+              Hablar con asesor (cliente)
+            </a>
+            <a href="/projects#projects-list" class="text-sm font-semibold" style="color: var(--accent-main);">
+              Ver casos similares
+            </a>
+            <button type="button" data-share class="inline-flex items-center rounded-lg border px-3 py-2 text-sm font-semibold" style="border-color: var(--border-main); color: var(--text-main);">
+              Copiar resultado
+            </button>
+          </div>
+          <p class="mt-2 text-xs hidden" data-share-status style="color: var(--text-soft);">Enlace copiado.</p>
+            </article>
+          </div>
+
+          <div class="mt-4 border-t pt-4" style="border-color: var(--border-main);">
+            <article>
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em]" style="color: var(--text-soft);">Pulso de marketplace</p>
+              <h3 class="mt-1 text-xl font-semibold" style="color: var(--text-main);">Oferta y demanda en tiempo real</h3>
+            </div>
+            <span class="inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold" data-balance-badge style="border-color: var(--border-main); color: var(--text-main);">
+              Balanceado
+            </span>
+          </div>
+
+          <div class="mt-3 grid gap-2 sm:grid-cols-2">
+            <div class="rounded-xl border p-2.5" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Demanda proyectada</p>
+              <p class="text-base font-semibold" data-demand style="color: var(--text-main);">74</p>
+            </div>
+            <div class="rounded-xl border p-2.5" style="border-color: var(--border-main);">
+              <p class="text-xs" style="color: var(--text-soft);">Oferta activa</p>
+              <p class="text-base font-semibold" data-supply style="color: var(--text-main);">68</p>
+            </div>
+          </div>
+          <p class="sr-only" data-window>Esta semana</p>
+
+          <div class="mt-4 rounded-xl border p-3.5" style="border-color: var(--border-main);">
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">
+              Marketplace activo:
+              clientes publican necesidades y proveedores publican su oferta.
+            </p>
+            <div class="mt-2.5 flex flex-wrap gap-2">
+              <a href="/marketplace/cliente#hablar-asesor" class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold" style="background: var(--accent-main); color: var(--accent-contrast);">
+                Hablar con asesor cliente
+              </a>
+              <a href="/marketplace/proveedor#hablar-coordinador" class="inline-flex items-center rounded-lg border px-4 py-2 text-sm font-semibold" style="border-color: var(--border-main); color: var(--text-main);">
+                Hablar con coordinador proveedor
+              </a>
+            </div>
+          </div>
+
+          <details class="mt-4 rounded-xl border p-3" style="border-color: var(--border-main);">
+            <summary class="cursor-pointer text-xs uppercase tracking-[0.2em] select-none" style="color: var(--text-soft);">Ver proveedores compatibles</summary>
+            <div class="mt-2 grid gap-2.5" data-providers></div>
+          </details>
+            </article>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // @ts-nocheck
+  const form = document.getElementById("matchmaker-form");
+  const result = document.getElementById("match-result");
+
+  const matrix = {
+    startup: {
+      captacion: {
+        title: 'Plan Launch Conversion',
+        summary: 'Landing enfocada en traccion inicial, mensajes claros y pruebas de conversion.',
+        score: 94,
+        time: '3-5 semanas',
+        roadmap: ['Propuesta de valor y narrativa', 'Landing orientada a demo', 'Medicion con eventos GA4'],
+        reasons: ['Tu perfil necesita validacion rapida', 'El objetivo prioriza captacion inmediata', 'Permite iterar sin friccion tecnica']
+      },
+      conversion: {
+        title: 'Plan Funnel Sprint',
+        summary: 'Rediseno de flujo para reducir friccion y mejorar solicitudes calificadas.',
+        score: 91,
+        time: '4-6 semanas',
+        roadmap: ['Auditoria UX', 'Optimizar CTA y formularios', 'Pruebas de conversion por secciones'],
+        reasons: ['El cuello de botella esta en pasos intermedios', 'Mejoras de UX impactan conversion rapido', 'Requiere ciclos cortos de prueba']
+      },
+      seo: {
+        title: 'Plan SEO Foundation',
+        summary: 'Base tecnica para indexar rapido, escalar contenido y captar demanda organica.',
+        score: 89,
+        time: '5-7 semanas',
+        roadmap: ['Arquitectura de informacion', 'Metadata y schema', 'Contenido pilar por intencion'],
+        reasons: ['Necesitas crecimiento sostenible', 'Hay oportunidad clara en busqueda organica', 'Reduce dependencia de pauta']
+      },
+      escala: {
+        title: 'Plan Escala Modular',
+        summary: 'Sistema modular en Astro para crecer sin romper performance.',
+        score: 93,
+        time: '6-8 semanas',
+        roadmap: ['Componentes reutilizables', 'Estandar de estilos', 'Roadmap de nuevas secciones'],
+        reasons: ['Tu etapa necesita estructura para crecer', 'Se evita deuda tecnica temprana', 'Acelera nuevos lanzamientos']
+      }
+    },
+    servicios: {
+      captacion: {
+        title: 'Plan Autoridad Local',
+        summary: 'Sitio con enfoque en confianza, casos reales y contacto rapido.',
+        score: 90,
+        time: '4-6 semanas',
+        roadmap: ['Posicionamiento diferencial', 'Paginas de servicio', 'Flujo de contacto optimizado'],
+        reasons: ['Tu negocio vende credibilidad', 'Necesitas decisiones rapidas del usuario', 'La captacion depende del mensaje']
+      },
+      conversion: {
+        title: 'Plan Trust to Lead',
+        summary: 'Mejoras de credibilidad y jerarquia visual para convertir visitas en reuniones.',
+        score: 92,
+        time: '4-6 semanas',
+        roadmap: ['Refuerzo social proof', 'CTA por etapa', 'Seguimiento de conversion'],
+        reasons: ['La propuesta ya existe pero no convierte', 'Hay friccion en contacto inicial', 'Se puede optimizar sin rehacer todo']
+      },
+      seo: {
+        title: 'Plan SEO Comercial',
+        summary: 'Estrategia de keywords de intencion para servicios de alto valor.',
+        score: 88,
+        time: '5-7 semanas',
+        roadmap: ['Mapa de keywords', 'Paginas comparativas', 'Enlaces internos orientados a negocio'],
+        reasons: ['Tu ticket justifica inversion en SEO', 'Hay nichos con baja competencia', 'Mejora autoridad de marca']
+      },
+      escala: {
+        title: 'Plan Operacion Escalable',
+        summary: 'Estructura para crecer lineas de servicio con control de contenido.',
+        score: 87,
+        time: '6-8 semanas',
+        roadmap: ['Template de servicios', 'Bloques reutilizables', 'Protocolo de actualizaciones'],
+        reasons: ['Tu oferta crece por verticales', 'Necesitas consistencia editorial', 'Escala sin perder foco comercial']
+      }
+    },
+    ecommerce: {
+      captacion: {
+        title: 'Plan Acquisition Commerce',
+        summary: 'Landing y contenidos para atraer trafico cualificado al catalogo.',
+        score: 89,
+        time: '4-6 semanas',
+        roadmap: ['Mensaje por segmento', 'Entradas de captacion', 'Tracking de embudo'],
+        reasons: ['Se requiere trafico de mejor calidad', 'El catalogo necesita contexto', 'La pauta sola no escala bien']
+      },
+      conversion: {
+        title: 'Plan CRO Ecommerce',
+        summary: 'Optimizacion de fichas, checkout y confianza para elevar ventas.',
+        score: 95,
+        time: '5-7 semanas',
+        roadmap: ['Auditoria de checkout', 'Reducir abandono', 'A/B testing de CTA y mensajes'],
+        reasons: ['El mayor impacto esta en conversion', 'Checkout y fichas tienen friccion', 'Puede subir ingreso sin subir trafico']
+      },
+      seo: {
+        title: 'Plan SEO de Catalogo',
+        summary: 'Indexacion eficiente y arquitectura para productos y categorias.',
+        score: 91,
+        time: '6-8 semanas',
+        roadmap: ['Estructura de categorias', 'Schema de producto', 'Paginacion SEO-friendly'],
+        reasons: ['Mucho inventario requiere orden SEO', 'Categorias necesitan jerarquia clara', 'Mejora visibilidad de productos']
+      },
+      escala: {
+        title: 'Plan Expansion Commerce',
+        summary: 'Base tecnica para crecer SKUs y canales sin sacrificar velocidad.',
+        score: 90,
+        time: '7-9 semanas',
+        roadmap: ['Arquitectura modular', 'Performance budget', 'Panel de metricas clave'],
+        reasons: ['El crecimiento ya es estructural', 'Necesitas control tecnico de largo plazo', 'Evita degradacion de rendimiento']
+      }
+    },
+    educacion: {
+      captacion: {
+        title: 'Plan Matricula Digital',
+        summary: 'Flujos claros para captar familias y mejorar consultas calificadas.',
+        score: 90,
+        time: '4-6 semanas',
+        roadmap: ['Propuesta academica clara', 'Landing por programa', 'Formulario de admision optimizado'],
+        reasons: ['Padres necesitan informacion simple', 'El proceso de contacto debe ser guiado', 'La claridad mejora matricula']
+      },
+      conversion: {
+        title: 'Plan Onboarding Claro',
+        summary: 'Experiencia simplificada para registro y seguimiento de interesados.',
+        score: 92,
+        time: '4-6 semanas',
+        roadmap: ['Flujos por etapa', 'Automatizacion de contacto', 'Indicadores de avance'],
+        reasons: ['Hay etapas con abandono', 'Conviene trazabilidad del interesado', 'UX simple reduce friccion']
+      },
+      seo: {
+        title: 'Plan SEO Educativo',
+        summary: 'Contenido informativo para captar busquedas de padres y tutores.',
+        score: 88,
+        time: '5-7 semanas',
+        roadmap: ['Calendario de contenidos', 'Guias educativas', 'Marcado estructurado'],
+        reasons: ['Los tutores investigan antes de decidir', 'El contenido educativo posiciona marca', 'Atrae demanda organica sostenida']
+      },
+      escala: {
+        title: 'Plan Campus Escalable',
+        summary: 'Estandar de secciones y contenidos para nuevas sedes o programas.',
+        score: 89,
+        time: '6-8 semanas',
+        roadmap: ['Sistema de plantillas', 'Gestion de secciones', 'Monitoreo de rendimiento'],
+        reasons: ['Tu oferta se multiplica por programa', 'Necesitas estandar operativo', 'Facilita crecimiento coordinado']
+      }
+    }
+  };
+
+  const urgencyBoost = {
+    alta: { priority: "Alta", delta: 2 },
+    media: { priority: "Media", delta: 0 },
+    baja: { priority: "Planificada", delta: -2 }
+  };
+
+  const providerPool = [
+    { name: "Studio Norte UX", specialties: ["conversion", "captacion"], profiles: ["startup", "servicios"], minBudget: 1200, maxBudget: 3800, speed: "alta", rating: 4.8 },
+    { name: "SEO Lima Lab", specialties: ["seo"], profiles: ["servicios", "educacion", "ecommerce"], minBudget: 1000, maxBudget: 4200, speed: "media", rating: 4.7 },
+    { name: "Growth Pulse", specialties: ["captacion", "conversion"], profiles: ["startup", "ecommerce"], minBudget: 1800, maxBudget: 6000, speed: "alta", rating: 4.9 },
+    { name: "Modular Commerce Co", specialties: ["escala", "conversion"], profiles: ["ecommerce"], minBudget: 2200, maxBudget: 7000, speed: "media", rating: 4.8 },
+    { name: "Edu Scale Digital", specialties: ["captacion", "seo", "escala"], profiles: ["educacion"], minBudget: 900, maxBudget: 4500, speed: "baja", rating: 4.6 },
+    { name: "Atlas Servicios Web", specialties: ["conversion", "seo"], profiles: ["servicios"], minBudget: 1100, maxBudget: 3900, speed: "media", rating: 4.7 },
+    { name: "Sprint Founders Team", specialties: ["captacion", "escala"], profiles: ["startup"], minBudget: 1300, maxBudget: 5200, speed: "alta", rating: 4.8 },
+    { name: "BrandCraft Labs", specialties: ["captacion", "conversion"], profiles: ["servicios", "startup", "ecommerce"], minBudget: 1400, maxBudget: 4800, speed: "alta", rating: 4.7 }
+  ];
+
+  const urgencyWeight = { alta: 1.15, media: 1, baja: 0.9 };
+
+  const scoreProvider = (provider, profile, goal, urgency, budget) => {
+    let score = 50;
+    if (provider.profiles.includes(profile)) score += 18;
+    if (provider.specialties.includes(goal)) score += 20;
+    if (provider.speed === urgency) score += 8;
+    if (provider.minBudget <= budget && provider.maxBudget >= budget) score += 12;
+    const budgetDistance = Math.min(
+      Math.abs(provider.minBudget - budget),
+      Math.abs(provider.maxBudget - budget)
+    );
+    score += Math.max(0, 8 - Math.round(budgetDistance / 500));
+    score += Math.round((provider.rating - 4.4) * 10);
+    score = Math.round(Math.max(55, Math.min(99, score * urgencyWeight[urgency])));
+    return score;
+  };
+
+  const getMarketPulse = (profile, goal, urgency, budget) => {
+    const baseDemandByGoal = { captacion: 72, conversion: 66, seo: 59, escala: 54 };
+    const profileDemandBoost = { startup: 9, servicios: 6, ecommerce: 11, educacion: 7 };
+    const urgencyDemandBoost = { alta: 10, media: 4, baja: -3 };
+    const demand = Math.max(
+      45,
+      Math.min(99, baseDemandByGoal[goal] + profileDemandBoost[profile] + urgencyDemandBoost[urgency] + Math.round((budget - 2200) / 450))
+    );
+
+    const supply = Math.max(
+      40,
+      Math.min(96, 62 + (goal === "seo" ? 8 : 0) + (goal === "escala" ? -4 : 0) + (urgency === "alta" ? -6 : 3))
+    );
+
+    const gap = demand - supply;
+    const status = gap > 12 ? "Alta demanda" : gap < -8 ? "Alta oferta" : "Balanceado";
+    const windowText = gap > 12 ? "Reservar en 48h" : gap < -8 ? "Negociar esta semana" : "Esta semana";
+    return { demand, supply, status, windowText };
+  };
+
+  const paintResult = (data, urgency) => {
+    if (!result) return;
+    const title = result.querySelector("[data-title]");
+    const summary = result.querySelector("[data-summary]");
+    const score = result.querySelector("[data-score]");
+    const scoreBar = result.querySelector("[data-score-bar]");
+    const time = result.querySelector("[data-time]");
+    const priority = result.querySelector("[data-priority]");
+    const roadmap = result.querySelector("[data-roadmap]");
+    const reasons = result.querySelector("[data-reasons]");
+    const kpiLeads = result.querySelector("[data-kpi-leads]");
+    const kpiCvr = result.querySelector("[data-kpi-cvr]");
+    const kpiT2v = result.querySelector("[data-kpi-t2v]");
+    const alternatives = result.querySelector("[data-alternatives]");
+    const demandNode = document.querySelector("[data-demand]");
+    const supplyNode = document.querySelector("[data-supply]");
+    const windowNode = document.querySelector("[data-window]");
+    const badgeNode = document.querySelector("[data-balance-badge]");
+    const providersNode = document.querySelector("[data-providers]");
+
+    const finalScore = Math.max(80, Math.min(99, data.score + urgencyBoost[urgency].delta));
+    const nextTime = urgency === "alta"
+      ? data.time.replace("5-7", "4-6").replace("6-8", "5-7").replace("7-9", "6-8")
+      : data.time;
+    const confidence = finalScore >= 93 ? "Alta" : finalScore >= 88 ? "Media" : "En validacion";
+    const budgetInput = form ? form.querySelector("#mm-budget") : null;
+    const budget = Number(budgetInput?.value || 2200);
+    const budgetFactor = Math.max(0.8, Math.min(1.35, budget / 2200));
+    const leads = Math.round((14 + finalScore / 3) * budgetFactor);
+    const cvr = Math.round((6 + finalScore / 8) * budgetFactor);
+    const t2v = Math.max(10, Math.round(24 - budget / 500 - finalScore / 15));
+
+    if (title) title.textContent = data.title;
+    if (summary) summary.textContent = data.summary;
+    if (score) score.textContent = `${finalScore}%`;
+    if (scoreBar) scoreBar.style.width = `${finalScore}%`;
+    if (time) time.textContent = nextTime;
+    if (priority) priority.textContent = `${urgencyBoost[urgency].priority} (${confidence})`;
+    if (roadmap) {
+      roadmap.innerHTML = data.roadmap.map((step) => `<li>• ${step}</li>`).join("");
+    }
+    if (reasons) {
+      reasons.innerHTML = data.reasons.map((reason) => `<li>• ${reason}</li>`).join("");
+    }
+    if (kpiLeads) kpiLeads.textContent = `+${leads}%`;
+    if (kpiCvr) kpiCvr.textContent = `+${cvr}%`;
+    if (kpiT2v) kpiT2v.textContent = `${t2v} dias`;
+
+    const profileField = form ? form.querySelector("#mm-profile") : null;
+    const goalField = form ? form.querySelector("#mm-goal") : null;
+    const profileVal = profileField?.value || "startup";
+    const goalVal = goalField?.value || "captacion";
+    const pulse = getMarketPulse(profileVal, goalVal, urgency, budget);
+
+    if (alternatives) {
+      const options = Object.entries(matrix[profileVal])
+        .filter(([goal]) => goal !== goalVal)
+        .map(([goal, plan]) => ({
+          goal,
+          title: plan.title,
+          score: Math.max(80, Math.min(99, plan.score + urgencyBoost[urgency].delta - 2)),
+          summary: plan.summary
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 2);
+
+      alternatives.innerHTML = options
+        .map(
+          (option) => `
+            <article class=\"rounded-xl border p-3\" style=\"border-color: var(--border-main);\">
+              <p class=\"text-xs\" style=\"color: var(--text-soft);\">${option.goal.toUpperCase()} · ${option.score}%</p>
+              <h4 class=\"mt-1 text-sm font-semibold\" style=\"color: var(--text-main);\">${option.title}</h4>
+              <p class=\"mt-1 text-xs\" style=\"color: var(--text-muted);\">${option.summary}</p>
+            </article>
+          `
+        )
+        .join("");
+    }
+
+    if (demandNode) demandNode.textContent = String(pulse.demand);
+    if (supplyNode) supplyNode.textContent = String(pulse.supply);
+    if (windowNode) windowNode.textContent = pulse.windowText;
+    if (badgeNode) {
+      badgeNode.textContent = `${pulse.status} · ${pulse.windowText}`;
+      const badgeColor = pulse.status === "Alta demanda"
+        ? "var(--accent-main)"
+        : pulse.status === "Alta oferta"
+          ? "color-mix(in srgb, var(--text-main) 74%, transparent)"
+          : "color-mix(in srgb, var(--accent-main) 56%, var(--bg-main) 44%)";
+      badgeNode.style.borderColor = badgeColor;
+      badgeNode.style.color = badgeColor;
+    }
+
+    if (providersNode) {
+      const topProviders = providerPool
+        .map((provider) => ({
+          ...provider,
+          fit: scoreProvider(provider, profileVal, goalVal, urgency, budget)
+        }))
+        .sort((a, b) => b.fit - a.fit)
+        .slice(0, 2);
+
+      providersNode.innerHTML = topProviders
+        .map((provider) => {
+          const capacity = provider.fit >= 90 ? "Alta" : provider.fit >= 80 ? "Media" : "Limitada";
+          const ticket = `S/ ${provider.minBudget} - S/ ${provider.maxBudget}`;
+          return `
+            <article class=\"rounded-xl border p-3\" style=\"border-color: var(--border-main);\">
+              <div class=\"flex items-start justify-between gap-3\">
+                <div>
+                  <h4 class=\"text-sm font-semibold\" style=\"color: var(--text-main);\">${provider.name}</h4>
+                  <p class=\"mt-1 text-xs\" style=\"color: var(--text-muted);\">Especialidad: ${provider.specialties.join(", ")}</p>
+                </div>
+                <span class=\"inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold\" style=\"background: color-mix(in srgb, var(--accent-main) 20%, transparent); color: var(--accent-main);\">${provider.fit}% fit</span>
+              </div>
+              <div class=\"mt-2 flex flex-wrap gap-2 text-xs\" style=\"color: var(--text-soft);\">
+                <span>Capacidad: ${capacity}</span>
+                <span>Ticket: ${ticket}</span>
+                <span>Rating: ${provider.rating.toFixed(1)}</span>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+  };
+
+  if (form) {
+    const profile = form.querySelector("#mm-profile");
+    const goal = form.querySelector("#mm-goal");
+    const urgency = form.querySelector("#mm-urgency");
+    const budget = form.querySelector("#mm-budget");
+    const budgetLabel = form.querySelector("[data-budget-label]");
+    const calcBtn = form.querySelector("[data-calc-btn]");
+    const calcStatus = form.querySelector("[data-calc-status]");
+    const shareBtn = result ? result.querySelector("[data-share]") : null;
+    const shareStatus = result ? result.querySelector("[data-share-status]") : null;
+
+    const run = () => {
+      const profileVal = profile?.value || "startup";
+      const goalVal = goal?.value || "captacion";
+      const urgencyVal = urgency?.value || "media";
+      const data = matrix[profileVal]?.[goalVal];
+      if (data) paintResult(data, urgencyVal);
+      const params = new URLSearchParams({
+        p: profileVal,
+        g: goalVal,
+        u: urgencyVal,
+        b: String(budget?.value || 2200)
+      });
+      history.replaceState(null, "", `#matchmaker-reservaya?${params.toString()}`);
+
+      if (result) {
+        result.animate(
+          [
+            { transform: "translateY(0px)", opacity: 1 },
+            { transform: "translateY(-2px)", opacity: 0.98 },
+            { transform: "translateY(0px)", opacity: 1 }
+          ],
+          { duration: 320, easing: "ease-out" }
+        );
+      }
+
+      if (calcStatus) {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+        calcStatus.textContent = `Recomendacion actualizada a las ${hh}:${mm}.`;
+      }
+    };
+
+    const hashParams = location.hash.includes("?") ? new URLSearchParams(location.hash.split("?")[1]) : null;
+    if (hashParams) {
+      const p = hashParams.get("p");
+      const g = hashParams.get("g");
+      const u = hashParams.get("u");
+      const b = hashParams.get("b");
+      if (profile && p) profile.value = p;
+      if (goal && g) goal.value = g;
+      if (urgency && u) urgency.value = u;
+      if (budget && b) budget.value = b;
+    }
+    if (budgetLabel && budget) budgetLabel.textContent = budget.value;
+    run();
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (calcBtn) {
+        calcBtn.disabled = true;
+        calcBtn.textContent = "Calculando...";
+        calcBtn.style.opacity = "0.8";
+      }
+      if (calcStatus) calcStatus.textContent = "Procesando diagnostico...";
+      setTimeout(() => {
+        run();
+        if (calcBtn) {
+          calcBtn.disabled = false;
+          calcBtn.textContent = "Calcular recomendacion";
+          calcBtn.style.opacity = "1";
+        }
+      }, 280);
+    });
+
+    profile?.addEventListener('change', run);
+    goal?.addEventListener('change', run);
+    urgency?.addEventListener('change', run);
+    budget?.addEventListener('input', () => {
+      if (budgetLabel) budgetLabel.textContent = budget.value;
+      run();
+    });
+
+    shareBtn?.addEventListener('click', async () => {
+      const url = `${location.origin}${location.pathname}${location.hash}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        if (shareStatus) {
+          shareStatus.textContent = "Enlace copiado para compartir este diagnostico.";
+          shareStatus.classList.remove("hidden");
+        }
+      } catch {
+        if (shareStatus) {
+          shareStatus.textContent = `Copia manual: ${url}`;
+          shareStatus.classList.remove("hidden");
+        }
+      }
+    });
+  }
+</script>

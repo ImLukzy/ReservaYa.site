@@ -1,0 +1,63 @@
+---
+// Section: FeatureGridSection
+const features = [
+  {
+    title: "Agenda inteligente",
+    description: "Reservas y disponibilidad claras para clientes y equipo."
+  },
+  {
+    title: "Pagos y conversion",
+    description: "Flujos de pago simples para reducir friccion."
+  },
+  {
+    title: "Reportes en tiempo real",
+    description: "Metricas accionables para tomar decisiones rapidas."
+  },
+  {
+    title: "Gestion de clientes",
+    description: "Datos organizados y seguimiento continuo."
+  },
+  {
+    title: "Integraciones utiles",
+    description: "Conecta herramientas sin perder control."
+  },
+  {
+    title: "Experiencia consistente",
+    description: "Un recorrido claro desde la primera visita."
+  }
+];
+---
+
+<section class="py-20" id="features">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-3xl mx-auto text-center mb-12">
+      <p class="text-xs uppercase tracking-[0.24em] mb-4" style="color: var(--text-soft);">
+        Solucion integral
+      </p>
+      <h2 class="text-3xl md:text-4xl font-semibold tracking-tight" style="color: var(--text-main);">
+        Funcionalidades flexibles para tus reservas
+      </h2>
+      <p class="text-lg leading-relaxed mt-4" style="color: var(--text-muted);">
+        ReservaYa ofrece un conjunto de herramientas que se adapta a la forma en que
+        administras tus canchas y a cómo tus jugadores reservan su horario.
+      </p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {features.map((feature, index) => (
+        <article
+          class={`rounded-2xl border border-gray-200/70 dark:border-gray-800/70 bg-white/90 dark:bg-gray-950/70 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${
+            index === 0 ? "bg-[#fdf5e8] dark:bg-[#1b1410]" : ""
+          }`}
+        >
+          <div class="text-sm font-semibold mb-2" style="color: var(--accent-main);">
+            {feature.title}
+          </div>
+          <p class="text-sm leading-relaxed" style="color: var(--text-muted);">
+            {feature.description}
+          </p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

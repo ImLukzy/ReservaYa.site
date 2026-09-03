@@ -1,0 +1,616 @@
+---
+// Layout: BaseLayout
+import ChatWidget from "../components/ChatWidget.astro";
+import Footer from "../components/Footer.astro";
+import LoginForm from "../components/LoginForm.astro";
+import RegisterForm from "../components/RegisterForm.astro";
+
+import "../styles/tailwind.css";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  announcement?: string | null;
+  robots?: string;
+}
+
+const {
+  title = "ReservaYa",
+  description = "Reserva tu cancha deportiva de forma rápida y sencilla",
+  image = "/og-default.png",
+  announcement = "Reserva tu cancha y juega sin complicaciones.",
+  robots = "index, follow"
+} = Astro.props;
+
+const siteURL = Astro.site?.toString() || "https://reservaya.com";
+const canonicalURL = new URL(Astro.url.pathname, siteURL);
+const ogImageURL = new URL(image, siteURL);
+const gaId = import.meta.env.PUBLIC_GA_ID;
+const inboxEndpoint = import.meta.env.PUBLIC_INBOXMEJIKAI_ENDPOINT;
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "ReservaYa",
+    url: siteURL,
+    logo: `${siteURL}/favicon.svg`
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "ReservaYa",
+    url: siteURL
+  }
+];
+const currentPath = Astro.url.pathname;
+const showLoginModal = currentPath !== "/login";
+const showRegisterModal = currentPath !== "/register";
+const navItems = [
+  { href: "#canchas", fallback: "/#canchas", label: "Canchas" },
+  { href: "#para-complejos", fallback: "/#para-complejos", label: "Contrátanos" },
+  { href: "#como-funciona", fallback: "/#como-funciona", label: "Cómo funciona" },
+  { href: "#contacto", fallback: "/#contacto", label: "Contacto" }
+];
+---
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+
+
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="canonical" href={canonicalURL} />
+  <link rel="sitemap" href="/sitemap.xml" />
+  <link rel="alternate" hreflang="es" href={canonicalURL} />
+
+
+  <meta name="robots" content={robots} />
+  <meta name="author" content="ReservaYa" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#a6192e" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#110d0d" />
+
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImageURL} />
+  <meta property="og:image:alt" content={title} />
+  <meta property="og:site_name" content="ReservaYa" />
+  <meta property="og:locale" content="es_ES" />
+
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content={canonicalURL} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageURL} />
+  <meta name="twitter:image:alt" content={title} />
+  <meta name="twitter:site" content="@reservaya" />
+
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap"
+  />
+  <style is:global>
+    #desktop-auth-actions,
+    #desktop-user-actions {
+      display: none;
+    }
+
+    #mobile-auth-actions {
+      display: block;
+    }
+
+    #mobile-user-actions {
+      display: none;
+    }
+
+    #desktop-auth-actions[data-authenticated="true"],
+    #desktop-user-actions[data-authenticated="true"] {
+      display: none;
+    }
+
+    #mobile-auth-actions[data-authenticated="true"] {
+      display: none;
+    }
+
+    #mobile-user-actions[data-authenticated="true"] {
+      display: block;
+    }
+
+    @media (min-width: 768px) {
+      #desktop-auth-actions {
+        display: flex;
+      }
+
+      #desktop-user-actions[data-authenticated="true"] {
+        display: flex;
+      }
+
+      #mobile-auth-actions,
+      #mobile-user-actions {
+        display: none !important;
+      }
+    }
+  </style>
+
+  
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: title,
+      description,
+      url: canonicalURL.toString()
+    })}
+  />
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === "http:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+      location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
+    }
+  </script>
+  {gaId && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+      <script is:inline>{`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
+    </>
+  )}
+  <slot name="head" />
+</head>
+
+<body
+  class="min-h-screen antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300"
+  data-inbox-endpoint={inboxEndpoint || undefined}
+>
+  <a href="#main-content" class="skip-link">Saltar al contenido</a>
+  
+  <div class="sticky top-0 z-50">
+    
+    {announcement && (
+      <div
+        id="announcement-bar"
+        class="sticky top-0 z-50 w-full flex items-center justify-center px-2 md:px-0 min-h-[44px]"
+        style="will-change:transform; background: var(--accent-main);"
+        role="status"
+        aria-live="polite"
+      >
+        <div class="relative flex items-center justify-center w-full max-w-full py-2">
+          <span class="mx-auto text-white !text-white text-base md:text-lg font-medium tracking-tight select-none text-center">
+            {announcement} <a href="/about" class="underline text-white hover:text-gray-100 transition">Descubre nuestra historia</a>
+          </span>
+          <button
+            id="announcement-close"
+            aria-label="Cerrar anuncio"
+            class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full w-7 h-7 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+            style="background:transparent"
+          >
+            <span class="sr-only">Cerrar anuncio</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    )}
+
+    
+    <header
+      class="sticky top-0 z-40 backdrop-blur-xl border-b transition-all duration-300"
+      style="backdrop-filter:saturate(180%) blur(16px); background: color-mix(in srgb, var(--bg-main) 90%, transparent); border-color: var(--border-main);"
+    >
+      <nav class="max-w-[1680px] mx-auto px-10 md:px-16 h-20 flex items-center justify-between gap-4 font-sans" style="font-family:'Inter', 'Segoe UI', Arial, sans-serif;" aria-label="Navegacion principal">
+        
+        <a href="/" class="flex items-center select-none pr-6 gap-4" style="color: var(--text-main);">
+          <span class="flex flex-col">
+            <span class="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight" style="color:var(--accent-main);letter-spacing:-0.04em;">ReservaYa</span>
+            <span class="text-[10px] md:text-xs font-medium text-gray-400 tracking-wide leading-none pl-0.5 mt-0.5">Canchas deportivas</span>
+          </span>
+          <span class="hidden md:inline-block h-8 border-l-2 mx-2" style="border-color:var(--accent-main);"></span>
+          <span class="hidden md:flex flex-col ml-0 md:ml-2 text-left leading-tight">
+            <span class="text-xs md:text-sm font-bold" style="color:var(--accent-main);letter-spacing:0.01em;">Juega</span>
+            <span class="text-xs md:text-sm font-bold -mt-1" style="color:var(--accent-main);letter-spacing:0.01em;">mejor</span>
+          </span>
+        </a>
+
+        
+        <ul class="hidden md:flex items-center gap-8 text-base font-semibold ml-auto">
+          {navItems.map((item) => {
+            const itemHref = currentPath === "/" ? item.href : item.fallback;
+            const isActive =
+              currentPath === "/" && itemHref === item.href;
+            return (
+              <li>
+                <a
+                  href={itemHref}
+                  aria-current={isActive ? "page" : undefined}
+                  class:list={[
+                    "relative px-2 py-1 transition-colors after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-[var(--accent-main)] after:rounded-full after:transition-transform after:origin-left after:duration-200",
+                    isActive ? "text-[var(--accent-main)] after:scale-x-100" : "hover:text-[var(--accent-main)] after:scale-x-0 hover:after:scale-x-100"
+                  ]}
+                  style="color: var(--text-main);"
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        
+        <div class="flex items-center gap-2 md:gap-4">
+          <div id="desktop-auth-actions" class="auth-actions items-center gap-3 md:order-2">
+            <a href="/register" data-register-modal-trigger class="px-3 py-2 rounded-md text-sm font-bold hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)]" style="color:var(--accent-main);">
+              Regístrate
+            </a>
+            <a href="/login" data-login-modal-trigger class="inline-flex items-center px-5 py-2.5 rounded-md font-bold text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)] transition-all duration-150" style="background: var(--accent-main); color:var(--accent-contrast);">
+              Inicio sesión
+            </a>
+          </div>
+          <div id="desktop-user-actions" class="auth-user relative items-center md:order-3">
+            <button id="desktop-user-button" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)]" style="background:var(--accent-main);color:var(--accent-contrast);" aria-label="Abrir menú de cuenta" aria-expanded="false">
+              <span id="desktop-user-initials">RY</span>
+            </button>
+            <div id="desktop-user-menu" class="absolute right-0 top-12 hidden w-56 rounded-xl border p-3 shadow-xl" style="background:var(--bg-card);border-color:var(--border-main);">
+              <p id="desktop-user-name" class="truncate px-2 py-1 text-sm font-bold" style="color:var(--text-main);"></p>
+              <p id="desktop-user-role" class="truncate px-2 text-xs" style="color:var(--text-muted);"></p>
+              <a href={`${appUrl}/dashboard`} class="mt-2 block rounded-lg px-2 py-2 text-sm hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">Ir a mi panel</a>
+              <button id="desktop-logout" type="button" class="mt-1 w-full rounded-lg px-2 py-2 text-left text-sm font-semibold hover:bg-[var(--bg-muted)]" style="color:var(--accent-main);">Cerrar sesión</button>
+            </div>
+          </div>
+          <button
+            id="theme-toggle"
+            aria-label="Cambiar tema"
+            class="ml-2 inline-flex h-10 w-10 items-center justify-center rounded-md text-lg hover:bg-gray-800/40 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)] md:order-1"
+          >
+            <span data-icon="moon" aria-hidden="true">&#9789;</span>
+            <span data-icon="sun" aria-hidden="true" class="hidden">&#9728;</span>
+          </button>
+          
+          <button
+            id="menu-toggle"
+            class="md:hidden p-2 rounded-md text-lg hover:bg-gray-800/40 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)]"
+            aria-label="Abrir menu"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+          >
+            &#9776;
+          </button>
+        </div>
+      </nav>
+      
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden border-t backdrop-blur-xl px-4 py-6"
+        style="background: color-mix(in srgb, var(--bg-main) 96%, transparent); border-color: var(--border-main);"
+        aria-hidden="true"
+      >
+        <ul class="flex flex-col gap-6 text-base font-medium" style="color: var(--text-main);">
+          {navItems.map((item) => {
+            const itemHref = currentPath === "/" ? item.href : item.fallback;
+            const isActive =
+              currentPath === "/" && itemHref === item.href;
+            return (
+              <li>
+                <a
+                  href={itemHref}
+                  aria-current={isActive ? "page" : undefined}
+                  class:list={[
+                    "hover:text-[var(--accent-main)]",
+                    isActive ? "text-[var(--accent-main)]" : ""
+                  ]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+          <li id="mobile-auth-actions" class="auth-actions pt-4" style="border-top: 1px solid var(--border-main);">
+            <a href="/register" data-register-modal-trigger class="block font-semibold" style="color:var(--accent-main);">Regístrate</a>
+            <a href="/login" data-login-modal-trigger class="mt-3 inline-block w-full text-center px-4 py-2.5 rounded-md font-bold" style="background:var(--accent-main);color:var(--accent-contrast);">Inicio sesión</a>
+          </li>
+          <li id="mobile-user-actions" class="auth-user hidden pt-4" style="border-top: 1px solid var(--border-main);">
+            <a href={`${appUrl}/dashboard`} id="mobile-user-name" class="block font-semibold" style="color:var(--text-main);"></a>
+            <button id="mobile-logout" type="button" class="mt-3 block font-semibold" style="color:var(--accent-main);">Cerrar sesión</button>
+          </li>
+        </ul>
+      </div>
+    </header>
+  </div>
+
+  
+  
+  
+
+  <main id="main-content" tabindex="-1" class="max-w-[1680px] mx-auto px-10 md:px-16">
+    <slot />
+  </main>
+
+  {showLoginModal && (
+    <div id="login-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+      <div data-login-modal-close class="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
+      <div class="relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
+        <button type="button" data-login-modal-close aria-label="Cerrar inicio de sesión" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">&times;</button>
+        <div class="text-center">
+          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background:linear-gradient(135deg,var(--accent-main),#211112);">🏟️</div>
+          <h2 id="login-modal-title" class="text-2xl font-bold tracking-tight" style="color:var(--text-main);">Inicia sesión</h2>
+          <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed" style="color:var(--text-muted);">Continúa para gestionar tus solicitudes y jugar confirmado.</p>
+        </div>
+        <div class="mt-7"><LoginForm /></div>
+      </div>
+    </div>
+  )}
+  {showRegisterModal && (
+    <div id="register-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="register-modal-title">
+      <div data-register-modal-close class="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
+      <div class="relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
+        <button type="button" data-register-modal-close aria-label="Cerrar registro" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">&times;</button>
+        <div class="text-center">
+          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background:linear-gradient(135deg,var(--accent-main),#211112);">🏟️</div>
+          <h2 id="register-modal-title" class="text-2xl font-bold tracking-tight" style="color:var(--text-main);">Crea tu cuenta</h2>
+          <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed" style="color:var(--text-muted);">Regístrate para solicitar y administrar tus reservas.</p>
+        </div>
+        <div class="mt-7"><RegisterForm /></div>
+      </div>
+    </div>
+  )}
+
+  <Footer />
+
+  <ChatWidget />
+
+  <script type="module" src="/src/scripts/theme.ts"></script>
+  <script type="module" src="/src/scripts/menu.ts"></script>
+  <script type="module" src="/src/scripts/reveal.ts"></script>
+  <script type="module" src="/src/scripts/announcement.ts"></script>
+  <script is:inline define:vars={{ apiUrl }}>
+    const authApiUrl = apiUrl.replace(/\/$/, "");
+    const desktopAuthActions = document.getElementById("desktop-auth-actions");
+    const desktopUserActions = document.getElementById("desktop-user-actions");
+    const mobileAuthActions = document.getElementById("mobile-auth-actions");
+    const mobileUserActions = document.getElementById("mobile-user-actions");
+    const initials = document.getElementById("desktop-user-initials");
+    const desktopUserName = document.getElementById("desktop-user-name");
+    const desktopUserRole = document.getElementById("desktop-user-role");
+    const mobileUserName = document.getElementById("mobile-user-name");
+    const desktopUserMenu = document.getElementById("desktop-user-menu");
+    const desktopUserButton = document.getElementById("desktop-user-button");
+
+    const setAuthenticatedUser = (user) => {
+      const name = user?.nombre?.trim() || "Mi cuenta";
+      const letters = name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+      desktopAuthActions?.setAttribute("data-authenticated", "true");
+      desktopUserActions?.setAttribute("data-authenticated", "true");
+      mobileAuthActions?.setAttribute("data-authenticated", "true");
+      mobileUserActions?.setAttribute("data-authenticated", "true");
+      mobileUserActions?.classList.remove("hidden");
+      if (initials) initials.textContent = letters || "RY";
+      if (desktopUserName) desktopUserName.textContent = name;
+      if (desktopUserRole) desktopUserRole.textContent = user?.rol || "Usuario";
+      if (mobileUserName) mobileUserName.textContent = name;
+    };
+
+    const setLoggedOut = () => {
+      desktopAuthActions?.removeAttribute("data-authenticated");
+      desktopUserActions?.removeAttribute("data-authenticated");
+      mobileAuthActions?.removeAttribute("data-authenticated");
+      mobileUserActions?.removeAttribute("data-authenticated");
+      mobileUserActions?.classList.add("hidden");
+    };
+
+    fetch(`${authApiUrl}/api/auth/me`, { credentials: "include" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((body) => body?.usuario ? setAuthenticatedUser(body.usuario) : setLoggedOut())
+      .catch(() => setLoggedOut());
+
+    desktopUserButton?.addEventListener("click", () => {
+      const open = desktopUserMenu?.classList.toggle("hidden") === false;
+      desktopUserButton.setAttribute("aria-expanded", String(open));
+    });
+
+    const logout = async () => {
+      const response = await fetch(`${authApiUrl}/api/auth/logout`, { method: "POST", credentials: "include" });
+      if (!response.ok) throw new Error("No se pudo cerrar la sesión");
+      setLoggedOut();
+      desktopUserMenu?.classList.add("hidden");
+    };
+
+    document.getElementById("desktop-logout")?.addEventListener("click", () => {
+      logout().catch((error) => console.error(error));
+    });
+    document.getElementById("mobile-logout")?.addEventListener("click", () => {
+      logout().catch((error) => console.error(error));
+    });
+  </script>
+
+  <script is:inline>
+    const getHashTarget = (hash) => {
+      if (!hash || hash === "#") return null;
+      return document.getElementById(decodeURIComponent(hash.slice(1)));
+    };
+
+    const animateScrollTo = (top) => {
+      const scrollContainer = document.scrollingElement || document.documentElement;
+      const start = scrollContainer.scrollTop;
+      const distance = top - start;
+      const duration = Math.min(1000, Math.max(500, Math.abs(distance) * 0.6));
+      const startedAt = Date.now();
+
+      const tick = () => {
+        const progress = Math.min(1, (Date.now() - startedAt) / duration);
+        const eased = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        const nextTop = start + distance * eased;
+        scrollContainer.scrollTop = nextTop;
+        window.scrollTo(0, nextTop);
+        if (progress < 1) window.setTimeout(tick, 16);
+      };
+
+      tick();
+    };
+
+    const smoothScrollToHash = (hash, updateUrl = true) => {
+      const target = getHashTarget(hash);
+      if (!target) return false;
+
+      const targetRect = target.getBoundingClientRect();
+      const alignedTop =
+        (document.scrollingElement || document.documentElement).scrollTop +
+        targetRect.top -
+        112;
+      const scrollContainer = document.scrollingElement || document.documentElement;
+      const maxTop = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+      const finalTop = Math.max(0, Math.min(alignedTop, maxTop));
+
+      window.setTimeout(() => animateScrollTo(finalTop), 0);
+
+      if (updateUrl) history.replaceState(null, "", hash);
+      return true;
+    };
+
+    document.addEventListener("click", (event) => {
+      const link = event.target instanceof Element
+        ? event.target.closest("a[href]")
+        : null;
+      if (!link) return;
+
+      const url = new URL(link.href, window.location.href);
+      if (!url.hash || url.hash === "#") return;
+
+      const isSamePage =
+        url.origin === window.location.origin &&
+        url.pathname === window.location.pathname;
+
+      if (isSamePage && smoothScrollToHash(url.hash)) {
+        event.preventDefault();
+      } else if (url.origin === window.location.origin) {
+        sessionStorage.setItem("smoothNavigationTarget", url.hash);
+      }
+    }, true);
+
+    const pendingHash = sessionStorage.getItem("smoothNavigationTarget");
+    if (pendingHash) {
+      sessionStorage.removeItem("smoothNavigationTarget");
+      window.addEventListener("DOMContentLoaded", () => {
+        requestAnimationFrame(() => smoothScrollToHash(pendingHash));
+      }, { once: true });
+    }
+
+    if (window.location.hash) {
+      window.addEventListener("DOMContentLoaded", () => {
+        requestAnimationFrame(() => smoothScrollToHash(window.location.hash, false));
+      }, { once: true });
+    }
+  </script>
+  {showLoginModal && <script>
+    const loginModal = document.getElementById("login-modal");
+    const loginTriggers = document.querySelectorAll("[data-login-modal-trigger]");
+    let loginReturnFocus = null;
+    const closeLoginModal = () => {
+      if (!loginModal) return;
+      loginModal.classList.add("hidden");
+      loginModal.classList.remove("flex");
+      document.body.style.overflow = "";
+      loginReturnFocus?.focus();
+    };
+    const openLoginModal = (event) => {
+      event.preventDefault();
+      if (!loginModal) return;
+      loginReturnFocus = event.currentTarget;
+      loginModal.classList.remove("hidden");
+      loginModal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+      loginModal.querySelector("input")?.focus();
+    };
+    loginTriggers.forEach((trigger) => trigger.addEventListener("click", openLoginModal));
+    loginModal?.querySelectorAll("[data-login-modal-close]").forEach((element) => {
+      element.addEventListener("click", closeLoginModal);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeLoginModal();
+    });
+  </script>}
+  {showRegisterModal && <script>
+    const registerModal = document.getElementById("register-modal");
+    const registerTriggers = document.querySelectorAll("[data-register-modal-trigger]");
+    let registerReturnFocus = null;
+    const closeRegisterModal = () => {
+      if (!registerModal) return;
+      registerModal.classList.add("hidden");
+      registerModal.classList.remove("flex");
+      document.body.style.overflow = "";
+      registerReturnFocus?.focus();
+    };
+    const openRegisterModal = (event) => {
+      event.preventDefault();
+      if (!registerModal) return;
+      registerReturnFocus = event.currentTarget;
+      registerModal.classList.remove("hidden");
+      registerModal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+      registerModal.querySelector("input")?.focus();
+    };
+    registerTriggers.forEach((trigger) => trigger.addEventListener("click", openRegisterModal));
+    registerModal?.querySelectorAll("[data-register-modal-close]").forEach((element) => {
+      element.addEventListener("click", closeRegisterModal);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeRegisterModal();
+    });
+  </script>}
+  <script>
+    const inboxEndpoint = document.body.dataset.inboxEndpoint || "";
+    if (inboxEndpoint) {
+      const forms = document.querySelectorAll("[data-inbox='inboxMejikai']");
+      forms.forEach((form) => {
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const submitBtn = form.querySelector("[data-submit]");
+          const status = form.querySelector("[data-status]");
+          if (submitBtn) submitBtn.setAttribute("disabled", "true");
+          if (status) status.textContent = "Enviando...";
+          const payload = Object.fromEntries(new FormData(form).entries());
+          payload.page = location.pathname;
+          try {
+            const res = await fetch(inboxEndpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            if (!res.ok) throw new Error("Request failed");
+            if (status) status.textContent = "Mensaje enviado. Te responderemos pronto.";
+            form.reset();
+          } catch (err) {
+            if (status) status.textContent = "No se pudo enviar. Intenta de nuevo.";
+          } finally {
+            if (submitBtn) submitBtn.removeAttribute("disabled");
+          }
+        });
+      });
+    }
+  </script>
+
+</body>
+
+</html>

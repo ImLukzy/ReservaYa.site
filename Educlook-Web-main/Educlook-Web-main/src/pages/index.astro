@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const steps = [
+  ["01", "Crea tu cuenta", "Regístrate y guarda tus datos para solicitar tus próximos partidos."],
+  ["02", "Elige tu cancha", "Compara espacios, precios y horarios disponibles en un solo lugar."],
+  ["03", "Envía tu solicitud", "Selecciona fecha y hora; el administrador revisará tu pedido."],
+  ["04", "Juega confirmado", "Recibe la respuesta y tu código de reserva para llegar sin dudas."]
+];
+
+const adminBenefits = [
+  ["Publica tus canchas", "Registra cada espacio con su nombre, precio, horarios, características y estado activo."],
+  ["Administra tu equipo", "Crea usuarios, asigna roles y define quién puede operar reservas o consultar reportes."],
+  ["Ordena tus reservas", "Revisa solicitudes, confirma horarios y evita cruces desde un panel centralizado."]
+];
+
+const ownerFlow = [
+  ["01", "Configura tu complejo", "Añade tus canchas, precios, horarios y la información que tus clientes necesitan."],
+  ["02", "Invita a tu equipo", "Asigna roles para que cada persona tenga solo los permisos necesarios."],
+  ["03", "Recibe solicitudes", "Tus clientes encuentran disponibilidad y envían sus solicitudes en línea."],
+  ["04", "Decide y mide", "Confirma reservas, consulta el historial y revisa reportes para mejorar tu operación."]
+];
+---
+
+<BaseLayout title="ReservaYa | Reserva tu cancha" description="Encuentra y solicita tu cancha deportiva en pocos pasos.">
+  <section class="relative left-1/2 flex min-h-[calc(100vh-7rem)] w-screen -translate-x-1/2 items-center overflow-hidden bg-gradient-to-br from-[#241214] via-[#7d1728] to-[var(--accent-main)] px-10 py-24 text-white md:px-16 md:py-32">
+    <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="relative mx-auto w-full max-w-[1500px]">
+      <p class="mb-5 text-sm font-bold uppercase tracking-[0.28em] text-white/75">ReservaYa · Arequipa</p>
+      <div class="max-w-3xl">
+        <h1 class="text-4xl font-black leading-[1.05] md:text-7xl">Tu equipo ya está listo. La cancha también.</h1>
+        <p class="mt-7 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">Encuentra un espacio para jugar, solicita el horario que necesitas y recibe una confirmación clara, sin llamadas interminables.</p>
+      </div>
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+        <a href="#canchas" class="rounded-xl bg-white px-6 py-3 text-center font-bold transition hover:-translate-y-0.5 hover:bg-[#fff5ed]" style="color:#6f1425;">Ver canchas</a>
+        <a href="/register" data-register-modal-trigger class="rounded-xl border border-white/60 px-6 py-3 text-center font-semibold text-white transition hover:bg-white/10" style="color:#ffffff;">Regístrate</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="canchas" class="relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[var(--bg-muted)] px-10 py-24 md:px-16 md:py-32">
+    <div class="mx-auto w-full max-w-[1500px]">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-[var(--accent-main)]">Para dueños de canchas</p>
+        <h2 class="mt-3 text-3xl font-black text-[var(--text-main)] md:text-4xl">Tu complejo, tus reglas, todo organizado</h2>
+        <p class="mt-4 text-[var(--text-muted)]">ReservaYa te ayuda a publicar tus espacios y administrar clientes, roles, horarios y reservas desde un solo lugar.</p>
+      </div>
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {adminBenefits.map(([title, text], index) => (
+          <article class:list={["flex min-h-[290px] flex-col rounded-2xl border p-8 shadow-sm transition hover:-translate-y-1 md:p-10", index === 1 ? "border-[var(--accent-main)] bg-[var(--accent-main)] text-white shadow-lg" : "border-[var(--border-main)] bg-[var(--bg-card)]"]}>
+            <span class:list={["inline-flex h-10 w-10 items-center justify-center rounded-xl font-bold", index === 1 ? "bg-white/15 text-white" : "bg-[var(--accent-soft)] text-[var(--accent-main)]"]}>0{index + 1}</span>
+            <h3 class:list={["mt-6 text-xl font-bold", index === 1 ? "text-white" : "text-[var(--text-main)]"]}>{title}</h3>
+            <p class:list={["mt-3 leading-relaxed", index === 1 ? "text-white/80" : "text-[var(--text-muted)]"]}>{text}</p>
+            <ul class:list={["mt-6 space-y-2 border-t pt-5 text-sm", index === 1 ? "border-white/20 text-white/85" : "border-[var(--border-main)] text-[var(--text-muted)]"]}><li>✓ Información organizada</li><li>✓ Menos cruces de horarios</li></ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="para-complejos" class="owner-section relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[#f4ebe3] px-10 py-24 md:px-16 md:py-32">
+    <div class="mx-auto w-full max-w-[1500px]"><div class="owner-card rounded-3xl border border-[#decfc3] bg-[#fcf7f2] p-8 md:p-12"><div class="grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-center"><div><p class="text-xs font-bold uppercase tracking-[0.22em] text-[var(--accent-main)]">Así funciona para tu negocio</p><h3 class="mt-3 text-2xl font-black text-[var(--text-main)] md:text-3xl">Haz que tus canchas trabajen de forma más ordenada</h3><p class="mt-4 leading-relaxed text-[var(--text-muted)]">Publica tus espacios en ReservaYa, atrae solicitudes y dale a tu equipo una forma clara de administrar clientes, roles y horarios.</p></div><div class="grid gap-5 sm:grid-cols-2">{ownerFlow.map(([number, title, text]) => <article class="rounded-2xl border border-[var(--border-main)] p-5"><span class="font-black text-[var(--accent-main)]">{number}</span><h4 class="mt-3 font-bold text-[var(--text-main)]">{title}</h4><p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{text}</p></article>)}</div></div><div class="mt-8 flex flex-col items-start justify-between gap-4 border-t border-[var(--border-main)] pt-6 sm:flex-row sm:items-center"><p class="font-semibold text-[var(--text-main)]">¿Quieres publicar tus canchas y recibir reservas?</p><a href="mailto:contacto@reservaya.com?subject=Quiero%20publicar%20mis%20canchas%20en%20ReservaYa" class="inline-flex rounded-xl bg-[var(--accent-main)] px-5 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[var(--accent-hover)]">Quiero publicar mis canchas</a></div></div></div>
+  </section>
+
+  <section id="como-funciona" class="how-section relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[#fbf4ed] px-10 py-24 md:px-16 md:py-32">
+    <div class="how-card mx-auto w-full max-w-[1500px] rounded-3xl border border-[#e1d4ca] bg-[#fffaf6] p-8 md:p-12"><div class="mx-auto max-w-2xl text-center"><p class="text-xs font-bold uppercase tracking-[0.25em] text-[var(--accent-main)]">Cómo funciona</p><h2 class="mt-3 text-3xl font-black text-[var(--text-main)] md:text-4xl">Reserva en cuatro pasos</h2><p class="mt-4 text-[var(--text-muted)]">Desde que encuentras una cancha hasta que recibes la confirmación, todo sucede en un mismo flujo.</p></div><div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{steps.map(([number, title, text]) => <article class="text-center"><div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--accent-main)] text-lg font-black text-[var(--accent-main)]">{number}</div><h3 class="mt-5 font-bold text-[var(--text-main)]">{title}</h3><p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{text}</p></article>)}</div></div>
+  </section>
+
+  <section id="contacto" class="contact-section relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[#f8e0e1] px-10 py-24 text-center md:px-16 md:py-32"><div class="mx-auto max-w-3xl"><p class="contact-kicker text-xs font-bold uppercase tracking-[0.25em] text-[#8f3041]">Contacto</p><h2 class="contact-title mt-3 text-3xl font-black text-[#3a2024] md:text-5xl">¿Trabajamos juntos?</h2><p class="contact-copy mx-auto mt-5 max-w-xl leading-relaxed text-[#5e4d49]">Cuéntanos sobre tu complejo deportivo, tus canchas y la forma en que hoy gestionas tus reservas. Te mostraremos cómo ReservaYa puede ayudarte.</p><a href="mailto:contacto@reservaya.com?subject=Quiero%20conocer%20ReservaYa" class="mt-8 inline-flex rounded-xl bg-[#9f3b4c] px-7 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b64b5d]">Hablemos de tu complejo</a><p class="contact-copy mt-6 text-sm text-[#5e4d49]">También puedes escribirnos directamente a <a href="mailto:contacto@reservaya.com" class="contact-link font-semibold text-[#8f3041] hover:underline">contacto@reservaya.com</a></p></div></section>
+</BaseLayout>

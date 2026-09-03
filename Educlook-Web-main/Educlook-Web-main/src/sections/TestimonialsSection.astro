@@ -1,0 +1,168 @@
+---
+// Section: TestimonialsSection
+// Seccion de testimonios con carrusel infinito y autoplay pausado al interactuar
+const testimonials = [
+  {
+    text:
+      "Reservar con ReservaYa supero mis expectativas. Aseguré mi cancha en minutos y todo quedó confirmado.",
+    author: "Maria, Capitana de equipo",
+  },
+  {
+    text: "Excelente atención y resultados. Ya no perdemos tiempo llamando por horarios.",
+    author: "Carlos, Administrador de complejo",
+  },
+  {
+    text:
+      "El proceso es moderno y funcional. Recomiendo ReservaYa a cualquier jugador.",
+    author: "Lucia, Jugadora frecuente",
+  },
+  {
+    text:
+      "La confirmación fue clara y mi partido se organizó antes de lo esperado.",
+    author: "Pedro, Deportista",
+  },
+  {
+    text: "Ahora mi equipo siempre encuentra cancha disponible a tiempo.",
+    author: "Ana, Coordinadora de liga",
+  },
+];
+const loopTestimonials = testimonials.concat(testimonials);
+---
+
+<section class="py-20" style="background: var(--bg-main, #fff); font-family:'Montserrat','Poppins','Segoe UI',Arial,sans-serif;">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-2xl md:text-3xl font-bold mb-12 text-center tracking-wide" style="color: var(--text-main);">
+      La prueba esta en la experiencia
+    </h2>
+
+    <div class="relative">
+      <div
+        id="testimonial-carousel"
+        class="flex gap-6 overflow-x-auto scroll-smooth pb-4"
+        style="scrollbar-width:none; cursor:grab;"
+      >
+        {loopTestimonials.map((t, i) => (
+          <article
+            data-card
+            class="min-w-[300px] max-w-xs rounded-xl shadow-lg p-8 flex flex-col items-center justify-center text-center select-none transition-transform duration-300"
+            style="background: var(--bg-card); border: 1px solid var(--border-main);"
+          >
+            <span class="text-3xl leading-none" style="color: var(--accent-main);">&ldquo;</span>
+            <p class="text-base md:text-lg mb-3 font-semibold leading-snug" style="color: var(--accent-main);">
+              {t.text}
+            </p>
+            <span class="text-sm font-semibold mt-1" style="color: var(--text-main);">
+              {t.author}
+            </span>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-6 flex items-center justify-center gap-2">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <script type="module" is:inline>
+      const carousel = document.getElementById("testimonial-carousel");
+      if (carousel && carousel.scrollWidth > carousel.clientWidth) {
+        let isDragging = false;
+        let isHovering = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+        let autoFrame;
+        let resumeTimer;
+
+        const resetPoint = () => carousel.scrollWidth / 2;
+        const speed = 0.6;
+
+        const pauseAuto = () => {
+          if (autoFrame) cancelAnimationFrame(autoFrame);
+          autoFrame = null;
+          clearTimeout(resumeTimer);
+        };
+
+        const resumeAuto = () => {
+          clearTimeout(resumeTimer);
+          resumeTimer = setTimeout(startAuto, 2500);
+        };
+
+        const startAuto = () => {
+          if (autoFrame) cancelAnimationFrame(autoFrame);
+          const step = () => {
+            if (!isDragging && !isHovering) {
+              carousel.scrollLeft += speed;
+              if (carousel.scrollLeft >= resetPoint()) {
+                carousel.scrollLeft -= resetPoint();
+              }
+            }
+            autoFrame = requestAnimationFrame(step);
+          };
+          autoFrame = requestAnimationFrame(step);
+        };
+
+        carousel.addEventListener("pointerdown", (event) => {
+          isDragging = true;
+          carousel.setPointerCapture(event.pointerId);
+          startX = event.clientX;
+          startScrollLeft = carousel.scrollLeft;
+          carousel.style.cursor = "grabbing";
+          pauseAuto();
+        });
+
+        carousel.addEventListener("pointermove", (event) => {
+          if (!isDragging) return;
+          const walk = event.clientX - startX;
+          carousel.scrollLeft = startScrollLeft - walk;
+        });
+
+        const endDrag = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          carousel.style.cursor = "grab";
+          resumeAuto();
+        };
+
+        carousel.addEventListener("pointerup", endDrag);
+        carousel.addEventListener("pointercancel", endDrag);
+        carousel.addEventListener("mouseleave", endDrag);
+
+        carousel.addEventListener("mouseenter", () => {
+          isHovering = true;
+          pauseAuto();
+        });
+        carousel.addEventListener("mouseleave", () => {
+          isHovering = false;
+          resumeAuto();
+        });
+
+        carousel.addEventListener("wheel", () => {
+          pauseAuto();
+          resumeAuto();
+        });
+
+        carousel.scrollLeft = 1;
+        startAuto();
+      }
+    </script>
+  </div>
+</section>
+
+<style>
+  #testimonial-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-main);
+    background: transparent;
+    opacity: 0.6;
+  }
+</style>
+
+

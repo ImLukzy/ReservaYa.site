@@ -1,0 +1,112 @@
+---
+// Section: HeroSection
+import { Image } from "astro:assets";
+import heroImg from "../assets/images/hero.jpg";
+
+interface Props {
+  title?: string;
+  description?: string;
+  primaryAction?: string;
+  secondaryAction?: string;
+  primaryText?: string;
+  secondaryText?: string;
+}
+
+const {
+  title = "Gestiona tus reservas de canchas deportivas",
+  description =
+    "Inicia sesión en ReservaYa para solicitar horarios, seguir la confirmación del administrador y consultar tus partidos desde un solo lugar.",
+  primaryAction = "/register",
+  secondaryAction = "#work",
+  primaryText = "Empezar",
+  secondaryText = "Ver canchas",
+} = Astro.props;
+---
+
+<section class="relative w-full flex flex-col items-center justify-center py-0 overflow-visible" style="background: var(--bg-main, #fff);">
+  <div
+    class="relative w-full max-w-[1680px] rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch justify-between px-2 sm:px-4 md:px-8 lg:px-12 py-6 md:py-10 lg:py-14 gap-0 md:gap-4"
+    style="background: var(--bg-hero, #0A1120); box-shadow:0 8px 40px 0 rgba(10,17,32,0.18);"
+  >
+    <div class="w-full md:w-1/2 flex flex-col justify-center items-start px-2 sm:px-4 md:px-6 py-6 md:py-10 lg:py-14">
+      <h1
+        class="text-[40px] md:text-[56px] mb-4 font-extrabold leading-tight max-w-[95%] tab:text-center mob:max-w-[320px] tab:max-w-[460px] mob:text-[24px] tab:text-[32px] tab:mx-auto mob:mx-auto"
+        style="color: var(--text-main, #111); font-family: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; letter-spacing:-0.01em;"
+      >
+        Diseno y <span style="color: var(--accent-main);">reserva</span> de
+        <span style="color: var(--accent-main);">canchas deportivas</span>
+      </h1>
+      <p class="mb-10 text-lg max-w-xl" style="color: var(--text-secondary, #6b7280);">
+        {description}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 mb-12">
+        <a
+          href={primaryAction}
+          class="font-semibold px-16 py-5 rounded-lg text-lg transition text-center shadow-lg min-w-[180px]"
+          style="background: var(--accent-main); color: var(--accent-contrast);"
+        >
+          {primaryText}
+        </a>
+        <a
+          href={secondaryAction}
+          class="font-medium underline underline-offset-4 px-10 py-4 rounded-md text-center"
+          style="color: var(--text-main, #111);"
+        >
+          {secondaryText}
+        </a>
+      </div>
+      <div class="flex gap-8 mt-6">
+        <div>
+          <p class="text-2xl font-bold" style="color: var(--text-main, #111);">20+</p>
+          <p class="text-sm" style="color: var(--text-secondary, #6b7280);">Canchas</p>
+        </div>
+        <div>
+          <p class="text-2xl font-bold" style="color: var(--text-main, #111);">3</p>
+          <p class="text-sm" style="color: var(--text-secondary, #6b7280);">Disciplinas</p>
+        </div>
+        <div>
+          <p class="text-2xl font-bold" style="color: var(--text-main, #111);">100%</p>
+          <p class="text-sm" style="color: var(--text-secondary, #6b7280);">Confirmación</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/2 flex items-center justify-center p-0 md:p-4 lg:p-8">
+      <div id="hero-image-wrapper" class="relative w-full h-[180px] sm:h-[260px] md:h-[320px] lg:h-[380px] xl:h-[420px] overflow-hidden shadow-2xl flex items-center justify-center rounded-2xl">
+        <Image
+          src={heroImg}
+          alt="Imagen representativa de una cancha deportiva"
+          class="hero-image w-full h-full object-cover object-center transition-transform duration-700 will-change-transform rounded-2xl"
+          width={1200}
+          height={675}
+          format="webp"
+          quality={92}
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const wrapper = document.getElementById("hero-image-wrapper");
+  const image = wrapper?.querySelector(".hero-image");
+
+  if (window.innerWidth >= 1024 && wrapper && image && image instanceof HTMLElement) {
+    wrapper.addEventListener("mousemove", (e) => {
+      const rect = wrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const moveX = (x / rect.width - 0.5) * 6;
+      const moveY = (y / rect.height - 0.5) * 6;
+
+      image.style.transform = `scale(1.03) translate(${moveX}px, ${moveY}px)`;
+    });
+
+    wrapper.addEventListener("mouseleave", () => {
+      image.style.transform = "scale(1)";
+    });
+  }
+</script>

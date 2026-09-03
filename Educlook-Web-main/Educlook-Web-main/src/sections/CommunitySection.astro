@@ -1,0 +1,85 @@
+---
+// Section: CommunitySection
+const stories = [
+  {
+    name: "Complejo Deportivo Miraflores",
+    image:
+      "/images/unsplash/photo-1524504388940-b1c1722653e1.jpg",
+    href: "/canchas"
+  },
+  {
+    name: "Club Deportivo La Academia",
+    image:
+      "/images/unsplash/photo-1472653431158-6364773b2a56.jpg",
+    href: "/canchas"
+  },
+  {
+    name: "Canchas del Bienestar",
+    image:
+      "/images/unsplash/photo-1500648767791-00dcc994a43e.jpg",
+    href: "/canchas"
+  },
+  {
+    name: "Complejo Norte",
+    image:
+      "/images/unsplash/photo-1544005313-94ddf0286df2.jpg",
+    href: "/canchas"
+  },
+  {
+    name: "Canchas 7",
+    image:
+      "/images/unsplash/photo-1518611012118-696072aa579a.jpg",
+    href: "/canchas"
+  }
+];
+---
+
+<section class="py-20" id="community">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-3xl mx-auto text-center mb-10">
+      <p class="text-xs uppercase tracking-[0.24em] mb-4" style="color: var(--text-soft);">
+        Nuestra comunidad
+      </p>
+      <h2 class="text-3xl md:text-4xl font-semibold tracking-tight" style="color: var(--text-main);">
+        Complejos reales conf&iacute;an en ReservaYa
+      </h2>
+      <a
+        href="/canchas"
+        class="mt-4 inline-flex items-center gap-2 text-sm font-semibold"
+        style="color: var(--accent-main);"
+      >
+        Ver canchas disponibles <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-5">
+      {stories.map((story) => (
+        <a
+          href={story.href}
+          class="community-card group overflow-hidden rounded-2xl border border-gray-200/70 dark:border-gray-800/70 bg-white/90 dark:bg-gray-950/80 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+          style="text-decoration: none;"
+        >
+          <img
+            src={story.image}
+            alt={story.name}
+            class="aspect-[4/5] w-full object-cover"
+            loading="lazy" decoding="async"
+            width="800"
+            height="1000"
+          />
+          <div class="px-4 py-3 text-xs font-semibold uppercase tracking-[0.18em]" style="color: var(--accent-main);">
+            {story.name}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  :global(.community-card:hover) {
+    background-color: var(--bg-card) !important;
+    color: inherit;
+  }
+</style>
+

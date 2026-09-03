@@ -1,0 +1,72 @@
+---
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+---
+
+<form id="reservaya-register-form" class="space-y-5">
+  <div>
+    <label for="register-name" class="block text-sm font-medium mb-2" style="color: var(--text-main);">Nombre completo</label>
+    <input id="register-name" name="nombre" type="text" required autocomplete="name" placeholder="Tu nombre"
+      class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
+      style="border-color: var(--border-main); background: var(--input-bg); color: var(--input-text);" />
+  </div>
+  <div>
+    <label for="register-email" class="block text-sm font-medium mb-2" style="color: var(--text-main);">Correo electrónico</label>
+    <input id="register-email" name="email" type="email" required autocomplete="email" placeholder="tucorreo@email.com"
+      class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
+      style="border-color: var(--border-main); background: var(--input-bg); color: var(--input-text);" />
+  </div>
+  <div>
+    <label for="register-password" class="block text-sm font-medium mb-2" style="color: var(--text-main);">Contraseña</label>
+    <input id="register-password" name="password" type="password" required minlength="6" autocomplete="new-password"
+      placeholder="Mínimo 6 caracteres" class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
+      style="border-color: var(--border-main); background: var(--input-bg); color: var(--input-text);" />
+  </div>
+  <p id="register-status" class="hidden rounded-lg px-4 py-3 text-sm" role="alert"></p>
+  <button id="register-submit" type="submit" class="w-full rounded-xl py-3 font-semibold shadow-md transition-all duration-200 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+    style="background: var(--accent-main); color: var(--accent-contrast);">
+    Crear mi cuenta
+  </button>
+  <p class="text-center text-sm" style="color: var(--text-muted);">
+    ¿Ya tienes una cuenta?
+    <a href="/login" data-login-modal-trigger class="font-medium hover:underline" style="color: var(--accent-main);">Inicia sesión</a>
+  </p>
+</form>
+
+<script define:vars={{ apiUrl, appUrl }}>
+  const form = document.getElementById("reservaya-register-form");
+  const status = document.getElementById("register-status");
+  const submit = document.getElementById("register-submit");
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement) || !(submit instanceof HTMLButtonElement) || !status) return;
+    submit.disabled = true;
+    submit.textContent = "Creando cuenta...";
+    status.className = "hidden";
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/auth/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: data.get("nombre"),
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "No se pudo crear la cuenta");
+      window.location.href = `${appUrl}/dashboard`;
+    } catch (error) {
+      status.textContent = error instanceof TypeError
+        ? "No se pudo conectar con el servidor. Verifica que ASP.NET Core esté ejecutándose en http://localhost:5000."
+        : error instanceof Error ? error.message : "No se pudo crear la cuenta";
+      status.className = "rounded-lg bg-rose-500/10 border border-rose-400/25 text-rose-300 px-4 py-3 text-sm";
+      submit.disabled = false;
+      submit.textContent = "Crear mi cuenta";
+    }
+  });
+</script>

@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum Rol {
+  USUARIO
+  ADMIN
+  SUPERADMIN
+}
+
+enum EstadoReserva {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+enum TipoCancha {
+  FUTBOL
+  TENIS
+  BASQUET
+  VOLLEYBALL
+}
+
+model Usuario {
+  id            String    @id @default(cuid())
+  nombre        String
+  email         String    @unique
+  password      String
+  rol           Rol       @default(USUARIO)
+  activo        Boolean   @default(true)
+  tokenVersion  Int       @default(0)
+  creadoEn      DateTime  @default(now())
+  reservas      Reserva[]
+
+  @@index([rol])
+}
+
+model Cancha {
+  id            String    @id @default(cuid())
+  nombre        String
+  tipo          TipoCancha
+  descripcion   String?
+  precioPorHora Decimal   @db.Decimal(10, 2)
+  capacidad     Int
+  activa        Boolean   @default(true)
+  imagen        String?
+  creadoEn      DateTime  @default(now())
+  reservas      Reserva[]
+
+  @@index([tipo])
+  @@index([activa])
+}
+
+model Reserva {
+  id          String        @id @default(cuid())
+  usuarioId   String
+  canchaId    String
+  fecha       DateTime
+  // Minutos desde medianoche: 480 = "08:00". Evita comparaciones frágiles de texto.
+  horaInicio  Int
+  horaFin     Int
+  estado      EstadoReserva @default(PENDIENTE)
+  total       Decimal       @db.Decimal(10, 2)
+  notas       String?
+  creadoEn    DateTime      @default(now())
+
+  usuario     Usuario       @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+  cancha      Cancha        @relation(fields: [canchaId], references: [id], onDelete: Restrict)
+
+  // Acelera el cruce de horarios y los reportes.
+  @@index([canchaId, fecha])
+  @@index([usuarioId])
+  @@index([estado])
+}

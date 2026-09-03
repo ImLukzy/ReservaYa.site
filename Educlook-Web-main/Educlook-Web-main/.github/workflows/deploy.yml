@@ -1,0 +1,104 @@
+
+name: Publicacion Automatica de Pagina Web
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, astro]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 1. ANALISIS: Detecta si el repo es Node o Estático
+      - name: Analyze Repository
+        id: analyze
+        shell: bash
+        run: |
+          if [ ! -f "package.json" ] && [ ! -f "index.html" ]; then
+            echo "HAS_FILES=false" >> $GITHUB_ENV
+            echo "NEEDS_NODE=false" >> $GITHUB_ENV
+          else
+            echo "HAS_FILES=true" >> $GITHUB_ENV
+            if [ -f "package.json" ]; then
+               echo "NEEDS_NODE=true" >> $GITHUB_ENV
+            else
+               echo "NEEDS_NODE=false" >> $GITHUB_ENV
+            fi
+          fi
+
+      # 2. Setup Node (SIN CACHE para máxima compatibilidad)
+      - name: Setup Node.js
+        if: env.NEEDS_NODE == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Construcción Universal
+      - name: Build Project
+        if: env.HAS_FILES == 'true'
+        shell: bash
+        run: |
+            if [ "${{ env.NEEDS_NODE }}" == "true" ]; then
+              npm install
+              npm run build --if-present
+              
+              if [ -d "dist" ]; then
+                echo "WEB_SOURCE=dist/" >> $GITHUB_ENV
+              elif [ -d "build" ]; then
+                 echo "WEB_SOURCE=build/" >> $GITHUB_ENV
+              else
+                 echo "WEB_SOURCE=./" >> $GITHUB_ENV
+              fi
+            else
+              echo "WEB_SOURCE=./" >> $GITHUB_ENV
+            fi
+
+      # 4. SSH Setup
+      - name: Setup SSH
+        if: env.HAS_FILES == 'true'
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      # 5. Despliegue a Producción
+      - name: 1. Deploy to Web
+        if: env.HAS_FILES == 'true'
+        shell: bash
+        run: |
+          USER=$(echo "${{ secrets.DEPLOY_USER }}" | xargs)
+          HOST=$(echo "${{ secrets.DEPLOY_HOST }}" | xargs)
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+            --exclude '.git*' --exclude 'node_modules/' \
+            ${{ env.WEB_SOURCE }} ${USER}@${HOST}:/var/www/astro-site/
+
+      # 6. Backup de Código Fuente
+      - name: 2. Sync Source Code to Home
+        if: env.HAS_FILES == 'true'
+        shell: bash
+        run: |
+          USER=$(echo "${{ secrets.DEPLOY_USER }}" | xargs)
+          HOST=$(echo "${{ secrets.DEPLOY_HOST }}" | xargs)
+          ssh -i ~/.ssh/id_ed25519 ${USER}@${HOST} "mkdir -p ~/Sitio"
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+            --exclude '.git/' --exclude 'node_modules/' \
+            ./ ${USER}@${HOST}:~/Sitio/
+
+      # 7. Permisos
+      - name: Fix Permissions
+        if: env.HAS_FILES == 'true'
+        shell: bash
+        run: |
+          USER=$(echo "${{ secrets.DEPLOY_USER }}" | xargs)
+          HOST=$(echo "${{ secrets.DEPLOY_HOST }}" | xargs)
+          ssh -i ~/.ssh/id_ed25519 ${USER}@${HOST} "chmod -R 755 /var/www/astro-site ~/Sitio"
+

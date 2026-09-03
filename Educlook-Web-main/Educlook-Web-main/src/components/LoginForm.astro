@@ -1,0 +1,72 @@
+---
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+---
+
+<form id="reservaya-login-form" class="space-y-5">
+  <div>
+    <label for="login-email" class="block text-sm font-medium mb-2" style="color: var(--text-main);">
+      Correo electrónico
+    </label>
+    <input id="login-email" name="email" type="email" required autocomplete="email"
+      placeholder="tucorreo@email.com" class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
+      style="border-color: var(--border-main); background: var(--input-bg); color: var(--input-text);" />
+  </div>
+  <div>
+    <label for="login-password" class="block text-sm font-medium mb-2" style="color: var(--text-main);">
+      Contraseña
+    </label>
+    <input id="login-password" name="password" type="password" required autocomplete="current-password"
+      placeholder="Tu contraseña" class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2"
+      style="border-color: var(--border-main); background: var(--input-bg); color: var(--input-text);" />
+  </div>
+  <p id="login-status" class="hidden rounded-lg px-4 py-3 text-sm" role="alert"></p>
+  <button id="login-submit" type="submit" class="w-full rounded-xl py-3 font-semibold shadow-md transition-all duration-200 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+    style="background: var(--accent-main); color: var(--accent-contrast);">
+    Iniciar sesión
+  </button>
+  <p class="text-center text-sm" style="color: var(--text-muted);">
+    ¿No tienes una cuenta?
+    <a href="/register" data-register-modal-trigger class="font-medium hover:underline" style="color: var(--accent-main);">Regístrate</a>
+  </p>
+</form>
+
+<script define:vars={{ apiUrl, appUrl }}>
+  const form = document.getElementById("reservaya-login-form");
+  const status = document.getElementById("login-status");
+  const submit = document.getElementById("login-submit");
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement) || !(submit instanceof HTMLButtonElement) || !status) return;
+    submit.disabled = true;
+    submit.textContent = "Ingresando...";
+    status.className = "hidden";
+
+    const data = new FormData(form);
+    try {
+      const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || "No se pudo iniciar sesión");
+      const role = body?.usuario?.rol;
+      window.location.href = role === "SUPERADMIN"
+        ? `${appUrl}/superadmin`
+        : role === "ADMIN" ? `${appUrl}/admin` : `${appUrl}/dashboard`;
+    } catch (error) {
+      status.textContent = error instanceof TypeError
+        ? "No se pudo conectar con el servidor. Verifica que ASP.NET Core esté ejecutándose en http://localhost:5000."
+        : error instanceof Error ? error.message : "No se pudo iniciar sesión";
+      status.className = "rounded-lg bg-rose-500/10 border border-rose-400/25 text-rose-300 px-4 py-3 text-sm";
+      submit.disabled = false;
+      submit.textContent = "Iniciar sesión";
+    }
+  });
+</script>

@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+:root {
+  --background: #120d0d;
+  --foreground: #fff8f1;
+  --brand-red: #a6192e;
+  --brand-red-bright: #cf3048;
+  --brand-black: #1b1112;
+  --brand-sillar: #ead9ca;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.auth-shell {
+  background:
+    radial-gradient(circle at 12% 15%, rgba(166, 25, 46, 0.28), transparent 24rem),
+    radial-gradient(circle at 88% 85%, rgba(234, 217, 202, 0.08), transparent 22rem),
+    #120d0d;
+}
+
+.auth-card {
+  background: rgba(39, 24, 25, 0.96);
+  border: 1px solid #513238;
+  box-shadow: 0 24px 70px rgba(10, 3, 4, 0.5);
+}
+
+.auth-label {
+  color: #c5cbe0;
+}
+
+.auth-input {
+  background: #1b1112;
+  border: 1px solid #654049;
+  color: #fff8f1;
+}
+
+.auth-input::placeholder {
+  color: #77809c;
+}
+
+.auth-input:focus {
+  border-color: #cf3048;
+  box-shadow: 0 0 0 3px rgba(207, 48, 72, 0.2);
+}
+
+.auth-link {
+  color: #ef9b9f;
+}
+
+.auth-link:hover {
+  color: #ffd3c8;
+}
+
+.auth-home-link {
+  color: #ef9b9f;
+}
+
+.auth-home-link:hover {
+  color: #ffd3c8;
+}
+
+::selection {
+  background: #a6192e;
+  color: #ffffff;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(207, 48, 72, 0.6);
+  outline-offset: 2px;
+}
+
+.dashboard-shell {
+  background:
+    radial-gradient(circle at 85% 0%, rgba(166, 25, 46, 0.16), transparent 32rem),
+    var(--background);
+}
+
+.dashboard-shell .bg-indigo-600,
+.dashboard-shell .bg-indigo-500 {
+  background-color: var(--brand-red) !important;
+}
+
+.dashboard-shell .hover\:bg-indigo-500:hover,
+.dashboard-shell .hover\:bg-indigo-400:hover {
+  background-color: var(--brand-red-bright) !important;
+}
+
+.dashboard-shell .bg-indigo-500\/10,
+.dashboard-shell .bg-indigo-500\/15,
+.dashboard-shell .bg-indigo-400\/15 {
+  background-color: rgba(207, 48, 72, 0.14) !important;
+}
+
+.dashboard-shell .text-indigo-300,
+.dashboard-shell .text-indigo-200,
+.dashboard-shell .text-indigo-100 {
+  color: var(--brand-sillar) !important;
+}
+
+.dashboard-shell .border-indigo-400\/25,
+.dashboard-shell .border-indigo-400\/40,
+.dashboard-shell .border-indigo-300 {
+  border-color: rgba(234, 217, 202, 0.28) !important;
+}
+
+.dashboard-shell [class*="from-indigo-"],
+.dashboard-shell [class*="from-violet-"] {
+  --tw-gradient-from: #7d1728 var(--tw-gradient-from-position) !important;
+}
+
+.dashboard-shell [class*="via-violet-"],
+.dashboard-shell [class*="to-violet-"] {
+  --tw-gradient-to: #241315 var(--tw-gradient-to-position) !important;
+}
+
+.dashboard-shell .bg-white {
+  background-color: #20263a !important;
+  border-color: #303850 !important;
+  color: #eef1ff;
+}
+
+.dashboard-shell .bg-gray-50 {
+  background-color: #252b40 !important;
+}
+
+.dashboard-shell tr {
+  transition: background-color 160ms ease;
+}
+
+.dashboard-shell tr:hover {
+  background-color: #2b334d !important;
+}
+
+.dashboard-shell tbody tr:hover td {
+  background-color: transparent !important;
+}
+
+.dashboard-shell .hover\:bg-gray-50:hover {
+  background-color: #2b334d !important;
+}
+
+.dashboard-shell .text-gray-900 {
+  color: #eef1ff !important;
+}
+
+.dashboard-shell .text-gray-700,
+.dashboard-shell .text-gray-600 {
+  color: #c0c6da !important;
+}
+
+.dashboard-shell .text-gray-500,
+.dashboard-shell .text-gray-400 {
+  color: #8f98b4 !important;
+}
+
+.dashboard-shell .border-gray-100,
+.dashboard-shell .border-gray-200\/70,
+.dashboard-shell .border-gray-300 {
+  border-color: #303850 !important;
+}
+
+.dashboard-shell .divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #303850 !important;
+}
+
+.dashboard-shell input,
+.dashboard-shell select,
+.dashboard-shell textarea {
+  background-color: #171d31;
+  border-color: #3a435f;
+  color: #eef1ff;
+}
+
+.dashboard-shell input::placeholder,
+.dashboard-shell textarea::placeholder {
+  color: #77809c;
+}
+
+.dashboard-shell option {
+  background-color: #171d31;
+  color: #eef1ff;
+}

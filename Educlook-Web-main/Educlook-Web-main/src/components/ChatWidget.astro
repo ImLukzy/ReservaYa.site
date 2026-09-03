@@ -1,0 +1,129 @@
+---
+// Component: ChatWidget
+
+---
+
+<div id="reservaya-chat-widget" class="fixed bottom-8 right-8 z-50">
+  
+  <button id="reservaya-chat-toggle" aria-label="Abrir chat" class="w-18 h-18 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-all focus:outline-none focus:ring-4 border-4 border-[var(--bg-card)] dark:border-[var(--bg-card)]" style="background: var(--accent-main); color: var(--accent-contrast);">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="M8 11h8M8 15h4"/></svg>
+  </button>
+
+  
+  <div id="reservaya-chat-window" class="hidden mt-4 w-[410px] max-w-full rounded-2xl shadow-2xl border flex flex-col overflow-hidden animate-fade-in backdrop-blur-md" style="background: var(--bg-card); color: var(--text-main); border-color: var(--border-main);">
+    <div class="flex items-center justify-between px-6 py-2 border-b" style="border-color: var(--border-main); background: var(--bg-main);">
+      <button id="reservaya-chat-back" aria-label="Volver" class="text-[var(--text-soft)] hover:text-[var(--text-main)] text-2xl font-bold px-2 py-0.5 rounded-full transition leading-none flex items-center justify-center" style="background: color-mix(in srgb, var(--accent-main) 12%, transparent);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <button id="reservaya-chat-close" aria-label="Cerrar chat" class="text-[var(--text-soft)] hover:text-[var(--text-main)] text-3xl font-bold px-2 py-0.5 rounded-full transition leading-none" style="background: color-mix(in srgb, var(--accent-main) 12%, transparent);">-</button>
+    </div>
+    <div class="flex-1 px-7 py-6 overflow-y-auto" style="max-height:520px; background: var(--bg-card); color: var(--text-main);">
+      
+      <div id="reservaya-chat-welcome" class="flex flex-col items-center justify-center h-full w-full px-1">
+        <span class="flex items-center justify-center w-14 h-14 rounded-full" style="background: var(--accent-primary); color: var(--bg-card); font-weight: bold; font-size: 1.75rem; margin-bottom: 1rem;">S</span>
+        <h2 class="te xt-3xl font-bold mb-2 text-left w-full" style="color: var(--text-main);">Bienvenido<br/>a ReservaYa</h2>
+        <div class="w-full rounded-xl p-4 mb-4 flex flex-col items-center" style="background: color-mix(in srgb, var(--bg-main) 80%, #000 20%);">
+          <div class="flex items-center mb-2 w-full">
+            <svg class="w-6 h-6 mr-2" style="color: #facc15;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span class="text-[var(--text-main)] text-sm">Nuestros especialistas no están disponibles en este momento. Deja tu mensaje y te responderemos por email.</span>
+          </div>
+          <button id="reservaya-chat-welcome-btn" class="mt-2 font-semibold py-2 px-6 rounded-lg flex items-center gap-2 w-full justify-center" style="background: var(--accent-main); color: var(--accent-contrast);">
+            Dejar un mensaje
+            <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <form id="reservaya-chat-form" class="space-y-5 hidden" data-inbox="inboxMejikai">
+        <div>
+          <label class="block text-base mb-1 font-semibold tracking-wide">Tu nombre <span style="color: var(--accent-primary);">*</span></label>
+          <input type="text" name="name" required class="input" />
+        </div>
+        <div>
+          <label class="block text-base mb-1 font-semibold tracking-wide">Correo electrónico <span style="color: var(--accent-primary);">*</span></label>
+          <input type="email" name="email" required class="input" />
+        </div>
+        <div>
+          <label class="block text-base mb-1 font-semibold tracking-wide">Teléfono</label>
+          <input type="tel" name="phone" class="input" />
+        </div>
+        <div>
+          <label class="block text-base mb-1 font-semibold tracking-wide">Empresa</label>
+          <input type="text" name="company" class="input" />
+        </div>
+        <div>
+          <label class="block text-base mb-1 font-semibold tracking-wide">Asunto <span style="color: var(--accent-primary);">*</span></label>
+          <input type="text" name="subject" required class="input" />
+        </div>
+        <div>
+          <label class="block text-base mb-1 font-semibold tracking-wide">Mensaje <span style="color: var(--accent-primary);">*</span></label>
+          <textarea required rows="3" name="message" class="input"></textarea>
+        </div>
+        <button type="submit" data-submit class="w-full mt-3 font-extrabold py-3 rounded-lg flex items-center justify-center gap-2 text-lg shadow-lg transition-all" style="background: var(--accent-main); color: var(--accent-contrast);">
+          <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+          Enviar mensaje
+        </button>
+        <p class="text-xs" data-status style="color: var(--text-secondary);"></p>
+      </form>
+    </div>
+    <div class="px-0 py-2 border-t border-[#222] bg-[#232326]/90 text-[10px] text-gray-400 flex items-center justify-center">
+      <span class="flex items-center gap-1 justify-center" style="color: var(--accent-main);"><svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="M8 11h8M8 15h4" stroke="white" stroke-width="1.2"/></svg> <span>Desarrollado por <span class="font-bold text-xs text-white ml-1">ReservaYa</span></span></span>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fade-in { animation: fade-in 0.25s cubic-bezier(.4,1.4,.6,1); }
+</style>
+
+<script>
+// Chat widget toggle logic, navegación entre bienvenida y formulario, y ocultar botón flotante cuando el chat está abierto
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    const toggle = document.getElementById('reservaya-chat-toggle');
+    const windowEl = document.getElementById('reservaya-chat-window');
+    const close = document.getElementById('reservaya-chat-close');
+    const back = document.getElementById('reservaya-chat-back');
+    const widget = document.getElementById('reservaya-chat-widget');
+    const welcome = document.getElementById('reservaya-chat-welcome');
+    const form = document.getElementById('reservaya-chat-form');
+    const welcomeBtn = document.getElementById('reservaya-chat-welcome-btn');
+    if (toggle && windowEl && close && widget) {
+      toggle.addEventListener('click', () => {
+        windowEl.classList.toggle('hidden');
+        toggle.style.display = windowEl.classList.contains('hidden') ? '' : 'none';
+        // Siempre mostrar bienvenida al abrir
+        if (welcome && form) {
+          welcome.classList.remove('hidden');
+          form.classList.add('hidden');
+        }
+      });
+      close.addEventListener('click', () => {
+        windowEl.classList.add('hidden');
+        toggle.style.display = '';
+      });
+      if (back && welcome && form) {
+        back.addEventListener('click', () => {
+          // Solo vuelve a bienvenida si está en el formulario
+          if (!form.classList.contains('hidden')) {
+            welcome.classList.remove('hidden');
+            form.classList.add('hidden');
+          }
+        });
+      }
+      if (welcomeBtn && welcome && form) {
+        welcomeBtn.addEventListener('click', () => {
+          welcome.classList.add('hidden');
+          form.classList.remove('hidden');
+        });
+      }
+    }
+  }, 500);
+}
+</script>
+
+

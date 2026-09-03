@@ -1,0 +1,62 @@
+---
+// Section: MarketplaceSection
+const highlights = [
+  "Reservas basadas en disponibilidad real de cada cancha",
+  "Visibilidad para clubes que quieren llenar sus horarios",
+  "Red de jugadores que impulsa confianza y participación"
+];
+---
+
+<section class="py-20" id="marketplace">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] items-center">
+      <div class="space-y-6">
+        <p class="text-xs uppercase tracking-[0.24em]" style="color: var(--text-soft);">
+          Adquisicion de clientes
+        </p>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight" style="color: var(--text-main);">
+          Conecta jugadores con tu cancha
+        </h2>
+        <p class="text-lg leading-relaxed" style="color: var(--text-muted);">
+          ReservaYa facilita que tu complejo aparezca ante quienes buscan dónde jugar.
+          Cada solicitud de reserva llega clara, con fecha y horario, lista para confirmarse.
+        </p>
+        <ul class="space-y-3 text-base" style="color: var(--text-muted);">
+          {highlights.map((item) => (
+            <li class="flex items-start gap-3">
+              <span
+                class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                style="background: var(--accent-soft); color: var(--accent-main);"
+                aria-hidden="true"
+              >
+                &check;
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <a
+          href="/canchas"
+          class="inline-flex items-center gap-2 text-sm font-semibold"
+          style="color: var(--accent-main);"
+        >
+          Ver canchas disponibles <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+
+      <div class="relative">
+        <div class="rounded-3xl border border-gray-200/70 dark:border-gray-800/70 overflow-hidden bg-white shadow-xl">
+          <img
+            src="/images/unsplash/photo-1454165804606-c3d57bc86b40.jpg"
+            alt="Panel de gestion y crecimiento digital"
+            class="w-full aspect-[5/4] object-cover"
+            loading="lazy" decoding="async"
+            width="1200"
+            height="960"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

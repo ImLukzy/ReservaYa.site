@@ -1,0 +1,219 @@
+---
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+---
+
+<section class="py-16" aria-labelledby="canchas-title">
+  <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-violet-300">Disponibilidad</p>
+      <h1 id="canchas-title" class="mt-2 text-3xl font-black text-white md:text-4xl">Elige dónde jugar</h1>
+      <p class="mt-2 text-indigo-100">Consulta nuestras canchas activas y solicita tu horario.</p>
+    </div>
+    <a href={`${appUrl}/login`} class="rounded-xl border border-violet-300/30 px-4 py-2 text-center text-sm font-semibold text-violet-200 transition hover:bg-violet-500/10">
+      Ya tengo una cuenta
+    </a>
+  </div>
+
+  <div id="canchas-status" class="rounded-2xl border border-indigo-200/20 bg-indigo-950/60 p-8 text-center text-indigo-100">
+    Cargando canchas disponibles...
+  </div>
+  <div id="canchas-grid" class="hidden grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+</section>
+
+<script define:vars={{ apiUrl, appUrl }}>
+  type Cancha = {
+    id: string;
+    nombre: string;
+    tipo: string;
+    descripcion: string | null;
+    precioPorHora: string;
+    capacidad: number;
+  };
+
+  const status = document.getElementById("canchas-status");
+  const grid = document.getElementById("canchas-grid");
+  const emoji: Record<string, string> = {
+    FUTBOL: "⚽",
+    TENIS: "🎾",
+    BASQUET: "🏀",
+    VOLLEYBALL: "🏐",
+  };
+
+  const showMessage = (message: string, isError = false) => {
+    if (!status) return;
+    status.textContent = message;
+    status.className = isError
+      ? "rounded-2xl border border-rose-400/30 bg-rose-500/10 p-8 text-center text-rose-200"
+      : "rounded-2xl border border-indigo-200/20 bg-indigo-950/60 p-8 text-center text-indigo-100";
+  };
+
+  const createCard = (cancha: Cancha) => {
+    const card = document.createElement("article");
+    card.className = "overflow-hidden rounded-2xl border border-indigo-200/20 bg-indigo-950/70 shadow-lg transition hover:-translate-y-1 hover:border-violet-300/40";
+
+    const header = document.createElement("div");
+    header.className = "bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-500 p-7 text-center text-6xl";
+    header.textContent = emoji[cancha.tipo] || "🏟️";
+
+    const content = document.createElement("div");
+    content.className = "p-5";
+    const title = document.createElement("h2");
+    title.className = "text-xl font-bold text-white";
+    title.textContent = cancha.nombre;
+    const type = document.createElement("p");
+    type.className = "mt-1 text-xs font-semibold uppercase tracking-wider text-violet-300";
+    type.textContent = cancha.tipo;
+    const description = document.createElement("p");
+    description.className = "mt-4 min-h-12 text-sm leading-relaxed text-indigo-100";
+    description.textContent = cancha.descripcion || "Cancha lista para tu próximo partido.";
+    const details = document.createElement("div");
+    details.className = "mt-5 flex items-center justify-between text-sm";
+    details.innerHTML = `<span class="text-indigo-200">👥 ${cancha.capacidad} personas</span><strong class="text-lg text-violet-200">S/ ${cancha.precioPorHora}<span class="text-xs font-normal text-indigo-200">/hora</span></strong>`;
+    const action = document.createElement("button");
+    action.type = "button";
+    action.className = "mt-5 w-full rounded-xl bg-violet-500 px-4 py-3 text-center font-semibold text-white transition hover:bg-violet-400";
+    action.textContent = "Solicitar horario";
+
+    const form = document.createElement("form");
+    form.className = "mt-5 hidden space-y-3 border-t border-indigo-200/20 pt-5";
+    form.innerHTML = `
+      <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
+        Fecha
+        <input name="fecha" type="date" required class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-3 py-2 text-sm text-white" />
+      </label>
+      <div class="grid grid-cols-2 gap-2">
+        <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
+          Inicio
+          <select name="horaInicio" required class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-2 py-2 text-sm text-white"></select>
+        </label>
+        <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
+          Fin
+          <select name="horaFin" required disabled class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-2 py-2 text-sm text-white"></select>
+        </label>
+      </div>
+      <p data-reserva-total class="rounded-lg bg-violet-400/10 px-3 py-2 text-sm text-violet-100">Selecciona un horario para ver el total estimado.</p>
+      <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
+        Nota (opcional)
+        <textarea name="notas" rows="2" maxlength="500" class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-3 py-2 text-sm text-white" placeholder="Indicación para el administrador"></textarea>
+      </label>
+      <p data-reserva-status class="hidden rounded-lg px-3 py-2 text-xs" role="alert"></p>
+      <button type="submit" class="w-full rounded-xl bg-white px-4 py-2.5 font-bold text-indigo-900 transition hover:bg-indigo-50">Enviar solicitud</button>
+    `;
+
+    const fechaInput = form.elements.namedItem("fecha");
+    const inicioInput = form.elements.namedItem("horaInicio");
+    const finInput = form.elements.namedItem("horaFin");
+    const totalPreview = form.querySelector("[data-reserva-total]");
+    const pricePerHour = Number(cancha.precioPorHora);
+    const updateTotalPreview = () => {
+      if (!(inicioInput instanceof HTMLSelectElement) || !(finInput instanceof HTMLSelectElement) || !(totalPreview instanceof HTMLElement)) return;
+      const duration = Number(finInput.value) - Number(inicioInput.value);
+      totalPreview.textContent = duration > 0
+        ? `Total estimado: S/ ${(pricePerHour * duration / 60).toFixed(2)}`
+        : "Selecciona un horario para ver el total estimado.";
+    };
+    if (fechaInput instanceof HTMLInputElement) {
+      const hoy = new Date();
+      fechaInput.min = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+    }
+    if (inicioInput instanceof HTMLSelectElement && finInput instanceof HTMLSelectElement) {
+      inicioInput.innerHTML = '<option value="">Seleccionar</option>';
+      for (let minutes = 480; minutes <= 1200; minutes += 60) {
+        inicioInput.add(new Option(`${String(minutes / 60).padStart(2, "0")}:00`, String(minutes)));
+      }
+      inicioInput.addEventListener("change", () => {
+        finInput.innerHTML = '<option value="">Seleccionar</option>';
+        finInput.disabled = !inicioInput.value;
+        for (let minutes = Number(inicioInput.value) + 60; minutes <= 1260; minutes += 60) {
+          finInput.add(new Option(`${String(minutes / 60).padStart(2, "0")}:00`, String(minutes)));
+        }
+        updateTotalPreview();
+      });
+      finInput.addEventListener("change", updateTotalPreview);
+    }
+
+    action.addEventListener("click", () => {
+      form.classList.toggle("hidden");
+      action.textContent = form.classList.contains("hidden") ? "Solicitar horario" : "Cerrar formulario";
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submit = form.querySelector("button[type='submit']");
+      const reservationStatus = form.querySelector("[data-reserva-status]");
+      if (!(submit instanceof HTMLButtonElement) || !(reservationStatus instanceof HTMLElement)) return;
+      submit.disabled = true;
+      submit.textContent = "Enviando...";
+      reservationStatus.className = "hidden";
+      const values = new FormData(form);
+
+      try {
+        const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/reservas`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            canchaId: cancha.id,
+            fecha: values.get("fecha"),
+            horaInicio: Number(values.get("horaInicio")),
+            horaFin: Number(values.get("horaFin")),
+            notas: values.get("notas"),
+          }),
+        });
+        const body = await response.json().catch(() => null);
+        if (response.status === 401) {
+          window.location.href = `${appUrl}/login?returnUrl=/dashboard/canchas`;
+          return;
+        }
+        if (response.status === 403) {
+          throw new Error("Tu cuenta no tiene permiso para solicitar esta reserva.");
+        }
+        if (!response.ok) {
+          const message = response.status === 409
+            ? "Ese horario ya fue reservado. Elige otro."
+            : response.status === 400
+              ? body?.error || "Revisa la fecha y el horario seleccionados."
+              : body?.error || "No se pudo enviar la solicitud.";
+          throw new Error(message);
+        }
+        reservationStatus.innerHTML = 'Solicitud enviada. El administrador debe confirmarla. <a href="/mis-reservas" class="font-bold underline hover:text-white">Ver mis reservas</a>';
+        reservationStatus.className = "rounded-lg bg-emerald-500/10 px-3 py-2 text-xs text-emerald-200";
+        submit.textContent = "Solicitud enviada";
+        form.querySelectorAll("input, select, textarea").forEach((field) => {
+          if (field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) field.disabled = true;
+        });
+      } catch (error) {
+        reservationStatus.textContent = error instanceof Error ? error.message : "No se pudo enviar la solicitud.";
+        reservationStatus.className = "rounded-lg bg-rose-500/10 px-3 py-2 text-xs text-rose-200";
+        submit.disabled = false;
+        submit.textContent = "Enviar solicitud";
+      }
+    });
+
+    content.append(title, type, description, details, action, form);
+    card.append(header, content);
+    return card;
+  };
+
+  fetch(`${apiUrl}/api/canchas?activas=true`)
+    .then(async (response) => {
+      if (!response.ok) throw new Error("No se pudieron cargar las canchas.");
+      return response.json() as Promise<{ canchas: Cancha[] }>;
+    })
+    .then((data) => {
+      if (!data.canchas.length) {
+        showMessage("No hay canchas activas disponibles por ahora.");
+        return;
+      }
+      data.canchas.forEach((cancha) => grid?.appendChild(createCard(cancha)));
+      status?.classList.add("hidden");
+      grid?.classList.remove("hidden");
+    })
+    .catch((error) => showMessage(
+      error instanceof TypeError
+        ? "No se pudo conectar con la API. Inicia ASP.NET Core en http://localhost:5000 y vuelve a cargar esta página."
+        : "No pudimos cargar las canchas. Intenta nuevamente en unos minutos.",
+      true
+    ));
+</script>

@@ -1,0 +1,62 @@
+---
+// Section: WorkflowSection
+const points = [
+  "Centraliza informacion clave para tomar mejores decisiones",
+  "Automatiza procesos y reduce trabajo repetitivo",
+  "Reportes en tiempo real para medir impacto"
+];
+---
+
+<section class="py-20" id="workflow">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] items-center">
+      <div class="relative">
+        <div class="rounded-3xl border border-gray-200/70 dark:border-gray-800/70 overflow-hidden bg-white shadow-xl">
+          <img
+            src="/images/unsplash/photo-1552664730-d307ca884978.jpg"
+            alt="Panel de trabajo y metricas"
+            class="w-full aspect-[5/4] object-cover"
+            loading="lazy" decoding="async"
+            width="1200"
+            height="960"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <p class="text-xs uppercase tracking-[0.24em]" style="color: var(--text-soft);">
+          Flujo eficiente
+        </p>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight" style="color: var(--text-main);">
+          Simplifica tareas y enfoca en lo que importa
+        </h2>
+        <p class="text-lg leading-relaxed" style="color: var(--text-muted);">
+          Organiza tu complejo con una base clara, procesos simples y resultados visibles.
+          ReservaYa prioriza estructura y claridad para que administres mejor tus canchas.
+        </p>
+        <ul class="space-y-3 text-base" style="color: var(--text-muted);">
+          {points.map((item) => (
+            <li class="flex items-start gap-3">
+              <span
+                class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                style="background: rgba(239, 68, 68, 0.14); color: var(--accent-main);"
+                aria-hidden="true"
+              >
+                &check;
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <a
+          href="/recursos/guias"
+          class="inline-flex items-center gap-2 text-sm font-semibold"
+          style="color: var(--accent-main);"
+        >
+          Ver mas detalles <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
