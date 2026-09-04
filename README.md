@@ -1,7 +1,7 @@
 # ReservaYa
 
 Plataforma web para descubrir canchas deportivas y gestionar reservas. El
-proyecto está evolucionando de **ReservaYa** a **CanchasGO** y separa la
+proyecto **ReservaYa** separa la
 experiencia pública, los paneles operativos y la API central.
 
 ## Objetivo
