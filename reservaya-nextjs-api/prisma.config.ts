@@ -10,17 +10,15 @@ if (existsSync('.env')) {
 
 const databaseUrl = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL
 
-if (!databaseUrl) {
-  throw new Error('DATABASE_URL no está definida')
-}
-
 export default defineConfig({
   schema: 'prisma/schema.prisma',
-  datasource: {
-    // Se prefiere la conexión directa para operaciones del CLI (migraciones),
-    // tal como recomienda Neon para Prisma Migrate.
-    url: databaseUrl,
-  },
+  datasource: databaseUrl
+    ? {
+        // Se prefiere la conexión directa para operaciones del CLI (migraciones),
+        // tal como recomienda Neon para Prisma Migrate.
+        url: databaseUrl,
+      }
+    : undefined,
   migrations: {
     seed: 'ts-node prisma/seed.ts',
   },
