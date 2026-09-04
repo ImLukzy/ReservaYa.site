@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #120d0d;
-  --foreground: #fff8f1;
-  --brand-red: #a6192e;
-  --brand-red-bright: #cf3048;
-  --brand-black: #1b1112;
-  --brand-sillar: #ead9ca;
+  --background: #061a14;
+  --foreground: #f2fff8;
+  --brand-emerald: #0b3d2e;
+  --brand-neon: #b7ff3c;
+  --brand-surface: #102b22;
+  --brand-muted: #a8c7ba;
 }
 
 @theme inline {
@@ -25,14 +25,14 @@ body {
 
 .auth-shell {
   background:
-    radial-gradient(circle at 12% 15%, rgba(166, 25, 46, 0.28), transparent 24rem),
-    radial-gradient(circle at 88% 85%, rgba(234, 217, 202, 0.08), transparent 22rem),
-    #120d0d;
+    radial-gradient(circle at 12% 15%, rgba(183, 255, 60, 0.16), transparent 24rem),
+    radial-gradient(circle at 88% 85%, rgba(16, 74, 53, 0.4), transparent 22rem),
+    var(--background);
 }
 
 .auth-card {
-  background: rgba(39, 24, 25, 0.96);
-  border: 1px solid #513238;
+  background: rgba(16, 43, 34, 0.96);
+  border: 1px solid #24634b;
   box-shadow: 0 24px 70px rgba(10, 3, 4, 0.5);
 }
 
@@ -41,9 +41,9 @@ body {
 }
 
 .auth-input {
-  background: #1b1112;
-  border: 1px solid #654049;
-  color: #fff8f1;
+  background: #08251b;
+  border: 1px solid #2c7356;
+  color: var(--foreground);
 }
 
 .auth-input::placeholder {
@@ -51,8 +51,8 @@ body {
 }
 
 .auth-input:focus {
-  border-color: #cf3048;
-  box-shadow: 0 0 0 3px rgba(207, 48, 72, 0.2);
+  border-color: var(--brand-neon);
+  box-shadow: 0 0 0 3px rgba(183, 255, 60, 0.2);
 }
 
 .auth-link {
@@ -89,52 +89,14 @@ select:focus-visible,
 textarea:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(207, 48, 72, 0.6);
+  outline: 3px solid rgba(183, 255, 60, 0.6);
   outline-offset: 2px;
 }
 
 .dashboard-shell {
   background:
-    radial-gradient(circle at 85% 0%, rgba(166, 25, 46, 0.16), transparent 32rem),
+    radial-gradient(circle at 85% 0%, rgba(183, 255, 60, 0.1), transparent 32rem),
     var(--background);
-}
-
-.dashboard-shell .bg-indigo-600,
-.dashboard-shell .bg-indigo-500 {
-  background-color: var(--brand-red) !important;
-}
-
-.dashboard-shell .hover\:bg-indigo-500:hover,
-.dashboard-shell .hover\:bg-indigo-400:hover {
-  background-color: var(--brand-red-bright) !important;
-}
-
-.dashboard-shell .bg-indigo-500\/10,
-.dashboard-shell .bg-indigo-500\/15,
-.dashboard-shell .bg-indigo-400\/15 {
-  background-color: rgba(207, 48, 72, 0.14) !important;
-}
-
-.dashboard-shell .text-indigo-300,
-.dashboard-shell .text-indigo-200,
-.dashboard-shell .text-indigo-100 {
-  color: var(--brand-sillar) !important;
-}
-
-.dashboard-shell .border-indigo-400\/25,
-.dashboard-shell .border-indigo-400\/40,
-.dashboard-shell .border-indigo-300 {
-  border-color: rgba(234, 217, 202, 0.28) !important;
-}
-
-.dashboard-shell [class*="from-indigo-"],
-.dashboard-shell [class*="from-violet-"] {
-  --tw-gradient-from: #7d1728 var(--tw-gradient-from-position) !important;
-}
-
-.dashboard-shell [class*="via-violet-"],
-.dashboard-shell [class*="to-violet-"] {
-  --tw-gradient-to: #241315 var(--tw-gradient-to-position) !important;
 }
 
 .dashboard-shell .bg-white {
