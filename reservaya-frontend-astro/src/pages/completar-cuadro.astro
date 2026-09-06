@@ -1,0 +1,103 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const niveles = ["Todos los niveles", "Principiante", "Intermedio", "Avanzado"];
+const demo = [
+  { t: "Pichanga intermedia Yanahuara", z: "Yanahuara", n: "Intermedio", cupos: 3, hora: "Hoy 20:00" },
+  { t: "Fútbol 7 mixto Cayma", z: "Cayma", n: "Principiante", cupos: 5, hora: "Mañana 18:00" },
+  { t: "Pádel avanzado Miraflores", z: "Miraflores", n: "Avanzado", cupos: 2, hora: "Sáb 10:00" },
+];
+---
+
+<BaseLayout
+  title="Encuentra con quién jugar | ReservaYa"
+  description="Únete a partidos abiertos cerca de ti o publica el tuyo."
+  announcement="🎾 ReservaYa ya está en Google Play — Descarga la app gratis"
+>
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-10 md:px-8">
+    <div class="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] p-6 text-white md:p-12" style="background:radial-gradient(60% 90% at 85% 0%,rgba(34,197,94,0.35),transparent 60%),linear-gradient(120deg,#060A08 40%,#0A2E1F 100%);">
+      <div class="relative grid items-center gap-10 lg:grid-cols-2">
+        <div>
+          <span class="inline-flex items-center gap-2 rounded-full border border-[#4ADE80]/30 bg-[#4ADE80]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4ADE80]">
+            <span class="h-1.5 w-1.5 rounded-full bg-[#4ADE80]"></span> En vivo en todo el Perú
+          </span>
+          <h1 class="mt-5 text-5xl font-black leading-[1.0] tracking-tight text-white md:text-7xl">
+            Encuentra con<br />quién <span class="text-[#4ADE80]">jugar</span>
+          </h1>
+          <p class="mt-5 max-w-md leading-relaxed text-white/65">
+            Únete a partidos abiertos cerca de ti o publica el tuyo. Te anotas, el organizador confirma, y a la cancha.
+          </p>
+          <div class="mt-7">
+            <a href="/register" class="inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.45)] transition hover:bg-[#16A34A]"><span aria-hidden="true" class="text-lg leading-none">+</span> Publicar partido</a>
+          </div>
+        </div>
+        <div class="grid gap-4">
+          <div class="flex items-center justify-between rounded-2xl border border-white/15 bg-white/[0.07] p-6 backdrop-blur">
+            <div><p class="text-5xl font-black text-white">0</p><p class="mt-1 text-sm text-white/60">cupos libres ahora mismo</p></div>
+            <svg class="h-10 w-10 text-[#4ADE80]/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c2.8.3 5 2.3 5 5.8"/></svg>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur"><p class="text-4xl font-black text-white">0</p><p class="mt-1 text-xs text-white/60">partidos abiertos</p></div>
+            <div class="rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/15 p-5 backdrop-blur"><p class="text-4xl font-black text-[#4ADE80]">3</p><p class="mt-1 text-xs text-white/60">niveles de juego</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-12 max-w-6xl">
+      <h2 class="text-3xl font-black tracking-tight text-[#101613]">Partidos abiertos</h2>
+      <p class="mt-1 text-sm text-[#5B6660]">Filtra por nivel y zona, anótate al que más te guste.</p>
+      <div class="relative mt-6">
+        <svg class="absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" placeholder="Buscar por distrito, cancha o título..." class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3.5 pr-4 pl-11 text-sm shadow-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
+      </div>
+      <div id="nivs" class="mt-4 flex flex-wrap gap-2">
+        {niveles.map((n, i) => (
+          <button type="button" data-n={n} class={`rounded-full border px-4 py-1.5 text-[13px] font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`}>{n}</button>
+        ))}
+      </div>
+      <p class="mt-3 text-sm text-[#5B6660]">◔ <strong id="count" class="text-[#101613]">3</strong> partidos abiertos</p>
+      <div id="lista" class="mt-4 space-y-3">
+        {demo.map((p) => (
+          <div data-card data-n={p.n} data-txt={`${p.t} ${p.z}`.toLowerCase()} class="flex flex-col justify-between gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-5 sm:flex-row sm:items-center">
+            <div>
+              <p class="font-bold text-[#101613]">{p.t}</p>
+              <p class="mt-1 text-sm text-[#5B6660]">{p.hora} · {p.z} · {p.n}</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]">{p.cupos} cupos</span>
+              <button type="button" class="unirse rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]">Anotarme</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const q = document.getElementById("q") as HTMLInputElement | null;
+  const btns = [...document.querySelectorAll<HTMLButtonElement>("#nivs button")];
+  const cards = [...document.querySelectorAll<HTMLElement>("[data-card]")];
+  let niv = "Todos los niveles";
+  function filtrar() {
+    const t = (q?.value ?? "").toLowerCase().trim();
+    let v = 0;
+    cards.forEach((c) => {
+      const ok = (niv === "Todos los niveles" || c.dataset.n === niv) && (!t || (c.dataset.txt ?? "").includes(t));
+      c.style.display = ok ? "" : "none";
+      if (ok) v++;
+    });
+    document.getElementById("count")!.textContent = String(v);
+  }
+  btns.forEach((b) => b.addEventListener("click", () => {
+    niv = b.dataset.n ?? niv;
+    btns.forEach((x) => (x.className = `rounded-full border px-4 py-1.5 text-[13px] font-semibold transition ${x === b ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`));
+    filtrar();
+  }));
+  q?.addEventListener("input", filtrar);
+  document.querySelectorAll(".unirse").forEach((b) => b.addEventListener("click", () => {
+    (b as HTMLButtonElement).textContent = "✓ Anotado";
+    (b as HTMLButtonElement).disabled = true;
+  }));
+</script>

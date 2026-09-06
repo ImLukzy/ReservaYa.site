@@ -70,6 +70,9 @@ npm run build     # compilación estática de producción
 npm run preview   # previsualizar dist/
 ```
 
+Desde la raíz del repositorio, ejecuta `npm run dev:api` en otra terminal para
+iniciar ASP.NET Core en `http://localhost:5000`.
+
 Antes de integrar cambios, ejecutar `npm run build`.
 
 ## Estructura objetivo

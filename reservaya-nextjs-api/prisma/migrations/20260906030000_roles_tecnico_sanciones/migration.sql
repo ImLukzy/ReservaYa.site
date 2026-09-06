@@ -1,0 +1,1 @@
+-- Marcador: cambio aplicado via EF (Migrations/RolesTecnicoYSanciones). NO aplicar por Prisma.

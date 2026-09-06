@@ -1,11 +1,455 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import CanchasPublicas from "../components/CanchasPublicas.astro";
+
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+const tipos = [
+  ["Todos", "Todos"],
+  ["FUTBOL", "Fútbol"],
+  ["FUTBOL5", "F5"],
+  ["FUTBOL7", "F7"],
+  ["PADEL", "Pádel"],
+  ["TENIS", "Tenis"],
+  ["BASQUET", "Básquet"],
+  ["VOLLEYBALL", "Vóley"],
+  ["LOZA", "Loza"],
+];
 ---
 
 <BaseLayout
-  title="Canchas disponibles | ReservaYa"
-  description="Consulta las canchas deportivas activas de ReservaYa."
+  title="Encuentra tu cancha | ReservaYa"
+  description="Busca entre los mejores complejos deportivos de Arequipa y reserva al instante."
+  announcement="▶ ReservaYa ya está en Google Play — Descarga la app gratis"
+  announcementBadge="NUEVO"
 >
-  <CanchasPublicas />
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 pb-20 pt-12 md:px-8">
+    <div class="mx-auto max-w-5xl text-center">
+      <h1 class="reveal text-4xl font-black tracking-tight text-[#101613] md:text-5xl">Encuentra tu cancha</h1>
+      <p class="mx-auto mt-3 max-w-xl text-[#5B6660]">Canchas reales de Arequipa, con precios y valoraciones de jugadores.</p>
+
+      <div class="mt-8 flex flex-col gap-2 sm:flex-row">
+        <span class="hidden items-center justify-center rounded-xl border border-[#E7E5E4] bg-white px-3 text-[#15803D] sm:flex">▦</span>
+        <div class="relative flex-1">
+          <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400">⌕</span>
+          <input id="q" type="search" placeholder="Buscar por cancha o complejo..." class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3 pr-4 pl-11 text-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
+        </div>
+        <select id="f-distrito" class="rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm font-bold text-[#15803D] focus:border-[#22C55E] focus:outline-none">
+          <option value="">Todo Arequipa</option>
+        </select>
+      </div>
+
+      <div id="tipos" class="mt-4 flex flex-wrap justify-center gap-2">
+        {tipos.map(([v, l], i) => (
+          <button type="button" data-tipo={v} class={`pill rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`}>{l}</button>
+        ))}
+      </div>
+      <div class="mt-3 flex flex-wrap justify-center gap-2">
+        <select id="f-precio" class="w-auto rounded-full border border-[#E7E5E4] bg-white px-4 py-2 text-[13px] font-semibold text-[#3F4A44] focus:border-[#22C55E] focus:outline-none">
+          <option value="">▤ Cualquier precio</option><option value="50">Hasta S/ 50</option><option value="70">Hasta S/ 70</option><option value="999">Todos</option>
+        </select>
+      </div>
+      <p id="estado" class="mt-4 text-sm text-[#5B6660]">Cargando canchas…</p>
+    </div>
+
+    <div id="equipos-banner" class="reveal relative mx-auto mt-10 max-w-6xl overflow-hidden rounded-2xl text-white" data-reveal-delay="120" style="background:linear-gradient(180deg,#0B1510 0%,#060A08 60%,#040805 100%);">
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true" style="background-image:repeating-linear-gradient(93deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 7px);"></div>
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true" style="background:radial-gradient(60% 90% at 50% 10%, rgba(34,197,94,0.10), transparent 70%);"></div>
+      <div class="pointer-events-none absolute top-0 bottom-0 left-1/2 w-px bg-white/[0.07]" aria-hidden="true"></div>
+      <button id="equipos-x" type="button" aria-label="Cerrar" class="absolute top-3 right-3 z-10 rounded-full p-1.5 text-sm text-white/50 transition hover:bg-white/10 hover:text-white">×</button>
+      <div class="relative flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center md:p-8">
+        <div>
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#4ADE80]">Equipos automáticos</p>
+          <h2 class="mt-2 text-2xl font-black text-white">Registra a tu equipo y sortea parejo</h2>
+          <p class="mt-1 text-sm text-white/65">Cada uno pone sus stats y armas equipos equilibrados en un toque.</p>
+        </div>
+        <div class="flex gap-2">
+          <a href="/sortear" class="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#101613] transition hover:bg-gray-100">Armar equipo →</a>
+          <button id="copiar-inv" type="button" class="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10">⧉ Copiar invitación</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-8 flex max-w-6xl flex-col justify-between gap-3 md:flex-row md:items-center">
+      <div class="flex items-center gap-3">
+        <p class="text-sm text-[#5B6660]"><strong id="count-complejos" class="text-[#101613]">–</strong> · <span id="count2">–</span></p>
+        <div class="flex rounded-full bg-[#EDEEEC] p-1 text-[13px] font-semibold">
+          <button id="v-canchas" type="button" class="rounded-full bg-white px-3 py-1.5 shadow-sm">▦ Por canchas</button>
+          <button id="v-complejos" type="button" class="px-3 py-1.5 text-[#5B6660]">▤ Por complejos</button>
+        </div>
+      </div>
+      <label class="flex items-center gap-2 text-sm text-[#5B6660]">Ordenar por:
+        <select id="orden" class="rounded-xl border border-[#E7E5E4] bg-white px-3 py-2 text-sm font-semibold text-[#101613]">
+          <option value="rating">Mejor valoradas</option>
+          <option value="precio-asc">Menor precio</option>
+          <option value="precio-desc">Mayor precio</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="grid" class="reveal mx-auto mt-5 grid max-w-6xl gap-5 md:grid-cols-3" data-reveal-delay="120"></div>
+
+    <div class="reveal mx-auto mt-16 max-w-6xl" data-reveal-delay="80">
+      <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#16A34A]">Comunidad</p>
+      <div class="mt-3 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <h2 class="text-2xl font-black tracking-tight text-[#101613] md:text-3xl">¿Tienes una idea para mejorar Reserva<span class="text-[#16A34A]">Ya</span>?</h2>
+          <p class="mt-2 text-sm text-[#5B6660]">Cuéntanos qué te gustaría ver. Leemos todo.</p>
+        </div>
+        <a href="/mejoras" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#15803D]">Comparte tu idea <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <div id="promo-cuadro" class="fixed bottom-4 left-4 z-40 max-w-[220px] overflow-hidden rounded-2xl border border-white/10 bg-[#060A08] text-white shadow-2xl">
+    <div class="flex items-center justify-between px-3 pt-2">
+      <span class="rounded bg-[#22C55E]/20 px-1.5 py-0.5 text-[10px] font-bold text-[#4ADE80]">NUEVO</span>
+      <button id="promo-cuadro-x" type="button" aria-label="Cerrar" class="rounded-full p-1 text-sm text-white/50 hover:text-white">×</button>
+    </div>
+    <a href="/completar-cuadro" class="block px-3 pb-3 text-sm font-semibold leading-snug">Completa tu cuadro</a>
+  </div>
+
+  <a href="/duenos" class="fixed right-4 bottom-4 z-40 flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-bold text-white shadow-2xl transition hover:scale-105">
+    <span class="text-[#4ADE80]" aria-hidden="true">✨</span> ReservaYa AI
+    <span class="rounded bg-[#EAB308]/20 px-1.5 py-0.5 text-[10px] font-bold text-[#EAB308]">PRONTO</span>
+  </a>
+
+  <div id="modal-op" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/55 p-4" role="dialog" aria-modal="true" aria-label="Opiniones">
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">OPINIONES</p>
+          <h2 id="modal-op-titulo" class="mt-1 text-xl font-black text-[#0F172A]">Opiniones</h2>
+        </div>
+        <button id="modal-op-x" type="button" aria-label="Cerrar" class="rounded-lg p-1.5 text-[#64748B] hover:bg-gray-100">✕</button>
+      </div>
+      <div id="modal-op-lista" class="mt-4 max-h-80 space-y-3 overflow-y-auto"></div>
+      <p class="mt-4 text-xs text-[#8A938D]">¿Jugaste aquí? Califica desde tu reserva completada en la app.</p>
+      <a id="modal-op-app" href="#" class="mt-2 inline-block rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white hover:bg-[#16A34A]">Ir a mis reservas →</a>
+    </div>
+  </div>
 </BaseLayout>
+
+<script is:inline define:vars={{ apiUrl, appUrl }}>
+(function () {
+  var base = apiUrl.replace(/\/$/, "");
+  var app = appUrl.replace(/\/$/, "");
+  var grid = document.getElementById("grid");
+  var estado = document.getElementById("estado");
+  var lista = [];
+  var ratings = {};
+  var tipo = "Todos";
+  var vista = "canchas";
+  var timer = null;
+
+  var TIPO_LABEL = { FUTBOL: "Fútbol", FUTBOL5: "F5", FUTBOL7: "F7", PADEL: "Pádel", TENIS: "Tenis", BASQUET: "Básquet", VOLLEYBALL: "Vóley", LOZA: "Loza" };
+  var TIPO_EMOJI = { FUTBOL: "⚽", FUTBOL5: "⚽", FUTBOL7: "⚽", PADEL: "🎾", TENIS: "🎾", BASQUET: "🏀", VOLLEYBALL: "🏐", LOZA: "🏟️" };
+
+  function showToast(msg) {
+    var toast = document.createElement("div");
+    toast.className = "fixed bottom-4 right-4 z-50 rounded-xl bg-[#060A08] px-4 py-3 text-sm font-medium text-white shadow-xl";
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function () { toast.remove(); }, 2500);
+  }
+
+  function imgSrc(cancha) {
+    if (cancha.imagen) return cancha.imagen.indexOf("http") === 0 ? cancha.imagen : base + cancha.imagen;
+    return null;
+  }
+
+  function ratingDe(cancha) {
+    if (!cancha.complejoId || !ratings[cancha.complejoId]) return { promedio: 0, total: 0 };
+    return ratings[cancha.complejoId];
+  }
+
+  function tarjeta(cancha) {
+    var r = ratingDe(cancha);
+    var art = document.createElement("article");
+    art.className = "overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:-translate-y-1 hover:shadow-lg";
+    var head = document.createElement("div");
+    head.className = "relative flex h-44 items-center justify-center bg-[#0A1A11] text-7xl";
+    var src = imgSrc(cancha);
+    if (src) {
+      var im = document.createElement("img");
+      im.src = src;
+      im.alt = cancha.nombre;
+      im.className = "h-full w-full object-cover";
+      im.loading = "lazy";
+      head.appendChild(im);
+    } else {
+      var em = document.createElement("span");
+      em.textContent = TIPO_EMOJI[cancha.tipo] || "🏟️";
+      head.appendChild(em);
+    }
+    var badge = document.createElement("span");
+    badge.className = "absolute top-3 left-3 rounded-full bg-[#22C55E] px-2.5 py-1 text-[11px] font-bold text-white";
+    badge.textContent = TIPO_LABEL[cancha.tipo] || cancha.tipo;
+    var stars = document.createElement("button");
+    stars.type = "button";
+    stars.className = "absolute right-3 bottom-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-black/80";
+    stars.textContent = r.total > 0 ? "★ " + r.promedio + " (" + r.total + ")" : "★ Nuevo";
+    stars.setAttribute("aria-label", "Ver opiniones");
+    stars.addEventListener("click", function () { abrirOpiniones(cancha); });
+    head.appendChild(badge);
+    head.appendChild(stars);
+    var body = document.createElement("div");
+    body.className = "p-5";
+    var h3 = document.createElement("h3");
+    h3.className = "font-bold text-[#101613]";
+    h3.textContent = cancha.nombre;
+    var sub = document.createElement("p");
+    sub.className = "mt-1 text-sm text-[#5B6660]";
+    sub.textContent = "⌖ " + ((cancha.complejo && cancha.complejo.nombre) || "Cancha") + " · " + ((cancha.complejo && cancha.complejo.distrito) || "Arequipa");
+    var row = document.createElement("div");
+    row.className = "mt-4 flex items-center justify-between";
+    var precio = document.createElement("strong");
+    precio.className = "text-[#101613]";
+    precio.textContent = "S/ " + cancha.precioPorHora + " ";
+    var small = document.createElement("small");
+    small.className = "font-normal text-[#8A938D]";
+    small.textContent = "/hora";
+    precio.appendChild(small);
+    var a = document.createElement("a");
+    a.className = "rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]";
+    a.textContent = "Reservar";
+    a.href = cancha.complejoId ? app + "/dashboard/canchas?complejoId=" + cancha.complejoId : app + "/dashboard/canchas";
+    body.appendChild(h3);
+    body.appendChild(sub);
+    row.appendChild(precio);
+    row.appendChild(a);
+    body.appendChild(row);
+    art.appendChild(head);
+    art.appendChild(body);
+    return art;
+  }
+
+  function pintar() {
+    var maxP = document.getElementById("f-precio").value;
+    var max = maxP ? parseInt(maxP, 10) : 99999;
+    var orden = document.getElementById("orden").value;
+    var items = lista.filter(function (c) { return Number(c.precioPorHora) <= max; });
+    items.sort(function (a, b) {
+      if (orden === "precio-asc") return Number(a.precioPorHora) - Number(b.precioPorHora);
+      if (orden === "precio-desc") return Number(b.precioPorHora) - Number(a.precioPorHora);
+      return ratingDe(b).promedio - ratingDe(a).promedio;
+    });
+    grid.innerHTML = "";
+    var complejosVistos = {};
+    if (vista === "complejos") {
+      var grupos = {};
+      var ordenC = [];
+      items.forEach(function (c) {
+        var k = c.complejoId || "sede";
+        if (!grupos[k]) {
+          grupos[k] = [];
+          ordenC.push(k);
+          complejosVistos[k] = true;
+        }
+        grupos[k].push(c);
+      });
+      ordenC.forEach(function (k) {
+        var gs = grupos[k];
+        var primero = gs[0];
+        var r = ratingDe(primero);
+        var h = document.createElement("div");
+        h.className = "md:col-span-3 mt-2 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-[#0A1A11] px-5 py-4 text-white";
+        var t = document.createElement("p");
+        t.className = "font-black";
+        t.textContent = ((primero.complejo && primero.complejo.nombre) || "Cancha") + " · " + ((primero.complejo && primero.complejo.distrito) || "Arequipa");
+        var s = document.createElement("span");
+        s.className = "text-sm font-bold text-[#4ADE80]";
+        s.textContent = r.total > 0 ? "★ " + r.promedio + " (" + r.total + ")" : "★ Nuevo";
+        h.appendChild(t);
+        h.appendChild(s);
+        grid.appendChild(h);
+        gs.forEach(function (c) { grid.appendChild(tarjeta(c)); });
+      });
+    } else {
+      items.forEach(function (c) {
+        if (c.complejoId) complejosVistos[c.complejoId] = true;
+        grid.appendChild(tarjeta(c));
+      });
+    }
+    var nComp = Object.keys(complejosVistos).length;
+    document.getElementById("count-complejos").textContent = nComp + (nComp === 1 ? " complejo" : " complejos");
+    document.getElementById("count2").textContent = items.length + (items.length === 1 ? " cancha" : " canchas");
+    estado.textContent = items.length === 0
+      ? "Sin resultados: prueba con otra búsqueda."
+      : items.length + (items.length === 1 ? " cancha encontrada" : " canchas encontradas");
+  }
+
+  function cargarRatings(ids) {
+    var pendientes = ids.filter(function (id) { return id && !ratings[id]; });
+    if (pendientes.length === 0) { pintar(); return; }
+    var hechos = 0;
+    pendientes.forEach(function (id) {
+      fetch(base + "/api/resenas/publicas?complejoId=" + id)
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (body) {
+          ratings[id] = { promedio: (body && body.promedio) || 0, total: (body && body.total) || 0 };
+        })
+        .catch(function () { ratings[id] = { promedio: 0, total: 0 }; })
+        .finally(function () {
+          hechos++;
+          if (hechos === pendientes.length) pintar();
+        });
+    });
+  }
+
+  function cargar() {
+    estado.textContent = "Cargando canchas…";
+    var q = document.getElementById("q").value.trim();
+    var d = document.getElementById("f-distrito").value;
+    var qs = [];
+    if (q) qs.push("q=" + encodeURIComponent(q));
+    if (d) qs.push("distrito=" + encodeURIComponent(d));
+    if (tipo && tipo !== "Todos") qs.push("tipo=" + encodeURIComponent(tipo));
+    fetch(base + "/api/canchas/disponibles" + (qs.length ? "?" + qs.join("&") : ""))
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (body) {
+        var items = (body && body.canchas) || [];
+        lista = items.map(function (x) { return x.cancha; });
+        var ids = {};
+        lista.forEach(function (c) { if (c.complejoId) ids[c.complejoId] = true; });
+        cargarRatings(Object.keys(ids));
+      })
+      .catch(function () {
+        lista = [];
+        pintar();
+        estado.textContent = "No se pudo conectar con el servidor. Verifica que esté en ejecución.";
+      });
+  }
+
+  function abrirOpiniones(cancha) {
+    var modal = document.getElementById("modal-op");
+    var caja = document.getElementById("modal-op-lista");
+    document.getElementById("modal-op-titulo").textContent = "Opiniones · " + cancha.nombre;
+    document.getElementById("modal-op-app").href = app + "/dashboard/reservas";
+    caja.innerHTML = "<p class='text-sm text-[#8A938D]'>Cargando opiniones…</p>";
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    if (!cancha.complejoId) {
+      caja.innerHTML = "<p class='text-sm text-[#8A938D]'>Aún no hay opiniones.</p>";
+      return;
+    }
+    fetch(base + "/api/resenas/publicas?complejoId=" + cancha.complejoId)
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (body) {
+        var items = (body && body.resenas) || [];
+        ratings[cancha.complejoId] = { promedio: (body && body.promedio) || 0, total: (body && body.total) || 0 };
+        caja.innerHTML = "";
+        if (items.length === 0) {
+          caja.innerHTML = "<p class='text-sm text-[#8A938D]'>Aún no hay opiniones. ¡Sé la primera persona en calificar!</p>";
+          return;
+        }
+        items.forEach(function (r) {
+          var d = document.createElement("div");
+          d.className = "rounded-xl border border-[#E7E5E4] p-3";
+          var top = document.createElement("p");
+          top.className = "text-sm font-bold text-[#101613]";
+          var nombre = document.createElement("span");
+          nombre.textContent = (r.usuario && r.usuario.nombre) || "Jugador";
+          var pts = document.createElement("span");
+          pts.className = "ml-2 text-amber-500";
+          pts.textContent = "★".repeat(r.puntuacion) + "☆".repeat(5 - r.puntuacion);
+          top.appendChild(nombre);
+          top.appendChild(pts);
+          d.appendChild(top);
+          if (r.comentario) {
+            var c = document.createElement("p");
+            c.className = "mt-1 text-sm text-[#3F4A44]";
+            c.textContent = r.comentario;
+            d.appendChild(c);
+          }
+          if (r.respuestaDueno) {
+            var rd = document.createElement("p");
+            rd.className = "mt-2 rounded-lg bg-[#F0FDF4] px-3 py-2 text-xs text-[#15803D]";
+            rd.textContent = "Respuesta del local: " + r.respuestaDueno;
+            d.appendChild(rd);
+          }
+          caja.appendChild(d);
+        });
+      })
+      .catch(function () {
+        caja.innerHTML = "<p class='text-sm text-red-600'>No se pudieron cargar las opiniones.</p>";
+      });
+  }
+
+  function cerrarOpiniones() {
+    var modal = document.getElementById("modal-op");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+
+  document.getElementById("modal-op-x").addEventListener("click", cerrarOpiniones);
+  document.getElementById("modal-op").addEventListener("click", function (e) {
+    if (e.target.id === "modal-op") cerrarOpiniones();
+  });
+
+  document.querySelectorAll("#tipos .pill").forEach(function (b) {
+    b.addEventListener("click", function () {
+      tipo = b.getAttribute("data-tipo") || "Todos";
+      document.querySelectorAll("#tipos .pill").forEach(function (x) {
+        x.className = "pill rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition " +
+          (x === b ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]");
+      });
+      cargar();
+    });
+  });
+
+  document.getElementById("q").addEventListener("input", function () {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(cargar, 400);
+  });
+  document.getElementById("f-distrito").addEventListener("change", cargar);
+  document.getElementById("f-precio").addEventListener("change", pintar);
+  document.getElementById("orden").addEventListener("change", pintar);
+
+  function setVista(v) {
+    vista = v;
+    var bc = document.getElementById("v-canchas");
+    var bx = document.getElementById("v-complejos");
+    var on = "rounded-full bg-white px-3 py-1.5 shadow-sm";
+    var off = "px-3 py-1.5 text-[#5B6660]";
+    bc.className = v === "canchas" ? on : off;
+    bx.className = v === "complejos" ? on : off;
+    pintar();
+  }
+  document.getElementById("v-canchas").addEventListener("click", function () { setVista("canchas"); });
+  document.getElementById("v-complejos").addEventListener("click", function () { setVista("complejos"); });
+
+  document.getElementById("promo-cuadro-x").addEventListener("click", function () {
+    document.getElementById("promo-cuadro").remove();
+  });
+  document.getElementById("equipos-x").addEventListener("click", function () {
+    document.getElementById("equipos-banner").remove();
+  });
+  document.getElementById("copiar-inv").addEventListener("click", function () {
+    var link = "https://reservaya.com/sortear";
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText("Únete a mi equipo en ReservaYa: " + link).then(
+        function () { showToast("Invitación copiada ✓"); },
+        function () { showToast("Copia este link: " + link); });
+    } else {
+      showToast("Copia este link: " + link);
+    }
+  });
+
+  fetch(base + "/api/canchas/opciones")
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(function (body) {
+      var sel = document.getElementById("f-distrito");
+      ((body && body.distritos) || []).forEach(function (d) {
+        var o = document.createElement("option");
+        o.value = d;
+        o.textContent = d;
+        sel.appendChild(o);
+      });
+    })
+    .catch(function () {});
+  window.addEventListener("error", function (e) {
+    estado.textContent = "Algo falló en la página: " + (e.message || "error") + ". Recarga e inténtalo de nuevo.";
+  });
+  cargar();
+})();
+</script>

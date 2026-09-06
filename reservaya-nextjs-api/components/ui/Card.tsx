@@ -7,7 +7,7 @@ interface CardProps {
 
 export function Card({ children, className }: CardProps) {
   return (
-    <div className={cn('bg-[#20263a] rounded-2xl shadow-[0_12px_32px_rgba(3,7,18,0.2)] border border-[#303850] p-6', className)}>
+    <div className={cn('bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E7E5E4] p-6', className)}>
       {children}
     </div>
   )
@@ -25,10 +25,10 @@ export function StatCard({
   color?: 'green' | 'blue' | 'yellow' | 'red'
 }) {
   const colors = {
-    green: 'bg-emerald-500/15 text-emerald-300',
-    blue: 'bg-indigo-500/20 text-indigo-300',
-    yellow: 'bg-amber-500/15 text-amber-300',
-    red: 'bg-rose-500/15 text-rose-300',
+    green: 'bg-[#DCFCE7] text-[#15803D]',
+    blue: 'bg-[#DBEAFE] text-[#1D4ED8]',
+    yellow: 'bg-[#FEF9C3] text-[#A16207]',
+    red: 'bg-[#FFE4E6] text-[#BE123C]',
   }
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -37,8 +37,8 @@ export function StatCard({
           {icon}
         </div>
         <div>
-          <p className="text-sm text-slate-400">{label}</p>
-          <p className="text-2xl font-bold text-slate-100">{value}</p>
+          <p className="text-sm text-[#64748B]">{label}</p>
+          <p className="text-2xl font-bold text-[#0F172A]">{value}</p>
         </div>
       </div>
     </Card>

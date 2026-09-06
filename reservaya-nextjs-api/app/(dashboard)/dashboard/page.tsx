@@ -53,9 +53,9 @@ export default async function DashboardPage() {
       </div>
 
       {ultimaConfirmada && (
-        <div className="mb-6 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-5 py-4 text-emerald-200">
+        <div className="mb-6 rounded-2xl border border-[#BBF7D0] bg-[#DCFCE7] px-5 py-4 text-[#14532D]">
           <p className="font-semibold">🎉 ¡Reserva asegurada!</p>
-          <p className="mt-1 text-sm text-emerald-100/75">
+          <p className="mt-1 text-sm text-[#15803D]">
             Tu cancha está confirmada. Llega 10 minutos antes y disfruta tu partido.
           </p>
         </div>
@@ -68,17 +68,17 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <Link
           href="/dashboard/canchas"
-          className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-indigo-950/20"
+          className="bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-green-900/20"
         >
           <span className="text-4xl">🏟️</span>
           <div>
             <p className="font-semibold text-lg">Ver Canchas</p>
-            <p className="text-green-100 text-sm">Explora y reserva canchas disponibles</p>
+            <p className="text-[#DCFCE7] text-sm">Explora y reserva canchas disponibles</p>
           </div>
         </Link>
         <Link
           href="/dashboard/reservas"
-          className="bg-[#3d4770] hover:bg-[#4c5888] text-white rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-slate-950/20"
+          className="bg-[#060A08] hover:bg-[#0A1A11] text-white rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-slate-950/20"
         >
           <span className="text-4xl">📋</span>
           <div>
@@ -97,7 +97,7 @@ export default async function DashboardPage() {
           <div className="p-12 text-center text-gray-400">
             <p className="text-4xl mb-3">📭</p>
             <p className="font-medium">Aún no tienes reservas</p>
-            <Link href="/dashboard/canchas" className="text-indigo-300 hover:text-indigo-200 text-sm hover:underline mt-1 block">
+              <Link href="/dashboard/canchas" className="text-[#15803D] hover:text-[#16A34A] text-sm hover:underline mt-1 block">
               Reserva tu primera cancha →
             </Link>
           </div>

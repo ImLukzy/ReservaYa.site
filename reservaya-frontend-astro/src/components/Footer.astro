@@ -1,130 +1,74 @@
-<footer class="mt-32 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
-  <div class="max-w-[1680px] mx-auto px-10 py-20 grid gap-14 sm:grid-cols-2 lg:grid-cols-6">
-    <div class="space-y-6 lg:col-span-2">
-      <div class="flex items-center gap-2">
-        <span
-          class="text-3xl font-extrabold tracking-tight"
-          style="color: var(--accent-main); letter-spacing: -0.03em;"
-        >
-          ReservaYa
+<footer class="relative overflow-hidden bg-black text-sm text-white/60">
+  <svg class="pointer-events-none absolute -right-32 bottom-0 w-[480px]" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" fill="#101014"/>
+    <polygon points="100,72 127,92 117,124 83,124 73,92" fill="#1E1E24"/>
+    <polygon points="100,72 127,92 138,70 120,52 88,54" fill="#191920"/>
+    <polygon points="73,92 83,124 60,132 44,108 52,80" fill="#191920"/>
+    <polygon points="127,92 138,116 162,110 168,84 148,66" fill="#191920"/>
+    <polygon points="83,124 117,124 118,152 100,168 82,152" fill="#191920"/>
+  </svg>
+
+  <div class="relative mx-auto max-w-7xl px-4 pt-12 md:px-8">
+    <div class="flex flex-col justify-between gap-8 md:flex-row">
+      <div>
+        <p class="text-xs text-white/40">Contáctanos:</p>
+        <a href="mailto:hola@reservaya.pe" class="mt-2 inline-flex items-center gap-2 font-bold text-white hover:text-[#4ADE80]">
+          <span aria-hidden="true">✉</span> hola@reservaya.pe <span aria-hidden="true">↗</span>
+        </a>
+        <p class="mt-2 flex items-center gap-2 text-sm"><span aria-hidden="true">⌖</span> Arequipa, Perú</p>
+      </div>
+      <nav class="flex flex-wrap gap-x-8 gap-y-3 text-sm" aria-label="Mapa del sitio">
+        <a href="/ayuda" class="hover:text-white">Ayuda</a>
+        <a href="/#como-funciona" class="hover:text-white">Cómo funciona</a>
+        <a href="/completar-cuadro" class="hover:text-white">Funcionalidades</a>
+        <a href="/canchas" class="hover:text-white">Buscar canchas</a>
+        <a href="/duenos#planes" class="hover:text-white">Precios</a>
+        <a href="/ayuda" class="hover:text-white">Ayúdanos a mejorar</a>
+        <a href="/register" class="hover:text-white">Registrarse</a>
+      </nav>
+    </div>
+
+    <p class="mt-10 text-center font-black leading-none tracking-tight text-white select-none" style="font-size: clamp(64px, 14vw, 200px);">
+      Reserva<span class="text-[#4ADE80]">Ya</span>
+    </p>
+
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <a href="/register" class="flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/10">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#00D2FF" d="M4 3.5v17l9.5-8.5z"/>
+          <path fill="#FFE000" d="M4 3.5l9.5 8.5 3-2.7z"/>
+          <path fill="#FF3A44" d="M4 20.5l9.5-8.5 3 2.7z"/>
+          <path fill="#00F076" d="M16.5 9.3l3-2.7-3-2.7zM16.5 14.7l3 2.7-3 2.7z"/>
+        </svg>
+        <span class="text-left leading-tight"><span class="block text-[9px] font-normal text-white/60">GET IT ON</span>Google Play</span>
+      </a>
+      <div>
+        <span class="flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white/80">
+          <span class="text-base" aria-hidden="true">◔</span>
+          <span class="text-left leading-tight"><span class="block text-[9px] font-normal text-white/60">Download on the</span>App Store</span>
         </span>
-        <span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--accent-main);">
-          Canchas deportivas
+        <p class="mt-1 text-center text-[10px] tracking-[0.2em] text-white/40">PRÓXIMAMENTE</p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex flex-col items-start justify-between gap-3 border-t border-white/10 py-5 text-xs text-white/40 md:flex-row md:items-center">
+      <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span>© {new Date().getFullYear()} ReservaYa. Hecho en Perú</span>
+        <span class="inline-flex h-3 w-4 overflow-hidden rounded-[2px]" aria-label="Perú">
+          <span class="h-full w-1/3 bg-[#D91023]"></span><span class="h-full w-1/3 bg-white"></span><span class="h-full w-1/3 bg-[#D91023]"></span>
         </span>
-      </div>
-      <div class="space-y-4 text-sm">
-        <div class="space-y-1">
-          <p class="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">Soporte</p>
-          <a
-            href="mailto:soporte@reservaya.com"
-            class="footer-link text-gray-600 dark:text-gray-400 transition"
-          >
-            soporte@reservaya.com
-          </a>
-        </div>
-        <div class="space-y-1">
-          <p class="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">Contacto</p>
-          <a
-            href="mailto:contacto@reservaya.com"
-            class="footer-link text-gray-600 dark:text-gray-400 transition"
-          >
-            contacto@reservaya.com
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="space-y-3">
-      <p class="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">A qui&eacute;n ayudo</p>
-      <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-        <li><a class="footer-link transition" href="/a-quien-ayudo/pequenas-empresas">Peque&ntilde;as empresas</a></li>
-        <li><a class="footer-link transition" href="/a-quien-ayudo/startups">Startups</a></li>
-        <li><a class="footer-link transition" href="/a-quien-ayudo/proyectos-personales">Proyectos personales</a></li>
-        <li><a class="footer-link transition" href="/a-quien-ayudo/portafolios">Portafolios</a></li>
-      </ul>
-    </div>
-
-    <div class="space-y-3">
-      <p class="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">Comparar</p>
-      <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-        <li><a class="footer-link transition" href="/comparar/wordpress">WordPress</a></li>
-        <li><a class="footer-link transition" href="/comparar/webflow">Webflow</a></li>
-        <li><a class="footer-link transition" href="/comparar/sitios-genericos">Sitios gen&eacute;ricos</a></li>
-        <li><a class="footer-link transition" href="/comparar/plantillas">Plantillas</a></li>
-      </ul>
-    </div>
-
-    <div class="space-y-3">
-      <p class="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">Recursos</p>
-      <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-        <li><a class="footer-link transition" href="/blog">Blog</a></li>
-        <li><a class="footer-link transition" href="/recursos/guias">Gu&iacute;as</a></li>
-        <li><a class="footer-link transition" href="/recursos/plantillas">Plantillas</a></li>
-        <li><a class="footer-link transition" href="/recursos/actualizaciones">Actualizaciones</a></li>
-      </ul>
-    </div>
-
-    <div class="space-y-3">
-      <p class="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">Empresa</p>
-      <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-        <li><a class="footer-link transition" href="/about">Sobre m&iacute;</a></li>
-        <li><a class="footer-link transition" href="/projects">Proyectos</a></li>
-        <li><a class="footer-link transition" href="/empresa/colaboraciones">Colaboraciones</a></li>
-        <li><a class="footer-link transition" href="/empresa/contacto">Contacto</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="border-t border-gray-200 dark:border-gray-800">
-    <div class="max-w-[1680px] mx-auto px-10 py-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500 dark:text-gray-400">
-      <div class="flex items-center gap-5 text-gray-500 dark:text-gray-400">
-        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-gray-900 dark:hover:text-white transition">
-          <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6 fill-current">
-            <path d="M12 2C6.5 2 2 6.5 2 12a10 10 0 0 0 6.8 9.5c.5.1.7-.2.7-.5v-2c-2.8.6-3.3-1.2-3.3-1.2-.5-1.2-1.2-1.5-1.2-1.5-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.5-.7 1.7-1.1.1-.7.4-1.1.7-1.4-2.2-.2-4.5-1.1-4.5-5 0-1.1.4-2 1.1-2.7-.1-.2-.5-1.3.1-2.7 0 0 .9-.3 2.8 1.1a9.6 9.6 0 0 1 5.1 0c1.9-1.4 2.8-1.1 2.8-1.1.6 1.4.2 2.5.1 2.7.7.7 1.1 1.6 1.1 2.7 0 3.9-2.3 4.8-4.5 5 .4.3.7.9.7 1.8v2.7c0 .3.2.6.7.5A10 10 0 0 0 22 12c0-5.5-4.5-10-10-10z" />
-          </svg>
+        <span>·</span><span>Pagos procesados por Culqi</span>
+        <span>·</span><span>Powered by JQ</span>
+        <span>·</span><a href="/legal/terms" class="hover:text-white">Términos</a>
+        <a href="/legal/privacy" class="hover:text-white">Privacidad</a>
+        <a href="/legal/terms" class="hover:text-white">Devoluciones</a>
+        <a href="/libro-reclamaciones" class="hover:text-white">Libro de Reclamaciones</a>
+      </p>
+      <p class="flex items-center gap-2">Síguenos
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 text-white/70 transition hover:bg-white/10 hover:text-white">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg>
         </a>
-        <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="hover:text-gray-900 dark:hover:text-white transition">
-          <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6 fill-current">
-            <path d="M4.98 3.5a2.5 2.5 0 1 0 .02 5 2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM10 9h4v1.8h.1c.6-1.1 2-2.3 4.1-2.3 4.4 0 5.2 2.9 5.2 6.7V21h-4v-5.3c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21h-4z" />
-          </svg>
-        </a>
-        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:text-gray-900 dark:hover:text-white transition">
-          <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6 fill-current">
-            <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm-5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm5.2-2.2a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0z" />
-          </svg>
-        </a>
-      </div>
-      <div class="flex flex-wrap items-center justify-center gap-6 sm:flex-1">
-        <a href="/legal/terms" class="footer-legal transition">T&eacute;rminos de uso</a>
-        <a href="/legal/privacy" class="footer-legal transition">Pol&iacute;tica de privacidad</a>
-      </div>
-      <span class="sm:text-right">&copy; {new Date().getFullYear()} ReservaYa. Todos los derechos reservados.</span>
+      </p>
     </div>
   </div>
 </footer>
-
-<style>
-  .footer-link {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .footer-link:hover,
-  .footer-link:focus-visible {
-    color: var(--accent-main);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-thickness: 1px;
-  }
-
-  .footer-legal {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .footer-legal:hover,
-  .footer-legal:focus-visible {
-    color: var(--accent-main);
-    text-decoration: none;
-  }
-</style>

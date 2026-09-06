@@ -1,0 +1,13 @@
+{
+  "name": "reservaya",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix reservaya-frontend-astro run dev",
+    "dev:all": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1",
+    "dev:api": "dotnet run --project reservaya-nextjs-api/backend/ReservaFacil.Api/ReservaFacil.Api.csproj --launch-profile http",
+    "build": "npm --prefix reservaya-frontend-astro run build",
+    "preview": "npm --prefix reservaya-frontend-astro run preview",
+    "dev:next": "npm --prefix reservaya-nextjs-api run dev",
+    "build:next": "npm --prefix reservaya-nextjs-api run build"
+  }
+}
