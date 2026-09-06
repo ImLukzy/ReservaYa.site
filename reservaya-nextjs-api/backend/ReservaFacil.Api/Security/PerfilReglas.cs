@@ -36,4 +36,7 @@ internal static partial class PerfilReglas
         var proximo = cambiadoEn.Value.AddYears(1);
         return proximo <= DateTime.UtcNow ? null : proximo;
     }
+
+    public static string? FechaCorta(DateTime? fecha) =>
+        fecha.HasValue ? fecha.Value.ToString("yyyy-MM-dd") : null;
 }

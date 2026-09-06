@@ -66,6 +66,33 @@ internal static class ComplejoAccess
         return propios.Concat(miembro).Distinct().ToList();
     }
 
+    // Primer complejo operable: propio más antiguo, luego membresía más
+    // antigua, luego el primero global solo para plataforma. Null = sin acceso.
+    public static async Task<string?> PrimeroAsync(AppDbContext db, ClaimsPrincipal user)
+    {
+        var mine = user.IdOrEmpty();
+        var propio = await db.Complejos.AsNoTracking()
+            .Where(c => c.DuenoId == mine)
+            .OrderBy(c => c.CreadoEn)
+            .Select(c => c.Id)
+            .FirstOrDefaultAsync();
+        if (propio is not null) return propio;
+
+        var miembro = await db.ComplejoMiembros.AsNoTracking()
+            .Where(m => m.UsuarioId == mine && m.Activo)
+            .OrderBy(m => m.CreadoEn)
+            .Select(m => m.ComplejoId)
+            .FirstOrDefaultAsync();
+        if (miembro is not null) return miembro;
+
+        if (EsPlataforma(user))
+            return await db.Complejos.AsNoTracking()
+                .OrderBy(c => c.CreadoEn)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
+        return null;
+    }
+
     // Vitrina pública: complejos publicados CON suscripción activa vigente.
     public static async Task<HashSet<string>> IdsVisiblesAsync(AppDbContext db)
     {

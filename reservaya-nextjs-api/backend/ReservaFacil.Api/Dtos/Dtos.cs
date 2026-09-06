@@ -74,7 +74,6 @@ public class MiPerfilPatchRequest
     public string? Telefono { get; set; }
 }
 
-public record UsuarioSesionDto(string Id, string Nombre, string Email, Rol Rol, int Tv);
 
 public record CanchaDto(
     string Id,
