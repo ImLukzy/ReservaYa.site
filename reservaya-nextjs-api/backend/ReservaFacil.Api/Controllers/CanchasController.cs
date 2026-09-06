@@ -454,7 +454,12 @@ public class CanchasController : ControllerBase
 
         try
         {
-            var dir = Path.Combine(_env.WebRootPath, "uploads", "canchas");
+            // WebRootPath puede ser nulo si wwwroot no existe en el despliegue
+            // (está gitignoredo): se usa ContentRoot/wwwroot como respaldo.
+            var webRoot = _env.WebRootPath;
+            if (string.IsNullOrEmpty(webRoot))
+                webRoot = Path.Combine(_env.ContentRootPath, "wwwroot");
+            var dir = Path.Combine(webRoot, "uploads", "canchas");
             Directory.CreateDirectory(dir);
             var nombre = $"{cancha.Id}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{ext}";
             await using (var fs = System.IO.File.Create(Path.Combine(dir, nombre)))

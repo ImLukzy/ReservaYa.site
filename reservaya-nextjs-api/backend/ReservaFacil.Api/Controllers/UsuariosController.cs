@@ -398,7 +398,10 @@ public class UsuariosController : ControllerBase
         if (ext is null)
             return BadRequest(new { error = "Solo se aceptan imágenes JPG, PNG, WEBP o GIF" });
 
-        var dir = Path.Combine(_env.WebRootPath, "uploads", "perfiles");
+        var webRoot = _env.WebRootPath;
+        if (string.IsNullOrEmpty(webRoot))
+            webRoot = Path.Combine(_env.ContentRootPath, "wwwroot");
+        var dir = Path.Combine(webRoot, "uploads", "perfiles");
         Directory.CreateDirectory(dir);
         var nombre = $"{usuario.Id}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{ext}";
         await using (var fs = System.IO.File.Create(Path.Combine(dir, nombre)))
