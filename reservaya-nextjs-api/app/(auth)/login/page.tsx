@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { login } from '@/lib/api-client'
+import { ApiError } from '@/lib/api-types'
 import { publicAppUrl } from '@/lib/public-app'
+
+const MSG_BLOQUEO = 'Demasiados intentos. Espera 15 minutos antes de reintentar.'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -12,9 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const errorVisible = error &&
-    !error.includes('Demasiados intentos') &&
-    error !== 'No se pudo iniciar sesión. Verifica tus datos e inténtalo nuevamente.'
+  const errorVisible = !!error
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -24,16 +25,24 @@ export default function LoginPage() {
     try {
       const data = await login(form.email, form.password)
       setLoading(false)
+      // Si viene de la web pública (Astro /mis-reservas), vuelve ahí tras entrar.
+      const params = new URLSearchParams(window.location.search)
+      const returnUrl = params.get('returnUrl')
+      if (returnUrl && (/^\/[^/]/.test(returnUrl) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(returnUrl))) {
+        window.location.href = returnUrl
+        return
+      }
       const rol = data.usuario.rol
       if (rol === 'SUPERADMIN') router.push('/superadmin')
+      else if (rol === 'TECNICO') router.push('/tecnico')
       else if (rol === 'ADMIN') router.push('/admin')
       else router.push('/dashboard')
     } catch (error) {
       setLoading(false)
-      const message = error instanceof Error ? error.message : ''
-      if (message.includes('Demasiados intentos')) {
-        setError('')
+      if (error instanceof ApiError && error.status === 429) {
+        setError(MSG_BLOQUEO)
       } else {
+        const message = error instanceof Error ? error.message : ''
         setError(message || 'No se pudo iniciar sesión')
       }
       return
@@ -49,11 +58,11 @@ export default function LoginPage() {
             <span aria-hidden="true">←</span>
             ReservaYa
           </a>
-          <div className="mx-auto inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#cf3048] to-[#7d1728] rounded-2xl mb-4 shadow-lg shadow-black/30">
+          <div className="mx-auto inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#22C55E] to-[#14532D] rounded-2xl mb-4 shadow-lg shadow-black/30">
             <span className="text-3xl">🏟️</span>
           </div>
-          <h1 className="text-2xl font-bold text-[#fff8f1]">ReservaYa</h1>
-          <p className="text-[#c6b6aa] mt-1">Inicia sesión en tu cuenta</p>
+          <h1 className="text-2xl font-bold text-[#101613]">ReservaYa</h1>
+          <p className="text-[#5B6660] mt-1">Inicia sesión en tu cuenta</p>
         </div>
 
         {errorVisible && (
@@ -94,7 +103,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#a6192e] hover:bg-[#cf3048] disabled:bg-[#7d1728] text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg shadow-black/25"
+            className="w-full bg-[#22C55E] hover:bg-[#16A34A] disabled:bg-[#86EFAC] text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg shadow-green-900/25"
           >
             {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>

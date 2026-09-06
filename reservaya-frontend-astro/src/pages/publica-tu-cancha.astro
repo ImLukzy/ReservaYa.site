@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Publica tu cancha | ReservaYa"
+  description="Publica tu complejo gratis y empieza a recibir reservas hoy."
+  robots="noindex, follow"
+>
+  <meta http-equiv="refresh" content="0; url=/duenos" />
+  <section class="mx-auto max-w-xl px-4 py-20 text-center">
+    <p class="text-sm text-[#5B6660]">Te llevamos a la página de dueños…</p>
+    <a href="/duenos" class="mt-4 inline-block rounded-xl bg-[#22C55E] px-6 py-3 font-bold text-white">Ir a Dueños →</a>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  window.location.replace("/duenos");
+</script>

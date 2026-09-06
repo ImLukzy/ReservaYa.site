@@ -5,6 +5,7 @@ namespace ReservaFacil.Api.Security;
 public interface IRateLimiter
 {
     bool IsLimited(string key, int limit, TimeSpan window);
+    void Reset(string key);
 }
 
 public class MemoryRateLimiter : IRateLimiter
@@ -26,5 +27,10 @@ public class MemoryRateLimiter : IRateLimiter
             queue.Enqueue(now);
             return false;
         }
+    }
+
+    public void Reset(string key)
+    {
+        _hits.TryRemove(key, out _);
     }
 }

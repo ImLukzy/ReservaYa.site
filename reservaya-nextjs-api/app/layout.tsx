@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Nunito } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const nunito = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800', '900'] })
 
 export const metadata: Metadata = {
-  title: 'ReservaFácil',
-  description: 'Sistema de reservas de canchas deportivas',
+  title: 'ReservaYa',
+  description: 'Busca, reserva y juega. Sistema de reservas de canchas deportivas',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body className={inter.className}>{children}</body>
+      <body className={nunito.className}>{children}</body>
     </html>
   )
 }

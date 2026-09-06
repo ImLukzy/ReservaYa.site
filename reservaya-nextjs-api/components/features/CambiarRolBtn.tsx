@@ -32,6 +32,7 @@ export function CambiarRolBtn({ id, rolActual }: { id: string; rolActual: Rol })
         <option value="USUARIO">USUARIO</option>
         <option value="ADMIN">ADMIN</option>
         <option value="SUPERADMIN">SUPERADMIN</option>
+        <option value="TECNICO">TECNICO</option>
       </select>
       {error && <span className="text-xs text-red-600">{error}</span>}
     </div>

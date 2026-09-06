@@ -1,30 +1,136 @@
 ---
-// Page: login
 import BaseLayout from "../layouts/BaseLayout.astro";
-import LoginForm from "../components/LoginForm.astro";
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
 ---
 
-<BaseLayout title="Iniciar sesi&oacute;n" robots="noindex, follow">
-  <section class="relative -mx-10 flex min-h-[calc(100vh-9rem)] items-center justify-center overflow-hidden px-4 py-12 md:-mx-16" style="background: radial-gradient(circle at center, color-mix(in srgb, var(--accent-main) 12%, transparent), transparent 46%), color-mix(in srgb, var(--bg-main) 92%, #000);">
-    <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="login-title"
-      class="relative z-10 w-full max-w-[470px] rounded-2xl p-7 shadow-2xl md:p-9"
-      style="background: var(--bg-card); border: 1px solid var(--border-main);"
-    >
-      <a href="/" aria-label="Cerrar inicio de sesión" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color: var(--text-muted);">
-        &times;
-      </a>
-      <div class="text-center">
-        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background: linear-gradient(135deg, var(--accent-main), #211112);">🏟️</div>
-        <h1 id="login-title" class="text-2xl md:text-3xl font-bold tracking-tight" style="color: var(--text-main);">
-          Inicia sesi&oacute;n
-        </h1>
-        <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed" style="color: var(--text-muted);">Contin&uacute;a para gestionar tus solicitudes y jugar confirmado.</p>
+<BaseLayout
+  title="Inicia sesión | ReservaYa"
+  description="Bienvenido de vuelta. Sigue donde lo dejaste."
+  robots="noindex, follow"
+>
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F7F6F3] px-4 py-14 md:px-8 md:py-20">
+    <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+      <div class="reveal">
+        <p class="text-6xl font-black tracking-tight text-[#101613] md:text-7xl">Reserva<span class="text-[#16A34A]">Ya</span></p>
+        <h1 class="mt-8 text-3xl font-extrabold tracking-tight text-[#101613] md:text-4xl">Bienvenido de <span class="text-[#16A34A]">vuelta.</span></h1>
+        <p class="mt-4 max-w-md leading-relaxed text-[#5B6660]">Sigue donde lo dejaste: reserva, arma tu equipo y no te quedes sin jugar.</p>
       </div>
-      <LoginForm />
+
+      <div class="reveal mx-auto w-full max-w-md" data-reveal-delay="120">
+        <h2 class="text-center text-xl font-extrabold text-[#101613]">Inicia sesión</h2>
+        <p class="mt-1 text-center text-sm text-[#5B6660]">Qué bueno verte de nuevo</p>
+
+        <form id="login-page-form" class="mt-6 space-y-4" novalidate>
+          <div>
+            <label for="lp-email" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">CORREO ELECTRÓNICO</label>
+            <div class="relative">
+              <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" aria-hidden="true">✉</span>
+              <input id="lp-email" name="email" type="email" required autocomplete="email" placeholder="tu@correo.com"
+                class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3 pr-4 pl-11 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
+            </div>
+          </div>
+          <div>
+            <label for="lp-pass" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">CONTRASEÑA</label>
+            <div class="relative">
+              <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" aria-hidden="true">🔒</span>
+              <input id="lp-pass" name="password" type="password" required autocomplete="current-password" placeholder="•••••••"
+                class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3 pr-12 pl-11 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
+              <button id="lp-eye" type="button" aria-label="Mostrar contraseña" class="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 hover:text-gray-600">◉</button>
+            </div>
+            <p class="mt-2 text-right"><a href="/forgot-password" class="text-xs font-bold text-[#16A34A] hover:underline">¿Olvidaste tu contraseña?</a></p>
+          </div>
+
+          <p id="lp-status" class="hidden rounded-xl px-4 py-3 text-sm" role="alert"></p>
+
+          <button id="lp-submit" type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-white transition hover:bg-[#15803D] hover:shadow-[0_8px_20px_rgba(22,163,74,0.35)] disabled:opacity-60">
+            <span aria-hidden="true">→</span> Iniciar sesión
+          </button>
+        </form>
+
+        <div class="mt-5 flex items-center gap-3 text-xs text-[#8A938D]">
+          <span class="h-px flex-1 bg-[#E7E5E4]"></span>¿No tienes cuenta?<span class="h-px flex-1 bg-[#E7E5E4]"></span>
+        </div>
+        <a href="/register" class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#E7E5E4] bg-white py-3 text-sm font-bold text-[#101613] transition hover:border-[#22C55E]">
+          <span aria-hidden="true">◔◔</span> Crear cuenta gratis
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>
+
+<script define:vars={{ apiUrl, appUrl }}>
+  const form = document.getElementById("login-page-form");
+  const status = document.getElementById("lp-status");
+  const submit = document.getElementById("lp-submit");
+  const pass = document.getElementById("lp-pass");
+  document.getElementById("lp-eye")?.addEventListener("click", (e) => {
+    const btn = e.currentTarget;
+    const show = pass.type === "password";
+    pass.type = show ? "text" : "password";
+    btn.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
+  });
+
+  function getSafeReturnUrl(rawUrl, fallbackUrl) {
+    if (!rawUrl) return fallbackUrl;
+    try {
+      if (rawUrl.startsWith("/") && !rawUrl.startsWith("//") && !rawUrl.startsWith("/\\")) {
+        const parsed = new URL(rawUrl, window.location.origin);
+        if (parsed.origin === window.location.origin) {
+          return parsed.pathname + parsed.search + parsed.hash;
+        }
+      }
+      const parsed = new URL(rawUrl);
+      const allowedOrigins = [window.location.origin];
+      try {
+        if (appUrl) allowedOrigins.push(new URL(appUrl).origin);
+      } catch {}
+      if (allowedOrigins.includes(parsed.origin)) {
+        return parsed.href;
+      }
+    } catch {}
+    return fallbackUrl;
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement) || !(submit instanceof HTMLButtonElement) || !status) return;
+    submit.disabled = true;
+    const orig = submit.innerHTML;
+    submit.innerHTML = "Ingresando...";
+    status.className = "hidden";
+    const data = new FormData(form);
+    try {
+      const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.get("email"), password: data.get("password") }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error("Demasiados intentos. Espera 15 minutos antes de reintentar.");
+        }
+        throw new Error(body?.error || "No se pudo iniciar sesión. Verifica tus datos.");
+      }
+      const role = body?.usuario?.rol;
+      const params = new URLSearchParams(window.location.search);
+      const defaultUrl = role === "SUPERADMIN"
+        ? `${appUrl}/superadmin`
+        : role === "TECNICO"
+          ? `${appUrl}/tecnico`
+          : role === "ADMIN"
+            ? `${appUrl}/admin`
+            : `${appUrl}/dashboard`;
+      window.location.href = getSafeReturnUrl(params.get("returnUrl"), defaultUrl);
+    } catch (error) {
+      status.textContent = error instanceof TypeError
+        ? "No se pudo conectar con el servidor. Verifica que esté en ejecución."
+        : error instanceof Error ? error.message : "No se pudo iniciar sesión";
+      status.className = "rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700";
+      submit.disabled = false;
+      submit.innerHTML = orig;
+    }
+  });
+</script>

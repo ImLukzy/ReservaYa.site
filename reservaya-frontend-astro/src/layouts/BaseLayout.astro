@@ -1,18 +1,19 @@
 ---
 // Layout: BaseLayout
-import ChatWidget from "../components/ChatWidget.astro";
 import Footer from "../components/Footer.astro";
 import LoginForm from "../components/LoginForm.astro";
 import RegisterForm from "../components/RegisterForm.astro";
 
 import "../styles/tailwind.css";
 import "../styles/global.css";
+import "../styles/motion.css";
 
 interface Props {
   title?: string;
   description?: string;
   image?: string;
   announcement?: string | null;
+  announcementBadge?: string | null;
   robots?: string;
 }
 
@@ -20,7 +21,8 @@ const {
   title = "ReservaYa",
   description = "Reserva tu cancha deportiva de forma rápida y sencilla",
   image = "/og-default.png",
-  announcement = "Reserva tu cancha y juega sin complicaciones.",
+  announcement = "⚽ Crea tu carné de jugador estilo FIFA y compártelo con tus causas",
+  announcementBadge = "",
   robots = "index, follow"
 } = Astro.props;
 
@@ -36,34 +38,64 @@ const structuredData = [
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "ReservaYa",
+    alternateName: ["Reserva Ya", "reservaya"],
     url: siteURL,
-    logo: `${siteURL}/favicon.svg`
+    logo: `${siteURL}/favicon.svg`,
+    sameAs: ["https://www.instagram.com/reservaya.pe"],
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "hola@reservaya.pe",
+      contactType: "customer service",
+      areaServed: "PE",
+      availableLanguage: "Spanish"
+    }
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "ReservaYa",
     url: siteURL
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "ReservaYa",
+    url: siteURL,
+    description: "Marketplace para reservar canchas deportivas en Arequipa. Encuentra canchas de fútbol, vóley y pádel en Cayma, Cerro Colorado, Yanahuara, Paucarpata y más distritos.",
+    applicationCategory: "SportsApplication",
+    operatingSystem: "Web",
+    offers: { "@type": "Offer", "priceCurrency": "PEN", "price": "45" },
+    areaServed: { "@type": "Country", name: "Perú", addressCountry: "PE" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsActivityLocation",
+    name: "Canchas deportivas en el Perú — ReservaYa",
+    description: "Reserva canchas deportivas (fútbol, vóley, pádel y más) en todo el Perú al instante. Complejos deportivos verificados.",
+    url: new URL("/canchas", siteURL).toString(),
+    address: { "@type": "PostalAddress", addressCountry: "PE" },
+    sport: ["Fútbol", "Vóley", "Pádel"]
   }
 ];
 const currentPath = Astro.url.pathname;
 const showLoginModal = currentPath !== "/login";
 const showRegisterModal = currentPath !== "/register";
 const navItems = [
-  { href: "#canchas", fallback: "/#canchas", label: "Canchas" },
-  { href: "#para-complejos", fallback: "/#para-complejos", label: "Contrátanos" },
-  { href: "#como-funciona", fallback: "/#como-funciona", label: "Cómo funciona" },
-  { href: "#contacto", fallback: "/#contacto", label: "Contacto" }
+  { href: "/#como-funciona", label: "Cómo funciona", tone: "white" },
+  { href: "/canchas", label: "Canchas", tone: "white" },
+  { href: "/completar-cuadro", label: "Partidos", tone: "white", icon: "◔" },
+  { href: "/sortear", label: "Armar equipos", tone: "green", icon: "⨯" },
+  { href: "/torneos", label: "Torneos", tone: "yellow", icon: "♛" },
+  { href: "/duenos", label: "Dueños", tone: "green" },
 ];
 ---
 
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
-  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="color-scheme" content="light" />
 
 
   <title>{title}</title>
@@ -76,9 +108,9 @@ const navItems = [
 
 
   <meta name="robots" content={robots} />
+  <meta name="keywords" content="ReservaYa, reservaya, canchas deportivas arequipa, reservar cancha arequipa, canchas de futbol arequipa, canchas de voley, canchas de padel, alquiler de canchas cayma, complejos deportivos cerro colorado, canchas yanahuara paucarpata" />
   <meta name="author" content="ReservaYa" />
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#a6192e" />
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#110d0d" />
+  <meta name="theme-color" content="#000000" />
 
 
   <meta property="og:type" content="website" />
@@ -88,6 +120,7 @@ const navItems = [
   <meta property="og:image" content={ogImageURL} />
   <meta property="og:image:alt" content={title} />
   <meta property="og:site_name" content="ReservaYa" />
+  <meta property="og:locale" content="es_PE" />
   <meta property="og:locale" content="es_ES" />
 
 
@@ -107,7 +140,7 @@ const navItems = [
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
   />
   <style is:global>
     #desktop-auth-actions,
@@ -183,7 +216,7 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
 </head>
 
 <body
-  class="min-h-screen antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300"
+  class="min-h-screen bg-[#F5F5F3] text-[#101613] antialiased transition-colors duration-300"
   data-inbox-endpoint={inboxEndpoint || undefined}
 >
   <a href="#main-content" class="skip-link">Saltar al contenido</a>
@@ -193,145 +226,120 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
     {announcement && (
       <div
         id="announcement-bar"
-        class="sticky top-0 z-50 w-full flex items-center justify-center px-2 md:px-0 min-h-[44px]"
-        style="will-change:transform; background: var(--accent-main);"
+        class="sticky top-0 z-50 w-full flex items-center justify-center px-2 md:px-0 min-h-[40px]"
+        style="will-change:transform; background: linear-gradient(90deg, #0A2E1F, #14532D);"
         role="status"
         aria-live="polite"
       >
-        <div class="relative flex items-center justify-center w-full max-w-full py-2">
-          <span class="mx-auto text-white !text-white text-base md:text-lg font-medium tracking-tight select-none text-center">
-            {announcement} <a href="/about" class="underline text-white hover:text-gray-100 transition">Descubre nuestra historia</a>
+        <div class="relative flex items-center justify-center w-full max-w-full py-1.5">
+          <span class="mx-auto text-white text-[13px] md:text-sm font-medium tracking-tight select-none text-center px-10">
+            {announcement}
+            {announcementBadge && (
+              <span class="ml-2 inline-block rounded-full border border-[#4ADE80]/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#4ADE80]">{announcementBadge}</span>
+            )}
           </span>
           <button
             id="announcement-close"
             aria-label="Cerrar anuncio"
-            class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full w-7 h-7 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+            class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full w-7 h-7 text-white/80 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white"
             style="background:transparent"
           >
             <span class="sr-only">Cerrar anuncio</span>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
         </div>
       </div>
     )}
 
     
-    <header
-      class="sticky top-0 z-40 backdrop-blur-xl border-b transition-all duration-300"
-      style="backdrop-filter:saturate(180%) blur(16px); background: color-mix(in srgb, var(--bg-main) 90%, transparent); border-color: var(--border-main);"
-    >
-      <nav class="max-w-[1680px] mx-auto px-10 md:px-16 h-20 flex items-center justify-between gap-4 font-sans" style="font-family:'Inter', 'Segoe UI', Arial, sans-serif;" aria-label="Navegacion principal">
-        
-        <a href="/" class="flex items-center select-none pr-6 gap-4" style="color: var(--text-main);">
-          <span class="flex flex-col">
-            <span class="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight" style="color:var(--accent-main);letter-spacing:-0.04em;">ReservaYa</span>
-            <span class="text-[10px] md:text-xs font-medium text-gray-400 tracking-wide leading-none pl-0.5 mt-0.5">Canchas deportivas</span>
-          </span>
-          <span class="hidden md:inline-block h-8 border-l-2 mx-2" style="border-color:var(--accent-main);"></span>
-          <span class="hidden md:flex flex-col ml-0 md:ml-2 text-left leading-tight">
-            <span class="text-xs md:text-sm font-bold" style="color:var(--accent-main);letter-spacing:0.01em;">Juega</span>
-            <span class="text-xs md:text-sm font-bold -mt-1" style="color:var(--accent-main);letter-spacing:0.01em;">mejor</span>
-          </span>
+    <header class="sticky top-0 z-40 bg-[#060A08]">
+      <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8" aria-label="Navegacion principal">
+        <a href="/" class="flex select-none items-center text-[22px] font-extrabold tracking-tight text-white">
+          Reserva<span class="text-[#22C55E]">Ya</span>
         </a>
 
-        
-        <ul class="hidden md:flex items-center gap-8 text-base font-semibold ml-auto">
+        <ul class="hidden items-center gap-6 text-sm font-medium lg:flex">
           {navItems.map((item) => {
-            const itemHref = currentPath === "/" ? item.href : item.fallback;
-            const isActive =
-              currentPath === "/" && itemHref === item.href;
+            const isActive = currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href));
+            const tone =
+              item.tone === "green" ? "text-[#22C55E] hover:text-[#4ADE80]" :
+              item.tone === "yellow" ? "text-[#EAB308] hover:text-[#FACC15]" :
+              "text-white/90 hover:text-white";
             return (
               <li>
-                <a
-                  href={itemHref}
-                  aria-current={isActive ? "page" : undefined}
-                  class:list={[
-                    "relative px-2 py-1 transition-colors after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-[var(--accent-main)] after:rounded-full after:transition-transform after:origin-left after:duration-200",
-                    isActive ? "text-[var(--accent-main)] after:scale-x-100" : "hover:text-[var(--accent-main)] after:scale-x-0 hover:after:scale-x-100"
-                  ]}
-                  style="color: var(--text-main);"
-                >
-                  {item.label}
+                <a href={item.href} data-astro-prefetch="viewport" aria-current={isActive ? "page" : undefined} class={`flex items-center gap-1.5 transition-colors ${tone} ${isActive ? "font-bold" : ""}`}>
+                  {item.icon && <span aria-hidden="true">{item.icon}</span>}{item.label}
                 </a>
               </li>
             );
           })}
         </ul>
-        
-        <div class="flex items-center gap-2 md:gap-4">
-          <div id="desktop-auth-actions" class="auth-actions items-center gap-3 md:order-2">
-            <a href="/register" data-register-modal-trigger class="px-3 py-2 rounded-md text-sm font-bold hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)]" style="color:var(--accent-main);">
-              Regístrate
+
+        <div class="flex items-center gap-2 md:gap-3">
+          <div id="desktop-auth-actions" class="auth-actions hidden items-center gap-5 md:flex">
+            <a href="/login" data-astro-prefetch="viewport" class="text-sm font-medium text-white/90 transition hover:text-white">
+              Iniciar sesión
             </a>
-            <a href="/login" data-login-modal-trigger class="inline-flex items-center px-5 py-2.5 rounded-md font-bold text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)] transition-all duration-150" style="background: var(--accent-main); color:var(--accent-contrast);">
-              Inicio sesión
+            <a href="/register" data-astro-prefetch="viewport" class="inline-flex items-center rounded-lg bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]">
+              Registrarse
             </a>
           </div>
-          <div id="desktop-user-actions" class="auth-user relative items-center md:order-3">
-            <button id="desktop-user-button" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)]" style="background:var(--accent-main);color:var(--accent-contrast);" aria-label="Abrir menú de cuenta" aria-expanded="false">
-              <span id="desktop-user-initials">RY</span>
+          <div class="relative hidden md:block">
+            <button id="notif-button" type="button" aria-label="Notificaciones" aria-expanded="false" class="relative flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9"/></svg>
+              <span id="notif-dot" class="absolute top-1.5 right-1.5 hidden h-2 w-2 rounded-full bg-[#22C55E]"></span>
             </button>
-            <div id="desktop-user-menu" class="absolute right-0 top-12 hidden w-56 rounded-xl border p-3 shadow-xl" style="background:var(--bg-card);border-color:var(--border-main);">
-              <p id="desktop-user-name" class="truncate px-2 py-1 text-sm font-bold" style="color:var(--text-main);"></p>
-              <p id="desktop-user-role" class="truncate px-2 text-xs" style="color:var(--text-muted);"></p>
-              <a href={`${appUrl}/dashboard`} class="mt-2 block rounded-lg px-2 py-2 text-sm hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">Ir a mi panel</a>
-              <button id="desktop-logout" type="button" class="mt-1 w-full rounded-lg px-2 py-2 text-left text-sm font-semibold hover:bg-[var(--bg-muted)]" style="color:var(--accent-main);">Cerrar sesión</button>
+            <div id="notif-panel" class="absolute right-0 top-11 hidden w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white text-left shadow-2xl">
+              <p class="border-b border-gray-100 px-4 py-3 text-sm font-bold text-gray-900">Notificaciones</p>
+              <div id="notif-list" class="max-h-64 overflow-y-auto px-4 py-6 text-center text-sm text-gray-500">No tienes avisos por ahora</div>
+              <a href={`${appUrl}/dashboard/reservas`} class="block border-t border-gray-100 px-4 py-3 text-center text-sm font-bold text-[#16A34A] hover:underline">Ver todas mis notificaciones</a>
+            </div>
+          </div>
+          <div id="desktop-user-actions" class="auth-user relative items-center">
+            <button id="desktop-user-button" type="button" class="flex items-center gap-2 rounded-full py-1 pr-1 pl-1 text-sm text-white" aria-label="Abrir menú de cuenta" aria-expanded="false">
+              <span id="desktop-user-initials" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#22C55E] text-sm font-bold text-white">U</span>
+              <span id="desktop-user-name" class="hidden max-w-28 truncate xl:block">Mi cuenta</span>
+              <span class="text-white/60">⌄</span>
+            </button>
+            <div id="desktop-user-menu" class="absolute right-0 top-11 hidden w-64 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
+              <div class="border-b border-gray-100 px-4 py-3">
+                <p id="desktop-user-fullname" class="truncate text-sm font-bold text-gray-900">Usuario de prueba</p>
+                <p id="desktop-user-email" class="truncate text-xs text-gray-500">usuario@ejemplo.com</p>
+              </div>
+              <div class="p-2 text-sm">
+                <a href="/jugador/perfil" data-astro-prefetch="viewport" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-700 hover:bg-gray-50">◔ Mi perfil y carné</a>
+                <a href="/jugador/perfil" data-astro-prefetch="viewport" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-700 hover:bg-gray-50">▤ Mis reservas</a>
+                <a href={`${appUrl}/dashboard`} class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-700 hover:bg-gray-50">▦ Mi panel</a>
+              </div>
+              <div class="border-t border-gray-100 p-2">
+                <button id="desktop-logout" type="button" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">⏻ Salir</button>
+              </div>
             </div>
           </div>
           <button
-            id="theme-toggle"
-            aria-label="Cambiar tema"
-            class="ml-2 inline-flex h-10 w-10 items-center justify-center rounded-md text-lg hover:bg-gray-800/40 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)] md:order-1"
-          >
-            <span data-icon="moon" aria-hidden="true">&#9789;</span>
-            <span data-icon="sun" aria-hidden="true" class="hidden">&#9728;</span>
-          </button>
-          
-          <button
             id="menu-toggle"
-            class="md:hidden p-2 rounded-md text-lg hover:bg-gray-800/40 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-main)]"
+            class="rounded-lg p-2 text-white hover:bg-white/10 lg:hidden"
             aria-label="Abrir menu"
             aria-controls="mobile-menu"
             aria-expanded="false"
           >
-            &#9776;
+            ☰
           </button>
         </div>
       </nav>
-      
-      <div
-        id="mobile-menu"
-        class="hidden md:hidden border-t backdrop-blur-xl px-4 py-6"
-        style="background: color-mix(in srgb, var(--bg-main) 96%, transparent); border-color: var(--border-main);"
-        aria-hidden="true"
-      >
-        <ul class="flex flex-col gap-6 text-base font-medium" style="color: var(--text-main);">
-          {navItems.map((item) => {
-            const itemHref = currentPath === "/" ? item.href : item.fallback;
-            const isActive =
-              currentPath === "/" && itemHref === item.href;
-            return (
-              <li>
-                <a
-                  href={itemHref}
-                  aria-current={isActive ? "page" : undefined}
-                  class:list={[
-                    "hover:text-[var(--accent-main)]",
-                    isActive ? "text-[var(--accent-main)]" : ""
-                  ]}
-                >
-                  {item.label}
-                </a>
-              </li>
-            );
-          })}
-          <li id="mobile-auth-actions" class="auth-actions pt-4" style="border-top: 1px solid var(--border-main);">
-            <a href="/register" data-register-modal-trigger class="block font-semibold" style="color:var(--accent-main);">Regístrate</a>
-            <a href="/login" data-login-modal-trigger class="mt-3 inline-block w-full text-center px-4 py-2.5 rounded-md font-bold" style="background:var(--accent-main);color:var(--accent-contrast);">Inicio sesión</a>
+
+      <div id="mobile-menu" class="hidden border-t border-white/10 px-4 py-6 lg:hidden" aria-hidden="true">
+        <ul class="flex flex-col gap-5 text-[15px] font-medium text-white">
+          {navItems.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+          <li id="mobile-auth-actions" class="auth-actions border-t border-white/10 pt-4">
+            <a href="/login" class="block font-medium text-white">Iniciar sesión</a>
+            <a href="/register" class="mt-3 inline-block w-full rounded-lg bg-[#22C55E] px-4 py-2.5 text-center text-sm font-bold text-white">Registrarse</a>
           </li>
-          <li id="mobile-user-actions" class="auth-user hidden pt-4" style="border-top: 1px solid var(--border-main);">
-            <a href={`${appUrl}/dashboard`} id="mobile-user-name" class="block font-semibold" style="color:var(--text-main);"></a>
-            <button id="mobile-logout" type="button" class="mt-3 block font-semibold" style="color:var(--accent-main);">Cerrar sesión</button>
+          <li id="mobile-user-actions" class="auth-user hidden border-t border-white/10 pt-4">
+            <a href="/jugador/perfil" id="mobile-user-name" class="block font-semibold text-white"></a>
+            <button id="mobile-logout" type="button" class="mt-3 block font-semibold text-red-400">Salir</button>
           </li>
         </ul>
       </div>
@@ -348,8 +356,8 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
 
   {showLoginModal && (
     <div id="login-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
-      <div data-login-modal-close class="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
-      <div class="relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
+      <div data-login-modal-close class="modal-backdrop-enter absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
+      <div class="modal-card-enter relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
         <button type="button" data-login-modal-close aria-label="Cerrar inicio de sesión" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">&times;</button>
         <div class="text-center">
           <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background:linear-gradient(135deg,var(--accent-main),#211112);">🏟️</div>
@@ -362,8 +370,8 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   )}
   {showRegisterModal && (
     <div id="register-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="register-modal-title">
-      <div data-register-modal-close class="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
-      <div class="relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
+      <div data-register-modal-close class="modal-backdrop-enter absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
+      <div class="modal-card-enter relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
         <button type="button" data-register-modal-close aria-label="Cerrar registro" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">&times;</button>
         <div class="text-center">
           <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background:linear-gradient(135deg,var(--accent-main),#211112);">🏟️</div>
@@ -377,12 +385,128 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
 
   <Footer />
 
-  <ChatWidget />
+  <script is:inline>
+    import './scripts/theme.ts';
+  </script>
+  <script is:inline>
+    import './scripts/menu.ts';
+  </script>
+  <script is:inline>
+    import './scripts/reveal.ts';
+  </script>
+  <script is:inline>
+    import './scripts/motion.ts';
+  </script>
+  <script is:inline>
+    import './scripts/smooth-wheel.ts';
+  </script>
+  <script is:inline>
+    // Motor reveal en línea (respaldo garantizado, JS plano).
+    (function () {
+      document.documentElement.classList.add('js');
+      function delayOf(el) {
+        var ms = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
+        if (isNaN(ms)) return 0;
+        return Math.max(0, Math.min(480, ms));
+      }
+      function show(el, obs) {
+        el.style.setProperty('--reveal-delay', delayOf(el) + 'ms');
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            el.classList.add('reveal-visible');
+            if (obs) obs.unobserve(el);
+          });
+        });
+      }
+      function init() {
+        var els = Array.prototype.slice.call(document.querySelectorAll('.reveal:not(.reveal-visible)'));
+        if (!els.length) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          els.forEach(function (el) { el.classList.add('reveal-visible'); });
+          return;
+        }
+        if (!('IntersectionObserver' in window)) {
+          els.forEach(function (el) { show(el, null); });
+          return;
+        }
+        var obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            show(en.target, obs);
+            obs.unobserve(en.target);
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        els.forEach(function (el) { obs.observe(el); });
+        window.setTimeout(function () {
+          document.querySelectorAll('.reveal:not(.reveal-visible)').forEach(function (el) { show(el, obs); });
+        }, 4000);
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
 
-  <script type="module" src="/src/scripts/theme.ts"></script>
-  <script type="module" src="/src/scripts/menu.ts"></script>
-  <script type="module" src="/src/scripts/reveal.ts"></script>
-  <script type="module" src="/src/scripts/announcement.ts"></script>
+      // Reveal por palabras ligado al scroll (JS plano, garantizado).
+      (function scrollWords() {
+        var els = Array.prototype.slice.call(document.querySelectorAll('[data-scroll-words]'));
+        if (!els.length) return;
+        els.forEach(function (el) {
+          if (el.classList.contains('sw-on')) return;
+          el.classList.add('scroll-words', 'sw-on');
+          var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+          var nodes = [];
+          while (walker.nextNode()) {
+            var n = walker.currentNode;
+            if (n.textContent && n.textContent.trim().length > 0) nodes.push(n);
+          }
+          nodes.forEach(function (node) {
+            var frag = document.createDocumentFragment();
+            node.textContent.split(/(\s+)/).forEach(function (part) {
+              if (!part) return;
+              if (/^\s+$/.test(part)) frag.appendChild(document.createTextNode(' '));
+              else {
+                var s = document.createElement('span');
+                s.className = 'w';
+                s.textContent = part;
+                frag.appendChild(s);
+              }
+            });
+            node.parentNode.replaceChild(frag, node);
+          });
+        });
+        var reduceSw = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var tickingSw = false;
+        function paintSw() {
+          tickingSw = false;
+          var vh = window.innerHeight;
+          els.forEach(function (el) {
+            var r = el.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > vh) return;
+            if (reduceSw) {
+              el.classList.add('done');
+              return;
+            }
+            var p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (vh * 0.7)));
+            var words = el.querySelectorAll(':scope .w');
+            var n = words.length;
+            for (var i = 0; i < n; i++) {
+              var local = Math.max(0.14, Math.min(1, p * (n + 2) - i * 0.9));
+              words[i].style.opacity = local.toFixed(2);
+            }
+            if (p >= 1) el.classList.add('done');
+            else el.classList.remove('done');
+          });
+        }
+        function requestSw() {
+          if (!tickingSw) { tickingSw = true; requestAnimationFrame(paintSw); }
+        }
+        window.addEventListener('scroll', requestSw, { passive: true });
+        window.addEventListener('resize', requestSw);
+        paintSw();
+      })();
+    })();
+  </script>
+  <script is:inline>
+    import './scripts/announcement.ts';
+  </script>
   <script is:inline define:vars={{ apiUrl }}>
     const authApiUrl = apiUrl.replace(/\/$/, "");
     const desktopAuthActions = document.getElementById("desktop-auth-actions");
@@ -391,22 +515,27 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
     const mobileUserActions = document.getElementById("mobile-user-actions");
     const initials = document.getElementById("desktop-user-initials");
     const desktopUserName = document.getElementById("desktop-user-name");
-    const desktopUserRole = document.getElementById("desktop-user-role");
+    const desktopUserFull = document.getElementById("desktop-user-fullname");
+    const desktopUserEmail = document.getElementById("desktop-user-email");
     const mobileUserName = document.getElementById("mobile-user-name");
     const desktopUserMenu = document.getElementById("desktop-user-menu");
     const desktopUserButton = document.getElementById("desktop-user-button");
+    const notifButton = document.getElementById("notif-button");
+    const notifPanel = document.getElementById("notif-panel");
 
     const setAuthenticatedUser = (user) => {
       const name = user?.nombre?.trim() || "Mi cuenta";
+      const short = name.length > 18 ? name.slice(0, 18) + "…" : name;
       const letters = name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
       desktopAuthActions?.setAttribute("data-authenticated", "true");
       desktopUserActions?.setAttribute("data-authenticated", "true");
       mobileAuthActions?.setAttribute("data-authenticated", "true");
       mobileUserActions?.setAttribute("data-authenticated", "true");
       mobileUserActions?.classList.remove("hidden");
-      if (initials) initials.textContent = letters || "RY";
-      if (desktopUserName) desktopUserName.textContent = name;
-      if (desktopUserRole) desktopUserRole.textContent = user?.rol || "Usuario";
+      if (initials) initials.textContent = letters || "CG";
+      if (desktopUserName) desktopUserName.textContent = short;
+      if (desktopUserFull) desktopUserFull.textContent = name;
+      if (desktopUserEmail) desktopUserEmail.textContent = user?.email || "";
       if (mobileUserName) mobileUserName.textContent = name;
     };
 
@@ -423,9 +552,23 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
       .then((body) => body?.usuario ? setAuthenticatedUser(body.usuario) : setLoggedOut())
       .catch(() => setLoggedOut());
 
-    desktopUserButton?.addEventListener("click", () => {
+    desktopUserButton?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      notifPanel?.classList.add("hidden");
       const open = desktopUserMenu?.classList.toggle("hidden") === false;
       desktopUserButton.setAttribute("aria-expanded", String(open));
+    });
+
+    notifButton?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      desktopUserMenu?.classList.add("hidden");
+      const open = notifPanel?.classList.toggle("hidden") === false;
+      notifButton.setAttribute("aria-expanded", String(open));
+    });
+
+    document.addEventListener("click", () => {
+      desktopUserMenu?.classList.add("hidden");
+      notifPanel?.classList.add("hidden");
     });
 
     const logout = async () => {
@@ -436,10 +579,10 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
     };
 
     document.getElementById("desktop-logout")?.addEventListener("click", () => {
-      logout().catch((error) => console.error(error));
+      logout().catch(() => {});
     });
     document.getElementById("mobile-logout")?.addEventListener("click", () => {
-      logout().catch((error) => console.error(error));
+      logout().catch(() => {});
     });
   </script>
 

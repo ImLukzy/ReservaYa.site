@@ -1,0 +1,1 @@
+-- Marcador: cambio aplicado via EF (Migrations/HorarioOperativo). NO aplicar por Prisma.

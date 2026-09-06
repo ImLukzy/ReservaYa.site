@@ -1,0 +1,10 @@
+.git/
+node_modules/
+**/node_modules/
+**/bin/
+**/obj/
+**/.next/
+**/dist/
+reservaya-frontend-astro/.astro/
+*.env
+.env

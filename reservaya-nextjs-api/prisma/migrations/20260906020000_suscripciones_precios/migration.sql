@@ -1,0 +1,1 @@
+-- Marcador: cambio aplicado via EF (Migrations/SuscripcionesYPrecios). NO aplicar por Prisma.

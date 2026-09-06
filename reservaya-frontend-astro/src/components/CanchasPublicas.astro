@@ -6,16 +6,16 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
 <section class="py-16" aria-labelledby="canchas-title">
   <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-violet-300">Disponibilidad</p>
+      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#4ADE80]">Disponibilidad</p>
       <h1 id="canchas-title" class="mt-2 text-3xl font-black text-white md:text-4xl">Elige dónde jugar</h1>
-      <p class="mt-2 text-indigo-100">Consulta nuestras canchas activas y solicita tu horario.</p>
+      <p class="mt-2 text-white/75">Consulta nuestras canchas activas y solicita tu horario.</p>
     </div>
-    <a href={`${appUrl}/login`} class="rounded-xl border border-violet-300/30 px-4 py-2 text-center text-sm font-semibold text-violet-200 transition hover:bg-violet-500/10">
+    <a href={`${appUrl}/login`} class="rounded-xl border border-[#22C55E]/40 px-4 py-2 text-center text-sm font-semibold text-[#4ADE80] transition hover:bg-[#22C55E]/10">
       Ya tengo una cuenta
     </a>
   </div>
 
-  <div id="canchas-status" class="rounded-2xl border border-indigo-200/20 bg-indigo-950/60 p-8 text-center text-indigo-100">
+  <div id="canchas-status" class="rounded-2xl border border-white/10 bg-[#060A08] p-8 text-center text-white/75">
     Cargando canchas disponibles...
   </div>
   <div id="canchas-grid" class="hidden grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
@@ -45,15 +45,15 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
     status.textContent = message;
     status.className = isError
       ? "rounded-2xl border border-rose-400/30 bg-rose-500/10 p-8 text-center text-rose-200"
-      : "rounded-2xl border border-indigo-200/20 bg-indigo-950/60 p-8 text-center text-indigo-100";
+      : "rounded-2xl border border-white/10 bg-[#060A08] p-8 text-center text-white/75";
   };
 
   const createCard = (cancha: Cancha) => {
     const card = document.createElement("article");
-    card.className = "overflow-hidden rounded-2xl border border-indigo-200/20 bg-indigo-950/70 shadow-lg transition hover:-translate-y-1 hover:border-violet-300/40";
+    card.className = "overflow-hidden rounded-2xl border border-white/10 bg-[#060A08] shadow-lg transition hover:-translate-y-1 hover:border-[#22C55E]/50";
 
     const header = document.createElement("div");
-    header.className = "bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-500 p-7 text-center text-6xl";
+    header.className = "bg-gradient-to-br from-[#0A3D22] via-[#14532D] to-[#060A08] p-7 text-center text-6xl";
     header.textContent = emoji[cancha.tipo] || "🏟️";
 
     const content = document.createElement("div");
@@ -62,44 +62,93 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
     title.className = "text-xl font-bold text-white";
     title.textContent = cancha.nombre;
     const type = document.createElement("p");
-    type.className = "mt-1 text-xs font-semibold uppercase tracking-wider text-violet-300";
+    type.className = "mt-1 text-xs font-semibold uppercase tracking-wider text-[#4ADE80]";
     type.textContent = cancha.tipo;
     const description = document.createElement("p");
-    description.className = "mt-4 min-h-12 text-sm leading-relaxed text-indigo-100";
+    description.className = "mt-4 min-h-12 text-sm leading-relaxed text-white/75";
     description.textContent = cancha.descripcion || "Cancha lista para tu próximo partido.";
     const details = document.createElement("div");
     details.className = "mt-5 flex items-center justify-between text-sm";
-    details.innerHTML = `<span class="text-indigo-200">👥 ${cancha.capacidad} personas</span><strong class="text-lg text-violet-200">S/ ${cancha.precioPorHora}<span class="text-xs font-normal text-indigo-200">/hora</span></strong>`;
+    const capacitySpan = document.createElement("span");
+    capacitySpan.className = "text-white/60";
+    capacitySpan.textContent = `👥 ${cancha.capacidad} personas`;
+    const priceStrong = document.createElement("strong");
+    priceStrong.className = "text-lg text-[#4ADE80]";
+    priceStrong.textContent = `S/ ${cancha.precioPorHora}`;
+    const hourSpan = document.createElement("span");
+    hourSpan.className = "text-xs font-normal text-white/60";
+    hourSpan.textContent = "/hora";
+    priceStrong.appendChild(hourSpan);
+    details.append(capacitySpan, priceStrong);
     const action = document.createElement("button");
     action.type = "button";
-    action.className = "mt-5 w-full rounded-xl bg-violet-500 px-4 py-3 text-center font-semibold text-white transition hover:bg-violet-400";
+    action.className = "mt-5 w-full rounded-xl bg-[#22C55E] px-4 py-3 text-center font-semibold text-white transition hover:bg-[#16A34A]";
     action.textContent = "Solicitar horario";
 
     const form = document.createElement("form");
-    form.className = "mt-5 hidden space-y-3 border-t border-indigo-200/20 pt-5";
-    form.innerHTML = `
-      <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
-        Fecha
-        <input name="fecha" type="date" required class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-3 py-2 text-sm text-white" />
-      </label>
-      <div class="grid grid-cols-2 gap-2">
-        <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
-          Inicio
-          <select name="horaInicio" required class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-2 py-2 text-sm text-white"></select>
-        </label>
-        <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
-          Fin
-          <select name="horaFin" required disabled class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-2 py-2 text-sm text-white"></select>
-        </label>
-      </div>
-      <p data-reserva-total class="rounded-lg bg-violet-400/10 px-3 py-2 text-sm text-violet-100">Selecciona un horario para ver el total estimado.</p>
-      <label class="block text-xs font-semibold uppercase tracking-wide text-indigo-200">
-        Nota (opcional)
-        <textarea name="notas" rows="2" maxlength="500" class="mt-1 w-full rounded-lg border border-indigo-200/20 bg-indigo-950 px-3 py-2 text-sm text-white" placeholder="Indicación para el administrador"></textarea>
-      </label>
-      <p data-reserva-status class="hidden rounded-lg px-3 py-2 text-xs" role="alert"></p>
-      <button type="submit" class="w-full rounded-xl bg-white px-4 py-2.5 font-bold text-indigo-900 transition hover:bg-indigo-50">Enviar solicitud</button>
-    `;
+    form.className = "mt-5 hidden space-y-3 border-t border-white/10 pt-5";
+
+    const fechaLabel = document.createElement("label");
+    fechaLabel.className = "block text-xs font-semibold uppercase tracking-wide text-white/60";
+    const fechaText = document.createTextNode("Fecha");
+    const fechaInput = document.createElement("input");
+    fechaInput.name = "fecha";
+    fechaInput.type = "date";
+    fechaInput.required = true;
+    fechaInput.className = "mt-1 w-full rounded-lg border border-white/10 bg-[#0A1A11] px-3 py-2 text-sm text-white";
+    fechaLabel.append(fechaText, fechaInput);
+
+    const timeDiv = document.createElement("div");
+    timeDiv.className = "grid grid-cols-2 gap-2";
+
+    const inicioLabel = document.createElement("label");
+    inicioLabel.className = "block text-xs font-semibold uppercase tracking-wide text-white/60";
+    const inicioText = document.createTextNode("Inicio");
+    const inicioInput = document.createElement("select");
+    inicioInput.name = "horaInicio";
+    inicioInput.required = true;
+    inicioInput.className = "mt-1 w-full rounded-lg border border-white/10 bg-[#0A1A11] px-2 py-2 text-sm text-white";
+    inicioLabel.append(inicioText, inicioInput);
+
+    const finLabel = document.createElement("label");
+    finLabel.className = "block text-xs font-semibold uppercase tracking-wide text-white/60";
+    const finText = document.createTextNode("Fin");
+    const finInput = document.createElement("select");
+    finInput.name = "horaFin";
+    finInput.required = true;
+    finInput.disabled = true;
+    finInput.className = "mt-1 w-full rounded-lg border border-white/10 bg-[#0A1A11] px-2 py-2 text-sm text-white";
+    finLabel.append(finText, finInput);
+
+    timeDiv.append(inicioLabel, finLabel);
+
+    const totalPreview = document.createElement("p");
+    totalPreview.dataset.reservaTotal = "";
+    totalPreview.className = "rounded-lg bg-[#22C55E]/10 px-3 py-2 text-sm text-[#DCFCE7]";
+    totalPreview.textContent = "Selecciona un horario para ver el total estimado.";
+
+    const notasLabel = document.createElement("label");
+    notasLabel.className = "block text-xs font-semibold uppercase tracking-wide text-white/60";
+    const notasText = document.createTextNode("Nota (opcional)");
+    const notasTextarea = document.createElement("textarea");
+    notasTextarea.name = "notas";
+    notasTextarea.rows = 2;
+    notasTextarea.maxLength = 500;
+    notasTextarea.className = "mt-1 w-full rounded-lg border border-white/10 bg-[#0A1A11] px-3 py-2 text-sm text-white";
+    notasTextarea.placeholder = "Indicación para el administrador";
+    notasLabel.append(notasText, notasTextarea);
+
+    const statusP = document.createElement("p");
+    statusP.dataset.reservaStatus = "";
+    statusP.className = "hidden rounded-lg px-3 py-2 text-xs";
+    statusP.role = "alert";
+
+    const submitBtn = document.createElement("button");
+    submitBtn.type = "submit";
+    submitBtn.className = "w-full rounded-xl bg-white px-4 py-2.5 font-bold text-[#060A08] transition hover:bg-gray-100";
+    submitBtn.textContent = "Enviar solicitud";
+
+    form.append(fechaLabel, timeDiv, totalPreview, notasLabel, statusP, submitBtn);
 
     const fechaInput = form.elements.namedItem("fecha");
     const inicioInput = form.elements.namedItem("horaInicio");
@@ -118,12 +167,14 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
       fechaInput.min = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
     }
     if (inicioInput instanceof HTMLSelectElement && finInput instanceof HTMLSelectElement) {
-      inicioInput.innerHTML = '<option value="">Seleccionar</option>';
+      inicioInput.innerHTML = "";
+      inicioInput.add(new Option("Seleccionar", ""));
       for (let minutes = 480; minutes <= 1200; minutes += 60) {
         inicioInput.add(new Option(`${String(minutes / 60).padStart(2, "0")}:00`, String(minutes)));
       }
       inicioInput.addEventListener("change", () => {
-        finInput.innerHTML = '<option value="">Seleccionar</option>';
+        finInput.innerHTML = "";
+        finInput.add(new Option("Seleccionar", ""));
         finInput.disabled = !inicioInput.value;
         for (let minutes = Number(inicioInput.value) + 60; minutes <= 1260; minutes += 60) {
           finInput.add(new Option(`${String(minutes / 60).padStart(2, "0")}:00`, String(minutes)));
@@ -177,7 +228,14 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
               : body?.error || "No se pudo enviar la solicitud.";
           throw new Error(message);
         }
-        reservationStatus.innerHTML = 'Solicitud enviada. El administrador debe confirmarla. <a href="/mis-reservas" class="font-bold underline hover:text-white">Ver mis reservas</a>';
+        reservationStatus.innerHTML = "";
+        const msgSpan = document.createElement("span");
+        msgSpan.textContent = "Solicitud enviada. El administrador debe confirmarla. ";
+        const link = document.createElement("a");
+        link.href = "/mis-reservas";
+        link.className = "font-bold underline hover:text-white";
+        link.textContent = "Ver mis reservas";
+        reservationStatus.append(msgSpan, link);
         reservationStatus.className = "rounded-lg bg-emerald-500/10 px-3 py-2 text-xs text-emerald-200";
         submit.textContent = "Solicitud enviada";
         form.querySelectorAll("input, select, textarea").forEach((field) => {

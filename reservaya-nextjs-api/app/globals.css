@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #061a14;
-  --foreground: #f2fff8;
-  --brand-emerald: #0b3d2e;
-  --brand-neon: #b7ff3c;
-  --brand-surface: #102b22;
-  --brand-muted: #a8c7ba;
+  --background: #f5f5f3;
+  --foreground: #101613;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --accent-neon: #4ade80;
+  --accent-warn: #eab308;
+  --sidebar: #060c08;
+  --border-soft: #e7e5e4;
 }
 
 @theme inline {
@@ -23,57 +25,59 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Auth: verde bosque, no rojo */
 .auth-shell {
   background:
-    radial-gradient(circle at 12% 15%, rgba(183, 255, 60, 0.16), transparent 24rem),
-    radial-gradient(circle at 88% 85%, rgba(16, 74, 53, 0.4), transparent 22rem),
-    var(--background);
+    radial-gradient(circle at 12% 15%, rgba(34, 197, 94, 0.16), transparent 24rem),
+    radial-gradient(circle at 88% 85%, rgba(8, 23, 14, 0.5), transparent 22rem),
+    #060C08;
 }
 
 .auth-card {
-  background: rgba(16, 43, 34, 0.96);
-  border: 1px solid #24634b;
-  box-shadow: 0 24px 70px rgba(10, 3, 4, 0.5);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 24px 70px rgba(8, 23, 14, 0.35);
 }
 
 .auth-label {
-  color: #c5cbe0;
+  color: #334155;
 }
 
 .auth-input {
-  background: #08251b;
-  border: 1px solid #2c7356;
-  color: var(--foreground);
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
 }
 
 .auth-input::placeholder {
-  color: #77809c;
+  color: #94a3b8;
 }
 
 .auth-input:focus {
-  border-color: var(--brand-neon);
-  box-shadow: 0 0 0 3px rgba(183, 255, 60, 0.2);
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  outline: none;
 }
 
 .auth-link {
-  color: #ef9b9f;
+  color: #008f3b;
 }
 
 .auth-link:hover {
-  color: #ffd3c8;
+  color: #16A34A;
 }
 
 .auth-home-link {
-  color: #ef9b9f;
+  color: #008f3b;
 }
 
 .auth-home-link:hover {
-  color: #ffd3c8;
+  color: #16A34A;
 }
 
 ::selection {
-  background: #a6192e;
-  color: #ffffff;
+  background: #22C55E;
+  color: #071c10;
 }
 
 button,
@@ -84,85 +88,254 @@ textarea {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Foco verde global (nunca negro) */
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+}
+
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(183, 255, 60, 0.6);
+  outline: 3px solid rgba(34, 197, 94, 0.45);
   outline-offset: 2px;
 }
 
+/* Shell SaaS claro */
 .dashboard-shell {
-  background:
-    radial-gradient(circle at 85% 0%, rgba(183, 255, 60, 0.1), transparent 32rem),
-    var(--background);
+  background: #f8f9fa;
 }
 
-.dashboard-shell .bg-white {
-  background-color: #20263a !important;
-  border-color: #303850 !important;
-  color: #eef1ff;
+/* Formularios SaaS */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 0.25rem;
 }
 
-.dashboard-shell .bg-gray-50 {
-  background-color: #252b40 !important;
+.form-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 0.625rem 0.875rem;
+  font-size: 14px;
+  color: #0f172a;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.dashboard-shell tr {
-  transition: background-color 160ms ease;
+.form-input::placeholder {
+  color: #94a3b8;
 }
 
-.dashboard-shell tr:hover {
-  background-color: #2b334d !important;
+.form-input:focus {
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  outline: none;
 }
 
-.dashboard-shell tbody tr:hover td {
-  background-color: transparent !important;
+/* Botón acento con micro-interacción universal */
+.btn-accent {
+  background: #22C55E;
+  color: #fff;
+  transition: all 0.15s;
 }
 
-.dashboard-shell .hover\:bg-gray-50:hover {
-  background-color: #2b334d !important;
+.btn-accent:hover {
+  background: #16A34A;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
-.dashboard-shell .text-gray-900 {
-  color: #eef1ff !important;
+.btn-accent:active {
+  transform: scale(0.98);
 }
 
-.dashboard-shell .text-gray-700,
-.dashboard-shell .text-gray-600 {
-  color: #c0c6da !important;
+/* Drawer lateral */
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-.dashboard-shell .text-gray-500,
-.dashboard-shell .text-gray-400 {
-  color: #8f98b4 !important;
+.animate-in.slide-in-from-right {
+  animation: slide-in-from-right 0.25s ease-out;
 }
 
-.dashboard-shell .border-gray-100,
-.dashboard-shell .border-gray-200\/70,
-.dashboard-shell .border-gray-300 {
-  border-color: #303850 !important;
+@keyframes flash-green {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    border-color: #e2e8f0;
+  }
+  30% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.25);
+    border-color: #22C55E;
+  }
 }
 
-.dashboard-shell .divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
-  border-color: #303850 !important;
+.flash-green {
+  animation: flash-green 0.6s ease;
 }
 
-.dashboard-shell input,
-.dashboard-shell select,
-.dashboard-shell textarea {
-  background-color: #171d31;
-  border-color: #3a435f;
-  color: #eef1ff;
+/* Scrollbars sutiles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
-.dashboard-shell input::placeholder,
-.dashboard-shell textarea::placeholder {
-  color: #77809c;
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.dashboard-shell option {
-  background-color: #171d31;
-  color: #eef1ff;
+*::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* =========================================================
+   RESERVAYA MOTION SYSTEM (compartido con Astro)
+   Solo transform/opacity/filter → 60fps.
+   ========================================================= */
+.btn-press {
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.btn-press:hover {
+  box-shadow: 0 8px 22px rgba(34, 197, 94, 0.35);
+}
+.btn-press:active {
+  transform: scale(0.96);
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(120%);
+  transition: transform 0.7s ease;
+}
+.badge-live {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.badge-live::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: badge-ping 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes badge-ping {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9edeb;
+  border-radius: 0.75rem;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.75) 50%, transparent 80%);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-card-in {
+  from { opacity: 0; transform: translateY(48px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-backdrop-enter {
+  animation: modal-backdrop-in 0.28s ease-out both;
+}
+.modal-card-enter {
+  animation: modal-card-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes ticket-bump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+.ticket-bump {
+  animation: ticket-bump 0.3s ease;
+}
+.fly-dot {
+  position: fixed;
+  z-index: 90;
+  border-radius: 9999px;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(34, 197, 94, 0.45);
+}
+.slot-block {
+  cursor: grab;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.slot-block:active {
+  cursor: grabbing;
+}
+.slot-block.dragging {
+  opacity: 0.55;
+  transform: scale(1.03);
+  box-shadow: 0 14px 30px rgba(6, 10, 8, 0.3);
+}
+.slot-cell-drop {
+  outline: 2px dashed #22c55e;
+  outline-offset: -2px;
+  background: rgba(34, 197, 94, 0.1) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after,
+  .badge-live::before,
+  .skeleton::after,
+  .modal-backdrop-enter,
+  .modal-card-enter,
+  .ticket-bump {
+    animation: none !important;
+  }
+}
+
+/* Desplegables nativos en superficies oscuras (modales). Los navegadores
+   ignoran casi todo el CSS en la lista <option>: color-scheme: dark es el
+   mecanismo estandar para que la pinten oscura, con reglas explicitas de respaldo. */
+select.sel-dark {
+  color-scheme: dark;
+}
+select.sel-dark option,
+select.sel-dark optgroup {
+  background-color: #151b2e;
+  color: #f1f5f9;
 }

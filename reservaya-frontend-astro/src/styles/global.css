@@ -43,10 +43,6 @@
   transition: color 0.2s;
 }
 
-.dark .nav-link {
-  color: #fff;
-}
-
 .nav-link::after {
   content: "";
   position: absolute;
@@ -95,11 +91,39 @@
 /* ================= END NAVBAR CUSTOM STYLES ================= */
 
 html {
-  scroll-behavior: smooth !important;
+  scroll-behavior: smooth;
+  scrollbar-width: auto;
+  scrollbar-color: #22c55e #060c08;
 }
 
 body {
-  scroll-behavior: smooth !important;
+  scroll-behavior: smooth;
+  animation: page-enter 0.35s ease-out both;
+}
+
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060c08;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 48px;
+  border: 3px solid #060c08;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #4ade80, #16a34a);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #86efac;
+}
+
+::-webkit-scrollbar-corner {
+  background: #060c08;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -115,65 +139,44 @@ body {
 ========================================================= */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
-  /* ---------- LIGHT MODE ---------- */
-  --bg-main: #f4f0eb;
-  --bg-muted: #e8e0d7;
-  --bg-card: #fffdfa;
-  --bg-hero: #eee5dc;
+  /* ---------- LIGHT MODE · ReservaYa ---------- */
+  --bg-main: #F5F5F3;
+  --bg-muted: #EDEEEC;
+  --bg-card: #FFFFFF;
+  --bg-hero: #060C08;
 
-  --text-main: #171313;
-  --text-muted: #493f3b;
-  --text-soft: #756862;
-  --text-secondary: #493f3b;
+  --text-main: #101613;
+  --text-muted: #5B6660;
+  --text-soft: #8A938D;
+  --text-secondary: #5B6660;
 
-  --border-main: #d8cbc0;
+  --border-main: #E7E5E4;
   --border-card: var(--border-main);
   --ring-card-focus: var(--accent-main);
 
-  --input-bg: #fffdfa;
-  --input-text: #171313;
-  --input-placeholder: #756862;
+  --input-bg: #FFFFFF;
+  --input-text: #101613;
+  --input-placeholder: #A8B0AA;
 
-  /* Accent system */
-  --accent-primary: #0b3d2e;
-  --accent-secondary: #06281d;
-  --accent-main: #0b3d2e;
-  --accent-hover: #145b43;
-  --accent-soft: #d7f5a2;
-  --accent-contrast: #f2fff8;
+  /* Verde referencia: botón #22C55E, hover #16A34A, neón texto #4ADE80 */
+  --accent-primary: #22C55E;
+  --accent-secondary: #060C08;
+  --accent-main: #22C55E;
+  --accent-hover: #16A34A;
+  --accent-neon: #4ADE80;
+  --accent-soft: #DCFCE7;
+  --accent-contrast: #FFFFFF;
+  --accent-warn: #EAB308;
+  --sidebar: #060C08;
+  --announce-from: #0A2E1F;
+  --announce-to: #14532D;
 }
 
-.dark {
-  /* ---------- DARK MODE ---------- */
-  --bg-main: #061a14;
-  --bg-muted: #0b281d;
-  --bg-card: #102b22;
-  --bg-hero: #123d2d;
+/* ReservaYa es solo modo claro: las secciones oscuras usan colores explícitos. */
 
-  --text-main: #f2fff8;
-  --text-muted: #c3dfd2;
-  --text-soft: #a8c7ba;
-  --text-secondary: #c3dfd2;
-
-  --border-main: #24634b;
-  --border-card: var(--border-main);
-  --ring-card-focus: var(--accent-main);
-
-  --input-bg: #08251b;
-  --input-text: #f2fff8;
-  --input-placeholder: #a8c7ba;
-
-  --accent-primary: #b7ff3c;
-  --accent-secondary: #0b3d2e;
-  --accent-main: #b7ff3c;
-  --accent-hover: #d0ff7a;
-  --accent-soft: #24461f;
-  --accent-contrast: #061a14;
-}
-
-/* =========================================================
+ /* =========================================================
    BASE
 ========================================================= */
 
@@ -187,143 +190,66 @@ body {
   transition:
     background-color 0.35s ease,
     color 0.35s ease;
-  font-family: "Inter", "Poppins", "Segoe UI", Arial, sans-serif;
+  font-family: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 main [id] {
   scroll-margin-top: 7rem;
 }
 
-html.dark .owner-section,
-html.dark .how-section,
-html.dark .contact-section {
-  color: var(--text-main);
-}
+/* Secciones legacy: solo modo claro. */
 
-html.dark .owner-section {
-  background: #292022 !important;
-}
-
-html.dark .owner-card {
-  background: #33272a !important;
-  border-color: #554044 !important;
-}
-
-html.dark .how-section {
-  background: #241d1f !important;
-}
-
-html.dark .how-card {
-  background: #302527 !important;
-  border-color: #514044 !important;
-}
-
-html.dark .contact-section {
-  background: #38272a !important;
-}
-
-html.dark .contact-kicker,
-html.dark .contact-link {
-  color: #f0bfc2 !important;
-}
-
-html.dark .contact-title {
-  color: #fff7f2 !important;
-}
-
-html.dark .contact-copy {
-  color: #eadbd7 !important;
-}
-
-/* ReservaYa: palette inspired by Arequipa's red volcanic stone and sillar. */
-.bg-indigo-950,
-.bg-indigo-900,
-.bg-indigo-950\/60,
-.bg-indigo-950\/70 {
-  background-color: #1a1011 !important;
-}
-
-.bg-indigo-900\/40,
-.bg-indigo-900\/60 {
-  background-color: #2a191b !important;
-}
-
-.bg-violet-500 {
-  background-color: #b21f35 !important;
-}
-
-.hover\:bg-violet-400:hover {
-  background-color: #d33a4f !important;
-}
-
-.text-violet-200,
-.text-violet-300,
-.text-indigo-100,
-.text-indigo-200,
-.text-indigo-300 {
-  color: #f0ded2 !important;
-}
-
-.text-indigo-900 {
-  color: #211112 !important;
-}
-
-.border-indigo-200\/20,
-.border-indigo-200\/15,
-.border-violet-300\/30,
-.border-violet-300\/40 {
-  border-color: rgba(240, 222, 210, 0.2) !important;
-}
-
-.bg-gradient-to-br.from-indigo-600.via-violet-600.to-indigo-500,
-.bg-gradient-to-br.from-indigo-950.via-violet-900.to-indigo-700 {
-  background-image: linear-gradient(135deg, #7d1728, #b21f35 52%, #231214) !important;
-}
+/* ReservaYa: sin overrides legacy. El verde vive en Tailwind (#22C55E/#060A08). */
 
 /* =========================================================
-   TYPOGRAPHY
-========================================================= */
+   TYPOGRAPHY — en @layer base para que los utilitarios ganen
+   ========================================================= */
 
-h1,
-h2,
-h3,
-h4,
-h5 {
-  letter-spacing: -0.025em;
-  color: var(--text-main);
-}
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: "Outfit", "Manrope", "Segoe UI", sans-serif;
+    letter-spacing: -0.025em;
+    color: var(--text-main);
+  }
 
-p {
-  line-height: 1.65;
-  color: var(--text-muted);
-}
+  p {
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
 
-span,
-li,
-em {
-  color: var(--text-soft);
-}
+  span,
+  li,
+  em {
+    color: var(--text-soft);
+  }
 
-strong {
-  color: var(--text-main);
-  font-weight: 600;
+  strong {
+    color: var(--text-main);
+    font-weight: 600;
+  }
 }
 
 /* =========================================================
    LINKS
 ========================================================= */
 
-a {
-  color: inherit;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  transition:
-    color 0.2s ease,
-    opacity 0.2s ease;
-}
+@layer base {
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease;
+  }
 
-a:hover {
-  opacity: 0.85;
+  a:hover {
+    opacity: 0.85;
+  }
 }
 
 /* =========================================================
@@ -343,51 +269,54 @@ img, .astro-asset-image, .astro-asset-img {
   display: block;
 }
 
-article,
-.card {
-  background-color: var(--bg-card);
-  color: var(--text-main);
-  border: 1px solid var(--border-main);
-  border-radius: 1rem;
-}
+@layer base {
+  article,
+  .card {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-main);
+    border-radius: 1rem;
+  }
 
-article p {
-  color: var(--text-muted);
+  article p {
+    color: var(--text-muted);
+  }
 }
 
 /* =========================================================
    FORMS & INPUTS
 ========================================================= */
 
-input,
-textarea,
-select {
-  width: 100%;
-  background-color: var(--input-bg);
-  color: var(--input-text);
-  border: 1px solid var(--border-main);
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
+@layer base {
+  input,
+  textarea,
+  select {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--border-main);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
 
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    background-color 0.25s ease;
-}
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      background-color 0.25s ease;
+  }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--input-placeholder);
-}
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--input-placeholder);
+  }
 
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--accent-primary) 25%, transparent);
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--accent-primary) 25%, transparent);
+  }
 }
 
 /* =========================================================
@@ -403,23 +332,7 @@ a[class*="border"] {
     transform 0.15s ease;
 }
 
-/* Light */
-html:not(.dark) button:hover,
-html:not(.dark) a[class*="border"]:hover {
-  background-color: var(--accent-main);
-  color: #ffffff;
-  border-color: var(--accent-primary);
-  transform: translateY(-1px);
-}
-
-/* Dark */
-.dark button:hover,
-.dark a[class*="border"]:hover {
-  background-color: var(--accent-secondary);
-  color: var(--accent-contrast);
-  border-color: var(--accent-secondary);
-  transform: translateY(-1px);
-}
+/* Los hovers los define cada componente con utilitarios. */
 
 button:active,
 a[class*="border"]:active {
@@ -459,10 +372,6 @@ a[class*="border"]:active {
   transition: color 0.25s ease, transform 0.25s ease;
 }
 
-.dark .social-icon {
-  color: #9ca3af;
-}
-
 .social-icon:hover {
   color: var(--accent-primary);
   transform: translateY(-2px);
@@ -479,26 +388,52 @@ a[class*="border"]:active {
   --tw-prose-bold: var(--text-main);
 }
 
-.dark .prose {
-  --tw-prose-body: var(--text-soft);
-  --tw-prose-headings: #ffffff;
-  --tw-prose-links: #ffffff;
-  --tw-prose-bold: #ffffff;
-}
-
 /* =========================================================
    ANIMATIONS
 ========================================================= */
 
+/* Reveal on scroll: el estado oculto solo aplica con JS activo (html.js),
+   así nada queda invisible si el script falla. El stagger se controla
+   con --reveal-delay o data-reveal-delay. */
 .reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .reveal-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+  animation: reveal-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-visible {
+  animation: reveal-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0.01;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0.25;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* =========================================================
@@ -553,22 +488,105 @@ a[class*="border"]:active {
     background-color 0.25s ease;
 }
 
-.dark .input {
-  background: #0a0a0a;
-  color: #f5f5f5;
-  border-color: #27272a;
-}
-
 .input::placeholder {
   color: #9ca3af;
 }
 
-.dark .input::placeholder {
-  color: #71717a;
-}
-
 .input:focus {
   outline: none;
-  border-color: #0f172a;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
+}
+
+/* =========================================================
+   RESERVAYA · PREMIUM POLISH
+========================================================= */
+
+::selection {
+  background: #22C55E;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #060A08;
+}
+::-webkit-scrollbar-thumb {
+  background: #1d2b1f;
+  border-radius: 8px;
+  border: 2px solid #060A08;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #22C55E;
+}
+
+/* Hero: ken burns + transiciones suaves */
+.hero-bg {
+  transition: opacity 1.4s ease;
+  transform: scale(1.02);
+}
+.hero-bg.is-active {
+  animation: kenburns 8s ease-out forwards;
+}
+@keyframes kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.1); }
+}
+
+.hero-progress {
+  transform-origin: left;
+  animation: heroProgress 6s linear forwards;
+}
+@keyframes heroProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.text-glow-green {
+  text-shadow: 0 0 45px rgba(74, 222, 128, 0.55), 0 2px 18px rgba(0, 0, 0, 0.55);
+}
+.text-shadow-hero {
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65), 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.scroll-hint-dot {
+  animation: scrollHint 2.2s ease-in-out infinite;
+}
+@keyframes scrollHint {
+  0% { transform: translateY(-100%); }
+  55% { transform: translateY(100%); }
+  100% { transform: translateY(100%); }
+}
+
+.float-soft {
+  animation: floatSoft 5s ease-in-out infinite;
+}
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.card-lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -20px rgba(6, 10, 8, 0.35), 0 8px 24px -12px rgba(34, 197, 94, 0.25);
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

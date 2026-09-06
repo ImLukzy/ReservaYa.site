@@ -15,8 +15,9 @@ export async function getSession(): Promise<UsuarioSesion | null> {
 
 export function getDashboardPorRol(rol: Rol): string {
   switch (rol) {
-    case 'SUPERADMIN': return '/superadmin'
-    case 'ADMIN': return '/admin'
+    case 'TECNICO': return '/tecnico'
+    case 'SUPERADMIN': return '/admin'
+    case 'ADMIN': return '/admin/agenda'
     default: return '/dashboard'
   }
 }

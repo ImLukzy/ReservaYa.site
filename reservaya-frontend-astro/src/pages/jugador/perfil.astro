@@ -1,0 +1,412 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
+---
+
+<BaseLayout
+  title="Mi perfil | ReservaYa"
+  description="Tu perfil de jugador, reservas y carné estilo FIFA."
+  announcement="🎾 ReservaYa ya está en Google Play — Descarga la app gratis"
+>
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-10 md:px-8">
+    <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[300px_1fr]">
+      <!-- Columna perfil -->
+      <div class="reveal space-y-4">
+        <div class="rounded-2xl border border-[#E7E5E4] bg-white p-5">
+          <div class="flex items-center gap-3">
+            <span id="avatar" class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#22C55E] text-2xl font-black text-white">…</span>
+            <div class="min-w-0">
+              <p id="p-nombre" class="truncate font-bold text-[#101613]">Cargando…</p>
+              <p id="p-email" class="truncate text-xs text-[#8A938D]">Cargando…</p>
+            </div>
+          </div>
+          <p id="login-aviso" class="hidden mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800">Inicia sesión para ver tu perfil. <a href="/login?returnUrl=/jugador/perfil" class="font-bold text-[#16A34A] hover:underline">Entrar</a></p>
+          <button id="btn-edit" type="button" class="mt-4 w-full rounded-xl border border-[#E7E5E4] py-2.5 text-sm font-bold text-[#3F4A44] transition hover:border-[#22C55E]">✎ Editar perfil</button>
+          <a href="/canchas" class="mt-2 block w-full rounded-xl bg-[#22C55E] py-2.5 text-center text-sm font-bold text-white transition hover:bg-[#16A34A]">⌕ Buscar cancha</a>
+          <a href="/mis-reservas" class="mt-2 block w-full rounded-xl border border-[#E7E5E4] py-2.5 text-center text-sm font-bold text-[#3F4A44] transition hover:border-[#22C55E]">◉ Mis notificaciones</a>
+        </div>
+
+        <div class="rounded-2xl bg-gradient-to-br from-[#0A2E1F] to-[#14532D] p-6 text-center text-white">
+          <p class="text-3xl">◔</p>
+          <p class="mt-2 text-sm font-bold">Arma tu identidad de jugador</p>
+          <p class="mt-1 text-xs text-white/60">Posición, nivel y tu estilo. Es tu carné en ReservaYa.</p>
+          <button id="btn-ident" type="button" class="mt-4 rounded-full bg-[#22C55E] px-4 py-2 text-xs font-bold transition hover:bg-[#16A34A]">Completar identidad</button>
+        </div>
+
+        <div class="rounded-2xl border border-[#E7E5E4] bg-white p-5">
+          <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#8A938D]">Mis estadísticas</p>
+          <ul class="mt-3 space-y-2.5 text-sm">
+            <li class="flex justify-between"><span class="text-[#5B6660]">Total reservas</span><strong id="st-total" style="color:#101613">–</strong></li>
+            <li class="flex justify-between"><span class="text-[#5B6660]">Confirmadas</span><strong id="st-conf" style="color:#16A34A">–</strong></li>
+            <li class="flex justify-between"><span class="text-[#5B6660]">Completadas</span><strong id="st-comp" style="color:#2563EB">–</strong></li>
+            <li class="flex justify-between"><span class="text-[#5B6660]">Pendientes</span><strong id="st-pend" style="color:#D97706">–</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vista reservas -->
+      <div id="view-reservas" class="reveal" data-reveal-delay="120">
+        <div class="flex gap-2">
+          <button type="button" data-tab="activas" class="tab rounded-full border px-4 py-2 text-sm font-semibold transition border-[#22C55E] bg-[#22C55E] text-white">Activas</button>
+          <button type="button" data-tab="historial" class="tab rounded-full border px-4 py-2 text-sm font-semibold transition border-[#E7E5E4] bg-white text-[#3F4A44]">Historial</button>
+          <button type="button" data-tab="todas" id="tab-todas" class="tab rounded-full border px-4 py-2 text-sm font-semibold transition border-[#E7E5E4] bg-white text-[#3F4A44]">Todas (–)</button>
+        </div>
+        <div id="res-vacio" class="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-12 text-center">
+          <p class="text-5xl text-[#E7E5E4]">▤</p>
+          <p class="mt-4 font-semibold text-[#8A938D]">No tienes reservas activas</p>
+          <a href="/canchas" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A]">⌕ Buscar canchas</a>
+        </div>
+        <ul id="res-lista" class="mt-4 hidden space-y-2"></ul>
+      </div>
+
+      <!-- Vista editar -->
+      <div id="view-edit" class="hidden">
+        <button id="btn-back" type="button" class="text-sm font-semibold text-[#5B6660] hover:text-[#101613]">‹ Volver a mis reservas</button>
+        <div class="mt-3 rounded-2xl border border-[#E7E5E4] bg-white p-6">
+          <h2 class="font-bold text-[#101613]">Editar información</h2>
+          <div class="mt-4 flex items-center gap-4">
+            <span id="avatar-big" class="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-[#22C55E] text-3xl font-black text-white">…
+              <span class="absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#060A08] text-[10px] text-white">◔</span>
+            </span>
+            <div><p class="text-sm font-bold text-[#101613]">Tu foto de perfil</p><p class="text-xs text-[#8A938D]">Sale al centro de tu carné FIFA y en los sorteos de equipos.</p>
+            <button id="btn-foto" type="button" class="text-xs font-bold text-[#16A34A] hover:underline">Subir foto</button>
+            <input id="f-foto" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" /></div>
+          </div>
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div><label class="mb-1 block text-xs font-semibold text-[#5B6660]">◔ Nombre completo <span class="font-normal">(no editable)</span></label><input id="f-nombre" disabled value="" placeholder="Cargando…" class="w-full rounded-xl border border-[#E7E5E4] bg-[#EDEEEC] px-4 py-2.5 text-sm text-[#8A938D]" /></div>
+            <div><label class="mb-1 block text-xs font-semibold text-[#5B6660]">◔ Teléfono</label><input id="f-tel" value="" placeholder="+51 999 888 777" class="w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-4 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none" /></div>
+            <div><label class="mb-1 block text-xs font-semibold text-[#5B6660]">▤ Fecha de nacimiento <span id="f-fecha-nota" class="font-normal"></span></label><input id="f-fecha" type="date" value="" disabled class="w-full rounded-xl border border-[#E7E5E4] bg-[#EDEEEC] px-4 py-2.5 text-sm text-[#8A938D]" /></div>
+            <div><label class="mb-1 block text-xs font-semibold text-[#5B6660]">◔ Género <span class="font-normal">opcional</span></label>
+              <select class="w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-4 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none"><option>Masculino</option><option>Femenino</option><option>Otro</option></select></div>
+            <div><label class="mb-1 block text-xs font-semibold text-[#5B6660]">◔ Departamento</label>
+              <select class="w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-4 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none"><option>Arequipa</option></select></div>
+            <div><label class="mb-1 block text-xs font-semibold text-[#5B6660]">✉ Correo <span class="font-normal">(no editable)</span></label><input id="f-email" value="" disabled placeholder="Cargando…" class="w-full rounded-xl border border-[#E7E5E4] bg-[#EDEEEC] px-4 py-2.5 text-sm text-[#8A938D]" /></div>
+          </div>
+          <div class="mt-4"><label class="mb-1 block text-xs font-semibold text-[#5B6660]">◔ Tu usuario <span class="font-normal">para que te agreguen a sorteos de equipos</span></label>
+            <input id="f-user" value="" placeholder="Cargando…" class="w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-4 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none" />
+            <p id="f-user-nota" class="mt-1 text-[11px] text-[#8A938D]">3-20 caracteres: letras, números, _ . - · Se puede cambiar 1 vez por año.</p></div>
+
+          <p class="mt-6 flex items-center gap-2 text-sm font-bold text-[#101613]">◔ Identidad de jugador</p>
+          <div class="mt-3 grid gap-4 sm:grid-cols-3">
+            {[["Posición", ["—", "Arquero", "Defensa", "Volante", "Delantero"]], ["Nivel", ["—", "Principiante", "Intermedio", "Avanzado"]], ["Pie hábil", ["—", "Derecho", "Izquierdo"]]].map(([l, ops]) => (
+              <div><label class="mb-1 block text-xs text-[#5B6660]">{l}</label>
+                <select class="w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-3 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none">
+                  {(ops as string[]).map((o) => <option>{o}</option>)}
+                </select></div>
+            ))}
+          </div>
+          <p class="mt-4 text-xs text-[#5B6660]">Tu estilo</p>
+          <div id="estilos" class="mt-2 flex flex-wrap gap-2">
+            {["Goleador", "Armador", "Muralla", "Paredón", "Crack", "Motor", "Velocista"].map((e) => (
+              <button type="button" data-e={e} class="estilo rounded-lg border border-[#E7E5E4] bg-[#FAFAF9] px-3 py-1.5 text-xs font-semibold text-[#3F4A44] transition">◔ {e}</button>
+            ))}
+          </div>
+          <p class="mt-4 text-xs text-[#5B6660]">Atributos del carné (VEL · TIR · DEF · RES)</p>
+          <div class="mt-2 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+            {[["Velocidad", 68], ["Tiro", 68], ["Defensa", 68], ["Resistencia", 68]].map(([l, v]) => (
+              <div>
+                <div class="flex justify-between text-xs"><span class="text-[#5B6660]">{l}</span><strong class="attr-val">{v}</strong></div>
+                <input type="range" min="40" max="99" value={v as number} class="attr w-full accent-[#16A34A]" />
+              </div>
+            ))}
+          </div>
+          <p class="mt-4 text-xs font-bold text-[#101613]">◔ Personaliza tu carné</p>
+          <p class="text-[11px] text-[#8A938D]">Tu país · sale la bandera en la card</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {["Perú", "Argentina", "Chile", "Venezuela", "Colombia", "Ecuador", "Bolivia", "Brasil", "Uruguay", "México", "Paraguay", "Otro"].map((p, i) => (
+              <button type="button" data-p={p} class={`pais rounded-full border px-3 py-1.5 text-xs font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#DCFCE7] text-[#14532D]" : "border-[#E7E5E4] text-[#3F4A44]"}`}>{p}</button>
+            ))}
+          </div>
+          <div class="mt-4 flex gap-2">
+            <button id="btn-save" type="button" class="rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A]">◔ Guardar cambios</button>
+            <button id="btn-cancel" type="button" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-[#5B6660] hover:text-[#101613]">Cancelar</button>
+          </div>
+          <p id="save-msg" class="mt-2 hidden text-sm font-semibold text-[#15803D]">✓ Cambios guardados</p>
+          <p id="save-err" class="mt-2 hidden text-sm font-semibold text-red-600" role="alert"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ apiUrl }}>
+(function () {
+  var base = apiUrl.replace(/\/$/, "");
+  const $ = (id) => document.getElementById(id);
+  const vRes = $("view-reservas");
+  const vEdit = $("view-edit");
+  const show = (edit) => {
+    vRes.classList.toggle("hidden", edit);
+    vEdit.classList.toggle("hidden", !edit);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  $("btn-edit")?.addEventListener("click", () => show(true));
+  $("btn-ident")?.addEventListener("click", () => show(true));
+  $("btn-back")?.addEventListener("click", () => show(false));
+  $("btn-cancel")?.addEventListener("click", () => show(false));
+
+  const estadoColor = { CONFIRMADA: "#16A34A", PENDIENTE: "#D97706", COMPLETADA: "#2563EB", CANCELADA: "#8A938D" };
+  let reservas = [];
+  let tab = "activas";
+  let perfil = null;
+
+  const fmtFecha = (iso) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || "");
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : "—";
+  };
+  const fmtHora = (min) => `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
+
+  function pintarReservas() {
+    const lista = $("res-lista");
+    const vacio = $("res-vacio");
+    const items = reservas.filter((r) =>
+      tab === "todas" ? true :
+      tab === "historial" ? (r.estado === "COMPLETADA" || r.estado === "CANCELADA") :
+      (r.estado === "PENDIENTE" || r.estado === "CONFIRMADA"));
+    $("tab-todas").textContent = `Todas (${reservas.length})`;
+    if (items.length === 0) {
+      lista.classList.add("hidden");
+      vacio.classList.remove("hidden");
+      return;
+    }
+    vacio.classList.add("hidden");
+    lista.classList.remove("hidden");
+    lista.innerHTML = "";
+    for (const r of items) {
+      const li = document.createElement("li");
+      li.className = "flex items-center justify-between gap-3 rounded-2xl border border-[#E7E5E4] bg-white px-4 py-3";
+      const dot = document.createElement("span");
+      dot.className = "h-2.5 w-2.5 shrink-0 rounded-full";
+      dot.style.background = estadoColor[r.estado] || "#8A938D";
+      const mid = document.createElement("div");
+      mid.className = "min-w-0 flex-1";
+      const t = document.createElement("p");
+      t.className = "truncate text-sm font-bold text-[#101613]";
+      t.textContent = r.cancha?.nombre || "Cancha";
+      const s = document.createElement("p");
+      s.className = "text-xs text-[#8A938D]";
+      s.textContent = `${fmtFecha(r.fecha)} · ${fmtHora(r.horaInicio)}–${fmtHora(r.horaFin)} · ${r.codigo || ""}`;
+      mid.append(t, s);
+      const est = document.createElement("span");
+      est.className = "shrink-0 text-xs font-bold";
+      est.style.color = estadoColor[r.estado] || "#8A938D";
+      est.textContent = r.estado || "";
+      li.append(dot, mid, est);
+      lista.append(li);
+    }
+  }
+
+  document.querySelectorAll(".tab").forEach((b) =>
+    b.addEventListener("click", () => {
+      tab = b.getAttribute("data-tab") || "activas";
+      document.querySelectorAll(".tab").forEach((x) =>
+        (x.className = "tab rounded-full border px-4 py-2 text-sm font-semibold transition border-[#E7E5E4] bg-white text-[#3F4A44]"));
+      b.className = "tab rounded-full border px-4 py-2 text-sm font-semibold transition border-[#22C55E] bg-[#22C55E] text-white";
+      pintarReservas();
+    })
+  );
+
+  function pintarFoto(url) {
+    const src = url ? (url.indexOf("http") === 0 ? url : base + url) : null;
+    const pares = [["avatar", false], ["avatar-big", true]];
+    for (const par of pares) {
+      const el = $(par[0]);
+      if (!el) continue;
+      const insignia = par[1] ? el.querySelector("span.absolute") : null;
+      const insigniaHtml = insignia ? insignia.outerHTML : "";
+      if (src) {
+        el.innerHTML = '<img src="' + src + '" alt="Foto de perfil" class="h-full w-full rounded-2xl object-cover" />' + insigniaHtml;
+      } else if (perfil) {
+        el.textContent = (perfil.nombre || "?").trim().charAt(0).toUpperCase();
+        if (insignia) el.appendChild(insignia);
+      }
+    }
+  }
+
+  function pintarPerfil(u) {
+    perfil = u;
+    const inicial = (u.nombre || "?").trim().charAt(0).toUpperCase();
+    if (u.fotoUrl) {
+      pintarFoto(u.fotoUrl);
+    } else {
+      $("avatar").textContent = inicial;
+      const big = $("avatar-big");
+      const insignia = big.querySelector("span.absolute");
+      big.textContent = inicial;
+      if (insignia) big.appendChild(insignia);
+    }
+    const corto = u.nombre.length > 24 ? u.nombre.slice(0, 24) + "…" : u.nombre;
+    $("p-nombre").textContent = corto;
+    $("p-email").textContent = u.email || "";
+    $("f-nombre").value = u.nombre || "";
+    $("f-email").value = u.email || "";
+    $("f-tel").value = u.telefono || "";
+    // Fecha: fija para siempre; si está vacía se puede fijar por única vez.
+    const fFecha = $("f-fecha");
+    const nota = $("f-fecha-nota");
+    if (u.fechaNacimiento) {
+      fFecha.value = u.fechaNacimiento.slice(0, 10);
+      fFecha.disabled = true;
+      fFecha.className = "w-full rounded-xl border border-[#E7E5E4] bg-[#EDEEEC] px-4 py-2.5 text-sm text-[#8A938D]";
+      nota.textContent = "(no editable)";
+    } else {
+      fFecha.value = "";
+      fFecha.disabled = false;
+      fFecha.className = "w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-4 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none";
+      nota.textContent = "(fíjala una vez: luego no se podrá cambiar)";
+    }
+    // Usuario: 1 cambio por año.
+    const fUser = $("f-user");
+    const uNota = $("f-user-nota");
+    fUser.value = u.username || "";
+    if (u.username && u.proximoCambioUsername) {
+      const d = new Date(u.proximoCambioUsername);
+      fUser.disabled = true;
+      fUser.className = "w-full rounded-xl border border-[#E7E5E4] bg-[#EDEEEC] px-4 py-2.5 text-sm text-[#8A938D]";
+      uNota.textContent = `Podrás cambiarlo el ${d.toLocaleDateString("es-PE")}. Se puede cambiar 1 vez por año.`;
+    } else {
+      fUser.disabled = false;
+      fUser.className = "w-full rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] px-4 py-2.5 text-sm focus:border-[#22C55E] focus:bg-white focus:outline-none";
+      uNota.textContent = u.username
+        ? "Puedes cambiarlo ahora: luego, 1 vez por año."
+        : "3-20 caracteres: letras, números, _ . - · Se puede cambiar 1 vez por año.";
+    }
+  }
+
+  function pintarStats() {
+    const total = reservas.length;
+    const conf = reservas.filter((r) => r.estado === "CONFIRMADA").length;
+    const comp = reservas.filter((r) => r.estado === "COMPLETADA").length;
+    const pend = reservas.filter((r) => r.estado === "PENDIENTE").length;
+    $("st-total").textContent = String(total);
+    $("st-conf").textContent = String(conf);
+    $("st-comp").textContent = String(comp);
+    $("st-pend").textContent = String(pend);
+  }
+
+  async function cargar() {
+    try {
+      const res = await fetch(`${base}/api/auth/me`, { credentials: "include" });
+      if (res.status === 401) {
+        $("login-aviso")?.classList.remove("hidden");
+        $("p-nombre").textContent = "Sin sesión";
+        $("p-email").textContent = "";
+        return;
+      }
+      const body = await res.json().catch(() => null);
+      if (!res.ok || !body?.usuario) throw new Error("No se pudo cargar tu perfil");
+      pintarPerfil(body.usuario);
+      const res2 = await fetch(`${base}/api/reservas`, { credentials: "include" });
+      const b2 = await res2.json().catch(() => null);
+      reservas = Array.isArray(b2?.reservas) ? b2.reservas : [];
+      pintarStats();
+      pintarReservas();
+    } catch {
+      $("p-nombre").textContent = "Sin conexión";
+      $("p-email").textContent = "Verifica que la API esté en ejecución";
+    }
+  }
+
+  document.querySelectorAll(".estilo").forEach((b) =>
+    b.addEventListener("click", () => {
+      const on = b.classList.contains("bg-[#060A08]");
+      b.className = `estilo rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${on ? "border-[#E7E5E4] bg-[#FAFAF9] text-[#3F4A44]" : "border-[#060A08] bg-[#060A08] text-white"}`;
+    })
+  );
+  document.querySelectorAll(".pais").forEach((b) =>
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".pais").forEach((x) => (x.className = "pais rounded-full border px-3 py-1.5 text-xs font-semibold transition border-[#E7E5E4] text-[#3F4A44]"));
+      b.className = "pais rounded-full border px-3 py-1.5 text-xs font-semibold transition border-[#22C55E] bg-[#DCFCE7] text-[#14532D]";
+    })
+  );
+  document.querySelectorAll(".attr").forEach((r) =>
+    r.addEventListener("input", () => {
+      r.closest("div").querySelector(".attr-val").textContent = r.value;
+    })
+  );
+
+  $("btn-foto")?.addEventListener("click", () => $("f-foto").click());
+  $("f-foto")?.addEventListener("change", async () => {
+    const input = $("f-foto");
+    const okMsg = $("save-msg");
+    const errMsg = $("save-err");
+    okMsg.classList.add("hidden");
+    errMsg.classList.add("hidden");
+    if (!perfil) {
+      errMsg.textContent = "Inicia sesión para subir tu foto.";
+      errMsg.classList.remove("hidden");
+      return;
+    }
+    if (!input.files || !input.files[0]) return;
+    if (input.files[0].size > 3 * 1024 * 1024) {
+      errMsg.textContent = "La imagen no puede superar 3 MB.";
+      errMsg.classList.remove("hidden");
+      input.value = "";
+      return;
+    }
+    try {
+      const fd = new FormData();
+      fd.append("archivo", input.files[0]);
+      const res = await fetch(base + "/api/usuarios/me/foto", {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(body?.error || "No se pudo subir la foto");
+      perfil.fotoUrl = body.fotoUrl;
+      pintarFoto(body.fotoUrl);
+      okMsg.textContent = "✓ Foto actualizada";
+      okMsg.classList.remove("hidden");
+      setTimeout(() => okMsg.classList.add("hidden"), 2000);
+    } catch (e) {
+      errMsg.textContent = e instanceof Error ? e.message : "No se pudo subir la foto";
+      errMsg.classList.remove("hidden");
+    } finally {
+      input.value = "";
+    }
+  });
+
+  $("btn-save")?.addEventListener("click", async () => {
+    const okMsg = $("save-msg");
+    const errMsg = $("save-err");
+    okMsg.classList.add("hidden");
+    errMsg.classList.add("hidden");
+    if (!perfil) {
+      errMsg.textContent = "Inicia sesión para guardar cambios.";
+      errMsg.classList.remove("hidden");
+      return;
+    }
+    const payload = {};
+    const nuevoUser = $("f-user").value.trim().toLowerCase();
+    if (nuevoUser && nuevoUser !== (perfil.username || "")) payload.username = nuevoUser;
+    const fFecha = $("f-fecha");
+    if (!perfil.fechaNacimiento && fFecha.value) payload.fechaNacimiento = fFecha.value;
+    const tel = $("f-tel").value.trim();
+    if (tel !== (perfil.telefono || "")) payload.telefono = tel;
+    if (Object.keys(payload).length === 0) {
+      errMsg.textContent = "No hay cambios para guardar.";
+      errMsg.classList.remove("hidden");
+      return;
+    }
+    try {
+      const res = await fetch(`${base}/api/usuarios/me`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(body?.error || "No se pudo guardar");
+      if (body?.usuario) pintarPerfil({ ...perfil, ...body.usuario });
+      okMsg.classList.remove("hidden");
+      setTimeout(() => { okMsg.classList.add("hidden"); show(false); }, 900);
+    } catch (e) {
+      errMsg.textContent = e instanceof Error ? e.message : "No se pudo guardar";
+      errMsg.classList.remove("hidden");
+    }
+  });
+
+  cargar();
+})();
+</script>

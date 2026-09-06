@@ -45,10 +45,10 @@ public class AuthController : ControllerBase
         var usuario = await _db.Usuarios.AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
 
-        var cuentaAdministrativa = usuario is not null &&
-            (usuario.Rol == Rol.ADMIN || usuario.Rol == Rol.SUPERADMIN);
-
-        if (!cuentaAdministrativa && _rateLimiter.IsLimited(
+        // El rate-limit aplica a TODOS, incluidas cuentas ADMIN/SUPERADMIN:
+        // son las más valiosas para un ataque de fuerza bruta. Mismo mensaje
+        // genérico para no revelar si el email existe.
+        if (_rateLimiter.IsLimited(
                 $"login:{ClientIp()}:{normalizedEmail}", 5, TimeSpan.FromMinutes(15)))
             return StatusCode(429, new { error = "No se pudo iniciar sesión. Verifica tus datos e inténtalo nuevamente." });
 
@@ -58,6 +58,10 @@ public class AuthController : ControllerBase
 
         if (usuario is null || !passwordOk || !usuario.Activo)
             return Unauthorized(new { error = "Credenciales inválidas" });
+
+        // El login correcto limpia los intentos fallidos: solo la fuerza bruta
+        // acumula hasta el 429, un usuario normal jamás se bloquea solo.
+        _rateLimiter.Reset($"login:{ClientIp()}:{normalizedEmail}");
 
         var token = _jwt.CreateToken(usuario.Id, usuario.Email, usuario.Nombre, usuario.Rol, usuario.TokenVersion);
         SetTokenCookie(token);
@@ -80,6 +84,19 @@ public class AuthController : ControllerBase
         if (request.Password.Length < 6)
             return BadRequest(new { error = "La contraseña debe tener al menos 6 caracteres" });
 
+        // Fecha de nacimiento obligatoria e inmutable después del registro.
+        var nacimiento = DtoFormat.ParseFechaDia(request.FechaNacimiento);
+        if (nacimiento is null)
+            return BadRequest(new { error = "La fecha de nacimiento es obligatoria" });
+        var hoy = DateTime.UtcNow.Date;
+        if (nacimiento.Value.Date > hoy.AddYears(-5) || nacimiento.Value.Date < new DateTime(1900, 1, 1))
+            return BadRequest(new { error = "Fecha de nacimiento inválida" });
+
+        // Username obligatorio, único, editable como máximo 1 vez por año.
+        var username = (request.Username ?? "").Trim().ToLowerInvariant();
+        if (!PerfilReglas.UsernameValido(username))
+            return BadRequest(new { error = "Tu usuario: 3-20 caracteres (letras, números, _ . -)" });
+
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
         if (_rateLimiter.IsLimited(
@@ -87,15 +104,18 @@ public class AuthController : ControllerBase
             return StatusCode(429, new { error = "Demasiados intentos. Intenta de nuevo más tarde" });
 
         var existente = await _db.Usuarios.AsNoTracking()
-            .AnyAsync(u => u.Email == normalizedEmail);
+            .AnyAsync(u => u.Email == normalizedEmail || u.Username == username);
         if (existente)
-            return Conflict(new { error = "El email ya está registrado" });
+            return Conflict(new { error = "El email o usuario ya está registrado" });
 
         var usuario = new Usuario
         {
             Id = JwtService.NewId(),
             Nombre = request.Nombre.Trim(),
             Email = normalizedEmail,
+            FechaNacimiento = nacimiento.Value.Date,
+            Username = username,
+            UsernameCambiadoEn = DateTime.UtcNow,
             Password = Bcrypt.HashPassword(request.Password, 10),
             Rol = Rol.USUARIO,
             Activo = true,
@@ -109,9 +129,9 @@ public class AuthController : ControllerBase
             await _db.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (
-            ex.InnerException is PostgresException { SqlState: "23505" })
+                ex.InnerException is PostgresException { SqlState: "23505" })
         {
-            return Conflict(new { error = "El email ya está registrado" });
+            return Conflict(new { error = "El email o usuario ya está registrado" });
         }
 
         var token = _jwt.CreateToken(usuario.Id, usuario.Email, usuario.Nombre, usuario.Rol, usuario.TokenVersion);
@@ -152,28 +172,49 @@ public class AuthController : ControllerBase
 
     [HttpGet("me")]
     [Authorize]
-    public IActionResult Me()
-        => Ok(new
+    public async Task<IActionResult> Me()
+    {
+        var u = await _db.Usuarios.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == User.IdOrEmpty());
+        if (u is null)
+            return Unauthorized(new { error = "Sesión inválida" });
+        // Nota: la frescura del token (tv) y cuenta activa las exige el
+        // ValidSessionHandler global antes de llegar aquí (403 si cambió el
+        // rol por alta/baja de equipo: toca reingresar).
+        return Ok(new
         {
             usuario = new
             {
-                id = User.IdOrEmpty(),
-                email = User.FindFirst("email")?.Value ?? "",
-                nombre = User.FindFirst("nombre")?.Value ?? "",
-                rol = User.RolOr(),
-                tv = int.TryParse(User.FindFirst("tv")?.Value, out var tv) ? tv : 0
+                id = u.Id,
+                email = u.Email,
+                nombre = u.Nombre,
+                rol = u.Rol.ToString(),
+                tv = u.TokenVersion,
+                fechaNacimiento = u.FechaNacimiento.HasValue
+                    ? u.FechaNacimiento.Value.ToString("yyyy-MM-dd") : null,
+                username = u.Username,
+                telefono = u.Telefono,
+                fotoUrl = u.FotoUrl,
+                usernameCambiadoEn = u.UsernameCambiadoEn,
+                proximoCambioUsername = PerfilReglas.ProximoCambioUsername(u.UsernameCambiadoEn)
             }
         });
+    }
 
     private void SetTokenCookie(string token)
-        => Response.Cookies.Append(JwtService.CookieName, token, new CookieOptions
+    {
+        // En prod el panel/landing (vercel/pages) llaman a la API (render):
+        // cross-site exige SameSite=None + Secure. En dev se mantiene Lax.
+        var crossSite = Environment.GetEnvironmentVariable("COOKIE_SECURE") == "true";
+        Response.Cookies.Append(JwtService.CookieName, token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = HttpContext.Request.IsHttps || Environment.GetEnvironmentVariable("COOKIE_SECURE") == "true",
-            SameSite = SameSiteMode.Lax,
+            Secure = HttpContext.Request.IsHttps || crossSite,
+            SameSite = crossSite ? SameSiteMode.None : SameSiteMode.Lax,
             MaxAge = JwtService.Ttl,
             Path = "/"
         });
+    }
 
     private string ClientIp()
     {

@@ -37,9 +37,27 @@ public class ReservasController : ControllerBase
             as IQueryable<Reserva>;
 
         if (esUsuario)
+        {
             query = query.Where(r => r.UsuarioId == User.IdOrEmpty());
+        }
         else
+        {
+            // Staff solo ve reservas de su alcance (propios + membresías).
+            // Incluye reservas legacy sin complejoId cuya cancha es del alcance.
+            var ids = await ComplejoAccess.IdsAsync(_db, User);
+            if (ids is not null)
+            {
+                if (ids.Count == 0)
+                    return Ok(new { reservas = Array.Empty<ReservaDto>() });
+                var canchaIds = await _db.Canchas.AsNoTracking()
+                    .Where(c => c.ComplejoId != null && ids.Contains(c.ComplejoId!))
+                    .Select(c => c.Id).ToListAsync();
+                query = query.Where(r =>
+                    (r.ComplejoId != null && ids.Contains(r.ComplejoId!)) ||
+                    (r.ComplejoId == null && canchaIds.Contains(r.CanchaId)));
+            }
             query = query.Include(r => r.Usuario);
+        }
 
         var reservas = await query.ToListAsync();
         return Ok(new { reservas = reservas.Select(r => ReservaDto.From(r, !esUsuario)) });
@@ -58,8 +76,77 @@ public class ReservasController : ControllerBase
 
         if (User.RolOr() == Rol.USUARIO && reserva.UsuarioId != User.IdOrEmpty())
             return StatusCode(403, new { error = "Sin permisos" });
+        if (User.RolOr() != Rol.USUARIO && !await AlcanceReservaOkAsync(reserva))
+            return StatusCode(403, new { error = "Sin permisos" });
 
         return Ok(new { reserva = ReservaDto.From(reserva, true) });
+    }
+    // Validación de código QR en recepción (/admin/validar-codigo).
+    // Solo confirma reservas CONFIRMADAS y deja constancia de quién/cuándo validó.
+    [HttpPost("validar")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN,TECNICO")]
+    public async Task<IActionResult> Validar([FromBody] ReservaValidarRequest request)
+    {
+        var codigo = (request.Codigo ?? "").Trim().ToUpperInvariant();
+        if (codigo.Length < 3)
+            return BadRequest(new { error = "Código inválido" });
+
+        var reserva = await _db.Reservas
+            .Include(r => r.Cancha)
+            .Include(r => r.Usuario)
+            .FirstOrDefaultAsync(r => r.Codigo == codigo);
+        if (reserva is null)
+            return NotFound(new { error = "Código no válido" });
+
+        // Recepción solo valida códigos de su sede (plataforma: todo).
+        if (!await AlcanceReservaOkAsync(reserva))
+            return StatusCode(403, new { error = "Sin permisos" });
+
+        if (reserva.Estado != EstadoReserva.CONFIRMADA)
+        {
+            var motivo = reserva.Estado switch
+            {
+                EstadoReserva.PENDIENTE => "La reserva aún está pendiente de confirmación",
+                EstadoReserva.CANCELADA => "La reserva fue cancelada",
+                EstadoReserva.COMPLETADA => "La reserva ya fue utilizada",
+                _ => "La reserva no está confirmada"
+            };
+            return Conflict(new { error = motivo });
+        }
+
+        reserva.ValidadaEn = DateTime.UtcNow;
+        reserva.ValidadaPorId = User.IdOrEmpty();
+        await _db.SaveChangesAsync();
+
+        // Aviso para recepción: sanciones activas del jugador en este local.
+        object? restriccion = null;
+        var complejoReserva = reserva.ComplejoId ?? reserva.Cancha?.ComplejoId;
+        if (complejoReserva is not null)
+        {
+            var san = await _db.Sanciones.AsNoTracking()
+                .Where(s => s.Activa && s.UsuarioId == reserva.UsuarioId && s.ComplejoId == complejoReserva)
+                .OrderByDescending(s => s.Nivel == NivelSancion.BLOQUEO)
+                .ThenByDescending(s => s.CreadoEn)
+                .FirstOrDefaultAsync();
+            if (san is not null)
+                restriccion = new { nivel = san.Nivel.ToString(), motivo = san.Motivo };
+        }
+
+        return Ok(new
+        {
+            ok = true,
+            reserva = new
+            {
+                codigo = reserva.Codigo,
+                cancha = reserva.Cancha != null ? reserva.Cancha.Nombre : "",
+                usuario = reserva.Usuario != null ? reserva.Usuario.Nombre : "",
+                fecha = reserva.Fecha,
+                horaInicio = reserva.HoraInicio,
+                horaFin = reserva.HoraFin,
+                estado = reserva.Estado.ToString(),
+                restriccion
+            }
+        });
     }
 
     [HttpPost]
@@ -91,6 +178,25 @@ public class ReservasController : ControllerBase
         if (cancha is null || !cancha.Activa)
             return BadRequest(new { error = "Cancha no disponible" });
 
+        // Alcance: el jugador solo reserva vitrina visible (publicado +
+        // suscripción vigente, o legacy sin complejo); el staff solo su sede.
+        var rolActual = User.RolOr();
+        if (rolActual == Rol.USUARIO)
+        {
+            if (cancha.ComplejoId is not null &&
+                !(await ComplejoAccess.IdsVisiblesAsync(_db)).Contains(cancha.ComplejoId))
+                return BadRequest(new { error = "Cancha no disponible" });
+        }
+        else if (!ComplejoAccess.EsPlataforma(User) && cancha.ComplejoId is not null &&
+            !await ComplejoAccess.TieneAccesoAsync(_db, User, cancha.ComplejoId))
+            return StatusCode(403, new { error = "Sin permisos" });
+
+        // Bloqueo del dueño: si el local restringió a este usuario, no puede reservar.
+        if (cancha.ComplejoId is not null && await _db.Sanciones.AsNoTracking().AnyAsync(s =>
+            s.Activa && s.Nivel == NivelSancion.BLOQUEO &&
+            s.UsuarioId == User.IdOrEmpty() && s.ComplejoId == cancha.ComplejoId))
+            return StatusCode(403, new { error = "Este local restringió tu acceso. Contacta al administrador." });
+
         var conflicto = await _db.Reservas.AsNoTracking()
             .AnyAsync(r =>
                 r.CanchaId == cancha.Id &&
@@ -102,12 +208,19 @@ public class ReservasController : ControllerBase
         if (conflicto)
             return Conflict(new { error = "Ya existe una reserva en ese horario" });
 
-        var horas = (decimal)(fin - inicio) / 60m;
-        var total = Math.Round(cancha.PrecioPorHora * horas, 2, MidpointRounding.AwayFromZero);
+        var fueraHorario = await HorariosController.ValidarSlotAsync(
+            _db, cancha.ComplejoId, cancha.Id, fecha.Value, inicio, fin);
+        if (fueraHorario is not null)
+            return BadRequest(new { error = fueraHorario });
+
+        var promos = await PrecioCancha.PromosAplicablesAsync(
+            _db, new[] { cancha.Id }, new[] { cancha.ComplejoId });
+        var total = PrecioCancha.Cotizar(cancha.PrecioPorHora, promos, fecha.Value, inicio, fin).Total;
 
         var reserva = new Reserva
         {
             Id = JwtService.NewId(),
+            Codigo = NuevoCodigo(),
             UsuarioId = User.IdOrEmpty(),
             CanchaId = cancha.Id,
             Fecha = fecha.Value,
@@ -120,24 +233,47 @@ public class ReservasController : ControllerBase
         };
 
         _db.Reservas.Add(reserva);
-        try
+        for (var intento = 0; ; intento++)
         {
-            await _db.SaveChangesAsync();
-            await transaction.CommitAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                break;
+            }
+            catch (DbUpdateException ex) when (
+                ex.InnerException is PostgresException { SqlState: "23503" })
+            {
+                return Conflict(new { error = "La cancha ya no está disponible" });
+            }
+            catch (DbUpdateException ex) when (
+                ex.InnerException is PostgresException { SqlState: "23505" })
+            {
+                // Colisión del código QR (RF-XXXX): regenerar y reintentar.
+                if (intento >= 2)
+                    return Conflict(new { error = "La reserva no pudo registrarse. Intenta de nuevo." });
+                reserva.Codigo = NuevoCodigo();
+            }
+            catch (DbUpdateException ex) when (
+                ex.InnerException is PostgresException { SqlState: "40001" })
+            {
+                return Conflict(new { error = "El horario acaba de ser reservado. Elige otro horario." });
+            }
+            catch (PostgresException ex) when (ex.SqlState == "40001")
+            {
+                return Conflict(new { error = "El horario acaba de ser reservado. Elige otro horario." });
+            }
         }
-        catch (DbUpdateException ex) when (
-            ex.InnerException is PostgresException { SqlState: "23503" })
+
+        // Primera reserva del complejo: genera su horario Lun-Dom por defecto.
+        // OJO: va ANTES de asignar reserva.Cancha (esa navegación deja a la
+        // cancha como Added en el contexto y otro SaveChanges intentaría
+        // re-insertarla: 23505). Y es mejor esfuerzo: si falla, la reserva
+        // igual queda registrada.
+        if (cancha.ComplejoId is not null)
         {
-            return Conflict(new { error = "La cancha ya no está disponible" });
-        }
-        catch (DbUpdateException ex) when (
-            ex.InnerException is PostgresException { SqlState: "40001" })
-        {
-            return Conflict(new { error = "El horario acaba de ser reservado. Elige otro horario." });
-        }
-        catch (PostgresException ex) when (ex.SqlState == "40001")
-        {
-            return Conflict(new { error = "El horario acaba de ser reservado. Elige otro horario." });
+            try { await HorariosController.AsegurarHorarioAsync(_db, cancha.ComplejoId); }
+            catch { /* mejor esfuerzo */ }
         }
 
         reserva.Cancha = cancha;
@@ -162,6 +298,8 @@ public class ReservasController : ControllerBase
             if (!string.IsNullOrEmpty(request.Estado) && request.Estado != "CANCELADA")
                 return StatusCode(403, new { error = "Solo puedes cancelar tu reserva" });
         }
+        else if (!await AlcanceReservaOkAsync(reserva))
+            return StatusCode(403, new { error = "Sin permisos" });
 
         if (!string.IsNullOrEmpty(request.Estado))
         {
@@ -225,26 +363,38 @@ public class ReservasController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADMIN,SUPERADMIN")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN,TECNICO")]
     public async Task<IActionResult> Delete(string id)
     {
         var reserva = await _db.Reservas.FirstOrDefaultAsync(r => r.Id == id);
         if (reserva is null)
             return Ok(new { ok = true });
+        if (!await AlcanceReservaOkAsync(reserva))
+            return StatusCode(403, new { error = "Sin permisos" });
 
         _db.Reservas.Remove(reserva);
         await _db.SaveChangesAsync();
         return Ok(new { ok = true });
     }
 
-    private static DateTime? ParseFecha(string value)
+    // Código QR de recepción: RF-XXXX (4 hex únicos, ej. RF-8K2P).
+    private static string NuevoCodigo() =>
+        "RF-" + Guid.NewGuid().ToString("N")[..4].ToUpperInvariant();
+
+    private static string? ComplejoDeReserva(Reserva reserva) =>
+        reserva.ComplejoId ?? reserva.Cancha?.ComplejoId;
+
+    // Staff de otra sede no ve ni toca reservas ajenas. USUARIO se valida
+    // aparte (solo sus propias reservas). Null (legacy) = sin dueño.
+    private async Task<bool> AlcanceReservaOkAsync(Reserva reserva)
     {
-        if (DateTime.TryParseExact(value, "yyyy-MM-dd",
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out var exact))
-            return DateTime.SpecifyKind(exact.Date, DateTimeKind.Unspecified);
-        if (DateTime.TryParse(value, CultureInfo.InvariantCulture,
-                DateTimeStyles.RoundtripKind, out var parsed))
-            return DateTime.SpecifyKind(parsed.Date, DateTimeKind.Unspecified);
-        return null;
+        if (ComplejoAccess.EsPlataforma(User))
+            return true;
+        var complejoId = ComplejoDeReserva(reserva);
+        if (complejoId is null)
+            return true;
+        return await ComplejoAccess.TieneAccesoAsync(_db, User, complejoId);
     }
+
+    private static DateTime? ParseFecha(string value) => DtoFormat.ParseFechaDia(value);
 }

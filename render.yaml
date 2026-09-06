@@ -1,0 +1,22 @@
+# Blueprint Render: API .NET (plan free). La DB vive en Neon (no usar la de Render).
+# Uso: dashboard Render → New → Blueprint → repo ImLukzy/ReservaYa → Apply.
+# Luego completa a mano: DATABASE_URL (Neon prod), FRONTEND_ORIGIN (tus URLs).
+services:
+  - type: web
+    name: reservaya-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        sync: false
