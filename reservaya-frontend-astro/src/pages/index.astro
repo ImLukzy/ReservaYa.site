@@ -1,70 +1,646 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const steps = [
-  ["01", "Crea tu cuenta", "Regístrate y guarda tus datos para solicitar tus próximos partidos."],
-  ["02", "Elige tu cancha", "Compara espacios, precios y horarios disponibles en un solo lugar."],
-  ["03", "Envía tu solicitud", "Selecciona fecha y hora; el administrador revisará tu pedido."],
-  ["04", "Juega confirmado", "Recibe la respuesta y tu código de reserva para llegar sin dudas."]
+const cities = ["YANAHUARA","CAYMA","CERRO COLORADO","MIRAFLORES","HUNTER","SABANDÍA","CHARACATO","SOCABAYA","PAUCARPATA","BUSTAMANTE","MARIANO MELGAR","SELVA ALEGRE","SACHACA","TIABAYA","UCHUMAYO","YURA"];
+const pins = [
+  { name: "Cayma", price: "S/ 65/h", x: "68%", y: "28%", fmt: "F7" },
+  { name: "San Isidro", price: "S/ 80/h", x: "48%", y: "38%", fmt: "F5" },
+  { name: "La Molina", price: "S/ 55/h", x: "28%", y: "68%", fmt: "F5" },
+  { name: "Paucarpata", price: "S/ 70/h", x: "62%", y: "60%", fmt: "F7" },
+  { name: "Barranco", price: "S/ 60/h", x: "74%", y: "76%", fmt: "F5" },
 ];
-
-const adminBenefits = [
-  ["Publica tus canchas", "Registra cada espacio con su nombre, precio, horarios, características y estado activo."],
-  ["Administra tu equipo", "Crea usuarios, asigna roles y define quién puede operar reservas o consultar reportes."],
-  ["Ordena tus reservas", "Revisa solicitudes, confirma horarios y evita cruces desde un panel centralizado."]
+const slots = ["06:00","07:00","08:00","09:00","10:00","11:00"];
+const players = [
+  { init: "DL", name: "Diego L.", zone: "Cayma", text: "Encontré canchas que ni sabía que existían a 5 cuadras de mi casa. Brutal.", tag: "Jugador · F7" },
+  { init: "RP", name: "Rodrigo P.", zone: "San Borja", text: "El código es perfectazo. Llegas, lo muestras y entras. Sin esperar, sin explicar nada.", tag: "Jugador · F5" },
+  { init: "MA", name: "Marco A.", zone: "La Molina", text: "Divido el pago con mis patas desde la app. Ya nadie lleva efectivo al partido.", tag: "Jugador · F11" },
+  { init: "LR", name: "Luis R.", zone: "Barranco", text: "Me avisa cuando hay canchas libres de última hora. Salvó más de un partido a las 11pm.", tag: "Jugador · F5" },
+  { init: "KS", name: "Kevin S.", zone: "Jesús María", text: "La sección de filtros es genial. Grass, techada, precio — en 30 segundos tengo opciones.", tag: "Jugador · F7" },
+  { init: "AV", name: "André V.", zone: "San Miguel", text: "Antes perdíamos 20 min para ver si había cancha. Ahora llegamos y listo.", tag: "Jugador · F5" },
 ];
-
-const ownerFlow = [
-  ["01", "Configura tu complejo", "Añade tus canchas, precios, horarios y la información que tus clientes necesitan."],
-  ["02", "Invita a tu equipo", "Asigna roles para que cada persona tenga solo los permisos necesarios."],
-  ["03", "Recibe solicitudes", "Tus clientes encuentran disponibilidad y envían sus solicitudes en línea."],
-  ["04", "Decide y mide", "Confirma reservas, consulta el historial y revisa reportes para mejorar tu operación."]
+const owners = [
+  { init: "WC", name: "Walter C.", zone: "Comas", text: "Ahora los clientes llegan con su código y el proceso es limpio. Menos confusiones, más orden.", tag: "Dueño · Canchas El Bosque" },
+  { init: "JF", name: "José F.", zone: "Villa El Salvador", text: "Registré mi complejo gratis y en 3 días ya tenía reservas online. Increíble.", tag: "Dueño · Sport Center VES" },
+  { init: "JT", name: "Jhon T.", zone: "Cayma", text: "Mis canchas están llenas entre semana. Antes se quedaban vacías los martes y miércoles.", tag: "Dueño · Complejo Los Andes" },
+  { init: "RV", name: "Roberto V.", zone: "José Luis Bustamante y Rivero", text: "El panel es muy fácil. Veo mis reservas del mes de un vistazo y gestiono todo desde el celular.", tag: "Dueño · Complejo San Martín" },
+  { init: "HM", name: "Henry M.", zone: "Ate Vitarte", text: "Triplicamos las reservas en los primeros 2 meses. Sin gastar en publicidad.", tag: "Dueño · Los Cedros FC" },
 ];
 ---
 
-<BaseLayout title="ReservaYa | Reserva tu cancha" description="Encuentra y solicita tu cancha deportiva en pocos pasos.">
-  <section class="relative left-1/2 flex min-h-[calc(100vh-7rem)] w-screen -translate-x-1/2 items-center overflow-hidden bg-gradient-to-br from-[#241214] via-[#7d1728] to-[var(--accent-main)] px-10 py-24 text-white md:px-16 md:py-32">
-    <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl"></div>
-    <div class="relative mx-auto w-full max-w-[1500px]">
-      <p class="mb-5 text-sm font-bold uppercase tracking-[0.28em] text-white/75">ReservaYa · Arequipa</p>
-      <div class="max-w-3xl">
-        <h1 class="text-4xl font-black leading-[1.05] md:text-7xl">Tu equipo ya está listo. La cancha también.</h1>
-        <p class="mt-7 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">Encuentra un espacio para jugar, solicita el horario que necesitas y recibe una confirmación clara, sin llamadas interminables.</p>
+<BaseLayout
+  title="ReservaYa | Busca. Reserva. Juega."
+  description="Reserva canchas en minutos en todo el Perú. Sin llamadas, sin WhatsApp. Pago con Yape, tarjeta y QR."
+  announcement="⚽ Crea tu carné de jugador estilo FIFA y compártelo con tus causas"
+>
+  <!-- ============ HERO con carrusel de fondo ============ -->
+  <section class="relative left-1/2 flex min-h-[94vh] w-screen -translate-x-1/2 items-center overflow-hidden bg-[#040705] text-white">
+    <div id="hero-slides" class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=2000&auto=format&fit=crop" alt="Canchas deportivas desde el aire" class="hero-bg is-active absolute inset-0 h-full w-full object-cover opacity-100" loading="eager" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2000&auto=format&fit=crop'" />
+      <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2000&auto=format&fit=crop" alt="Estadio de fútbol de noche" class="hero-bg absolute inset-0 h-full w-full object-cover opacity-0" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=2000&auto=format&fit=crop'" />
+      <img src="https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?q=80&w=2000&auto=format&fit=crop" alt="Cancha de pádel" class="hero-bg absolute inset-0 h-full w-full object-cover opacity-0" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1554068865-24cecd4e34b8?q=80&w=2000&auto=format&fit=crop'" />
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#040705] via-transparent to-black/50"></div>
+    <div class="pointer-events-none absolute -left-40 top-1/3 h-[480px] w-[480px] rounded-full bg-[#22C55E]/15 blur-[140px]"></div>
+
+    <div class="relative mx-auto w-full max-w-7xl px-4 py-20 md:px-8 md:py-24">
+      <p class="flex items-center justify-end gap-1.5 text-xs text-white/50"><span aria-hidden="true">◉</span> @reservaya.pe</p>
+      <span class="mt-3 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-black/50 py-2 pl-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.16em] text-[#4ADE80] shadow-lg backdrop-blur-xl">
+        <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4ADE80] opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-[#4ADE80]"></span></span>
+        Todo el Perú · Canchas disponibles ahora
+      </span>
+      <h1 class="text-shadow-hero mt-7 max-w-3xl font-black leading-[0.93] tracking-tight text-white [font-family:'Poppins','Inter',sans-serif] text-[clamp(3.8rem,10vw,8rem)]">
+        Busca.<br />Reserva.<br /><span class="text-glow-green text-[#4ADE80]">Ya</span><span class="text-white">.</span>
+      </h1>
+      <p class="text-shadow-hero mt-6 max-w-md text-lg leading-relaxed text-white/80 md:text-xl">
+        Reserva en minutos. Sin llamadas, sin WhatsApp.
+      </p>
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a href="/canchas" class="btn-press btn-shine group inline-flex items-center justify-center gap-2.5 rounded-2xl bg-[#22C55E] px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_40px_rgba(34,197,94,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#16A34A] hover:shadow-[0_18px_50px_rgba(34,197,94,0.55)]">
+          Buscar canchas <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+        </a>
+        <a href="/duenos" class="inline-flex items-center justify-center gap-2.5 rounded-2xl border border-white/25 bg-white/[0.07] px-8 py-4 text-[15px] font-semibold text-white shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/[0.14]">
+          <span aria-hidden="true" class="text-[#4ADE80]">◔</span> Soy dueño de cancha
+        </a>
       </div>
-      <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-        <a href="#canchas" class="rounded-xl bg-white px-6 py-3 text-center font-bold transition hover:-translate-y-0.5 hover:bg-[#fff5ed]" style="color:#6f1425;">Ver canchas</a>
-        <a href="/register" data-register-modal-trigger class="rounded-xl border border-white/60 px-6 py-3 text-center font-semibold text-white transition hover:bg-white/10" style="color:#ffffff;">Regístrate</a>
+      <div class="mt-11 grid max-w-2xl grid-cols-2 divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-2xl backdrop-blur-2xl sm:grid-cols-4 sm:divide-x">
+        {[["Online","Reserva en 3 clics"],["Yape","Plin · Tarjeta"],["QR","Voucher de acceso"],["24/7","Disponible siempre"]].map(([t,d]) => (
+          <div class="px-5 py-4">
+            <p class="text-[15px] font-extrabold text-white">{t}</p>
+            <p class="mt-0.5 text-[11px] text-white/55">{d}</p>
+          </div>
+        ))}
+      </div>
+      <div class="mt-8 flex items-center gap-4">
+        <div class="flex items-center gap-2" id="hero-dots" role="tablist" aria-label="Fondos destacados">
+          {[0,1,2].map(i => <button type="button" data-hero-dot={i} aria-label={`Ver fondo ${i+1}`} class={`h-1.5 rounded-full transition-all duration-500 ${i===0?"w-9 bg-[#4ADE80]":"w-2 bg-white/30 hover:bg-white/70"}`}></button>)}
+        </div>
+        <div class="h-px w-16 overflow-hidden rounded-full bg-white/15"><div id="hero-progress" class="hero-progress h-full w-full bg-[#4ADE80]"></div></div>
+        <span id="hero-counter" class="text-[11px] font-bold tracking-[0.2em] text-white/50">01 / 03</span>
+      </div>
+    </div>
+    <div class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2.5" aria-hidden="true">
+      <span class="text-[10px] font-bold uppercase tracking-[0.35em] text-white/45">Scroll</span>
+      <span class="flex h-10 w-6 items-start justify-center overflow-hidden rounded-full border border-white/25 p-1.5"><span class="scroll-hint-dot block h-2 w-1 rounded-full bg-[#4ADE80]"></span></span>
+    </div>
+  </section>
+
+  <!-- ============ CINTA DE DISTRITOS (carrusel infinito) ============ -->
+  <div class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-y border-[#22C55E]/20 bg-[#060A08] py-2">
+    <div class="flex w-max will-change-transform" id="cities-marquee" data-marquee data-speed="90" data-dir="1">
+      {[...cities, ...cities].map((c, i) => (
+        <span class={`mr-2 whitespace-nowrap px-5 py-2 text-sm font-black tracking-wider ${i%2===0 ? "bg-white text-black" : "bg-[#0B120D] text-[#4ADE80]"} rounded-[2px]`}>{c}</span>
+      ))}
+    </div>
+  </div>
+
+  <!-- ============ CÓMO FUNCIONA · Carrusel 01/03 ============ -->
+  <section id="como-funciona" class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#040705] text-white">
+    <div class="pointer-events-none absolute inset-0 opacity-70" aria-hidden="true">
+      <svg class="h-full w-full" viewBox="0 0 1440 600" fill="none" stroke="#22C55E" stroke-opacity="0.16" preserveAspectRatio="xMidYMid slice"><rect x="8" y="24" width="1424" height="552"/><line x1="720" y1="24" x2="720" y2="576"/><circle cx="720" cy="300" r="110"/><rect x="8" y="170" width="180" height="260"/><rect x="1252" y="170" width="180" height="260"/><rect x="8" y="230" width="70" height="140"/><rect x="1362" y="230" width="70" height="140"/><circle cx="240" cy="300" r="4" fill="#22C55E" stroke="none" stroke-opacity="0.5"/><circle cx="1200" cy="300" r="4" fill="#22C55E" stroke="none" stroke-opacity="0.5"/></svg>
+    </div>
+    <div id="how-giant" class="pointer-events-none absolute -bottom-10 right-0 select-none text-[22vw] font-black leading-none text-white/[0.04] md:text-[16rem]">01</div>
+
+    <div class="relative mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-20">
+      <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.2em]">
+        <p class="text-[#4ADE80]" id="how-label">Busca · 01/03</p>
+        <div class="flex items-center gap-2" id="how-dots" role="tablist" aria-label="Pasos">
+          {[0,1,2].map(i => <button type="button" role="tab" data-how-dot={i} aria-label={`Ir al paso ${i+1}`} class={`h-1.5 rounded-full transition-all ${i===0?"w-6 bg-[#4ADE80]":"w-1.5 bg-white/25 hover:bg-white/60"}`}></button>)}
+        </div>
+      </div>
+
+      <div class="mt-6 overflow-hidden" id="how-viewport">
+        <div id="how-track" class="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
+
+          <!-- SLIDE 1: BUSCA -->
+          <div class="w-full shrink-0 pr-1" role="tabpanel" aria-label="Paso 1 busca">
+            <div class="grid items-center gap-10 lg:grid-cols-2">
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Paso 01 · Busca</p>
+                <h2 class="mt-4 text-4xl font-black leading-tight tracking-tight text-white md:text-6xl">Encuentra tu<br/>cancha ideal.</h2>
+                <p class="mt-5 max-w-md leading-relaxed text-white/60">Filtra por distrito, formato (F5/F7/F11), superficie y precio. Mapa con canchas cerca tuyo en tiempo real.</p>
+                <div class="mt-6 flex items-center gap-2 text-xs text-white/40">
+                  <span class="h-1.5 w-6 rounded-full bg-[#4ADE80]"></span><span class="h-1.5 w-1.5 rounded-full bg-white/25"></span><span class="h-1.5 w-1.5 rounded-full bg-white/25"></span>
+                  <span class="ml-2">Sigue scrolleando</span>
+                </div>
+                <div class="mt-6 flex gap-2">
+                  <button type="button" data-how-prev class="rounded-xl border border-white/20 px-5 py-2.5 text-sm font-bold hover:bg-white/10">← Anterior</button>
+                  <button type="button" data-how-next class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A]">Siguiente →</button>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-[#081009]/90 p-4 shadow-2xl">
+                <div id="mini-map" class="relative h-72 overflow-hidden rounded-xl bg-[#060D08]" style="background-image:radial-gradient(rgba(74,222,128,0.18) 1px, transparent 1px);background-size:22px 22px;">
+                  <div class="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full" style="background:radial-gradient(circle, rgba(34,197,94,0.16), transparent 65%);" aria-hidden="true"></div>
+                  {pins.map((p, i) => (
+                    <button type="button" data-pin={p.name} data-fmt={p.fmt} class="map-pin group absolute -translate-x-1/2 -translate-y-1/2" style={`left:${p.x};top:${p.y}`}>
+                      <span class="relative mx-auto block h-2.5 w-2.5">
+                        <span class="sonar-ring" style={`animation-delay:${(i % 5) * 0.45}s`}></span>
+                        <span class="sonar-ring" style={`animation-delay:${((i % 5) * 0.45 + 1.2).toFixed(2)}s`}></span>
+                        <span class="relative block h-2.5 w-2.5 rounded-full bg-[#4ADE80] shadow-[0_0_14px_rgba(74,222,128,1)]"></span>
+                      </span>
+                      <span class="mt-1 block whitespace-nowrap rounded-lg border border-[#22C55E]/30 bg-black/80 px-2.5 py-1.5 text-left text-[11px] leading-tight backdrop-blur"><strong class="block text-white">{p.name}</strong><span class="text-[#4ADE80] font-bold">{p.price}</span></span>
+                    </button>
+                  ))}
+                </div>
+                <div class="mt-3 flex items-center gap-2 rounded-xl border border-white/10 bg-black px-3 py-2.5">
+                  <span aria-hidden="true" class="text-[#4ADE80]">⌖</span>
+                  <input id="map-search" type="text" placeholder="Buscar por distrito o cancha..." class="w-full bg-transparent text-sm text-white placeholder:text-white/35 focus:outline-none" />
+                  <button type="button" data-fmt-filter="F5" class="fmt-btn rounded-md bg-[#22C55E]/20 px-2.5 py-1 text-[11px] font-bold text-[#4ADE80]">F5</button>
+                  <button type="button" data-fmt-filter="F7" class="fmt-btn rounded-md bg-white/10 px-2.5 py-1 text-[11px] font-bold text-white/70">F7</button>
+                </div>
+                <p id="map-count" class="mt-2 text-xs text-white/45">5 canchas cerca de ti</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2: RESERVA -->
+          <div class="w-full shrink-0 pr-1" role="tabpanel" aria-label="Paso 2 reserva">
+            <div class="grid items-center gap-10 lg:grid-cols-2">
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Paso 02 · Reserva</p>
+                <h2 class="mt-4 text-4xl font-black leading-tight tracking-tight text-white md:text-6xl">Elige tu hora,<br/>confirma al<br/>instante.</h2>
+                <p class="mt-5 max-w-md leading-relaxed text-white/60">Selecciona el slot disponible y reserva en segundos. Pago online con Yape o presencial en la cancha.</p>
+                <div class="mt-6 flex items-center gap-2 text-xs text-white/40">
+                  <span class="h-1.5 w-1.5 rounded-full bg-white/25"></span><span class="h-1.5 w-6 rounded-full bg-[#4ADE80]"></span><span class="h-1.5 w-1.5 rounded-full bg-white/25"></span>
+                  <span class="ml-2">Sigue scrolleando</span>
+                </div>
+                <div class="mt-6 flex gap-2">
+                  <button type="button" data-how-prev class="rounded-xl border border-white/20 px-5 py-2.5 text-sm font-bold hover:bg-white/10">← Anterior</button>
+                  <button type="button" data-how-next class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A]">Siguiente →</button>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-[#0B100C]/95 p-6 shadow-2xl">
+                <div class="flex items-start justify-between">
+                  <div><p class="font-bold">Cancha Norte — F5</p><p class="text-xs text-white/45">◷ Sáb 14 Jun</p></div>
+                  <p class="text-right text-xl font-black text-[#4ADE80]">S/ 80<small class="block text-xs font-normal text-white/45">/hora</small></p>
+                </div>
+                <div class="mt-5 grid grid-cols-3 gap-2.5" id="slot-grid" role="radiogroup" aria-label="Elige horario">
+                  {slots.map((s,i) => (
+                    <button type="button" role="radio" data-slot={s} aria-checked={i===2?"true":"false"} class={`slot-btn rounded-xl px-3 py-3 text-sm font-bold transition ${i===2?"bg-[#4ADE80] text-black shadow-[0_0_20px_rgba(74,222,128,0.4)]":"bg-white/[0.07] text-white hover:bg-white/[0.14]"} ${i===0||i===4?"opacity-40 line-through":""}`}>{s}</button>
+                  ))}
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2 text-[11px] text-white/50">
+                  {["Grass sint.","Techada","Vestuarios","Estacionam."].map(t => <span class="rounded-md bg-white/5 px-2.5 py-1">{t}</span>)}
+                </div>
+                <div class="mt-5 border-t border-white/10 pt-4 text-sm">
+                  <div class="flex justify-between text-white/60"><span id="book-summary">Sáb 14 Jun · 08:00 - 09:00</span><span class="font-bold text-white">S/ 80</span></div>
+                  <p class="mt-1 text-xs text-white/40">Cancha Norte · F5 · San Isidro</p>
+                </div>
+                <button type="button" id="confirm-book" class="mt-4 w-full rounded-xl bg-[#22C55E] py-3.5 font-bold text-black transition hover:bg-[#4ADE80] hover:shadow-[0_8px_28px_rgba(74,222,128,0.45)]">Confirmar reserva · S/ 80</button>
+                <p id="book-msg" class="mt-2 hidden text-center text-xs font-bold text-[#4ADE80]">¡Slot apartado! Te llevamos al paso 03…</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3: JUEGA -->
+          <div class="w-full shrink-0" role="tabpanel" aria-label="Paso 3 juega">
+            <div class="grid items-center gap-10 lg:grid-cols-2">
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Paso 03 · Juega</p>
+                <h2 class="mt-4 text-4xl font-black leading-tight tracking-tight text-white md:text-5xl">¡Llega, muestra tu código y juega!</h2>
+                <p class="mt-5 max-w-md leading-relaxed text-white/60">Recibes un código único de reserva. Muéstralo al dueño al llegar y listo. Sin filas, sin llamadas.</p>
+                <div class="mt-6 flex items-center gap-2 text-xs text-white/40">
+                  <span class="h-1.5 w-1.5 rounded-full bg-white/25"></span><span class="h-1.5 w-1.5 rounded-full bg-white/25"></span><span class="h-1.5 w-6 rounded-full bg-[#4ADE80]"></span>
+                  <span class="ml-2">Sigue scrolleando</span>
+                </div>
+                <div class="mt-6 flex gap-2">
+                  <button type="button" data-how-prev class="rounded-xl border border-white/20 px-5 py-2.5 text-sm font-bold hover:bg-white/10">← Anterior</button>
+                  <a href="/canchas" class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A]">Reservar ahora →</a>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-[#0B100C]/95 p-8 text-center shadow-2xl">
+                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#22C55E]/50 bg-[#22C55E]/10 text-2xl text-[#4ADE80]">✓</div>
+                <p class="mt-4 text-lg font-black">¡Reserva confirmada!</p>
+                <p class="text-xs text-white/45">Cancha Norte · Sáb <span id="ticket-hour">8:00 AM</span></p>
+                <div class="mx-auto mt-5 max-w-xs rounded-xl border border-[#22C55E]/30 bg-black/60 px-6 py-5">
+                  <p class="text-[11px] uppercase tracking-[0.25em] text-[#4ADE80]">Tu código</p>
+                  <p id="ticket-code" class="mt-2 text-2xl font-black tracking-[0.2em]">RY - 7KX9M2</p>
+                  <p class="mt-2 text-[11px] text-white/40">Muéstralo al llegar a la cancha</p>
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl bg-black/70 p-5 text-left text-xs">
+                  <div><p class="text-white/40">Jugador</p><p class="font-bold text-white">Carlos M.</p></div>
+                  <div><p class="text-white/40">Formato</p><p class="font-bold text-white">Fútbol 5</p></div>
+                  <div><p class="text-white/40">Fecha</p><p class="font-bold text-white">Sáb 14 Jun</p></div>
+                  <div><p class="text-white/40">Hora</p><p class="font-bold text-white" id="ticket-range">08:00 - 09:00</p></div>
+                  <div><p class="text-white/40">Cancha</p><p class="font-bold text-white">Norte</p></div>
+                  <div><p class="text-white/40">Total</p><p class="font-bold text-white">S/ 80</p></div>
+                </div>
+                <div class="mt-4 flex items-center justify-center gap-1 text-lg" id="stars" aria-label="Califica tu experiencia">
+                  {[1,2,3,4,5].map(i => <button type="button" data-star={i} class="text-[#EAB308] transition hover:scale-125" aria-label={`${i} estrellas`}>★</button>)}
+                  <span class="ml-2 text-xs text-white/40">Califica tu experiencia</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="canchas" class="relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[var(--bg-muted)] px-10 py-24 md:px-16 md:py-32">
-    <div class="mx-auto w-full max-w-[1500px]">
-      <div class="mx-auto max-w-2xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.25em] text-[var(--accent-main)]">Para dueños de canchas</p>
-        <h2 class="mt-3 text-3xl font-black text-[var(--text-main)] md:text-4xl">Tu complejo, tus reglas, todo organizado</h2>
-        <p class="mt-4 text-[var(--text-muted)]">ReservaYa te ayuda a publicar tus espacios y administrar clientes, roles, horarios y reservas desde un solo lugar.</p>
+  <!-- ============ FUNCIONALIDADES ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-16 md:px-8 md:py-20">
+    <div class="mx-auto max-w-7xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#15803D]">Funcionalidades</p>
+      <h2 class="reveal mt-3 text-3xl font-black tracking-tight text-[#101613] md:text-5xl">Todo lo que necesitas, <span class="text-[#16A34A]">todo en uno.</span></h2>
+      <div class="reveal mt-10 grid gap-4 lg:grid-cols-3" data-reveal-delay="120">
+        <article class="relative overflow-hidden rounded-2xl bg-[#060C08] p-6 text-white lg:col-span-2 lg:row-span-1 min-h-[320px] flex flex-col justify-end">
+          <div class="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-lg bg-black/60 px-3 py-1.5 text-xs backdrop-blur"><span class="h-1.5 w-1.5 rounded-full bg-[#4ADE80]"></span> Todo el Perú — canchas cerca tuyo</div>
+          <div class="absolute inset-0 opacity-80" style="background-image:linear-gradient(rgba(74,222,128,0.12) 1px, transparent 1px),linear-gradient(90deg, rgba(74,222,128,0.12) 1px, transparent 1px);background-size:44px 44px;"></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="relative h-48 w-full max-w-md">
+              <span class="absolute left-[8%] top-[62%] rounded-md bg-black/85 px-2 py-1 text-[11px] font-bold">La Molina<br/><span class="text-[#4ADE80]">S/ 55/h</span></span>
+              <span class="absolute left-[32%] top-[38%] rounded-md bg-black/85 px-2 py-1 text-[11px] font-bold">San Isidro<br/><span class="text-[#4ADE80]">S/ 80/h</span></span>
+                <span class="absolute left-[58%] top-[18%] rounded-md bg-black/85 px-2 py-1 text-[11px] font-bold">Cayma<br/><span class="text-[#4ADE80]">S/ 65/h</span></span>
+                <span class="absolute left-[52%] top-[66%] rounded-md bg-black/85 px-2 py-1 text-[11px] font-bold">Paucarpata<br/><span class="text-[#4ADE80]">S/ 70/h</span></span>
+              <span class="absolute left-[78%] top-[58%] rounded-md bg-black/85 px-2 py-1 text-[11px] font-bold">Barranco<br/><span class="text-[#4ADE80]">S/ 60/h</span></span>
+            </div>
+          </div>
+          <p class="relative text-xs font-bold text-[#4ADE80]">01</p>
+          <h3 class="relative mt-1 text-xl font-black text-white">Mapa interactivo</h3>
+          <p class="relative mt-1 max-w-sm text-sm text-white/60">Canchas cerca tuyo con Google Maps. Filtra por formato y disponibilidad en tiempo real.</p>
+        </article>
+        <article class="rounded-2xl border border-[#E7E5E4] bg-white p-6">
+          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#DCFCE7]">▤</span><span class="text-3xl font-black text-[#16A34A]/10">02</span></div>
+          <h3 class="mt-4 font-black text-[#101613]">Pago seguro con Yape</h3>
+          <p class="mt-1 text-sm text-[#5B6660]">Tarjeta de crédito/débito online, Yape, Plin o pago presencial.</p>
+          <div class="mt-6 flex items-center justify-between"><span class="rounded-md bg-[#FEF9C3] px-2 py-1 text-xs">💳</span><span class="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-bold text-[#16A34A]">✓ OK</span></div>
+        </article>
+        <article class="rounded-2xl border border-[#E7E5E4] bg-white p-6">
+          <div class="flex items-start justify-between"><div class="flex -space-x-1.5">{["C","D","L","M"].map(l => <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#16A34A] text-[10px] font-bold text-white ring-2 ring-white">{l}</span>)}<span class="pl-2 text-xs font-bold text-[#5B6660]">+</span></div><span class="text-3xl font-black text-[#16A34A]/10">03</span></div>
+          <h3 class="mt-4 font-black text-[#101613]">Divide el pago</h3>
+          <p class="mt-1 text-sm text-[#5B6660]">Comparte el costo entre los jugadores.</p>
+          <div class="mt-4 flex h-2 overflow-hidden rounded-full"><span class="w-1/4 bg-[#16A34A]"></span><span class="w-1/4 bg-[#0E7490]"></span><span class="w-1/4 bg-[#15803D]"></span><span class="w-1/4 bg-[#4ADE80]"></span></div>
+          <div class="mt-2 flex justify-between text-[11px] font-bold text-[#5B6660]"><span>S/20</span><span>S/20</span><span>S/20</span><span>S/20</span></div>
+          <p class="mt-1 text-center text-[11px] text-[#8A938D]">Total S/ 80 · 4 jugadores</p>
+        </article>
+        <article class="rounded-2xl border border-[#E7E5E4] bg-white p-6">
+          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#FEF9C3] text-[#EAB308]">☆</span><span class="text-3xl font-black text-[#16A34A]/10">04</span></div>
+          <div class="mt-4 flex items-center justify-between"><span class="text-[#EAB308] text-sm tracking-widest">★★★★★</span><span class="text-xs font-black">5.0</span></div>
+          <p class="mt-2 text-sm italic text-[#5B6660]">"Cancha impecable, piso sintético perfecto."</p>
+          <p class="text-xs text-[#8A938D]">— Carlos M. · verificado</p>
+          <h3 class="mt-4 font-black text-[#101613]">Reseñas verificadas</h3>
+          <p class="mt-1 text-sm text-[#5B6660]">Solo quienes jugaron pueden opinar. Sin reviews falsos.</p>
+        </article>
+        <article class="rounded-2xl border border-[#E7E5E4] bg-white p-6">
+          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#DBEAFE]">🔔</span><span class="text-3xl font-black text-[#16A34A]/10">05</span></div>
+          <div class="mt-4 rounded-lg bg-[#FFFBEB] px-3 py-2 text-xs"><span class="font-bold text-[#EAB308]">Partido en 1 hora</span><span class="float-right text-[#8A938D]">Cancha Norte</span></div>
+          <h3 class="mt-4 font-black text-[#101613]">Notificaciones</h3>
+          <p class="mt-1 text-sm text-[#5B6660]">Confirmaciones, recordatorios y cambios en tiempo real.</p>
+        </article>
+        <article class="rounded-2xl border border-[#E7E5E4] bg-white p-6">
+          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#DCFCE7]">◈</span><span class="text-3xl font-black text-[#16A34A]/10">06</span></div>
+          <div class="mt-4 flex items-center gap-2"><span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#22C55E] text-[#16A34A]">◈</span><div><p class="text-xs font-bold text-[#16A34A]">● Slot protegido</p><p class="text-xs text-[#8A938D]">Reembolso hasta 2h antes.</p></div></div>
+          <h3 class="mt-4 font-black text-[#101613]">Reserva garantizada</h3>
+          <p class="mt-1 text-sm text-[#5B6660]">Tu slot está reservado. Cancelación con reembolso hasta 2h antes.</p>
+        </article>
       </div>
-      <div class="mt-12 grid gap-6 md:grid-cols-3">
-        {adminBenefits.map(([title, text], index) => (
-          <article class:list={["flex min-h-[290px] flex-col rounded-2xl border p-8 shadow-sm transition hover:-translate-y-1 md:p-10", index === 1 ? "border-[var(--accent-main)] bg-[var(--accent-main)] text-white shadow-lg" : "border-[var(--border-main)] bg-[var(--bg-card)]"]}>
-            <span class:list={["inline-flex h-10 w-10 items-center justify-center rounded-xl font-bold", index === 1 ? "bg-white/15 text-white" : "bg-[var(--accent-soft)] text-[var(--accent-main)]"]}>0{index + 1}</span>
-            <h3 class:list={["mt-6 text-xl font-bold", index === 1 ? "text-white" : "text-[var(--text-main)]"]}>{title}</h3>
-            <p class:list={["mt-3 leading-relaxed", index === 1 ? "text-white/80" : "text-[var(--text-muted)]"]}>{text}</p>
-            <ul class:list={["mt-6 space-y-2 border-t pt-5 text-sm", index === 1 ? "border-white/20 text-white/85" : "border-[var(--border-main)] text-[var(--text-muted)]"]}><li>✓ Información organizada</li><li>✓ Menos cruces de horarios</li></ul>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIOS · doble carrusel ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-black px-4 py-16 text-white md:py-20">
+    <div class="mx-auto max-w-7xl md:px-8">
+      <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Lo dicen los que juegan</p>
+      <div class="mt-3 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <h2 class="reveal text-3xl font-black tracking-tight text-white md:text-5xl">Miles de jugadores <span class="text-[#4ADE80]">ya reservaron.</span></h2>
+        <p class="max-w-sm text-sm leading-relaxed text-white/50">Jugadores y dueños de complejos en todo el Perú comparten su experiencia con ReservaYa.</p>
+      </div>
+    </div>
+    <div class="mt-10 space-y-4">
+      <div class="flex w-max will-change-transform" id="row-players" data-marquee data-speed="70" data-dir="1" data-hover="never">
+        {[...players, ...players].map(p => (
+          <article class="mr-4 w-80 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full bg-[#22C55E] text-xs font-black text-white">{p.init}</span><div><p class="text-sm font-bold text-white">{p.name}</p><p class="text-xs text-white/40">{p.zone}</p></div></div>
+              <span class="rounded-md bg-[#22C55E]/10 px-2 py-1 text-[10px] font-bold text-[#4ADE80]">Jugador</span>
+            </div>
+            <p class="mt-3 text-xs tracking-widest text-[#EAB308]">★★★★★</p>
+            <p class="mt-2 text-sm leading-relaxed text-white/70">"{p.text}"</p>
+            <p class="mt-3 text-xs text-white/30">{p.tag}</p>
+          </article>
+        ))}
+      </div>
+      <div class="flex w-max will-change-transform" id="row-owners" data-marquee data-speed="70" data-dir="-1" data-hover="never">
+        {[...owners, ...owners].map(o => (
+          <article class="mr-4 w-80 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full bg-[#2563EB] text-xs font-black text-white">{o.init}</span><div><p class="text-sm font-bold text-white">{o.name}</p><p class="text-xs text-white/40">{o.zone}</p></div></div>
+              <span class="rounded-md bg-[#2563EB]/15 px-2 py-1 text-[10px] font-bold text-[#93C5FD]">Dueño</span>
+            </div>
+            <p class="mt-3 text-xs tracking-widest text-[#EAB308]">★★★★★</p>
+            <p class="mt-2 text-sm leading-relaxed text-white/70">"{o.text}"</p>
+            <p class="mt-3 text-xs text-white/30">{o.tag}</p>
           </article>
         ))}
       </div>
     </div>
+    <p class="mt-8 text-center text-sm text-white/35">+2,400 jugadores y 180+ canchas en Perú</p>
   </section>
 
-  <section id="para-complejos" class="owner-section relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[#f4ebe3] px-10 py-24 md:px-16 md:py-32">
-    <div class="mx-auto w-full max-w-[1500px]"><div class="owner-card rounded-3xl border border-[#decfc3] bg-[#fcf7f2] p-8 md:p-12"><div class="grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-center"><div><p class="text-xs font-bold uppercase tracking-[0.22em] text-[var(--accent-main)]">Así funciona para tu negocio</p><h3 class="mt-3 text-2xl font-black text-[var(--text-main)] md:text-3xl">Haz que tus canchas trabajen de forma más ordenada</h3><p class="mt-4 leading-relaxed text-[var(--text-muted)]">Publica tus espacios en ReservaYa, atrae solicitudes y dale a tu equipo una forma clara de administrar clientes, roles y horarios.</p></div><div class="grid gap-5 sm:grid-cols-2">{ownerFlow.map(([number, title, text]) => <article class="rounded-2xl border border-[var(--border-main)] p-5"><span class="font-black text-[var(--accent-main)]">{number}</span><h4 class="mt-3 font-bold text-[var(--text-main)]">{title}</h4><p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{text}</p></article>)}</div></div><div class="mt-8 flex flex-col items-start justify-between gap-4 border-t border-[var(--border-main)] pt-6 sm:flex-row sm:items-center"><p class="font-semibold text-[var(--text-main)]">¿Quieres publicar tus canchas y recibir reservas?</p><a href="mailto:contacto@reservaya.com?subject=Quiero%20publicar%20mis%20canchas%20en%20ReservaYa" class="inline-flex rounded-xl bg-[var(--accent-main)] px-5 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[var(--accent-hover)]">Quiero publicar mis canchas</a></div></div></div>
+  <!-- ============ DUEÑOS ============ -->
+  <section id="duenos" class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-16 md:px-8 md:py-20">
+    <div class="mx-auto max-w-5xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full border border-[#16A34A]/25 bg-[#DCFCE7]/60 px-4 py-1.5 text-xs font-bold text-[#15803D]">✦ Para dueños de complejos</span>
+      <h2 class="reveal mt-5 text-4xl font-black tracking-tight text-[#101613] md:text-6xl">Llena tus canchas. <span class="text-[#16A34A]">Sin esfuerzo.</span></h2>
+      <p class="mx-auto mt-4 max-w-xl text-[#5B6660]">Registro gratis, define horarios y precios, y empieza a recibir reservas hoy mismo.</p>
+    </div>
+    <div class="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-5">
+      <div class="rounded-2xl border border-[#E7E5E4] bg-white p-6 md:col-span-3">
+        <div class="flex items-start justify-between"><div><p class="text-[11px] uppercase tracking-[0.2em] text-[#8A938D]">Tu complejo</p><p class="text-lg font-black">Ingresos esta semana</p></div><div class="text-right"><p class="text-2xl font-black text-[#16A34A]">S/ 5,190</p><p class="text-xs text-[#16A34A]">↗ +34% <span class="text-[#8A938D]">vs anterior</span></p></div></div>
+        <div class="mt-5 grid grid-cols-3 gap-3">
+          <div class="rounded-xl border border-[#F0EFED] bg-[#FAFAF9] p-4"><p class="text-xl font-black" data-count="12">0</p><p class="text-xs text-[#8A938D]">Reservas hoy</p><p class="text-xs font-bold text-[#16A34A]">+4</p></div>
+          <div class="rounded-xl border border-[#F0EFED] bg-[#FAFAF9] p-4"><p class="text-xl font-black" data-count="87" data-suffix="%">0</p><p class="text-xs text-[#8A938D]">Ocupación</p><p class="text-xs font-bold text-[#16A34A]">+12%</p></div>
+          <div class="rounded-xl border border-[#F0EFED] bg-[#FAFAF9] p-4"><p class="text-xl font-black" data-count="1">0</p><p class="text-xs text-[#8A938D]">Cancelaciones</p><p class="text-xs font-bold text-[#16A34A]">-2</p></div>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-[#E7E5E4] bg-white p-6 md:col-span-2">
+        <div class="flex items-center justify-between"><p class="text-sm font-bold">● Reservas en vivo</p><span class="text-xs font-bold text-[#16A34A]">HOY</span></div>
+        <div id="live-books" class="mt-4 space-y-2.5">
+          {[["M","Marco A.","21:00"],["C","Carlos M.","08:00"],["E","Equipo Tigres","09:00"]].map(b => (
+            <div class="live-row flex items-center justify-between rounded-xl bg-[#F7F8F7] px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#16A34A] text-xs font-black text-white">{b[0]}</span><span class="text-sm font-bold">{b[1]}</span></div><span class="text-xs font-bold text-[#16A34A]">{b[2]}</span></div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="mx-auto mt-4 grid max-w-5xl gap-4 md:grid-cols-2">
+      {[["↗","Más reservas","Multiplica tus reservas entre semana sin publicidad.","bg-[#DCFCE7]"],["✓","Confirma al instante","Auto-confirmación o revisión manual. Tú eliges.","bg-[#DBEAFE]"],["▅","Panel en tiempo real","Ingresos, ocupación y reservas de un vistazo.","bg-[#FEF9C3]"],["▣","100% gratis al inicio","Sin costo. Sin tarjeta. Sin letra chica.","bg-[#DCFCE7]"]].map(b => (
+        <div class="flex gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-5"><span class={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${b[3]}`}>{b[0]}</span><div><p class="text-sm font-black">{b[1]}</p><p class="mt-1 text-[13px] text-[#5B6660]">{b[2]}</p></div></div>
+      ))}
+    </div>
+    <div class="mx-auto mt-4 flex max-w-5xl flex-col items-center justify-between gap-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 md:flex-row">
+      <div><p class="font-black">¿Tienes un complejo?</p><p class="text-sm text-[#5B6660]">Regístrate gratis y empieza a recibir reservas hoy.</p></div>
+      <div class="flex items-center gap-3"><span class="hidden text-xs text-[#8A938D] md:block">Sin tarjeta · 100% gratis</span><a href="/duenos" class="rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#15803D]">Registrar mi complejo gratis →</a></div>
+    </div>
   </section>
 
-  <section id="como-funciona" class="how-section relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[#fbf4ed] px-10 py-24 md:px-16 md:py-32">
-    <div class="how-card mx-auto w-full max-w-[1500px] rounded-3xl border border-[#e1d4ca] bg-[#fffaf6] p-8 md:p-12"><div class="mx-auto max-w-2xl text-center"><p class="text-xs font-bold uppercase tracking-[0.25em] text-[var(--accent-main)]">Cómo funciona</p><h2 class="mt-3 text-3xl font-black text-[var(--text-main)] md:text-4xl">Reserva en cuatro pasos</h2><p class="mt-4 text-[var(--text-muted)]">Desde que encuentras una cancha hasta que recibes la confirmación, todo sucede en un mismo flujo.</p></div><div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{steps.map(([number, title, text]) => <article class="text-center"><div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--accent-main)] text-lg font-black text-[var(--accent-main)]">{number}</div><h3 class="mt-5 font-bold text-[var(--text-main)]">{title}</h3><p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{text}</p></article>)}</div></div>
+  <!-- ============ CTA FINAL ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#040705] px-4 py-20 text-center text-white md:py-28">
+    <div class="pointer-events-none absolute inset-0 opacity-60" aria-hidden="true">
+      <svg class="h-full w-full" viewBox="0 0 1200 500" fill="none" stroke="#22C55E" stroke-opacity="0.16" preserveAspectRatio="xMidYMid slice"><rect x="30" y="20" width="1140" height="460"/><line x1="600" y1="20" x2="600" y2="480"/><circle cx="600" cy="250" r="110"/><rect x="30" y="130" width="170" height="240"/><rect x="1000" y="130" width="170" height="240"/><rect x="30" y="190" width="70" height="120"/><rect x="1100" y="190" width="70" height="120"/><circle cx="180" cy="250" r="5" fill="#22C55E"/><circle cx="1020" cy="250" r="5" fill="#22C55E"/></svg>
+    </div>
+    <div class="relative mx-auto max-w-3xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Empieza hoy · Es gratis</p>
+      <h2 class="reveal mt-5 text-5xl font-black tracking-tight text-white md:text-7xl" data-scroll-words>¿Listo para <span class="text-[#4ADE80]">jugar?</span></h2>
+      <p class="mx-auto mt-5 max-w-xl leading-relaxed text-white/60">Únete a miles de jugadores que ya reservan sus canchas favoritas en Perú sin llamadas ni filas.</p>
+      <a href="/canchas" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-8 py-4 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Reservar una cancha <span aria-hidden="true">→</span></a>
+      <div class="mx-auto mt-10 flex max-w-xl flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
+        <span>Sin tarjeta requerida</span><span class="hidden sm:block">·</span><span>100% gratuito para jugadores</span><span class="hidden sm:block">·</span><span>Cancela cuando quieras</span>
+      </div>
+    </div>
   </section>
-
-  <section id="contacto" class="contact-section relative left-1/2 flex min-h-[560px] w-screen -translate-x-1/2 items-center bg-[#f8e0e1] px-10 py-24 text-center md:px-16 md:py-32"><div class="mx-auto max-w-3xl"><p class="contact-kicker text-xs font-bold uppercase tracking-[0.25em] text-[#8f3041]">Contacto</p><h2 class="contact-title mt-3 text-3xl font-black text-[#3a2024] md:text-5xl">¿Trabajamos juntos?</h2><p class="contact-copy mx-auto mt-5 max-w-xl leading-relaxed text-[#5e4d49]">Cuéntanos sobre tu complejo deportivo, tus canchas y la forma en que hoy gestionas tus reservas. Te mostraremos cómo ReservaYa puede ayudarte.</p><a href="mailto:contacto@reservaya.com?subject=Quiero%20conocer%20ReservaYa" class="mt-8 inline-flex rounded-xl bg-[#9f3b4c] px-7 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b64b5d]">Hablemos de tu complejo</a><p class="contact-copy mt-6 text-sm text-[#5e4d49]">También puedes escribirnos directamente a <a href="mailto:contacto@reservaya.com" class="contact-link font-semibold text-[#8f3041] hover:underline">contacto@reservaya.com</a></p></div></section>
 </BaseLayout>
+
+<style is:global>
+  .marquee { animation: scrollX 28s linear infinite; }
+  .marquee-right { animation: scrollXR 34s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+  @keyframes scrollX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes scrollXR { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .hero-bg { transition: opacity 1.2s ease; }
+  .map-pin { transition: transform .2s ease, opacity .25s ease; }
+  .map-pin:hover { transform: translate(-50%,-50%) scale(1.08); }
+  .map-pin.is-hidden { display: none; }
+  .sonar-ring {
+    position: absolute; inset: 0; border-radius: 9999px;
+    border: 2px solid rgba(74,222,128,.75);
+    animation: sonar 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sonar {
+    0% { transform: scale(.5); opacity: .9; }
+    100% { transform: scale(3.2); opacity: 0; }
+  }
+  #how-track > div { min-height: 100%; }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee, .marquee-right { animation: none; }
+    #how-track { transition: none; }
+  }
+</style>
+
+<script>
+  // ---------- Marquesinas infinitas (motor JS: movimiento garantizado y suave) ----------
+  // Un solo mecanismo (rAF + translate3d): no depende de keyframes CSS,
+  // velocidad constante en px/s, pausa al hover, loop perfecto.
+  document.querySelectorAll("[data-marquee]").forEach((track) => {
+    const speed = parseFloat(track.dataset.speed || "90");
+    const dir = track.dataset.dir === "-1" ? -1 : 1;
+    let x = 0, half = 0, calibrated = false, paused = false;
+    const measure = () => {
+      half = track.scrollWidth / 2;
+      if (dir === -1 && !calibrated && half > 0) { x = -half; calibrated = true; }
+    };
+    measure();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    window.addEventListener("load", measure);
+    window.addEventListener("resize", measure);
+    const host = track.parentElement;
+    if (track.dataset.hover !== "never") {
+      host?.addEventListener("mouseenter", () => { paused = true; });
+      host?.addEventListener("mouseleave", () => { paused = false; });
+    }
+    let last = performance.now();
+    const step = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (!paused && !document.hidden && half > 0) {
+        x -= dir * speed * dt;
+        if (dir === 1 && -x >= half) x += half;
+        if (dir === -1 && x >= 0) x -= half;
+        track.style.transform = `translate3d(${x}px,0,0)`;
+      }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  // ---------- Announcement rotativo ----------
+  const announcements = [
+    "⚽ Crea tu carné de jugador estilo FIFA y compártelo con tus causas",
+    "✦ Arma equipos parejos — ¿nadie quiere elegir? Sórtealos gratis",
+    "▶ ReservaYa ya está en Google Play — Descarga la app gratis",
+    "📸 Ayúdanos a crecer — Síguenos en Instagram @reservaya.pe",
+  ];
+  let annIdx = 0;
+  const annBar = document.getElementById("announcement-bar");
+  const annText = (() => {
+    const span = annBar?.querySelector("span.mx-auto");
+    if (!span) return null;
+    // Nodo de texto real (ignora espacios y el pill "Nuevo")
+    for (const node of Array.from(span.childNodes)) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent && node.textContent.trim().length > 0) return node as Text;
+    }
+    return null;
+  })();
+  setInterval(() => {
+    if (!annText || document.hidden) return;
+    annIdx = (annIdx + 1) % announcements.length;
+    annText.textContent = announcements[annIdx] + " ";
+  }, 5000);
+
+  // ---------- Hero carrusel ----------
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const heroImgs = Array.from(document.querySelectorAll(".hero-bg"));
+  const heroDots = Array.from(document.querySelectorAll("[data-hero-dot]"));
+  const heroSection = heroImgs[0]?.closest("section");
+  let heroIdx = 0, heroTimer;
+  const heroCounter = document.getElementById("hero-counter");
+  const heroProgress = document.getElementById("hero-progress");
+  const showHero = (i) => {
+    heroIdx = (i + heroImgs.length) % heroImgs.length;
+    heroImgs.forEach((img, k) => {
+      const on = k === heroIdx;
+      img.classList.toggle("opacity-100", on);
+      img.classList.toggle("opacity-0", !on);
+      img.classList.toggle("is-active", on);
+      if (on && !reduceMotion) { img.style.animation = "none"; void img.offsetWidth; img.style.animation = ""; }
+    });
+    heroDots.forEach((d, k) => {
+      d.className = `h-1.5 rounded-full transition-all duration-500 ${k === heroIdx ? "w-9 bg-[#4ADE80]" : "w-2 bg-white/30 hover:bg-white/70"}`;
+    });
+    if (heroCounter) heroCounter.textContent = `0${heroIdx + 1} / 0${heroImgs.length}`;
+    if (heroProgress && !reduceMotion) { heroProgress.classList.remove("hero-progress"); void heroProgress.offsetWidth; heroProgress.classList.add("hero-progress"); }
+  };
+  const autoHero = () => { clearInterval(heroTimer); if (reduceMotion) return; heroTimer = setInterval(() => showHero(heroIdx + 1), 6000); };
+  heroDots.forEach(d => d.addEventListener("click", () => { showHero(parseInt(d.dataset.heroDot || "0", 10)); autoHero(); }));
+  heroSection?.addEventListener("mouseenter", () => clearInterval(heroTimer));
+  heroSection?.addEventListener("mouseleave", autoHero);
+  autoHero();
+
+  // ---------- Cómo funciona: carrusel 01-03 ----------
+  const track = document.getElementById("how-track");
+  const dots = Array.from(document.querySelectorAll("[data-how-dot]"));
+  const label = document.getElementById("how-label");
+  const giant = document.getElementById("how-giant");
+  const names = ["Busca · 01/03", "Reserva · 02/03", "Juega · 03/03"];
+  let howIdx = 0, howTimer;
+  const showHow = (i) => {
+    howIdx = (i + 3) % 3;
+    if (track) track.style.transform = `translateX(-${howIdx * 100}%)`;
+    dots.forEach((d, k) => {
+      d.className = `h-1.5 rounded-full transition-all ${k === howIdx ? "w-6 bg-[#4ADE80]" : "w-1.5 bg-white/25 hover:bg-white/60"}`;
+      d.setAttribute("aria-selected", String(k === howIdx));
+    });
+    if (label) label.textContent = names[howIdx];
+    if (giant) giant.textContent = `0${howIdx + 1}`;
+  };
+  const autoHow = () => { clearInterval(howTimer); if (reduceMotion) return; howTimer = setInterval(() => { if (!document.hidden) showHow(howIdx + 1); }, 7000); };
+  dots.forEach(d => d.addEventListener("click", () => { showHow(parseInt(d.dataset.howDot || "0", 10)); autoHow(); }));
+  document.querySelectorAll("[data-how-next]").forEach(b => b.addEventListener("click", () => { showHow(howIdx + 1); autoHow(); }));
+  document.querySelectorAll("[data-how-prev]").forEach(b => b.addEventListener("click", () => { showHow(howIdx - 1); autoHow(); }));
+  // swipe
+  const viewport = document.getElementById("how-viewport");
+  let sx = null;
+  viewport?.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive: true });
+  viewport?.addEventListener("touchend", e => {
+    if (sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 45) { showHow(howIdx + (dx < 0 ? 1 : -1)); autoHow(); }
+    sx = null;
+  }, { passive: true });
+  // pausa al interactuar
+  document.getElementById("como-funciona")?.addEventListener("mouseenter", () => clearInterval(howTimer));
+  document.getElementById("como-funciona")?.addEventListener("mouseleave", autoHow);
+  autoHow();
+
+  // ---------- Mini mapa: buscador + filtro formato ----------
+  const search = document.getElementById("map-search");
+  const count = document.getElementById("map-count");
+  const pinsEls = Array.from(document.querySelectorAll(".map-pin"));
+  let fmtFilter = null;
+  const applyMap = () => {
+    const q = (search?.value || "").toLowerCase().trim();
+    let visible = 0;
+    pinsEls.forEach(p => {
+      const name = (p.dataset.pin || "").toLowerCase();
+      const okQ = !q || name.includes(q);
+      const okF = !fmtFilter || p.dataset.fmt === fmtFilter;
+      const show = okQ && okF;
+      p.classList.toggle("is-hidden", !show);
+      if (show) visible++;
+    });
+    if (count) count.textContent = `${visible} cancha${visible === 1 ? "" : "s"} cerca de ti`;
+  };
+  search?.addEventListener("input", applyMap);
+  document.querySelectorAll(".fmt-btn").forEach(b => b.addEventListener("click", () => {
+    const f = b.dataset.fmtFilter;
+    fmtFilter = fmtFilter === f ? null : f;
+    document.querySelectorAll(".fmt-btn").forEach(x => {
+      const active = x.dataset.fmtFilter === fmtFilter;
+      x.className = `fmt-btn rounded-md px-2.5 py-1 text-[11px] font-bold ${active ? "bg-[#22C55E]/30 text-[#4ADE80]" : "bg-white/10 text-white/70"}`;
+    });
+    applyMap();
+  }));
+  pinsEls.forEach(p => p.addEventListener("click", () => {
+    if (search) { search.value = p.dataset.pin || ""; applyMap(); }
+  }));
+
+  // ---------- Reserva: slots + confirmación ----------
+  let slot = "08:00";
+  const slotBtns = Array.from(document.querySelectorAll(".slot-btn"));
+  const summary = document.getElementById("book-summary");
+  const ticketRange = document.getElementById("ticket-range");
+  const ticketHour = document.getElementById("ticket-hour");
+  const ticketCode = document.getElementById("ticket-code");
+  const bookMsg = document.getElementById("book-msg");
+  const fmtHour = (h) => {
+    const [hh, mm] = h.split(":").map(Number);
+    const end = hh + 1;
+    return { range: `${h} - ${String(end).padStart(2, "0")}:00`, ampm: `${hh > 12 ? hh - 12 : hh}:${String(mm).padStart(2, "0")} ${hh >= 12 ? "PM" : "AM"}` };
+  };
+  slotBtns.forEach(b => b.addEventListener("click", () => {
+    if (b.classList.contains("line-through")) return;
+    slot = b.dataset.slot || slot;
+    slotBtns.forEach(x => {
+      const active = x === b;
+      x.className = `slot-btn rounded-xl px-3 py-3 text-sm font-bold transition ${active ? "bg-[#4ADE80] text-black shadow-[0_0_20px_rgba(74,222,128,0.4)]" : "bg-white/[0.07] text-white hover:bg-white/[0.14]"}`;
+      x.setAttribute("aria-checked", String(active));
+    });
+    const f = fmtHour(slot);
+    if (summary) summary.textContent = `Sáb 14 Jun · ${f.range}`;
+    if (ticketRange) ticketRange.textContent = f.range;
+    if (ticketHour) ticketHour.textContent = f.ampm;
+  }));
+  document.getElementById("confirm-book")?.addEventListener("click", () => {
+    const code = "RY - " + Array.from({ length: 6 }, () => "ABCDEFGHJKMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
+    if (ticketCode) ticketCode.textContent = code;
+    if (bookMsg) bookMsg.classList.remove("hidden");
+    setTimeout(() => showHow(2), 900);
+  });
+
+  // ---------- Estrellas ----------
+  document.querySelectorAll("#stars [data-star]").forEach(s => s.addEventListener("click", () => {
+    const v = parseInt(s.dataset.star || "5", 10);
+    document.querySelectorAll("#stars [data-star]").forEach(x => {
+      x.style.opacity = parseInt(x.dataset.star || "0", 10) <= v ? "1" : "0.3";
+    });
+  }));
+
+  // ---------- Contadores dueños ----------
+  const counters = document.querySelectorAll("[data-count]");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.count || "0", 10);
+      const suffix = el.dataset.suffix || "";
+      const t0 = performance.now();
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / 1200);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => io.observe(c));
+
+  // ---------- Reservas en vivo: rotación ----------
+  const live = document.getElementById("live-books");
+  setInterval(() => {
+    if (!live || document.hidden) return;
+    const first = live.firstElementChild;
+    if (first) { live.appendChild(first); }
+  }, 3500);
+</script>

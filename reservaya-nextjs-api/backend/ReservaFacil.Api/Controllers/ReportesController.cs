@@ -28,13 +28,12 @@ public class ReportesController : ControllerBase
         return rol switch
         {
             Rol.USUARIO => Ok(new { dashboard = await DashboardUsuarioAsync() }),
-            Rol.ADMIN => Ok(new { dashboard = await DashboardAdminAsync() }),
+            Rol.ADMIN => Ok(new { dashboard = await DashboardAdminAsync(mostrarIngresos: true) }),
             _ => Ok(new { dashboard = await DashboardSuperadminAsync() })
-        };
-    }
+        };    }
 
     [HttpGet("global")]
-    [Authorize(Roles = "SUPERADMIN")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN,TECNICO")]
     public async Task<IActionResult> Global()
     {
         var totalUsuarios = await _db.Usuarios.AsNoTracking().CountAsync();
@@ -142,17 +141,34 @@ public class ReportesController : ControllerBase
             ultimas.Select(r => ReservaDto.From(r, false)).ToList());
     }
 
-    private async Task<DashboardAdminDto> DashboardAdminAsync()
+    private async Task<DashboardAdminDto> DashboardAdminAsync(bool mostrarIngresos)
     {
-        var total = await _db.Reservas.AsNoTracking().CountAsync();
-        var pendientes = await _db.Reservas.AsNoTracking()
+        var ids = await ComplejoAccess.IdsAsync(_db, User);
+        if (ids is not null && ids.Count == 0)
+            return new DashboardAdminDto(0, 0, 0, DtoFormat.Money(0m), new List<ReservaDto>());
+
+        var reservasQ = _db.Reservas.AsNoTracking().AsQueryable();
+        if (ids is not null)
+        {
+            var canchaIds = await _db.Canchas.AsNoTracking()
+                .Where(c => c.ComplejoId != null && ids.Contains(c.ComplejoId!))
+                .Select(c => c.Id).ToListAsync();
+            reservasQ = reservasQ.Where(r =>
+                (r.ComplejoId != null && ids.Contains(r.ComplejoId!)) ||
+                (r.ComplejoId == null && canchaIds.Contains(r.CanchaId)));
+        }
+
+        var total = await reservasQ.CountAsync();
+        var pendientes = await reservasQ
             .CountAsync(r => r.Estado == EstadoReserva.PENDIENTE);
-        var canchasActivas = await _db.Canchas.AsNoTracking()
-            .CountAsync(c => c.Activa);
-        var ingresos = await _db.Reservas.AsNoTracking()
+        var canchasActivas = ids is null
+            ? await _db.Canchas.AsNoTracking().CountAsync(c => c.Activa)
+            : await _db.Canchas.AsNoTracking()
+                .CountAsync(c => c.Activa && c.ComplejoId != null && ids.Contains(c.ComplejoId!));
+        var ingresos = await reservasQ
             .Where(r => r.Estado == EstadoReserva.CONFIRMADA)
             .SumAsync(r => (decimal?)r.Total) ?? 0m;
-        var ultimas = await _db.Reservas.AsNoTracking()
+        var ultimas = await reservasQ
             .Include(r => r.Cancha)
             .Include(r => r.Usuario)
             .OrderByDescending(r => r.CreadoEn)
@@ -164,7 +180,7 @@ public class ReportesController : ControllerBase
             total,
             pendientes,
             canchasActivas,
-            DtoFormat.Money(ingresos),
+            DtoFormat.Money(mostrarIngresos ? ingresos : 0m),
             ultimas.Select(r => ReservaDto.From(r, true)).ToList());
     }
 

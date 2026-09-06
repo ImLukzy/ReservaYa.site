@@ -31,6 +31,11 @@ export function codigoReserva(id: string): string {
   return id.slice(-6).toUpperCase()
 }
 
+// Código a mostrar: el QR real si llegó del backend, si no el derivado del id.
+export function codigoMostrado(reserva: { codigo?: string | null; id: string }): string {
+  return reserva.codigo?.trim() || codigoReserva(reserva.id)
+}
+
 export function fechaFinReservaEnMs(fecha: string, minutos: number): number {
   const [year, month, day] = fecha.slice(0, 10).split('-').map(Number)
   const hora = Math.floor(minutos / 60)

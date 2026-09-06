@@ -1,24 +1,19 @@
-import { requireAuth } from '@/lib/session'
-import { Sidebar } from '@/components/layout/Sidebar'
-import * as api from '@/lib/api'
+import { requireAuth } from '@/lib/session';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session = await requireAuth()
-  const reservasConfirmadas = session.rol === 'USUARIO'
-    ? (await api.getReservas()).some((reserva) => reserva.estado === 'CONFIRMADA')
-    : false
+  const session = await requireAuth();
 
   return (
-    <div className="dashboard-shell flex min-h-screen">
+    <div className="flex h-screen overflow-hidden bg-[#F8F9FA]">
       <Sidebar
         rol={session.rol}
         nombre={session.nombre}
         email={session.email}
-        mostrarMiPartido={reservasConfirmadas}
       />
-      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-auto">
-        {children}
+      <main className="relative min-w-0 flex-1 overflow-y-auto">
+        <div className="p-6 md:p-8">{children}</div>
       </main>
     </div>
-  )
+  );
 }

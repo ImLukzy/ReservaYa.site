@@ -1,11 +1,23 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import MisReservasPublicas from "../components/MisReservasPublicas.astro";
+const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+const dashboardReservationsUrl = `${appUrl.replace(/\/$/, "")}/dashboard/reservas`;
 ---
 
-<BaseLayout
-  title="Mis reservas | ReservaYa"
-  description="Consulta tus solicitudes y reservas de canchas en ReservaYa."
->
-  <MisReservasPublicas />
-</BaseLayout>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${dashboardReservationsUrl}`} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Redirigiendo a tus reservas | ReservaYa</title>
+  </head>
+  <body>
+    <p>
+      Redirigiendo a tus reservas...
+      <a href={dashboardReservationsUrl}>Continuar al dashboard</a>
+    </p>
+    <script define:vars={{ dashboardReservationsUrl }}>
+      window.location.replace(dashboardReservationsUrl);
+    </script>
+  </body>
+</html>

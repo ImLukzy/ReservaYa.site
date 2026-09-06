@@ -41,14 +41,13 @@ var connectionSource = databaseUrlFromEnvironment is not null
         : $"{envPath}: " + (Environment.GetEnvironmentVariable("DATABASE_URL") is not null
             ? "DATABASE_URL"
             : "DATABASE_URL_UNPOOLED");
-var parsedConnection = new NpgsqlConnectionStringBuilder(connectionString);
-Console.WriteLine($"[DEBUG] .env path: {envPath} (exists: {File.Exists(envPath)})");
-Console.WriteLine($"[DEBUG] Database connection source: {connectionSource}");
-Console.WriteLine(
-    "[DEBUG] Database connection: " +
-    $"host={parsedConnection.Host}, port={parsedConnection.Port}, database={parsedConnection.Database}, " +
-    $"username={parsedConnection.Username}, sslmode={parsedConnection.SslMode}, " +
-    $"passwordExists={!string.IsNullOrEmpty(parsedConnection.Password)}");
+if (builder.Environment.IsDevelopment())
+{
+    var parsedConnection = new NpgsqlConnectionStringBuilder(connectionString);
+    Console.WriteLine($"[DEBUG] .env path: {envPath} (exists: {File.Exists(envPath)})");
+    Console.WriteLine($"[DEBUG] Database connection source: {connectionSource}");
+    Console.WriteLine($"[DEBUG] Database: {parsedConnection.Database}, sslmode={parsedConnection.SslMode}");
+}
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -58,32 +57,47 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new FlexibleDecimalConverter());
     });
 
+// Los enums PG se mapean en el data source (ADO) y a nivel EF (UseNpgsql +
+// HasPostgresEnum en AppDbContext). Se probó (2026-09) reducirlo a un solo
+// nivel: sin el mapeo del data source, o sin el lambda de UseNpgsql, la API
+// devuelve 500 tras ~20 DbContexts por ManyServiceProvidersCreatedWarning,
+// y quitar el lambda además cambia el modelo (schema del tipo enum).
+// Se mantiene EnableServiceProviderCaching(false): evita la acumulación del
+// proveedor interno a costa de construirlo por DbContext. Revisar al subir
+// de versión Npgsql/EF.
 var dataSource = new NpgsqlDataSourceBuilder(connectionString)
     .MapEnum<Rol>("Rol", new NpgsqlNullNameTranslator())
     .MapEnum<EstadoReserva>("EstadoReserva", new NpgsqlNullNameTranslator())
+    .MapEnum<EstadoPago>("EstadoPago", new NpgsqlNullNameTranslator())
+    .MapEnum<MetodoPago>("MetodoPago", new NpgsqlNullNameTranslator())
     .MapEnum<TipoCancha>("TipoCancha", new NpgsqlNullNameTranslator())
+    .MapEnum<TipoMovimiento>("TipoMovimiento", new NpgsqlNullNameTranslator())
+    .MapEnum<EstadoCaja>("EstadoCaja", new NpgsqlNullNameTranslator())
+    .MapEnum<EstadoTorneo>("EstadoTorneo", new NpgsqlNullNameTranslator())
+    .MapEnum<TipoDescuento>("TipoDescuento", new NpgsqlNullNameTranslator())
+    .MapEnum<TipoMeta>("TipoMeta", new NpgsqlNullNameTranslator())
+    .MapEnum<TipoPlan>("TipoPlan", new NpgsqlNullNameTranslator())
+    .MapEnum<EstadoSuscripcion>("EstadoSuscripcion", new NpgsqlNullNameTranslator())
+    .MapEnum<NivelSancion>("NivelSancion", new NpgsqlNullNameTranslator())
     .Build();
-
-// Mapear los enums a nivel de EF Core es necesario para leer/escribir
-// (Rol, EstadoReserva, TipoCancha). El data source ya los mapea a nivel de
-// Npgsql. EF Core combina ambas configuraciones en un proveedor de servicios
-// interno; con un data source externo más This lambda, el caché de EF
-// considera "inestables" las opciones, acumula un proveedor por DbContext y,
-// tras 20, lanza ManyServiceProvidersCreatedWarning (excepción). Con
-// EnableServiceProviderCaching(false) se evita esa acumulación/excepción
-// conservando el mapeo de enums.
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(dataSource, npgsqlOptions =>
     {
         npgsqlOptions.MapEnum<Rol>("Rol", "public", new NpgsqlNullNameTranslator());
         npgsqlOptions.MapEnum<EstadoReserva>("EstadoReserva", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<EstadoPago>("EstadoPago", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<MetodoPago>("MetodoPago", "public", new NpgsqlNullNameTranslator());
         npgsqlOptions.MapEnum<TipoCancha>("TipoCancha", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<TipoMovimiento>("TipoMovimiento", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<EstadoCaja>("EstadoCaja", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<EstadoTorneo>("EstadoTorneo", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<TipoDescuento>("TipoDescuento", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<TipoMeta>("TipoMeta", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<TipoPlan>("TipoPlan", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<EstadoSuscripcion>("EstadoSuscripcion", "public", new NpgsqlNullNameTranslator());
+        npgsqlOptions.MapEnum<NivelSancion>("NivelSancion", "public", new NpgsqlNullNameTranslator());
     });
-    // Con un data source externo más MapEnum, el caché de EF Core acumula un
-    // proveedor de servicios interno por DbContext y, tras 20, lanza
-    // ManyServiceProvidersCreatedWarning (excepción). Al desactivar el caché
-    // se evita esa acumulación/excepción conservando el mapeo de enums.
     options.EnableServiceProviderCaching(false);
 });
 
@@ -155,7 +169,20 @@ var app = builder.Build();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+// Imágenes subidas por dueños (wwwroot/uploads). Cache agresivo solo para
+// nombres versionados {id}-{unix}.{ext}; al re-subir cambia la URL.
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        if (ctx.Context.Request.Path.StartsWithSegments("/uploads"))
+            ctx.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+    }
+});
 app.MapControllers();
+
+// Salud para el orquestador (Render) y monitores de actividad.
+app.MapGet("/healthz", () => Results.Ok(new { ok = true }));
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {

@@ -16,6 +16,22 @@ npm run dev
 
 Astro queda disponible en `http://localhost:4321`.
 
+En otra terminal, desde la raíz del repositorio, inicia la API:
+
+```powershell
+npm run dev:api
+```
+
+ASP.NET Core queda disponible en `http://localhost:5000`. Ambos procesos deben
+estar ejecutándose para que funcionen el inicio de sesión y las reservas.
+
+Para iniciar los tres servicios en procesos independientes y evitar que se
+detengan al cerrar la terminal que lanzó el comando:
+
+```powershell
+npm run dev:all
+```
+
 ## Validación
 
 Antes de abrir un cambio:

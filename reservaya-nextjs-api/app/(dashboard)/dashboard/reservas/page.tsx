@@ -2,6 +2,7 @@ import * as api from '@/lib/api'
 import { Badge } from '@/components/ui/Badge'
 import { formatFecha, formatHora } from '@/lib/utils'
 import { CancelarReservaBtn } from '@/components/features/CancelarReservaBtn'
+import { CalificarBtn } from '@/components/features/CalificarBtn'
 export const dynamic = 'force-dynamic'
 const estadoBadge: Record<string, 'green' | 'yellow' | 'red' | 'blue' | 'gray'> = {
   CONFIRMADA: 'green', PENDIENTE: 'yellow', CANCELADA: 'red', COMPLETADA: 'blue',
@@ -46,6 +47,9 @@ export default async function MisReservasPage() {
                   <td className="px-6 py-4"><Badge variant={estadoBadge[r.estado]}>{r.estado}</Badge></td>
                   <td className="px-6 py-4">
                     {r.estado === 'PENDIENTE' && <CancelarReservaBtn id={r.id} />}
+                    {r.estado === 'COMPLETADA' && r.cancha.complejoId && (
+                      <CalificarBtn complejoId={r.cancha.complejoId} complejoNombre={r.cancha.complejo?.nombre ?? r.cancha.nombre} />
+                    )}
                   </td>
                 </tr>
               ))}

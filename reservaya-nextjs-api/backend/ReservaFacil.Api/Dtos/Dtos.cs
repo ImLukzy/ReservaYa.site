@@ -14,6 +14,8 @@ public class RegisterRequest
     public string? Nombre { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
+    public string? FechaNacimiento { get; set; }
+    public string? Username { get; set; }
 }
 
 public class CanchaRequest
@@ -24,6 +26,10 @@ public class CanchaRequest
     public decimal? PrecioPorHora { get; set; }
     public int? Capacidad { get; set; }
     public bool? Activa { get; set; }
+    public string? ComplejoId { get; set; }
+    public bool? Techada { get; set; }
+    public string? Superficie { get; set; }
+    public string? Imagen { get; set; }
 }
 
 public class ReservaRequest
@@ -41,6 +47,11 @@ public class ReservaPatchRequest
     public string? Notas { get; set; }
 }
 
+public class ReservaValidarRequest
+{
+    public string? Codigo { get; set; }
+}
+
 public class UsuarioPatchRequest
 {
     public string? Nombre { get; set; }
@@ -48,6 +59,19 @@ public class UsuarioPatchRequest
     public string? Rol { get; set; }
     public bool? Activo { get; set; }
     public string? Password { get; set; }
+}
+
+// Autoservicio del jugador: solo username (1 vez/año), fecha de nacimiento
+// por única vez si está vacía, y cambio de clave. Nombre y correo inmutables.
+public class MiPerfilPatchRequest
+{
+    public string? Nombre { get; set; }
+    public string? Email { get; set; }
+    public string? Username { get; set; }
+    public string? FechaNacimiento { get; set; }
+    public string? Password { get; set; }
+    public string? CurrentPassword { get; set; }
+    public string? Telefono { get; set; }
 }
 
 public record UsuarioSesionDto(string Id, string Nombre, string Email, Rol Rol, int Tv);
@@ -59,9 +83,14 @@ public record CanchaDto(
     string? Descripcion,
     string PrecioPorHora,
     int Capacidad,
+    bool Techada,
+    string? Superficie,
     bool Activa,
     string? Imagen,
-    DateTime CreadoEn)
+    string? ComplejoId,
+    DateTime CreadoEn,
+    CanchaComplejoDto? Complejo,
+    CanchaDuenoDto? Dueno)
 {
     public static CanchaDto From(Cancha c) => new(
         c.Id,
@@ -70,10 +99,23 @@ public record CanchaDto(
         c.Descripcion,
         DtoFormat.Money(c.PrecioPorHora),
         c.Capacidad,
+        c.Techada,
+        c.Superficie,
         c.Activa,
         c.Imagen,
-        DtoFormat.Utc(c.CreadoEn));
+        c.ComplejoId,
+        DtoFormat.Utc(c.CreadoEn),
+        c.Complejo is null
+            ? null
+            : new CanchaComplejoDto(c.Complejo.Id, c.Complejo.Nombre, c.Complejo.Distrito, c.Complejo.Ciudad),
+        c.Complejo?.Dueno is null
+            ? null
+            : new CanchaDuenoDto(c.Complejo.Dueno.Id, c.Complejo.Dueno.Nombre));
 }
+
+public record CanchaComplejoDto(string Id, string Nombre, string Distrito, string Ciudad);
+
+public record CanchaDuenoDto(string Id, string Nombre);
 
 public record UsuarioReservaDto(string Id, string Nombre, string Email, Rol Rol, bool Activo, DateTime CreadoEn)
 {
@@ -104,6 +146,7 @@ public record UsuarioResumenDto(
 
 public record ReservaDto(
     string Id,
+    string Codigo,
     string UsuarioId,
     string CanchaId,
     DateTime Fecha,
@@ -118,6 +161,7 @@ public record ReservaDto(
 {
     public static ReservaDto From(Reserva r, bool incluirUsuario) => new(
         r.Id,
+        r.Codigo,
         r.UsuarioId,
         r.CanchaId,
         DtoFormat.Utc(r.Fecha),

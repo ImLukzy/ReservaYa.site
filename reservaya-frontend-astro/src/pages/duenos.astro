@@ -1,0 +1,708 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const faqs = [
+  ["¿Qué software puedo usar para administrar mi cancha de fútbol?", "ReservaYa: publicas tus canchas, recibes reservas online 24/7, controlas horarios, cobras con tarjeta o Yape y ves tus ingresos en un panel. Sin instalar nada, funciona en tu celular y tu computadora."],
+  ["¿Cómo llevo el control de las reservas de mi complejo deportivo?", "Con el cronograma en vivo: cada reserva entra con fecha, hora, cancha y código único. Confirmas o rechazas en un toque y el historial queda guardado para reportes."],
+  ["¿Puedo automatizar las reservas de mi cancha?", "Sí. Activas la auto-confirmación y el sistema reserva, cobra y envía el código al jugador sin que muevas un dedo. Tú solo defines horarios y precios."],
+  ["¿Qué se automatiza exactamente con ReservaYa?", "La publicación de horarios, la reserva, el cobro online, el código de acceso, los recordatorios y los reportes de ingresos. El cuaderno y el Excel dejan de ser necesarios."],
+  ["¿Cuánto cuesta un sistema de reservas para canchas?", "Empiezas con 3 meses gratis. Si te gusta, S/ 89.90 al mes (varía según tu zona). Sin contratos: si no te sirve, lo dejas."],
+  ["¿Necesito comprar equipos o instalar un programa?", "No. Todo es web: entras desde el navegador de tu celular o PC. Si quieres, también validas códigos con la app."],
+  ["¿Puedo cobrar con tarjeta o Yape desde el sistema?", "Sí. Tus jugadores pagan con tarjeta o Yape vía Culqi y el dinero llega a tu cuenta con su desglose. ¿Prefieres cobrar tú directo? También puedes."],
+  ["¿Sirve si tengo varias canchas o más de una sede?", "Sí. Gestionas todas tus canchas y sedes desde el mismo panel, cada una con sus horarios, precios y equipo."],
+  ["¿Puedo darle acceso a mi personal sin que vea mis ganancias?", "Sí. Creas usuarios con roles: el vendedor opera reservas y caja pero NO ve tus ingresos; el admin solo ve su sede."],
+];
+const quotes = [
+  ["C", "Carlos M.", "Complejo Deportivo Los Olivos", "Tenía 3 horas vacías entre semana. Ahora están llenas y ni me entero —", "el sistema reserva solo."],
+  ["W", "Walter C.", "Canchas El Bosque · Comas", "Antes todo era cuaderno y WhatsApp. Ahora cada reserva llega con su código y", "la caja cuadra sola."],
+  ["J", "José F.", "Sport Center VES", "Publiqué mis 2 canchas un domingo. El miércoles ya tenía 11 reservas", "pagadas por adelantado."],
+];
+---
+
+<BaseLayout
+  title="Dueños | Llena tus horas vacías. Gana más. — ReservaYa"
+  description="Automatiza las reservas de tu complejo deportivo y deja de anotar en el cuaderno. 3 meses gratis."
+  announcement="✦ Crea tu carné de jugador estilo FIFA y compártelo con tus causas"
+>
+  <!-- ============ 1 · HERO ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden text-white" style="background-color:#04140A;background-image:repeating-linear-gradient(180deg,rgba(255,255,255,0.022) 0 90px,transparent 90px 180px);">
+    <!-- Líneas de cancha -->
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 560" fill="none" stroke="#22C55E" stroke-opacity="0.35" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect x="30" y="20" width="1140" height="520"/><line x1="600" y1="20" x2="600" y2="540"/><circle cx="600" cy="280" r="95"/>
+      <rect x="30" y="160" width="150" height="240"/><rect x="1020" y="160" width="150" height="240"/>
+      <rect x="30" y="220" width="55" height="120"/><rect x="1115" y="220" width="55" height="120"/>
+      <circle cx="200" cy="280" r="5" fill="#22C55E" stroke="none" stroke-opacity="0.6"/><circle cx="1000" cy="280" r="5" fill="#22C55E" stroke="none" stroke-opacity="0.6"/><circle cx="600" cy="280" r="4" fill="#22C55E" stroke="none" stroke-opacity="0.8"/>
+    </svg>
+    <!-- Balón de agua gigante -->
+    <svg class="pointer-events-none absolute -right-24 top-1/2 hidden h-[560px] w-[560px] -translate-y-1/2 text-white md:block" viewBox="0 0 200 200" fill="currentColor" opacity="0.05" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" />
+      <polygon points="100,72 127,92 117,124 83,124 73,92" />
+      <polygon points="100,20 118,32 112,52 88,52 82,32" />
+      <polygon points="152,60 162,78 150,94 130,90 128,70" />
+      <polygon points="164,128 156,146 136,144 130,124 146,112" />
+      <polygon points="118,168 100,178 82,168 88,148 112,148" />
+      <polygon points="44,146 36,128 50,112 70,124 64,144" />
+      <polygon points="38,78 48,60 70,70 72,90 52,94" />
+    </svg>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#04140A] via-[#04140A]/60 to-transparent" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
+      <span class="inline-flex items-center gap-2 rounded-full border border-[#22C55E]/40 bg-[#04140A]/80 px-4 py-1.5 text-xs font-semibold text-[#4ADE80]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#22C55E]"></span> Software para canchas y complejos deportivos en Perú
+      </span>
+      <h1 class="mt-6 max-w-3xl text-6xl font-black leading-[1.02] tracking-tight text-white md:text-8xl">
+        Llena tus horas<br />vacías.<br /><span class="bg-gradient-to-r from-[#4ADE80] to-[#22C55E] bg-clip-text text-transparent">Gana más.</span>
+      </h1>
+      <p class="mt-6 max-w-xl leading-relaxed text-white/70">
+        Automatiza las reservas de tu complejo deportivo y deja de anotar en el cuaderno.
+        Miles de jugadores buscan cancha en el Perú ahora mismo: ¿la tuya aparece?
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a href="/register?plan=dueno" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3.5 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.5)] transition hover:bg-[#16A34A]">Publica tu cancha gratis <span aria-hidden="true">→</span></a>
+        <a href="#planes" class="inline-flex items-center justify-center rounded-xl border border-white/25 px-6 py-3.5 font-semibold transition hover:bg-white/10">Ver planes y precios</a>
+        <span class="text-xs text-white/40">Gratis · la publicas tú mismo en minutos</span>
+      </div>
+      <div class="mt-10 grid max-w-2xl grid-cols-3 divide-x divide-white/10 rounded-2xl border border-white/10 bg-black/40 backdrop-blur">
+        <div class="px-5 py-4 text-center"><p class="text-xl font-extrabold text-white">S/<span data-count="2500" data-format="k">0</span>+</p><p class="mt-1 text-[11px] leading-snug text-white/50">extras al mes llenando 2 horas vacías</p></div>
+        <div class="px-5 py-4 text-center"><p class="text-xl font-extrabold text-white">3 meses</p><p class="mt-1 text-[11px] leading-snug text-white/50">gratis — luego S/ 89.90 al mes</p></div>
+        <div class="px-5 py-4 text-center"><p class="text-xl font-extrabold text-white">+<span data-count="500">0</span></p><p class="mt-1 text-[11px] leading-snug text-white/50">jugadores buscando cancha cada semana</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 · PANEL DE CONTROL ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-black px-4 py-16 text-white md:px-8 md:py-24">
+    <div class="mx-auto max-w-6xl text-center">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Todo desde un solo lugar</p>
+      <h2 class="reveal mt-4 text-4xl font-black tracking-tight text-white md:text-6xl">Tu panel de control</h2>
+      <p class="mx-auto mt-4 max-w-xl leading-relaxed text-white/55">Reservas, horarios, precios, reportes y torneos — todo en una sola pantalla, desde tu celular o tu computadora.</p>
+    </div>
+
+    <div class="mx-auto mt-10 max-w-5xl overflow-hidden rounded-2xl border border-white/10 shadow-[0_30px_80px_rgba(34,197,94,0.12)]">
+      <div class="flex items-center gap-2 bg-[#0B120D] px-4 py-2.5 text-xs text-white/40">
+        <span class="h-2.5 w-2.5 rounded-full bg-[#EF4444]"></span><span class="h-2.5 w-2.5 rounded-full bg-[#EAB308]"></span><span class="h-2.5 w-2.5 rounded-full bg-[#22C55E]"></span>
+        <span class="ml-2 rounded bg-white/5 px-2 py-0.5">reservaya.com/panel/dashboard</span>
+      </div>
+      <div class="grid md:grid-cols-[180px_1fr]">
+        <aside class="hidden bg-[#081009] p-4 text-[12px] md:block">
+          <p class="px-2 text-sm font-black">Reserva<span class="text-[#22C55E]">Ya</span> <span class="ml-1 rounded bg-[#22C55E]/15 px-1.5 py-0.5 text-[10px] text-[#4ADE80]">Panel</span></p>
+          <ul class="mt-4 space-y-1 text-white/55">
+            <li class="rounded-lg bg-[#22C55E]/15 px-2.5 py-2 font-bold text-[#4ADE80]">◉ Dashboard</li>
+            {["▤ Reportes","◎ Metas","▦ Reservas","◷ Cronograma","⌂ Complejos","◈ Descuentos","◫ Precios especiales","↻ Reseñas","✓ Validar código","⚙ Configuración"].map(i => <li class="rounded-lg px-2.5 py-2 hover:bg-white/5">{i}</li>)}
+          </ul>
+          <p class="mt-4 rounded-lg border border-[#EAB308]/40 bg-[#EAB308]/10 px-2.5 py-2 font-bold text-[#EAB308]">♛ Torneos <span class="ml-1 rounded bg-[#EAB308] px-1 text-[10px] text-black">BETA</span></p>
+          <div class="mt-4 flex items-center gap-2 border-t border-white/10 px-2 pt-3">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-[11px] font-black">J</span>
+            <div><p class="text-[11px] font-bold text-white">Juan Carlos</p><p class="text-[10px] text-white/40">Ir a la app · Cerrar sesión</p></div>
+          </div>
+        </aside>
+        <div class="bg-[#F5F5F3] p-4 text-[#101613] md:p-5">
+          <div class="flex items-center justify-between">
+            <div><p class="text-[10px] font-bold uppercase tracking-widest text-[#8A938D]">◉ Dashboard · Arequipa</p><p class="text-lg font-black">Buenos días, Juan Carlos 👋</p><p class="text-[11px] text-[#8A938D]">Sábado, 20 de julio de 2026</p></div>
+            <button type="button" class="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#16A34A]">+ Reserva manual</button>
+          </div>
+          <div class="mt-4 grid gap-3 lg:grid-cols-3">
+            <div class="rounded-xl bg-[#060C08] p-4 text-white lg:col-span-2">
+              <div class="flex items-center justify-between"><p class="text-[10px] uppercase tracking-widest text-white/50">Ingresos de julio</p><span class="rounded-full bg-[#22C55E]/20 px-2 py-0.5 text-[10px] font-bold text-[#4ADE80]">↗ +30.5%</span></div>
+              <p class="mt-1 text-2xl font-black">S/ <span data-count="41322">0</span></p>
+              <svg id="dash-chart" viewBox="0 0 400 90" class="mt-2 h-20 w-full" preserveAspectRatio="none" aria-hidden="true">
+                <defs><linearGradient id="dash-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22C55E" stop-opacity="0.45"/><stop offset="1" stop-color="#22C55E" stop-opacity="0"/></linearGradient></defs>
+                <path id="dash-area" d="M0,65 L25,60 L50,63 L75,50 L100,55 L125,68 L150,60 L175,45 L200,58 L225,52 L250,62 L275,48 L300,66 L325,60 L350,64 L375,66 L400,66 L400,90 L0,90 Z" fill="url(#dash-fill)"/>
+                <path id="dash-line" d="M0,65 L25,60 L50,63 L75,50 L100,55 L125,68 L150,60 L175,45 L200,58 L225,52 L250,62 L275,48 L300,66 L325,60 L350,64 L375,66 L400,66" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="space-y-3">
+              <div class="rounded-xl bg-gradient-to-br from-[#0A2E1F] to-[#16A34A] p-4 text-white"><p class="text-[10px] uppercase tracking-widest text-white/60">Hoy</p><p class="text-xl font-black">S/ 112</p><p class="text-[11px] text-white/60">1 reserva hoy</p></div>
+              <div class="rounded-xl border border-[#E7E5E4] bg-white p-4"><p class="text-[10px] uppercase tracking-widest text-[#8A938D]">Pendientes hoy</p><p class="text-xl font-black">0</p><p class="text-[11px] text-[#8A938D]">todo al día</p></div>
+            </div>
+          </div>
+          <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {[["Ayer","S/ 452","2 reservas"],["Esta semana","S/ 4462","↗ +18.5%"],["Ocupación del mes","7%",""],["Rating promedio","—","de tus canchas"]].map(c => (
+              <div class="rounded-xl border border-[#E7E5E4] bg-white p-3.5"><p class="text-[10px] uppercase tracking-widest text-[#8A938D]">{c[0]}</p><p class="mt-1 text-lg font-black">{c[1]}</p><p class="text-[11px] text-[#16A34A]">{c[2]}</p></div>
+            ))}
+          </div>
+          <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-3">
+            {[["◔ Jugadores únicos","27","este mes"],["◷ Próximo partido","20:00","Cancha 1"],["▦ Cronograma mensual","Ver todos los turnos","y disponibilidad"]].map(c => (
+              <div class="rounded-xl border border-[#E7E5E4] bg-white p-3.5"><p class="text-[11px] font-bold text-[#5B6660]">{c[0]}</p><p class="mt-1 font-black">{c[1]}</p><p class="text-[11px] text-[#8A938D]">{c[2]}</p></div>
+            ))}
+          </div>
+          <div class="mt-3 rounded-xl border border-[#E7E5E4] bg-white p-3.5">
+            <p class="text-[11px] font-bold text-[#8A938D]">◷ Reservas por confirmar <span class="ml-1 rounded-full bg-[#EAB308]/20 px-1.5 py-0.5 text-[10px] text-[#92600a]">3/3</span></p>
+            <div id="dash-pending" class="mt-2 space-y-2">
+              {[["JUE 31","Nicolas T. · Cancha 1 · 16:00 - 17:00 · S/80"],["VIE 01","Ariana P. · Cancha 2 · 19:00 - 20:00 · S/70"],["SAB 02","Equipo Tigres · Cancha 1 · 21:00 - 22:00 · S/80"]].map(r => (
+                <div class="pending-row flex items-center justify-between gap-2 rounded-lg bg-[#FFFBEB] px-3 py-2 text-[12px]">
+                  <span class="font-bold">{r[0]} · <span class="font-normal text-[#5B6660]">{r[1]}</span></span>
+                  <span class="flex gap-1.5"><button type="button" data-ok class="rounded-md bg-[#22C55E] px-2.5 py-1 text-[11px] font-bold text-white">✓ Confirmar</button><button type="button" data-no class="rounded-md border border-red-200 px-2.5 py-1 text-[11px] font-bold text-red-500">Rechazar</button></span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 · EN 3 PASOS ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#040705] px-4 py-16 text-white md:px-8 md:py-24">
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 700" fill="none" stroke="#22C55E" stroke-opacity="0.1" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="20" width="1120" height="660"/><line x1="600" y1="20" x2="600" y2="680"/><circle cx="600" cy="350" r="110"/><rect x="40" y="200" width="160" height="300"/><rect x="1000" y="200" width="160" height="300"/></svg>
+    <div class="relative mx-auto max-w-6xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Así de simple</p>
+      <h2 class="mt-4 text-4xl font-black tracking-tight text-white md:text-5xl">En 3 pasos, <span class="text-[#4ADE80]">tu cancha rentando.</span></h2>
+
+      <div class="mt-12 grid items-start gap-10 lg:grid-cols-2">
+        <div>
+          <div class="flex items-center gap-4"><span class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/10 text-xl text-[#4ADE80]">▤</span><span class="text-5xl font-black text-[#22C55E]/25">01</span></div>
+          <p class="mt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Paso 01</p>
+          <h3 class="mt-2 text-2xl font-black text-white md:text-3xl">Registra tu complejo en 5 minutos</h3>
+          <p class="mt-3 max-w-md leading-relaxed text-white/55">Crea tu cuenta, sube fotos y configura tus horarios. Sin complicaciones, sin papeleos.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/50 p-6">
+          <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">Registrar complejo</p>
+          <ul id="reg-check" class="mt-4 space-y-3 text-sm">
+            {[["Nombre del complejo",1],["Distrito",0],["Fotos",0],["Horarios",0]].map(x => (
+              <li class="reg-step flex items-center gap-3" data-done={x[1]}>
+                <span class="reg-dot flex h-5 w-5 items-center justify-center rounded-full border border-white/25 text-[10px]"></span>
+                <span class="h-1.5 flex-1 rounded-full bg-white/10"><span class="reg-bar block h-full w-0 rounded-full bg-[#22C55E]"></span></span>
+                <span class="w-28 text-right text-xs text-white/45">{x[0]}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-3 text-right text-xs font-bold text-[#4ADE80]"><span id="reg-pct">12</span>%</p>
+        </div>
+      </div>
+
+      <div class="mt-14 grid items-start gap-10 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-black/50 p-6 lg:order-1 order-2">
+          <div class="flex items-center justify-between"><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">Hoy · Canchas disponibles</p><span class="text-[11px] font-bold text-[#4ADE80]">● En vivo</span></div>
+          <div id="live-slots" class="mt-4 grid grid-cols-3 gap-2">
+            {["07:00","08:00","09:00","10:00","11:00","12:00"].map((h,i) => (
+              <button type="button" data-slot={h} class={`slot rounded-xl px-3 py-3 text-sm font-bold transition ${i===0?"bg-[#22C55E] text-white":"bg-white/[0.07] text-white/80 hover:bg-white/[0.14]"}`}>{h}</button>
+            ))}
+          </div>
+          <div id="slot-toast" class="mt-3 rounded-xl border border-[#22C55E]/30 bg-[#22C55E]/10 px-4 py-2.5 text-xs"><span class="font-bold text-[#4ADE80]">Nueva reserva · 07:00</span><span class="float-right text-white/50">S/ 80</span></div>
+        </div>
+        <div class="lg:order-2 order-1">
+          <div class="flex items-center gap-4"><span class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/10 text-xl text-[#4ADE80]">▦</span><span class="text-5xl font-black text-[#22C55E]/25">02</span></div>
+          <p class="mt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Paso 02</p>
+          <h3 class="mt-2 text-2xl font-black text-white md:text-3xl">Los jugadores reservan solos desde la app</h3>
+          <p class="mt-3 max-w-md leading-relaxed text-white/55">Sin WhatsApps, sin llamadas. Ellos eligen su horario, pagan y reciben su código. Pruébalo: toca un horario 👆</p>
+        </div>
+      </div>
+
+      <div class="mt-14 grid items-start gap-10 lg:grid-cols-2">
+        <div>
+          <div class="flex items-center gap-4"><span class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/10 text-xl text-[#4ADE80]">▣</span><span class="text-5xl font-black text-[#22C55E]/25">03</span></div>
+          <p class="mt-5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">Paso 03</p>
+          <h3 class="mt-2 text-2xl font-black text-white md:text-3xl">Cobros online seguros con Culqi</h3>
+          <p class="mt-3 max-w-md leading-relaxed text-white/55">Tus jugadores pagan con tarjeta o Yape por Culqi, la pasarela del grupo Credicorp (BCP). Procesamos el cobro y te lo transferimos con su desglose. ¿Prefieres cobrar tú directo? También puedes por Yape.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/50 p-6">
+          <p class="text-center text-[11px] uppercase tracking-[0.2em] text-white/45">Ingresos del mes</p>
+          <p class="mt-1 text-center text-3xl font-black text-[#4ADE80]">S/ <span id="owner-income">1150</span></p>
+          <div id="income-list" class="mt-4 space-y-2 text-sm">
+            {[["Reserva · Carlos M.","+S/ 80"],["Reserva · Diego L.","+S/ 80"],["Reserva · Marco R.","+S/ 100"]].map(r => (
+              <div class="flex items-center justify-between rounded-xl bg-white/[0.05] px-4 py-2.5"><span class="text-white/70">{r[0]}</span><span class="font-bold text-[#4ADE80]">{r[1]}</span></div>
+            ))}
+          </div>
+          <p class="mt-4 flex items-center justify-center gap-2 text-xs text-white/45">◈ Pagos seguros con <span class="rounded-md bg-white px-2 py-1 font-black text-black">◉ Culqi</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 · COMPLEJO EN UN SOLO PANEL ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#060B07] px-4 py-16 text-white md:px-8 md:py-24">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">No solo reservas</p>
+      <h2 class="mt-4 max-w-3xl text-4xl font-black tracking-tight text-white md:text-5xl">Tu complejo entero, <span class="text-[#4ADE80]">en un solo panel.</span></h2>
+      <p class="mt-4 max-w-xl leading-relaxed text-white/55">La cancha es solo una parte. También vendes, también tienes gente trabajando contigo. Todo eso vive en el mismo lugar.</p>
+
+      <div class="mt-12 grid items-start gap-10 lg:grid-cols-2">
+        <div>
+          <div class="flex items-center gap-4"><span class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/10 text-xl text-[#4ADE80]">▤</span><span class="text-5xl font-black text-[#22C55E]/25">01</span></div>
+          <h3 class="mt-5 text-2xl font-black text-white md:text-3xl">Caja y stock, dentro del mismo panel</h3>
+          <p class="mt-3 max-w-md leading-relaxed text-white/55">No solo alquilas la cancha: vendes agua, gaseosas, alquilas chalecos. Todo eso se registra acá y el stock se descuenta solo. Pruébalo 👇</p>
+          <ul class="mt-5 space-y-2.5 text-sm text-white/70">
+            {["Tu catálogo con precios y stock","El vendedor cobra desde su celular","Reporte mensual de lo vendido, aparte de las reservas"].map(t => <li class="flex items-center gap-2.5"><span class="text-[#4ADE80]">◉</span>{t}</li>)}
+          </ul>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-black/60 p-5">
+          <div class="flex items-center justify-between"><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">Caja · Turno de hoy</p><span class="rounded-full bg-[#22C55E]/15 px-2.5 py-1 text-[10px] font-bold text-[#4ADE80]">Stock en vivo</span></div>
+          <div id="stock-list" class="mt-4 space-y-2.5">
+            {[["Agua San Luis",24,3],["Gatorade",12,6],["Powerade",9,6]].map(p => (
+              <button type="button" data-product={p[0]} data-price={p[2]} data-stock={p[1]} class="prod flex w-full items-center justify-between rounded-xl bg-white/[0.05] px-4 py-3 text-sm transition hover:bg-white/[0.09]">
+                <span class="flex items-center gap-2.5 text-white/75">◫ {p[0]}</span>
+                <span><span class="stock rounded-md bg-white/10 px-2 py-0.5 text-[11px] text-white/60">{p[1]} u.</span><span class="ml-3 font-bold text-white/80">S/ {p[2]}</span></span>
+              </button>
+            ))}
+          </div>
+          <div class="mt-4 flex items-center justify-between border-t border-white/10 pt-4"><span class="text-sm text-white/50">Total del ticket</span><span class="text-xl font-black text-[#4ADE80]">S/ <span id="ticket-total">0</span></span></div>
+          <button id="cobrar" type="button" class="mt-3 w-full rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-white transition hover:bg-[#16A34A]">Cobrar ticket</button>
+          <p id="cobro-msg" class="mt-2 hidden text-center text-xs font-bold text-[#4ADE80]">✓ Venta registrada y stock descontado</p>
+        </div>
+      </div>
+
+      <div class="mt-14 grid items-start gap-10 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-black/60 p-5 order-2 lg:order-1">
+          <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">Equipo · Sede Cayma</p>
+          <div id="role-list" class="mt-4 space-y-2.5">
+            {[["Y","Dueño",1],["A","Admin",0],["J","Vendedor",0]].map(r => (
+              <button type="button" data-role={r[1]} class={`role flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${r[2]?"border-[#22C55E]/50 bg-[#22C55E]/10":"border-transparent bg-white/[0.04] hover:bg-white/[0.08]"}`}>
+                <span class={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${r[2]?"bg-[#22C55E] text-white":"bg-white/10 text-white/60"}`}>{r[0]}</span>
+                <span class="font-bold text-white/85">{r[1]}</span>
+                <span class="ml-auto text-white/35">✂</span>
+              </button>
+            ))}
+          </div>
+          <ul id="role-perms" class="mt-4 space-y-2 border-t border-white/10 pt-4 text-sm text-white/70"></ul>
+        </div>
+        <div class="order-1 lg:order-2">
+          <div class="flex items-center gap-4"><span class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/10 text-xl text-[#4ADE80]">◔</span><span class="text-5xl font-black text-[#22C55E]/25">02</span></div>
+          <h3 class="mt-5 text-2xl font-black text-white md:text-3xl">Tu equipo, con permisos de verdad</h3>
+          <p class="mt-3 max-w-md leading-relaxed text-white/55">Le das cuenta a quien atiende sin darle acceso a tu plata. Cada persona entra con su usuario y ve solo lo que le toca. Toca cada rol 👆</p>
+          <ul class="mt-5 space-y-2.5 text-sm text-white/70">
+            {["Administrador por sede: gestiona y ve los ingresos de la suya","Vendedor: opera reservas y caja, pero NO ve tus ingresos","Varias sedes, cada una con su propio equipo"].map(t => <li class="flex items-center gap-2.5"><span class="text-[#4ADE80]">◉</span>{t}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · LO QUE GANAS + PLANES ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-16 md:px-8 md:py-20">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#16A34A]">Lo que ganas</p>
+      <h2 class="mt-3 text-4xl font-black tracking-tight text-[#101613] md:text-5xl">Tu cancha, <span class="text-[#16A34A]">potenciada.</span></h2>
+      <p class="mt-4 max-w-xl text-[#5B6660]">Lo mismo que ya haces, pero sin perseguir a nadie por WhatsApp y con los números claros.</p>
+
+      <div class="mt-10 grid gap-4 lg:grid-cols-5">
+        <article class="relative overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white p-7 lg:col-span-3">
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#DCFCE7] text-xl text-[#16A34A]">◷</span>
+          <h3 class="mt-5 text-2xl font-black text-[#101613]">Reservas 24/7</h3>
+          <p class="mt-2 max-w-md leading-relaxed text-[#5B6660]">Tus jugadores reservan de madrugada, un domingo o mientras estás en otra cosa. La cancha se sigue llenando sin que contestes un solo mensaje.</p>
+          <span class="pointer-events-none absolute -bottom-8 right-4 select-none text-[7rem] font-black leading-none text-[#16A34A]/10">01</span>
+        </article>
+        <article class="relative overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white p-7 lg:col-span-2">
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#DCFCE7] text-xl text-[#16A34A]">▅</span>
+          <h3 class="mt-5 text-lg font-black text-[#101613]">Panel en tiempo real</h3>
+          <p class="mt-1 text-sm text-[#5B6660]">Tus reservas de un vistazo</p>
+          <span class="pointer-events-none absolute -bottom-6 right-3 select-none text-[5.5rem] font-black leading-none text-[#16A34A]/10">02</span>
+        </article>
+        {[["⌖","Más visibilidad","Aparece en búsquedas cercanas","03"],["▤","Cobro digital","Tarjeta o Yape, tú decides","04"],["✓","3 meses gratis","Luego S/ 89.90/mes · varía según tu zona","05"]].map(c => (
+          <article class="relative overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white p-6">
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#DCFCE7] text-lg text-[#16A34A]">{c[0]}</span>
+            <h3 class="mt-4 font-black text-[#101613]">{c[1]}</h3>
+            <p class="mt-1 text-sm text-[#5B6660]">{c[2]}</p>
+            <span class="pointer-events-none absolute -bottom-5 right-2 select-none text-[5rem] font-black leading-none text-[#16A34A]/10">{c[3]}</span>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-4 flex flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-[#060A08] p-7 text-white md:flex-row md:items-center md:p-9">
+        <div><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">¿Listo?</p><h3 class="mt-2 text-2xl font-black text-white md:text-3xl">Empieza gratis. Sin contratos.</h3><p class="mt-1 text-sm text-white/55">Cargamos tus canchas, horarios y precios por ti.</p></div>
+        <a href="/register?plan=dueno" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#22C55E] px-7 py-3.5 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Quiero unirme <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div id="planes" class="mt-14">
+        <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+            <h2 class="reveal text-3xl font-black tracking-tight text-[#101613]">Planes y precios</h2>
+          <div class="flex rounded-full bg-[#EDEEEC] p-1 text-sm font-semibold">
+            <button id="btn-men" type="button" class="rounded-full bg-[#060A08] px-4 py-2 text-white">Mensual</button>
+            <button id="btn-anu" type="button" class="rounded-full px-4 py-2 text-[#5B6660]">Anual −20%</button>
+          </div>
+        </div>
+        <div class="reveal mt-6 grid gap-5 md:grid-cols-3" data-reveal-delay="100">
+          {[
+            ["Publicación", "0", "Para aparecer en el marketplace", ["Perfil público + QR WhatsApp", "Reservas online 24/7", "1 complejo · 2 canchas"]],
+            ["Gestión Total", "89.90", "Agenda + caja + equipo", ["Todo lo de Publicación", "Agenda sin solapamientos", "Caja POS + Yape/Culqi", "Roles para tu personal"]],
+            ["Red de Sedes", "199", "Multi-sede + reportes", ["Todo lo de Gestión Total", "Sedes ilimitadas", "Reportes y metas globales", "Soporte prioritario"]],
+          ].map(([n, p, d, feats], i) => (
+            <div class={`rounded-2xl border bg-white p-7 ${i === 1 ? "border-[#22C55E] shadow-[0_8px_30px_rgba(34,197,94,0.18)]" : "border-[#E7E5E4]"}`}>
+              <h3 class="font-bold text-[#101613]">{n}</h3>
+              <p class="mt-2 text-4xl font-black text-[#101613]">S/ <span class="precio" data-men={p} data-anu={p === "0" ? "0" : String((parseFloat(p) * 0.8).toFixed(2))}>{p}</span><small class="text-sm font-normal text-[#8A938D]">/mes</small></p>
+              <p class="mt-1 text-sm text-[#5B6660]">{d}</p>
+              <ul class="mt-4 space-y-2 text-sm text-[#3F4A44]">
+                {(feats as string[]).map((f) => <li>✓ {f}</li>)}
+              </ul>
+              <a href="/register?plan=dueno" class={`mt-6 block rounded-xl py-3 text-center font-bold transition ${i === 1 ? "bg-[#22C55E] text-white hover:bg-[#16A34A]" : "border border-[#E7E5E4] hover:border-[#22C55E]"}`}>Empezar gratis</a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 · TORNEOS ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-black px-4 py-16 text-white md:px-8 md:py-24">
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 600" fill="none" stroke="#22C55E" stroke-opacity="0.08" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="20" width="1120" height="560"/><line x1="600" y1="20" x2="600" y2="580"/><circle cx="600" cy="300" r="110"/><rect x="40" y="180" width="160" height="240"/><rect x="1000" y="180" width="160" height="240"/></svg>
+    <div class="relative mx-auto max-w-6xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#EAB308]">Torneos</p>
+      <h2 class="mt-4 max-w-4xl text-4xl font-black tracking-tight text-white md:text-5xl">Un torneo llena tu cancha <span class="text-[#EAB308]">todo un fin de semana.</span></h2>
+      <p class="mt-4 max-w-xl leading-relaxed text-white/55">Organizarlo por WhatsApp es un caos: quién pagó, quién juega contra quién, a qué hora. Acá lo armas una vez y se ordena solo.</p>
+
+      <div class="mt-10 grid gap-10 lg:grid-cols-2">
+        <div class="space-y-7">
+          {[["◔","Los equipos se inscriben solos","Publicas el torneo con su cupo y su precio. Cada capitán inscribe a su equipo con el nombre de sus jugadores; tú solo confirmas."],["▤","Cobras la inscripción por adelantado","Suben su comprobante al inscribirse. Sabes quién pagó sin revisar capturas en tu celular."],["⑂","Las llaves se arman y avanzan solas","Cargas el resultado de cada partido y el cuadro se actualiza: quién pasa, contra quién y cuándo juega la final."]].map(f => (
+            <div class="flex gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#EAB308]/30 bg-[#EAB308]/10 text-lg text-[#EAB308]">{f[0]}</span>
+              <div><h3 class="font-black text-white">{f[1]}</h3><p class="mt-1.5 text-sm leading-relaxed text-white/50">{f[2]}</p></div>
+            </div>
+          ))}
+          <div class="rounded-2xl border border-dashed border-[#EAB308]/40 bg-[#EAB308]/[0.06] p-5 text-sm leading-relaxed text-white/70">
+            <strong class="text-[#EAB308]">8 equipos × S/ <span id="insc-val">280</span></strong> de inscripción son <strong class="text-white">S/ <span id="insc-total">2,240</span></strong> en un fin de semana — con la cancha que ya tienes.
+            <label class="mt-3 flex items-center gap-2 text-xs text-white/50">Inscripción por equipo: S/
+              <input id="insc" type="number" value="280" min="50" max="2000" step="10" class="w-20 rounded-lg border border-white/15 bg-black px-2 py-1 text-white focus:border-[#EAB308] focus:outline-none" />
+            </label>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <div class="flex items-center justify-between"><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">Copa ReservaYa</p><span class="rounded-full bg-[#22C55E]/15 px-2.5 py-1 text-[10px] font-black uppercase text-[#4ADE80]">Campeón</span></div>
+          <p class="mt-1 text-[11px] text-white/35">Toca un equipo para avanzar al ganador 👇</p>
+          <div id="bracket" class="mt-4 grid grid-cols-4 gap-2 text-[11px]">
+            <div class="space-y-2" data-round="qf">
+              {[["Los Pumas","FC Barrio"],["Real Cayma","Los Cracks"],["Atlético 10","Dep. Norte"],["Los Tigres","San Martín"]].map((m,mi) => (
+                <div class="space-y-1 rounded-lg bg-black/40 p-1.5" data-match={mi}>
+                  {m.map(t => <button type="button" data-team={t} class="team block w-full truncate rounded-md border border-white/10 bg-white/[0.05] px-2 py-1.5 text-left text-white/70 transition hover:border-[#4ADE80]">{t}</button>)}
+                </div>
+              ))}
+            </div>
+            <div class="space-y-2 self-center" data-round="sf">
+              {[0,1].map(mi => <div class="space-y-1 rounded-lg bg-black/40 p-1.5" data-match={mi}><button type="button" data-slot="" class="slot-b block w-full truncate rounded-md border border-[#22C55E]/30 bg-[#22C55E]/10 px-2 py-1.5 text-left font-bold text-[#4ADE80]">—</button><button type="button" data-slot="" class="slot-b block w-full truncate rounded-md border border-[#22C55E]/30 bg-[#22C55E]/10 px-2 py-1.5 text-left font-bold text-[#4ADE80]">—</button></div>)}
+            </div>
+            <div class="space-y-2 self-center" data-round="f">
+              <div class="space-y-1 rounded-lg bg-black/40 p-1.5" data-match="0"><button type="button" data-slot="" class="slot-b block w-full truncate rounded-md border border-white/10 bg-white/[0.05] px-2 py-1.5 text-left text-white/70">—</button><button type="button" data-slot="" class="slot-b block w-full truncate rounded-md border border-white/10 bg-white/[0.05] px-2 py-1.5 text-left text-white/70">—</button></div>
+              <div class="rounded-lg border border-[#EAB308]/50 bg-[#EAB308]/10 p-2 text-center"><p class="text-[10px] uppercase tracking-widest text-[#EAB308]">🏆 Campeón</p><p id="champion" class="mt-1 truncate font-black text-[#EAB308]">—</p></div>
+            </div>
+            <div class="self-center rounded-lg border border-white/10 bg-black/40 p-2 text-center text-white/40">Final<br/>Dom 18:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 · TESTIMONIO ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#040705] px-4 py-16 text-white md:px-8 md:py-24">
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 500" fill="none" stroke="#22C55E" stroke-opacity="0.08" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="20" width="1120" height="460"/><line x1="600" y1="20" x2="600" y2="480"/><circle cx="600" cy="250" r="110"/><rect x="40" y="150" width="160" height="200"/><rect x="1000" y="150" width="160" height="200"/></svg>
+    <div class="relative mx-auto max-w-4xl text-center">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Lo dicen los dueños</p>
+      <h2 class="mt-4 text-3xl font-black tracking-tight text-white md:text-5xl">Ya hay canchas <span class="text-[#4ADE80]">llenándose solas.</span></h2>
+      <div class="relative mt-10 overflow-hidden" id="quote-viewport">
+        <div id="quote-track" class="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
+          {quotes.map(qq => (
+            <div class="w-full shrink-0 px-1">
+              <figure class="rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-left md:p-12">
+                <span class="text-6xl leading-none text-[#22C55E]/30">❝</span>
+                <blockquote class="text-xl leading-relaxed md:text-2xl">"{qq[3]} <span class="text-[#4ADE80]">{qq[4]}</span>"</blockquote>
+                <figcaption class="mt-8 flex items-center justify-between">
+                  <span class="flex items-center gap-3"><span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#22C55E] font-black">{qq[0]}</span><span><strong class="block text-sm text-white">{qq[1]}</strong><span class="text-xs text-white/40">{qq[2]}</span></span></span>
+                  <span class="tracking-[0.2em] text-[#EAB308]">★★★★★</span>
+                </figcaption>
+              </figure>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="mt-6 flex items-center justify-center gap-3">
+        <button type="button" id="q-prev" aria-label="Anterior" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition hover:bg-white/10">←</button>
+        <div class="flex gap-2" id="q-dots">{[0,1,2].map(i => <button type="button" data-q={i} aria-label={`Ver testimonio ${i+1}`} class={`h-1.5 rounded-full transition-all ${i===0?"w-6 bg-[#4ADE80]":"w-1.5 bg-white/25"}`}></button>)}</div>
+        <button type="button" id="q-next" aria-label="Siguiente" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition hover:bg-white/10">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8 · FAQ ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-black px-4 py-16 text-white md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Preguntas frecuentes</p>
+      <h2 class="mt-4 text-3xl font-black tracking-tight text-white md:text-5xl">Lo que preguntan los dueños antes de empezar</h2>
+      <div class="mt-10 space-y-3" id="faq">
+        {faqs.map(f => (
+          <div class="faq-item overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+            <button type="button" class="faq-q flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-[15px] font-bold text-white" aria-expanded="false">
+              <span>{f[0]}</span><span class="faq-icon shrink-0 text-xl text-[#4ADE80]">+</span>
+            </button>
+            <div class="faq-a grid grid-rows-[0fr] transition-all duration-300"><div class="overflow-hidden"><p class="px-5 pb-5 text-sm leading-relaxed text-white/55">{f[1]}</p></div></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9 · CTA FINAL ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#040705] px-4 py-20 text-center text-white md:py-28">
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 500" fill="none" stroke="#22C55E" stroke-opacity="0.12" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="20" width="1120" height="460"/><line x1="600" y1="20" x2="600" y2="480"/><circle cx="600" cy="250" r="110"/><rect x="40" y="140" width="170" height="220"/><rect x="990" y="140" width="170" height="220"/></svg>
+    <div class="relative mx-auto max-w-3xl">
+      <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Empieza hoy · Es gratis</p>
+      <h2 class="reveal mt-5 text-5xl font-black tracking-tight text-white md:text-7xl">¿Tienes una <span class="text-[#4ADE80]">cancha deportiva?</span></h2>
+      <p class="mx-auto mt-5 max-w-md leading-relaxed text-white/55">3 meses gratis. Si te gusta, S/ 89.90 al mes. Si no, lo dejas. Sin contratos.</p>
+      <a href="/register?plan=dueno" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-8 py-4 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Publica tu cancha gratis <span aria-hidden="true">→</span></a>
+      <div class="mx-auto mt-10 flex max-w-xl flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
+        <span>Sin tarjeta requerida</span><span class="hidden sm:block">·</span><span>3 meses gratis, luego S/ 89.90/mes</span><span class="hidden sm:block">·</span><span>Cancela cuando quieras</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORDMARK ============ -->
+  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-black px-4 pb-10 pt-14 text-white">
+    <div class="mx-auto max-w-7xl md:px-8">
+      <div class="flex flex-col justify-between gap-4 border-b border-white/10 pb-8 text-sm text-white/50 md:flex-row">
+        <div><p class="text-xs">Contáctanos:</p><a href="mailto:hola@reservaya.pe" class="mt-2 inline-block font-bold text-white hover:text-[#4ADE80]">✉ hola@reservaya.pe ↗</a><p class="mt-2">⌖ Arequipa, Perú</p></div>
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="Enlaces secundarios">
+          {["Nosotros","Cómo funciona","Funcionalidades","Buscar canchas","Precios","Ayúdanos a mejorar","Registrarse"].map(l => <a href="#" class="hover:text-[#4ADE80]">{l}</a>)}
+        </nav>
+      </div>
+      <p class="mt-10 text-center text-[18vw] font-black leading-none tracking-tight text-white/90 md:text-[10rem]" aria-hidden="true">Reserva<span class="text-[#4ADE80]">Ya</span></p>
+      <div class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/40 md:flex-row">
+        <div class="flex items-center gap-3">
+          <span class="rounded-md border border-white/20 px-3 py-1.5 font-bold text-white">▶ Google Play</span>
+          <span class="rounded-md border border-white/20 px-3 py-1.5 text-white/50"> App Store · Próximamente</span>
+        </div>
+        <p>© 2026 ReservaYa. Hecho en Perú 🇵🇪 · Pagos procesados por Culqi · Términos · Privacidad · Libro de Reclamaciones</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // ---------- Contadores ----------
+  const counters = document.querySelectorAll("[data-count]");
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.count || "0", 10);
+      const useK = el.hasAttribute("data-format");
+      const t0 = performance.now();
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / 1400);
+        const v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        el.textContent = useK ? (v >= 1000 ? "2,500" : v.toLocaleString("es-PE")) : v.toLocaleString("es-PE");
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      cio.unobserve(el);
+    });
+  }, { threshold: 0.4 });
+  counters.forEach((c) => cio.observe(c));
+
+  // ---------- Chart draw ----------
+  const line = document.getElementById("dash-line");
+  if (line) {
+    const len = line.getTotalLength();
+    line.style.strokeDasharray = String(len);
+    line.style.strokeDashoffset = String(len);
+    new IntersectionObserver((es, o) => {
+      es.forEach((e) => { if (e.isIntersecting) { line.style.transition = "stroke-dashoffset 2s ease"; line.style.strokeDashoffset = "0"; o.disconnect(); } });
+    }, { threshold: 0.3 }).observe(line);
+  }
+
+  // ---------- Reservas por confirmar ----------
+  document.querySelectorAll(".pending-row").forEach((row) => {
+    row.querySelector("[data-ok]")?.addEventListener("click", () => {
+      row.outerHTML = `<div class="rounded-lg bg-[#22C55E]/10 px-3 py-2 text-[12px] font-bold text-[#16A34A]">✓ Reserva confirmada, código enviado al jugador</div>`;
+    });
+    row.querySelector("[data-no]")?.addEventListener("click", () => row.remove());
+  });
+
+  // ---------- Paso 01: progreso de registro (loop) ----------
+  const steps = Array.from(document.querySelectorAll(".reg-step"));
+  const pct = document.getElementById("reg-pct");
+  let ri = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    ri = (ri + 1) % (steps.length + 2);
+    steps.forEach((s, i) => {
+      const done = i < ri;
+      const dot = s.querySelector(".reg-dot");
+      const bar = s.querySelector(".reg-bar");
+      if (dot) { dot.textContent = done ? "✓" : ""; dot.style.background = done ? "#22C55E" : "transparent"; dot.style.borderColor = done ? "#22C55E" : "rgba(255,255,255,0.25)"; dot.style.color = "#fff"; }
+      if (bar) bar.style.width = done ? "100%" : (i === ri ? "45%" : "0%");
+    });
+    if (ri === 0 && pct) pct.textContent = "12";
+    else if (pct) pct.textContent = String(Math.min(100, 12 + Math.round((ri / steps.length) * 88)));
+  }, 1200);
+
+  // ---------- Paso 02: slots en vivo ----------
+  const toast = document.getElementById("slot-toast");
+  document.querySelectorAll("#live-slots .slot").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll("#live-slots .slot").forEach((x) => { x.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-white/[0.07] text-white/80 hover:bg-white/[0.14]"; });
+    b.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-[#22C55E] text-white";
+    if (toast) {
+      toast.innerHTML = "";
+      const span1 = document.createElement("span");
+      span1.className = "font-bold text-[#4ADE80]";
+      span1.textContent = `Nueva reserva · ${b.dataset.slot}`;
+      const span2 = document.createElement("span");
+      span2.className = "float-right text-white/50";
+      span2.textContent = "S/ 80";
+      toast.append(span1, span2);
+    }
+  }));
+
+  // ---------- Paso 03: ingresos en vivo ----------
+  const incomeList = document.getElementById("income-list");
+  const incomeTotal = document.getElementById("owner-income");
+  let income = 1150;
+  const names = ["Ariana P.", "Equipo Tigres", "Luis R.", "Nicolas T.", "Vale Q."];
+  setInterval(() => {
+    if (document.hidden || !incomeList) return;
+    const n = names[Math.floor(Math.random() * names.length)];
+    const amt = [70, 80, 80, 100][Math.floor(Math.random() * 4)];
+    income += amt;
+    if (incomeTotal) incomeTotal.textContent = income.toLocaleString("es-PE");
+    const div = document.createElement("div");
+    div.className = "flex items-center justify-between rounded-xl bg-[#22C55E]/10 px-4 py-2.5";
+    const span1 = document.createElement("span");
+    span1.className = "text-white/70";
+    span1.textContent = `Reserva · ${n}`;
+    const span2 = document.createElement("span");
+    span2.className = "font-bold text-[#4ADE80]";
+    span2.textContent = `+S/ ${amt}`;
+    div.append(span1, span2);
+    incomeList.prepend(div);
+    while (incomeList.children.length > 4) incomeList.lastElementChild?.remove();
+  }, 6000);
+
+  // ---------- Caja y stock ----------
+  let ticket = 0;
+  const ticketEl = document.getElementById("ticket-total");
+  document.querySelectorAll(".prod").forEach((b) => b.addEventListener("click", () => {
+    let stock = parseInt(b.dataset.stock || "0", 10);
+    if (stock <= 0) return;
+    stock--;
+    b.dataset.stock = String(stock);
+    const s = b.querySelector(".stock");
+    if (s) { s.textContent = `${stock} u.`; if (stock <= 5) s.style.color = "#EAB308"; }
+    ticket += parseInt(b.dataset.price || "0", 10);
+    if (ticketEl) ticketEl.textContent = String(ticket);
+    document.getElementById("cobro-msg")?.classList.add("hidden");
+  }));
+  document.getElementById("cobrar")?.addEventListener("click", () => {
+    if (ticket <= 0) return;
+    ticket = 0;
+    if (ticketEl) ticketEl.textContent = "0";
+    document.getElementById("cobro-msg")?.classList.remove("hidden");
+  });
+
+  // ---------- Roles ----------
+  const perms = {
+    "Dueño": ["Todo el negocio", "Ingresos y reportes", "Crea administradores"],
+    "Admin": ["Su sede y sus canchas", "Reservas, caja y reportes de su sede", "No ve las otras sedes"],
+    "Vendedor": ["Opera reservas y caja", "Valida códigos de acceso", "NO ve tus ingresos"],
+  };
+  const permList = document.getElementById("role-perms");
+  const paintPerms = (role) => {
+    if (!permList) return;
+    permList.innerHTML = "";
+    (perms[role] || []).forEach((p) => {
+      const li = document.createElement("li");
+      li.className = "flex items-center gap-2.5";
+      const span = document.createElement("span");
+      span.className = "text-[#4ADE80]";
+      span.textContent = "◉";
+      li.append(span, p);
+      permList.appendChild(li);
+    });
+  };
+  document.querySelectorAll(".role").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".role").forEach((x) => {
+      const on = x === b;
+      x.className = `role flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${on ? "border-[#22C55E]/50 bg-[#22C55E]/10" : "border-transparent bg-white/[0.04] hover:bg-white/[0.08]"}`;
+      const av = x.querySelector("span");
+      if (av) av.className = `flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${on ? "bg-[#22C55E] text-white" : "bg-white/10 text-white/60"}`;
+    });
+    paintPerms(b.dataset.role || "Dueño");
+  }));
+  paintPerms("Dueño");
+
+  // ---------- Planes toggle ----------
+  const bm = document.getElementById("btn-men");
+  const ba = document.getElementById("btn-anu");
+  const precios = Array.from(document.querySelectorAll(".precio"));
+  const modo = (anual) => {
+    precios.forEach((p) => { p.textContent = anual ? p.dataset.anu || "" : p.dataset.men || ""; });
+    if (bm) bm.className = `rounded-full px-4 py-2 ${!anual ? "bg-[#060A08] text-white" : "text-[#5B6660]"}`;
+    if (ba) ba.className = `rounded-full px-4 py-2 ${anual ? "bg-[#060A08] text-white" : "text-[#5B6660]"}`;
+  };
+  bm?.addEventListener("click", () => modo(false));
+  ba?.addEventListener("click", () => modo(true));
+
+  // ---------- Inscripción torneo ----------
+  const insc = document.getElementById("insc");
+  const paintInsc = () => {
+    const v = parseInt(insc?.value || "280", 10) || 0;
+    document.getElementById("insc-val").textContent = v.toLocaleString("es-PE");
+    document.getElementById("insc-total").textContent = (v * 8).toLocaleString("es-PE");
+  };
+  insc?.addEventListener("input", paintInsc);
+
+  // ---------- Bracket interactivo ----------
+  const sfSlots = Array.from(document.querySelectorAll('[data-round="sf"] .slot-b'));
+  const fSlots = Array.from(document.querySelectorAll('[data-round="f"] .slot-b'));
+  const champ = document.getElementById("champion");
+  const seed = [["Los Pumas","Los Cracks"],["Atlético 10","Los Tigres"]];
+  // seed inicial como la referencia
+  sfSlots[0].textContent = seed[0][0]; sfSlots[0].dataset.slot = seed[0][0];
+  sfSlots[1].textContent = seed[0][1]; sfSlots[1].dataset.slot = seed[0][1];
+  sfSlots[2].textContent = seed[1][0]; sfSlots[2].dataset.slot = seed[1][0];
+  sfSlots[3].textContent = seed[1][1]; sfSlots[3].dataset.slot = seed[1][1];
+  fSlots[0].textContent = "Los Pumas"; fSlots[0].dataset.slot = "Los Pumas";
+  fSlots[1].textContent = "Atlético 10"; fSlots[1].dataset.slot = "Atlético 10";
+  if (champ) champ.textContent = "Los Pumas";
+  const clearDown = (round) => {
+    if (round === "qf") { sfSlots.forEach((s) => { s.textContent = "—"; s.dataset.slot = ""; }); }
+    if (round === "qf" || round === "sf") { fSlots.forEach((s) => { s.textContent = "—"; s.dataset.slot = ""; }); if (champ) champ.textContent = "—"; }
+  };
+  document.querySelectorAll('[data-round="qf"] [data-match]').forEach((m) => {
+    m.querySelectorAll(".team").forEach((t) => t.addEventListener("click", () => {
+      const mi = parseInt(m.dataset.match || "0", 10);
+      // cada llave QF alimenta un slot de semis (mi 0,1 -> SF0 ; mi 2,3 -> SF1)
+      const sf = mi < 2 ? 0 : 1;
+      const slot = sfSlots[sf * 2 + (mi % 2)];
+      slot.textContent = t.dataset.team || "";
+      slot.dataset.slot = t.dataset.team || "";
+      m.querySelectorAll(".team").forEach((x) => { x.style.borderColor = x === t ? "#4ADE80" : ""; x.style.background = x === t ? "rgba(34,197,94,0.15)" : ""; });
+      clearDown("sf");
+    }));
+  });
+  sfSlots.forEach((s, i) => s.addEventListener("click", () => {
+    if (!s.dataset.slot) return;
+    const f = fSlots[Math.floor(i / 2)];
+    f.textContent = s.dataset.slot;
+    f.dataset.slot = s.dataset.slot;
+    if (champ) champ.textContent = "Por definir";
+  }));
+  fSlots.forEach((f) => f.addEventListener("click", () => {
+    if (!f.dataset.slot) return;
+    if (champ) champ.textContent = f.dataset.slot;
+  }));
+
+  // ---------- Testimonios carrusel ----------
+  const qt = document.getElementById("quote-track");
+  const qdots = Array.from(document.querySelectorAll("[data-q]"));
+  let qi = 0, qtimer;
+  const showQ = (i) => {
+    qi = (i + qdots.length) % qdots.length;
+    if (qt) qt.style.transform = `translateX(-${qi * 100}%)`;
+    qdots.forEach((d, k) => { d.className = `h-1.5 rounded-full transition-all ${k === qi ? "w-6 bg-[#4ADE80]" : "w-1.5 bg-white/25"}`; });
+  };
+  const autoQ = () => { clearInterval(qtimer); qtimer = setInterval(() => { if (!document.hidden) showQ(qi + 1); }, 6000); };
+  qdots.forEach((d) => d.addEventListener("click", () => { showQ(parseInt(d.dataset.q || "0", 10)); autoQ(); }));
+  document.getElementById("q-prev")?.addEventListener("click", () => { showQ(qi - 1); autoQ(); });
+  document.getElementById("q-next")?.addEventListener("click", () => { showQ(qi + 1); autoQ(); });
+  autoQ();
+
+  // ---------- FAQ ----------
+  document.querySelectorAll(".faq-item").forEach((item) => {
+    const btn = item.querySelector(".faq-q");
+    const ans = item.querySelector(".faq-a");
+    const icon = item.querySelector(".faq-icon");
+    btn?.addEventListener("click", () => {
+      const open = ans?.classList.toggle("grid-rows-[0fr]");
+      const isOpen = !ans?.classList.contains("grid-rows-[0fr]");
+      ans?.classList.toggle("grid-rows-[1fr]", isOpen);
+      btn.setAttribute("aria-expanded", String(isOpen));
+      if (icon) icon.textContent = isOpen ? "−" : "+";
+    });
+  });
+</script>

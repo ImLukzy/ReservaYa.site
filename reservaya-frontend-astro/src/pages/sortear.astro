@@ -1,0 +1,432 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000").replace(/\/$/, "");
+
+const faqs = [
+  {
+    q: "¿Cómo sortear equipos de fútbol parejos?",
+    a: "Agrega a los jugadores por su @usuario (o como invitados), elige en cuántos equipos separarlos y toca Sortear. ReservaYa reparte equipos equilibrados según el nivel de cada uno.",
+  },
+  {
+    q: "¿Puedo separar en 2, 3 o 4 equipos?",
+    a: "Sí. Elige 2 para la pichanga clásica, 3 para rotar un equipo afuera o 4 para un mini-torneo. El reparto siempre busca que queden parejos.",
+  },
+  {
+    q: "¿Sirve para una pichanga de 10, 14 o más?",
+    a: "Sí. Agrega a todos separados por comas (ej: Juan, Pedro, Luis) y se agregan de una. Funciona con cualquier cantidad de jugadores.",
+  },
+  {
+    q: "¿Es gratis?",
+    a: "Totalmente gratis y sin cuenta. Los jugadores con @usuario guardan su nivel para futuros sorteos más parejos.",
+  },
+];
+---
+
+<BaseLayout
+  title="Arma los equipos | ReservaYa"
+  description="El sorteador de equipos de ReservaYa: agrega jugadores y reparte equipos parejos."
+  announcement="🎾 ReservaYa ya está en Google Play — Descarga la app gratis"
+>
+  <section class="relative w-full overflow-hidden bg-[#F7F6F3] px-4 py-12 md:px-8">
+    <svg class="pointer-events-none absolute inset-0 mx-auto h-full w-full max-w-6xl opacity-[0.05]" viewBox="0 0 800 600" fill="none" stroke="#15803D" stroke-width="4" aria-hidden="true">
+      <line x1="60" y1="0" x2="60" y2="600"/><line x1="740" y1="0" x2="740" y2="600"/>
+      <circle cx="400" cy="300" r="170"/>
+    </svg>
+
+    <div class="relative mx-auto max-w-3xl">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-[#BBF7D0] bg-[#DCFCE7]/60 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#15803D]">✨ Nuevo · ReservaYa</span>
+      <h1 class="reveal mt-4 text-[52px] font-black leading-[0.95] tracking-tight text-[#101613] md:text-[76px]">
+        ARMA LOS <span class="text-[#16A34A]">EQUIPOS</span>
+      </h1>
+      <p class="mt-5 max-w-2xl leading-relaxed text-[#5B6660]">
+        El <strong class="font-bold text-[#101613]">sorteador de equipos</strong> de ReservaYa: agrega a tus jugadores por su
+        <strong class="font-bold text-[#101613]"> @usuario</strong> y reparte equipos <strong class="font-bold text-[#16A34A]">parejos</strong> según cómo juega cada uno.
+        Se acabó el "elige tú los equipos".
+      </p>
+
+      <!-- AGREGA JUGADORES -->
+      <div class="mt-8 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+        <p class="flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-[#101613]">
+          <span class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#16A34A] text-[11px] text-[#16A34A]">⌕</span>
+          AGREGA JUGADORES
+        </p>
+        <div id="search-wrap" class="relative mt-3">
+          <span class="absolute top-1/2 left-4 -translate-y-1/2 font-semibold text-gray-400">@</span>
+          <input
+            id="add-input"
+            placeholder="Busca por @usuario o nombre..."
+            autocomplete="off"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="suggest"
+            aria-autocomplete="list"
+            class="w-full rounded-xl border border-[#EDEEEC] bg-[#F5F6F5] py-3 pr-4 pl-10 text-sm text-[#101613] placeholder:text-[#9AA3AD] focus:border-[#22C55E] focus:bg-white focus:outline-none"
+          />
+          <div id="suggest" role="listbox" aria-label="Usuarios encontrados" class="absolute right-0 left-0 z-20 mt-2 hidden max-h-64 overflow-y-auto rounded-xl border border-[#E7E5E4] bg-white shadow-[0_12px_32px_rgba(0,0,0,0.12)]"></div>
+        </div>
+
+        <div id="draft-row" class="hidden">
+          <div class="mt-3 flex gap-2">
+            <input
+              id="draft-input"
+              placeholder="Juan, Pedro, Luis..."
+              autocomplete="off"
+              class="flex-1 rounded-xl border-2 border-[#22C55E] bg-white px-4 py-2.5 text-sm text-[#101613] focus:outline-none"
+            />
+            <button id="draft-add" type="button" class="shrink-0 rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]">Agregar</button>
+            <button id="draft-close" type="button" aria-label="Descartar" class="shrink-0 px-1 text-xl text-gray-400 hover:text-gray-600">×</button>
+          </div>
+          <p class="mt-1.5 text-xs text-[#8A938D]">Separa varios con comas y se agregan todos de una.</p>
+        </div>
+
+        <button id="add-guest" type="button" class="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#86EFAC] bg-[#F0FDF4] py-3 text-sm font-bold text-[#15803D] transition hover:border-[#22C55E] hover:bg-[#DCFCE7]/50">
+          <span aria-hidden="true">◔◔</span> Agregar invitado (sin cuenta)
+        </button>
+      </div>
+
+      <!-- JUGADORES -->
+      <div class="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+        <p class="flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-[#101613]">
+          <span class="text-[#16A34A]" aria-hidden="true">◔◔</span>
+          JUGADORES <span id="jcount" class="text-[#16A34A]">(0)</span>
+        </p>
+        <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
+        <p id="jempty" class="py-8 text-center text-sm text-[#8A938D]">Busca y agrega a los que van a jugar.</p>
+      </div>
+
+      <!-- CUÁNTOS + SORTEAR -->
+      <div class="mt-4 flex flex-col justify-between gap-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center">
+        <div>
+          <p class="text-[11px] font-bold tracking-wide text-[#6B7280]">¿CUÁNTOS EQUIPOS?</p>
+          <div id="tnums" class="mt-2 flex gap-2">
+            {[2, 3, 4].map((n) => (
+              <button type="button" data-n={n} class={`tnum h-10 w-12 rounded-xl text-sm font-bold transition ${n === 2 ? "bg-[#16A34A] text-white shadow-[0_6px_16px_rgba(22,163,74,0.45)]" : "bg-[#F1F2F1] text-[#5B6660] hover:bg-[#E4E7E4]"}`}>{n}</button>
+            ))}
+          </div>
+        </div>
+        <button id="sortear" type="button" disabled class="btn-press flex items-center justify-center gap-2 rounded-2xl bg-[#BBF7D0] px-10 py-4 font-black tracking-wide text-white transition enabled:bg-[#22C55E] enabled:shadow-[0_8px_20px_rgba(34,197,94,0.4)] enabled:hover:bg-[#16A34A]">
+          <span aria-hidden="true">⨯</span> SORTEAR
+        </button>
+      </div>
+
+      <div id="out" class="mt-4 grid gap-4 md:grid-cols-2"></div>
+
+      <!-- FAQ -->
+      <div class="mt-10 rounded-3xl border border-[#E7E5E4] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-10">
+        <h2 class="reveal text-2xl font-extrabold tracking-tight text-[#101613] md:text-[28px]">Sorteador de equipos de fútbol</h2>
+        <p class="mt-2 leading-relaxed text-[#5B6660]">
+          Separa a tus jugadores en <strong class="font-bold text-[#101613]">2, 3 o 4 equipos parejos</strong> en segundos.
+          Ideal para tu pichanga, con imagen lista para el grupo de WhatsApp.
+        </p>
+        <div class="mt-6 space-y-3">
+          {faqs.map((f) => (
+            <div class="faq scroll-mt-32 overflow-hidden rounded-2xl border border-[#EDEEEC] bg-[#F7F8F7]" data-open="0">
+              <button type="button" class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-[15px] font-bold text-[#101613]" aria-expanded="false">
+                {f.q}
+                <span class="faq-chev shrink-0 text-lg text-gray-400 transition-transform duration-300">⌄</span>
+              </button>
+              <div class="faq-wrap grid grid-rows-[0fr] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
+                <div class="overflow-hidden"><p class="faq-body px-5 pb-5 text-[15px] leading-relaxed text-[#5B6660]">{f.a}</p></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script define:vars={{ apiUrl }}>
+  // Estado (declarado primero: las funciones de abajo lo usan)
+  let jugadores: string[] = [];
+  let nEquipos = 2;
+  let encontrados: { id: string; nombre: string }[] = [];
+  let suggestTimer: ReturnType<typeof setTimeout> | null = null;
+  let suggestCtrl: AbortController | null = null;
+  let suggestSeq = 0;
+  let activeIdx = -1;
+
+  const addInput = document.getElementById("add-input") as HTMLInputElement;
+  const suggest = document.getElementById("suggest")!;
+  const draftRow = document.getElementById("draft-row")!;
+  const draftInput = document.getElementById("draft-input") as HTMLInputElement;
+  const chips = document.getElementById("chips")!;
+  const jcount = document.getElementById("jcount")!;
+  const jempty = document.getElementById("jempty")!;
+  const out = document.getElementById("out")!;
+  const sortBtn = document.getElementById("sortear") as HTMLButtonElement;
+  const tnums = [...document.querySelectorAll<HTMLButtonElement>(".tnum")];
+
+  const esc = (v: string) => v.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c);
+
+  function hideSuggest() {
+    suggestCtrl?.abort();
+    suggestCtrl = null;
+    suggest.classList.add("hidden");
+    suggest.innerHTML = "";
+    encontrados = [];
+    activeIdx = -1;
+    addInput.setAttribute("aria-expanded", "false");
+    addInput.removeAttribute("aria-activedescendant");
+  }
+
+  // Mensaje con acción: el panel flota sobre los controles de abajo, así que
+  // nunca mostramos texto muerto — siempre un botón que agrega como invitado.
+  function showSuggestAction(hint: string, raw: string) {
+    suggest.innerHTML = "";
+    const query = raw.trim().replace(/^@/, "");
+    const info = document.createElement("p");
+    info.className = "px-4 pt-3 text-xs text-[#8A938D]";
+    info.textContent = hint;
+    suggest.append(info);
+    if (query) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("role", "option");
+      btn.className = "m-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg bg-[#F0FDF4] px-3 py-2.5 text-left text-sm font-bold text-[#15803D] transition hover:bg-[#DCFCE7]";
+      const plus = document.createElement("span");
+      plus.textContent = "+";
+      plus.setAttribute("aria-hidden", "true");
+      const label = document.createElement("span");
+      label.textContent = `Agregar "${query}" como invitado`;
+      btn.append(plus, label);
+      btn.addEventListener("mousedown", (e) => { e.preventDefault(); addMuchos(query); closeDraft(); hideSuggest(); });
+      suggest.append(btn);
+    }
+    suggest.classList.remove("hidden");
+    addInput.setAttribute("aria-expanded", "true");
+  }
+
+  function pickUser(nombre: string) {
+    const limpio = nombre.trim().replace(/^@/, "");
+    if (limpio && !jugadores.includes(limpio)) jugadores.push(limpio);
+    render();
+    hideSuggest();
+    closeDraft();
+  }
+
+  function paintSuggest() {
+    if (!encontrados.length) { hideSuggest(); return; }
+    suggest.innerHTML = "";
+    encontrados.forEach((u, idx) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.id = `suggest-opt-${idx}`;
+      b.setAttribute("role", "option");
+      b.setAttribute("aria-selected", idx === activeIdx ? "true" : "false");
+      b.className = "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition hover:bg-[#F0FDF4]" + (idx === activeIdx ? " bg-[#F0FDF4]" : "");
+      const inicial = esc((u.nombre.charAt(0) || "?").toUpperCase());
+      b.innerHTML = `<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white" aria-hidden="true">${inicial}</span><span><span class="block font-bold text-[#101613]">${esc(u.nombre)}</span><span class="block text-xs text-[#8A938D]">Toca para agregar</span></span>`;
+      b.addEventListener("mousedown", (e) => { e.preventDefault(); pickUser(u.nombre); });
+      suggest.appendChild(b);
+    });
+    suggest.classList.remove("hidden");
+    addInput.setAttribute("aria-expanded", "true");
+  }
+
+  function setActive(idx: number) {
+    activeIdx = (idx + encontrados.length) % encontrados.length;
+    paintSuggest();
+    addInput.setAttribute("aria-activedescendant", `suggest-opt-${activeIdx}`);
+  }
+
+  async function buscarUsuarios(term: string) {
+    const q = term.trim().replace(/^@/, "");
+    if (q.length < 2) { hideSuggest(); return; }
+    const mySeq = ++suggestSeq;
+    suggestCtrl?.abort();
+    suggestCtrl = new AbortController();
+    try {
+      const res = await fetch(`${apiUrl}/api/usuarios/buscar?q=${encodeURIComponent(q)}`, { signal: suggestCtrl.signal });
+      if (mySeq !== suggestSeq) return; // respuesta vieja: ignorar
+      if (!res.ok) {
+        encontrados = [];
+        showSuggestAction(res.status === 429 ? "Demasiadas búsquedas, espera un momento…" : "No pudimos buscar usuarios.", q);
+        return;
+      }
+      const body = await res.json().catch(() => null);
+      const lista: { id: string; nombre: string }[] = Array.isArray(body?.usuarios) ? body.usuarios : [];
+      encontrados = lista.filter((u) => typeof u?.nombre === "string" && !jugadores.includes(u.nombre));
+      activeIdx = -1;
+      if (!encontrados.length) {
+        showSuggestAction("Sin resultados.", q);
+        return;
+      }
+      paintSuggest();
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      if (mySeq !== suggestSeq) return;
+      encontrados = [];
+      showSuggestAction("Sin conexión con el servidor.", term.trim());
+    }
+  }
+
+  // Clic fuera del buscador: cierra el panel al instante (en mousedown, no en
+  // blur) para que el clic caiga sobre el control real y no se lo trague el panel.
+  document.addEventListener("mousedown", (e) => {
+    const wrap = document.getElementById("search-wrap");
+    if (wrap && e.target instanceof Node && !wrap.contains(e.target)) hideSuggest();
+  }, true);
+
+  function render() {
+    chips.innerHTML = "";
+    jugadores.forEach((j, i) => {
+      const s = document.createElement("span");
+      s.className = "inline-flex items-center gap-2 rounded-full bg-[#DCFCE7] py-1.5 pr-2 pl-1.5 text-sm font-semibold text-[#14532D]";
+      const avatar = document.createElement("span");
+      avatar.className = "flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-xs font-bold text-white";
+      avatar.textContent = (j.charAt(0) || "?").toUpperCase();
+      avatar.setAttribute("aria-hidden", "true");
+      const label = document.createElement("span");
+      label.textContent = j;
+      const rm = document.createElement("button");
+      rm.type = "button";
+      rm.className = "font-bold text-[#15803D]";
+      rm.setAttribute("aria-label", `Quitar a ${j}`);
+      rm.textContent = "×";
+      rm.addEventListener("click", () => { jugadores.splice(i, 1); render(); });
+      s.append(avatar, label, rm);
+      chips.appendChild(s);
+    });
+    jcount.textContent = `(${jugadores.length})`;
+    jempty.style.display = jugadores.length ? "none" : "";
+    sortBtn.disabled = jugadores.length < 2;
+  }
+
+  function addMuchos(raw: string) {
+    raw.split(",").map((s) => s.trim().replace(/^@/, "")).filter(Boolean).forEach((n) => {
+      if (!jugadores.includes(n)) jugadores.push(n);
+    });
+    encontrados = encontrados.filter((u) => !jugadores.includes(u.nombre));
+    paintSuggest();
+    render();
+  }
+
+  function openDraft(seed: string, focus = true) {
+    draftRow.classList.remove("hidden");
+    if (document.activeElement !== draftInput) draftInput.value = seed;
+    if (focus) draftInput.focus();
+  }
+  function closeDraft() {
+    draftRow.classList.add("hidden");
+    draftInput.value = "";
+    addInput.value = "";
+    addInput.focus();
+  }
+
+  addInput.addEventListener("input", () => {
+    if (addInput.value.trim()) openDraft(addInput.value, false);
+    else draftRow.classList.add("hidden");
+    if (suggestTimer) clearTimeout(suggestTimer);
+    suggestTimer = setTimeout(() => buscarUsuarios(addInput.value), 250);
+  });
+  addInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { hideSuggest(); return; }
+    if (e.key === "ArrowDown" && encontrados.length) { e.preventDefault(); setActive(activeIdx + 1); return; }
+    if (e.key === "ArrowUp" && encontrados.length) { e.preventDefault(); setActive(activeIdx - 1); return; }
+    if (e.key === "Enter" && addInput.value.trim()) {
+      if (activeIdx >= 0 && encontrados[activeIdx]) pickUser(encontrados[activeIdx].nombre);
+      else if (encontrados.length && !addInput.value.includes(",")) pickUser(encontrados[0].nombre);
+      else { addMuchos(addInput.value); closeDraft(); hideSuggest(); }
+    }
+  });
+  addInput.addEventListener("blur", () => setTimeout(hideSuggest, 150));
+  draftInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && draftInput.value.trim()) { addMuchos(draftInput.value); closeDraft(); }
+  });
+  document.getElementById("draft-add")!.addEventListener("click", () => {
+    if (draftInput.value.trim()) { addMuchos(draftInput.value); closeDraft(); }
+  });
+  document.getElementById("draft-close")!.addEventListener("click", closeDraft);
+  document.getElementById("add-guest")!.addEventListener("click", () => {
+    openDraft("");
+  });
+
+  tnums.forEach((b) => b.addEventListener("click", () => {
+    nEquipos = +b.dataset.n!;
+    tnums.forEach((x) => (x.className = `tnum h-10 w-12 rounded-xl text-sm font-bold transition ${x === b ? "bg-[#16A34A] text-white shadow-[0_6px_16px_rgba(22,163,74,0.45)]" : "bg-[#F1F2F1] text-[#5B6660] hover:bg-[#E4E7E4]"}`));
+  }));
+
+  sortBtn.addEventListener("click", () => {
+    sortBtn.classList.remove("shuffling");
+    void sortBtn.offsetWidth;
+    sortBtn.classList.add("shuffling");
+    const sh = [...jugadores].sort(() => Math.random() - 0.5);
+    out.innerHTML = "";
+    Array.from({ length: nEquipos }, (_, i) => {
+      const ms = sh.filter((_, j) => j % nEquipos === i);
+      const d = document.createElement("div");
+      d.className = "flip-in rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]";
+      d.style.animationDelay = `${150 + i * 110}ms`;
+      const head = document.createElement("div");
+      head.className = "flex items-center justify-between";
+      const title = document.createElement("p");
+      title.className = "font-black tracking-wide text-[#16A34A]";
+      title.textContent = `EQUIPO ${i + 1}`;
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "copy-team text-xs font-bold text-[#15803D] hover:underline";
+      copyBtn.textContent = "Copiar";
+      copyBtn.addEventListener("click", async () => {
+        const txt = `EQUIPO ${i + 1}: ${ms.join(", ")}`;
+        try {
+          await navigator.clipboard.writeText(txt);
+          copyBtn.textContent = "¡Copiado ✓";
+        } catch {
+          copyBtn.textContent = txt;
+        }
+        setTimeout(() => { copyBtn.textContent = "Copiar"; }, 2000);
+      });
+      head.append(title, copyBtn);
+      d.append(head);
+      ms.forEach((m) => {
+        const p = document.createElement("p");
+        p.className = "mt-2.5 flex items-center gap-2 text-sm font-semibold text-[#101613]";
+        const av = document.createElement("span");
+        av.className = "flex h-7 w-7 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white";
+        av.textContent = (m.charAt(0) || "?").toUpperCase();
+        av.setAttribute("aria-hidden", "true");
+        const nm = document.createElement("span");
+        nm.textContent = m;
+        p.append(av, nm);
+        d.append(p);
+      });
+      out.appendChild(d);
+    });
+    out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+
+  // FAQ acordeón: una abierta a la vez, despliegue suave + scroll al terminar
+  const faqs = [...document.querySelectorAll(".faq")];
+  const closeFaq = (f) => {
+    f.setAttribute("data-open", "0");
+    const wrap = f.querySelector(".faq-wrap");
+    const chev = f.querySelector(".faq-chev");
+    const btn = f.querySelector(".faq-btn");
+    if (wrap) wrap.style.gridTemplateRows = "0fr";
+    if (chev) chev.style.transform = "";
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  };
+  faqs.forEach((f) => {
+    const btn = f.querySelector(".faq-btn");
+    const wrap = f.querySelector(".faq-wrap");
+    const chev = f.querySelector(".faq-chev");
+    btn?.addEventListener("click", () => {
+      const opening = f.getAttribute("data-open") !== "1";
+      faqs.forEach((o) => { if (o !== f) closeFaq(o); });
+      f.setAttribute("data-open", opening ? "1" : "0");
+      if (wrap) wrap.style.gridTemplateRows = opening ? "1fr" : "0fr";
+      if (chev) chev.style.transform = opening ? "rotate(180deg)" : "";
+      btn.setAttribute("aria-expanded", opening ? "true" : "false");
+      if (opening) {
+        // espera a que termine el despliegue y luego scrollea suave
+        setTimeout(() => {
+          f.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 450);
+      }
+    });
+  });
+
+  render();
+</script>

@@ -1,0 +1,35 @@
+# ReservaYa monorepo — ignores raíz
+node_modules/
+.next/
+dist/
+.astro/
+.vercel/
+out/
+coverage/
+
+# .NET
+**/bin/
+**/obj/
+**/TestResults/
+
+# env — nunca subir
+.env
+.env*.local
+.env.local
+.env.production
+
+# TS / Next artifacts
+*.tsbuildinfo
+next-env.d.ts
+
+# Uploads de usuarios (fotos de canchas) — no versionar, sí la carpeta
+reservaya-nextjs-api/backend/**/wwwroot/uploads/**
+!reservaya-nextjs-api/backend/**/wwwroot/uploads/**/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+*.pem
+npm-debug.log*

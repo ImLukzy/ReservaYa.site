@@ -1,139 +1,58 @@
 import { cookies } from 'next/headers'
 import { config } from './config'
 
-export type Rol = 'USUARIO' | 'ADMIN' | 'SUPERADMIN'
-export type EstadoReserva = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'COMPLETADA'
-export type TipoCancha = 'FUTBOL' | 'TENIS' | 'BASQUET' | 'VOLLEYBALL'
-
-export interface Cancha {
-  id: string
-  nombre: string
-  tipo: TipoCancha
-  descripcion: string | null
-  precioPorHora: string
-  capacidad: number
-  activa: boolean
-  imagen: string | null
-  creadoEn: string
-}
-
-export interface CanchaInput {
-  nombre: string
-  tipo: TipoCancha
-  descripcion?: string
-  precioPorHora: number
-  capacidad: number
-  activa?: boolean
-}
-
-export interface UsuarioReserva {
-  id: string
-  nombre: string
-  email: string
-  rol: Rol
-  activo: boolean
-  creadoEn: string
-}
-
-export interface Reserva {
-  id: string
-  usuarioId: string
-  canchaId: string
-  fecha: string
-  horaInicio: number
-  horaFin: number
-  estado: EstadoReserva
-  total: string
-  notas: string | null
-  creadoEn: string
-  cancha: Cancha
-  usuario: UsuarioReserva | null
-}
-
-export interface UsuarioResumen {
-  id: string
-  nombre: string
-  email: string
-  rol: Rol
-  activo: boolean
-  creadoEn: string
-  _count: { reservas: number }
-}
-
-export interface UsuarioSesion {
-  id: string
-  email: string
-  nombre: string
-  rol: Rol
-  tv: number
-}
-
-export interface DashboardUsuario {
-  reservas: number
-  reservasConfirmadas: number
-  canchasActivas: number
-  ultimasReservas: Reserva[]
-}
-
-export interface DashboardAdmin {
-  totalReservas: number
-  reservasPendientes: number
-  canchasActivas: number
-  ingresos: string
-  ultimasReservas: Reserva[]
-}
-
-export interface DashboardSuperadmin {
-  usuarios: number
-  administradores: number
-  reservas: number
-  canchas: number
-  ingresos: string
-}
-
-export interface ReservasPorEstado {
-  estado: EstadoReserva
-  cantidad: number
-}
-
-export interface CanchaReporte {
-  id: string
-  nombre: string
-  tipo: TipoCancha
-  activa: boolean
-  precioPorHora: string
-  reservas: number
-  ingresos: string
-}
-
-export interface TopCancha {
-  id: string
-  nombre: string
-  tipo: TipoCancha
-  reservas: number
-  ingresos: string
-}
-
-export interface ReporteGlobal {
-  totalUsuarios: number
-  totalReservas: number
-  reservasPorEstado: ReservasPorEstado[]
-  topCanchas: TopCancha[]
-  canchas: CanchaReporte[]
-  ingresosTotales: string
-  promedio: string
-  ultimasReservas: Reserva[]
-}
-
-export class ApiError extends Error {
-  status: number
-
-  constructor(status: number, message: string) {
-    super(message)
-    this.name = 'ApiError'
-    this.status = status
-  }
-}
+import type {
+  BusquedaCanchas,
+  Cancha,
+  CanchaDisponible,
+  CanchaInput,
+  ClienteResumen,
+  Cotizacion,
+  EstadoReserva,
+  OpcionesBusqueda,
+  Reserva,
+  Rol,
+  Sancion,
+  Suscripcion,
+  UsuarioResumen,
+  UsuarioSesion,
+  DashboardUsuario,
+  DashboardAdmin,
+  DashboardSuperadmin,
+  ReporteGlobal,
+} from './api-types'
+import { ApiError } from './api-types'
+export type {
+  Rol,
+  EstadoReserva,
+  TipoCancha,
+  TipoPlan,
+  EstadoSuscripcion,
+  NivelSancion,
+  CanchaComplejo,
+  CanchaDueno,
+  Cancha,
+  CanchaInput,
+  CanchaDisponible,
+  OpcionesBusqueda,
+  Cotizacion,
+  Suscripcion,
+  Sancion,
+  ClienteResumen,
+  BusquedaCanchas,
+  UsuarioReserva,
+  Reserva,
+  UsuarioResumen,
+  UsuarioSesion,
+  DashboardUsuario,
+  DashboardAdmin,
+  DashboardSuperadmin,
+  ReservasPorEstado,
+  CanchaReporte,
+  TopCancha,
+  ReporteGlobal,
+} from './api-types'
+export { ApiError } from './api-types'
 
 export async function clientRequest<T>(path: string, init?: RequestInit): Promise<T> {
     const res = await fetch(path, {
@@ -236,10 +155,51 @@ export async function getSession(): Promise<UsuarioSesion | null> {
   return data.usuario ?? null
 }
 
-export async function getCanchas(activas?: boolean): Promise<Cancha[]> {
-  const query = activas === undefined ? '' : `?activas=${activas}`
-  const data = await getJson<{ canchas: Cancha[] }>(`/api/canchas${query}`)
+export async function getCanchas(activas?: boolean, propias?: boolean): Promise<Cancha[]> {
+  const params = new URLSearchParams()
+  if (activas !== undefined) params.set('activas', String(activas))
+  if (propias !== undefined) params.set('propias', String(propias))
+  const qs = params.toString()
+  const data = await getJson<{ canchas: Cancha[] }>(`/api/canchas${qs ? `?${qs}` : ''}`)
   return data.canchas
+}
+
+export interface ResultadoBusqueda {
+  canchas: CanchaDisponible[]
+  total: number
+  limiteAplicado: boolean
+}
+
+export async function getDisponibles(f: BusquedaCanchas): Promise<ResultadoBusqueda> {
+  const params = new URLSearchParams()
+  for (const [k, v] of Object.entries(f)) {
+    if (v !== undefined && v !== null && v !== '') params.set(k, String(v))
+  }
+  const qs = params.toString()
+  const data = await getJson<{ canchas: CanchaDisponible[]; total: number; limiteAplicado: boolean }>(
+    `/api/canchas/disponibles${qs ? `?${qs}` : ''}`
+  )
+  return { canchas: data.canchas ?? [], total: data.total ?? 0, limiteAplicado: data.limiteAplicado ?? false }
+}
+
+export async function getOpcionesBusqueda(): Promise<OpcionesBusqueda> {
+  const data = await getJson<OpcionesBusqueda>('/api/canchas/opciones')
+  return {
+    distritos: data.distritos ?? [],
+    ciudades: data.ciudades ?? [],
+    duenos: data.duenos ?? [],
+    complejos: data.complejos ?? [],
+    sugerencias: data.sugerencias ?? [],
+  }
+}
+
+export async function cotizarCancha(
+  id: string, fecha: string, horaInicio: number, horaFin: number
+): Promise<Cotizacion> {
+  const data = await getJson<Cotizacion>(
+    `/api/canchas/${id}/cotizar?fecha=${fecha}&horaInicio=${horaInicio}&horaFin=${horaFin}`
+  )
+  return data
 }
 
 export async function getReservas(): Promise<Reserva[]> {
@@ -264,4 +224,42 @@ export async function getDashboard(): Promise<
 export async function getReporteGlobal(): Promise<ReporteGlobal> {
   const data = await getJson<{ report: ReporteGlobal }>('/api/reportes/global')
   return data.report
+}
+
+export async function getSuscripciones(complejoId?: string, estado?: string): Promise<Suscripcion[]> {
+  const params = new URLSearchParams()
+  if (complejoId) params.set('complejoId', complejoId)
+  if (estado) params.set('estado', estado)
+  const qs = params.toString()
+  const data = await getJson<{ suscripciones: Suscripcion[] }>(`/api/suscripciones${qs ? `?${qs}` : ''}`)
+  return data.suscripciones ?? []
+}
+
+export async function getClientes(): Promise<ClienteResumen[]> {
+  const data = await getJson<{ clientes: ClienteResumen[] }>('/api/usuarios/clientes')
+  return data.clientes ?? []
+}
+
+export async function getHistorial(id: string): Promise<{
+  usuario: { id: string; nombre: string; email: string; rol: Rol; activo: boolean };
+  stats: { reservas: number; confirmadas: number; canceladas: number; sancionesActivas: number };
+  reservas: Reserva[];
+  sanciones: Sancion[];
+}> {
+  const data = await getJson<{
+    usuario: { id: string; nombre: string; email: string; rol: Rol; activo: boolean };
+    stats: { reservas: number; confirmadas: number; canceladas: number; sancionesActivas: number };
+    reservas: Reserva[];
+    sanciones: Sancion[];
+  }>(`/api/usuarios/${id}/historial`)
+  return data
+}
+
+export async function getSanciones(complejoId?: string, soloActivas?: boolean): Promise<Sancion[]> {
+  const params = new URLSearchParams()
+  if (complejoId) params.set('complejoId', complejoId)
+  if (soloActivas) params.set('soloActivas', 'true')
+  const qs = params.toString()
+  const data = await getJson<{ sanciones: Sancion[] }>(`/api/sanciones${qs ? `?${qs}` : ''}`)
+  return data.sanciones ?? []
 }
