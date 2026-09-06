@@ -16,11 +16,13 @@ public class CanchasController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;
+    private readonly ILogger<CanchasController> _logger;
 
-    public CanchasController(AppDbContext db, IWebHostEnvironment env)
+    public CanchasController(AppDbContext db, IWebHostEnvironment env, ILogger<CanchasController> logger)
     {
         _db = db;
         _env = env;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -450,24 +452,34 @@ public class CanchasController : ControllerBase
         if (ext is null)
             return BadRequest(new { error = "Solo se aceptan imágenes JPG, PNG, WEBP o GIF" });
 
-        var dir = Path.Combine(_env.WebRootPath, "uploads", "canchas");
-        Directory.CreateDirectory(dir);
-        var nombre = $"{cancha.Id}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{ext}";
-        await using (var fs = System.IO.File.Create(Path.Combine(dir, nombre)))
-            await archivo.CopyToAsync(fs);
-
-        // Limpia versiones anteriores de esta cancha.
-        foreach (var previo in Directory.EnumerateFiles(dir, $"{cancha.Id}-*.*"))
+        try
         {
-            if (!previo.EndsWith(nombre, StringComparison.OrdinalIgnoreCase))
-            {
-                try { System.IO.File.Delete(previo); } catch { /* mejor esfuerzo */ }
-            }
-        }
+            var dir = Path.Combine(_env.WebRootPath, "uploads", "canchas");
+            Directory.CreateDirectory(dir);
+            var nombre = $"{cancha.Id}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{ext}";
+            await using (var fs = System.IO.File.Create(Path.Combine(dir, nombre)))
+                await archivo.CopyToAsync(fs);
 
-        cancha.Imagen = $"/uploads/canchas/{nombre}";
-        await _db.SaveChangesAsync();
-        return Ok(new { ok = true, cancha = CanchaDto.From(cancha) });
+            // Limpia versiones anteriores de esta cancha.
+            foreach (var previo in Directory.EnumerateFiles(dir, $"{cancha.Id}-*.*"))
+            {
+                if (!previo.EndsWith(nombre, StringComparison.OrdinalIgnoreCase))
+                {
+                    try { System.IO.File.Delete(previo); } catch { /* mejor esfuerzo */ }
+                }
+            }
+
+            cancha.Imagen = $"/uploads/canchas/{nombre}";
+            await _db.SaveChangesAsync();
+            return Ok(new { ok = true, cancha = CanchaDto.From(cancha) });
+        }
+        catch (Exception ex)
+        {
+            // En hosting efímero (Render free) el FS puede fallar: el panel
+            // muestra este mensaje en vez de un 500 opaco.
+            _logger.LogError(ex, "No se pudo guardar imagen de cancha {CanchaId}", id);
+            return StatusCode(500, new { error = "No se pudo guardar la imagen en el servidor" });
+        }
     }
 
     private static async Task<string?> DetectarExtensionImagenAsync(IFormFile archivo)
