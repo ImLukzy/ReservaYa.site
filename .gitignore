@@ -23,8 +23,11 @@ coverage/
 next-env.d.ts
 
 # Uploads de usuarios (fotos de canchas) — no versionar, sí la carpeta
-reservaya-nextjs-api/backend/**/wwwroot/uploads/**
-!reservaya-nextjs-api/backend/**/wwwroot/uploads/**/.gitkeep
+# (se ignora el contenido pero no los directorios, para que el !.gitkeep aplique)
+reservaya-nextjs-api/backend/**/wwwroot/uploads/*
+!reservaya-nextjs-api/backend/**/wwwroot/uploads/*/
+reservaya-nextjs-api/backend/**/wwwroot/uploads/*/*
+!reservaya-nextjs-api/backend/**/wwwroot/uploads/*/.gitkeep
 
 # OS / editor
 .DS_Store
