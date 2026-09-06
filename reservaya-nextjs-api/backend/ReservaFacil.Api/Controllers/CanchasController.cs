@@ -478,7 +478,7 @@ public class CanchasController : ControllerBase
             // En hosting efímero (Render free) el FS puede fallar: el panel
             // muestra este mensaje en vez de un 500 opaco.
             _logger.LogError(ex, "No se pudo guardar imagen de cancha {CanchaId}", id);
-            return StatusCode(500, new { error = "No se pudo guardar la imagen en el servidor" });
+            return StatusCode(500, new { error = $"No se pudo guardar la imagen en el servidor ({ex.GetType().Name})" });
         }
     }
 
