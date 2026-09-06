@@ -4,8 +4,10 @@ import { jwtVerify } from 'jose'
 
 export async function proxy(request: NextRequest) {
   const token = request.cookies.get(appConfig.jwtCookieName)?.value
+  const pathname = request.nextUrl.pathname
+  const session = token ? await verifyToken(token) : null
 
-  if (!token) {
+  if (!session) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
