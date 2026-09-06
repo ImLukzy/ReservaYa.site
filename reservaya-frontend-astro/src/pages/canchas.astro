@@ -309,6 +309,7 @@ const tipos = [
       .then(function (body) {
         var items = (body && body.canchas) || [];
         lista = items.map(function (x) { return x.cancha; });
+        pintar();
         var ids = {};
         lista.forEach(function (c) { if (c.complejoId) ids[c.complejoId] = true; });
         cargarRatings(Object.keys(ids));

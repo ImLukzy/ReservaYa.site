@@ -31,30 +31,8 @@ public class CajaController : ControllerBase
     // Lima no usa horario de verano: UTC-5 todo el año.
     private static DateTime InicioHoyPeruUtc() => DateTime.UtcNow.AddHours(-5).Date.AddHours(5);
 
-    private async Task<string?> ComplejoDelUsuarioAsync()
-    {
-        var uid = User.IdOrEmpty();
-        var propio = await _db.Complejos.AsNoTracking()
-            .Where(c => c.DuenoId == uid)
-            .OrderBy(c => c.CreadoEn)
-            .Select(c => c.Id)
-            .FirstOrDefaultAsync();
-        if (propio is not null) return propio;
-
-        var miembro = await _db.ComplejoMiembros.AsNoTracking()
-            .Where(m => m.UsuarioId == uid && m.Activo)
-            .OrderBy(m => m.CreadoEn)
-            .Select(m => m.ComplejoId)
-            .FirstOrDefaultAsync();
-        if (miembro is not null) return miembro;
-
-        if (ComplejoAccess.EsPlataforma(User))
-            return await _db.Complejos.AsNoTracking()
-                .OrderBy(c => c.CreadoEn)
-                .Select(c => c.Id)
-                .FirstOrDefaultAsync();
-        return null;
-    }
+    private Task<string?> ComplejoDelUsuarioAsync() =>
+        ComplejoAccess.PrimeroAsync(_db, User);
 
     private async Task<CajaSesion> CajaAbiertaAsync(string complejoId)
     {

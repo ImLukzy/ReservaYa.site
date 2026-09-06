@@ -115,16 +115,6 @@ export default function LoginPage() {
             Regístrate aquí
           </Link>
         </p>
-
-        {/* Credenciales de prueba */}
-        {/* <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-xs font-semibold text-gray-600 mb-2">🧪 Credenciales de prueba:</p>
-          <div className="space-y-1 text-xs text-gray-500">
-            <p><span className="font-medium">Superadmin:</span> superadmin@reservafacil.com / superadmin123</p>
-            <p><span className="font-medium">Admin:</span> admin@reservafacil.com / admin123</p>
-            <p><span className="font-medium">Usuario:</span> usuario@reservafacil.com / usuario123</p>
-          </div>
-        </div> */}
       </div>
     </div>
   )

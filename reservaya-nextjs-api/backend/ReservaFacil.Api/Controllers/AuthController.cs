@@ -190,8 +190,7 @@ public class AuthController : ControllerBase
                 nombre = u.Nombre,
                 rol = u.Rol.ToString(),
                 tv = u.TokenVersion,
-                fechaNacimiento = u.FechaNacimiento.HasValue
-                    ? u.FechaNacimiento.Value.ToString("yyyy-MM-dd") : null,
+                fechaNacimiento = PerfilReglas.FechaCorta(u.FechaNacimiento),
                 username = u.Username,
                 telefono = u.Telefono,
                 fotoUrl = u.FotoUrl,

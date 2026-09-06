@@ -430,9 +430,8 @@ public class CanchasController : ControllerBase
         });
     }
 
-    // Subida de imagen desde archivo (no por link). Valida tipo real por
-    // bytes mágicos (no solo ContentType), tope 3 MB. Guarda versionado
-    // {id}-{unix}.{ext} para que el cache inmutable no sirva fotos viejas.
+    // Subida de imagen desde archivo (no por link). Misma regla que perfiles:
+    // ver Services/ImagenArchivo (bytes mágicos, tope 3 MB, versionado).
     [HttpPost("{id}/imagen")]
     [Authorize(Roles = "ADMIN,SUPERADMIN,TECNICO")]
     [RequestSizeLimit(3_500_000)]
@@ -445,36 +444,16 @@ public class CanchasController : ControllerBase
             return StatusCode(403, new { error = "Sin permisos" });
         if (archivo is null || archivo.Length == 0)
             return BadRequest(new { error = "Archivo requerido" });
-        if (archivo.Length > 3 * 1024 * 1024)
+        if (archivo.Length > ImagenArchivo.TopeBytes)
             return BadRequest(new { error = "La imagen no puede superar 3 MB" });
 
-        var ext = await DetectarExtensionImagenAsync(archivo);
+        var ext = await ImagenArchivo.DetectarExtensionAsync(archivo);
         if (ext is null)
             return BadRequest(new { error = "Solo se aceptan imágenes JPG, PNG, WEBP o GIF" });
 
         try
         {
-            // WebRootPath puede ser nulo si wwwroot no existe en el despliegue
-            // (está gitignoredo): se usa ContentRoot/wwwroot como respaldo.
-            var webRoot = _env.WebRootPath;
-            if (string.IsNullOrEmpty(webRoot))
-                webRoot = Path.Combine(_env.ContentRootPath, "wwwroot");
-            var dir = Path.Combine(webRoot, "uploads", "canchas");
-            Directory.CreateDirectory(dir);
-            var nombre = $"{cancha.Id}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}{ext}";
-            await using (var fs = System.IO.File.Create(Path.Combine(dir, nombre)))
-                await archivo.CopyToAsync(fs);
-
-            // Limpia versiones anteriores de esta cancha.
-            foreach (var previo in Directory.EnumerateFiles(dir, $"{cancha.Id}-*.*"))
-            {
-                if (!previo.EndsWith(nombre, StringComparison.OrdinalIgnoreCase))
-                {
-                    try { System.IO.File.Delete(previo); } catch { /* mejor esfuerzo */ }
-                }
-            }
-
-            cancha.Imagen = $"/uploads/canchas/{nombre}";
+            cancha.Imagen = await ImagenArchivo.GuardarVersionadaAsync(_env, "canchas", cancha.Id, archivo, ext);
             await _db.SaveChangesAsync();
             return Ok(new { ok = true, cancha = CanchaDto.From(cancha) });
         }
@@ -485,23 +464,6 @@ public class CanchasController : ControllerBase
             _logger.LogError(ex, "No se pudo guardar imagen de cancha {CanchaId}", id);
             return StatusCode(500, new { error = $"No se pudo guardar la imagen en el servidor ({ex.GetType().Name})" });
         }
-    }
-
-    private static async Task<string?> DetectarExtensionImagenAsync(IFormFile archivo)
-    {
-        byte[] head = new byte[12];
-        await using (var stream = archivo.OpenReadStream())
-            _ = await stream.ReadAsync(head.AsMemory(0, 12));
-        if (head[0] == 0xFF && head[1] == 0xD8 && head[2] == 0xFF)
-            return ".jpg";
-        if (head[0] == 0x89 && head[1] == 0x50 && head[2] == 0x4E && head[3] == 0x47)
-            return ".png";
-        if (head[0] == 0x52 && head[1] == 0x49 && head[2] == 0x46 && head[3] == 0x46 &&
-            head[8] == 0x57 && head[9] == 0x45 && head[10] == 0x42 && head[11] == 0x50)
-            return ".webp";
-        if (head[0] == 0x47 && head[1] == 0x49 && head[2] == 0x46)
-            return ".gif";
-        return null;
     }
 
     // Gestión: plataforma todo; resto sus canchas (de sus complejos +
