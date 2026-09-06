@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
-import { publicAppUrl } from '@/lib/public-app'
 
+// La portada pública vive en el landing (Astro). La raíz del panel lleva al
+// login: redirigir a la propia URL causaba bucle infinito.
 export default function HomePage() {
-  redirect(publicAppUrl)
+  redirect('/login')
 }
