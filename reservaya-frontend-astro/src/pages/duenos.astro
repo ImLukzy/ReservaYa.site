@@ -61,7 +61,7 @@ const quotes = [
         <a href="#planes" class="inline-flex items-center justify-center rounded-xl border border-white/25 px-6 py-3.5 font-semibold transition hover:bg-white/10">Ver planes y precios</a>
         <span class="text-xs text-white/40">Gratis · la publicas tú mismo en minutos</span>
       </div>
-      <div class="mt-10 grid max-w-2xl grid-cols-3 divide-x divide-white/10 rounded-2xl border border-white/10 bg-black/40 backdrop-blur">
+      <div class="mt-10 grid max-w-2xl grid-cols-1 divide-y divide-white/10 rounded-2xl border border-white/10 bg-black/40 backdrop-blur sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         <div class="px-5 py-4 text-center"><p class="text-xl font-extrabold text-white">S/<span data-count="2500" data-format="k">0</span>+</p><p class="mt-1 text-[11px] leading-snug text-white/50">extras al mes llenando 2 horas vacías</p></div>
         <div class="px-5 py-4 text-center"><p class="text-xl font-extrabold text-white">3 meses</p><p class="mt-1 text-[11px] leading-snug text-white/50">gratis — luego S/ 89.90 al mes</p></div>
         <div class="px-5 py-4 text-center"><p class="text-xl font-extrabold text-white">+<span data-count="500">0</span></p><p class="mt-1 text-[11px] leading-snug text-white/50">jugadores buscando cancha cada semana</p></div>
@@ -355,10 +355,10 @@ const quotes = [
           </div>
         </div>
 
-        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+        <div class="overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <div class="flex items-center justify-between"><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">Copa ReservaYa</p><span class="rounded-full bg-[#22C55E]/15 px-2.5 py-1 text-[10px] font-black uppercase text-[#4ADE80]">Campeón</span></div>
           <p class="mt-1 text-[11px] text-white/35">Toca un equipo para avanzar al ganador 👇</p>
-          <div id="bracket" class="mt-4 grid grid-cols-4 gap-2 text-[11px]">
+          <div id="bracket" class="mt-4 grid min-w-[560px] grid-cols-4 gap-2 text-[11px]">
             <div class="space-y-2" data-round="qf">
               {[["Los Pumas","FC Barrio"],["Real Cayma","Los Cracks"],["Atlético 10","Dep. Norte"],["Los Tigres","San Martín"]].map((m,mi) => (
                 <div class="space-y-1 rounded-lg bg-black/40 p-1.5" data-match={mi}>
@@ -442,25 +442,6 @@ const quotes = [
     </div>
   </section>
 
-  <!-- ============ WORDMARK ============ -->
-  <section class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-black px-4 pb-10 pt-14 text-white">
-    <div class="mx-auto max-w-7xl md:px-8">
-      <div class="flex flex-col justify-between gap-4 border-b border-white/10 pb-8 text-sm text-white/50 md:flex-row">
-        <div><p class="text-xs">Contáctanos:</p><a href="mailto:hola@reservaya.pe" class="mt-2 inline-block font-bold text-white hover:text-[#4ADE80]">✉ hola@reservaya.pe ↗</a><p class="mt-2">⌖ Arequipa, Perú</p></div>
-        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="Enlaces secundarios">
-          {["Nosotros","Cómo funciona","Funcionalidades","Buscar canchas","Precios","Ayúdanos a mejorar","Registrarse"].map(l => <a href="#" class="hover:text-[#4ADE80]">{l}</a>)}
-        </nav>
-      </div>
-      <p class="mt-10 text-center text-[18vw] font-black leading-none tracking-tight text-white/90 md:text-[10rem]" aria-hidden="true">Reserva<span class="text-[#4ADE80]">Ya</span></p>
-      <div class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/40 md:flex-row">
-        <div class="flex items-center gap-3">
-          <span class="rounded-md border border-white/20 px-3 py-1.5 font-bold text-white">▶ Google Play</span>
-          <span class="rounded-md border border-white/20 px-3 py-1.5 text-white/50"> App Store · Próximamente</span>
-        </div>
-        <p>© 2026 ReservaYa. Hecho en Perú 🇵🇪 · Pagos procesados por Culqi · Términos · Privacidad · Libro de Reclamaciones</p>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <script>

@@ -350,7 +350,7 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   
   
 
-  <main id="main-content" tabindex="-1" class="max-w-[1680px] mx-auto px-10 md:px-16">
+  <main id="main-content" tabindex="-1" class="max-w-[1680px] mx-auto px-4 md:px-16">
     <slot />
   </main>
 
@@ -501,6 +501,69 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
         window.addEventListener('scroll', requestSw, { passive: true });
         window.addEventListener('resize', requestSw);
         paintSw();
+      })();
+
+      // Entrada de letras en titulares (todas las páginas, JS plano).
+      // Divide cada `main h1` en spans .ch con retardo escalonado y los
+      // muestra al entrar en viewport. Se salta degradados con bg-clip-text
+      // y contadores data-count para no romper su pintado.
+      (function letterEntrance() {
+        var heads = Array.prototype.slice.call(document.querySelectorAll('main h1'));
+        if (!heads.length) return;
+        function skipNode(node) {
+          var el = node.parentElement;
+          while (el && el !== document.body) {
+            if (el.classList && (el.classList.contains('bg-clip-text') || el.hasAttribute('data-count'))) return true;
+            el = el.parentElement;
+          }
+          return false;
+        }
+        heads.forEach(function (el) {
+          if (el.classList.contains('letters')) return;
+          el.classList.add('letters');
+          var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+          var nodes = [];
+          while (walker.nextNode()) {
+            var n = walker.currentNode;
+            if (n.textContent && n.textContent.length && !skipNode(n)) nodes.push(n);
+          }
+          var idx = 0;
+          nodes.forEach(function (node) {
+            var frag = document.createDocumentFragment();
+            node.textContent.split('').forEach(function (part) {
+              if (part === ' ' || part === '\n' || part === '\t' || part === '\r') {
+                frag.appendChild(document.createTextNode(' '));
+              } else {
+                var s = document.createElement('span');
+                s.className = 'ch';
+                s.style.setProperty('--i', String(idx++));
+                s.textContent = part;
+                frag.appendChild(s);
+              }
+            });
+            if (node.parentNode) node.parentNode.replaceChild(frag, node);
+          });
+        });
+        function showLetters(el, obs) {
+          var ms = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
+          if (!isNaN(ms)) el.style.setProperty('--reveal-delay', Math.max(0, Math.min(480, ms)) + 'ms');
+          el.classList.add('letters-visible');
+          if (obs) obs.unobserve(el);
+        }
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+          heads.forEach(function (el) { showLetters(el, null); });
+          return;
+        }
+        var obsL = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            showLetters(en.target, obsL);
+          });
+        }, { threshold: 0.2 });
+        heads.forEach(function (el) { obsL.observe(el); });
+        window.setTimeout(function () {
+          document.querySelectorAll('main h1.letters:not(.letters-visible)').forEach(function (el) { showLetters(el, obsL); });
+        }, 4000);
       })();
     })();
   </script>

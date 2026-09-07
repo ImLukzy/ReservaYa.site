@@ -196,6 +196,47 @@ html.no-js .scroll-words .w,
   background: rgba(34, 197, 94, 0.1) !important;
 }
 
+/* ---------- 11. Entrada de letras en titulares (todas las páginas) ----------
+   El JS divide cada `main h1` en spans `.ch` con `--i` escalonado.
+   El estado oculto SOLO aplica con html.js (lo pone el layout al
+   arrancar): sin JS el texto siempre queda visible. */
+main h1,
+main h2 {
+  text-wrap: balance;
+}
+.letters .ch {
+  display: inline-block;
+  /* Sin esto, la regla base `span { color: --text-soft }` de global.css
+     pinta las letras de gris y rompe el color del titular. */
+  color: inherit;
+  will-change: opacity, transform, filter;
+}
+html.js .letters:not(.letters-visible) .ch {
+  opacity: 0;
+  transform: translateY(0.55em) rotate(5deg);
+  filter: blur(6px);
+}
+html.js .letters-visible .ch {
+  animation: letter-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 26ms);
+}
+@keyframes letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.55em) rotate(5deg);
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html,
   body {
@@ -210,8 +251,14 @@ html.no-js .scroll-words .w,
   .shuffling,
   .modal-backdrop-enter,
   .modal-card-enter,
-  .ticket-bump {
+  .ticket-bump,
+  .letters-visible .ch {
     animation: none !important;
+  }
+  html.js .letters:not(.letters-visible) .ch {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
   .reveal-visible {
     animation: none !important;

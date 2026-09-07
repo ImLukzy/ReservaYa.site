@@ -373,7 +373,7 @@ export function GestionCanchasPanel({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="cancha-tipo" className={flabel}>Tipo *</label>
                 <select
@@ -513,7 +513,7 @@ export function GestionCanchasPanel({
 
           <section aria-label="Precio y capacidad" className="space-y-3">
             <p className="text-[11px] font-bold tracking-[0.12em] text-slate-400">PRECIO Y CAPACIDAD</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="cancha-precio" className={flabel}>Precio/hora (S/) *</label>
                 <input

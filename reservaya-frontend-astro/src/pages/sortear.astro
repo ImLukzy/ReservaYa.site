@@ -36,7 +36,7 @@ const faqs = [
 
     <div class="relative mx-auto max-w-3xl">
       <span class="inline-flex items-center gap-1.5 rounded-full border border-[#BBF7D0] bg-[#DCFCE7]/60 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#15803D]">✨ Nuevo · ReservaYa</span>
-      <h1 class="reveal mt-4 text-[52px] font-black leading-[0.95] tracking-tight text-[#101613] md:text-[76px]">
+      <h1 class="reveal mt-4 font-black leading-[0.95] tracking-tight text-[#101613] text-[clamp(2.6rem,12vw,4.75rem)]">
         ARMA LOS <span class="text-[#16A34A]">EQUIPOS</span>
       </h1>
       <p class="mt-5 max-w-2xl leading-relaxed text-[#5B6660]">
@@ -105,7 +105,7 @@ const faqs = [
             ))}
           </div>
         </div>
-        <button id="sortear" type="button" disabled class="btn-press flex items-center justify-center gap-2 rounded-2xl bg-[#BBF7D0] px-10 py-4 font-black tracking-wide text-white transition enabled:bg-[#22C55E] enabled:shadow-[0_8px_20px_rgba(34,197,94,0.4)] enabled:hover:bg-[#16A34A]">
+        <button id="sortear" type="button" disabled class="btn-press flex items-center justify-center gap-2 rounded-2xl bg-[#BBF7D0] px-10 py-4 font-black tracking-wide text-[#15803D] transition enabled:bg-[#22C55E] enabled:text-white enabled:shadow-[0_8px_20px_rgba(34,197,94,0.4)] enabled:hover:bg-[#16A34A]">
           <span aria-hidden="true">⨯</span> SORTEAR
         </button>
       </div>
@@ -137,28 +137,32 @@ const faqs = [
   </section>
 </BaseLayout>
 
-<script define:vars={{ apiUrl }}>
+<script is:inline define:vars={{ apiUrl }}>
+(function () {
+  var base = String(apiUrl || "http://localhost:5000").replace(/\/$/, "");
   // Estado (declarado primero: las funciones de abajo lo usan)
-  let jugadores: string[] = [];
-  let nEquipos = 2;
-  let encontrados: { id: string; nombre: string }[] = [];
-  let suggestTimer: ReturnType<typeof setTimeout> | null = null;
-  let suggestCtrl: AbortController | null = null;
-  let suggestSeq = 0;
-  let activeIdx = -1;
+  var jugadores = [];
+  var nEquipos = 2;
+  var encontrados = [];
+  var suggestTimer = null;
+  var suggestCtrl = null;
+  var suggestSeq = 0;
+  var activeIdx = -1;
 
-  const addInput = document.getElementById("add-input") as HTMLInputElement;
-  const suggest = document.getElementById("suggest")!;
-  const draftRow = document.getElementById("draft-row")!;
-  const draftInput = document.getElementById("draft-input") as HTMLInputElement;
-  const chips = document.getElementById("chips")!;
-  const jcount = document.getElementById("jcount")!;
-  const jempty = document.getElementById("jempty")!;
-  const out = document.getElementById("out")!;
-  const sortBtn = document.getElementById("sortear") as HTMLButtonElement;
-  const tnums = [...document.querySelectorAll<HTMLButtonElement>(".tnum")];
+  function $(id) { return document.getElementById(id); }
+  var addInput = $("add-input");
+  var suggest = $("suggest");
+  var draftRow = $("draft-row");
+  var draftInput = $("draft-input");
+  var chips = $("chips");
+  var jcount = $("jcount");
+  var jempty = $("jempty");
+  var out = $("out");
+  var sortBtn = $("sortear");
+  var tnums = Array.prototype.slice.call(document.querySelectorAll(".tnum"));
+  if (!addInput || !suggest || !draftRow || !draftInput || !chips || !jcount || !jempty || !out || !sortBtn) return;
 
-  const esc = (v: string) => v.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c);
+  function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c; }); }
 
   function hideSuggest() {
     suggestCtrl?.abort();
@@ -173,34 +177,34 @@ const faqs = [
 
   // Mensaje con acción: el panel flota sobre los controles de abajo, así que
   // nunca mostramos texto muerto — siempre un botón que agrega como invitado.
-  function showSuggestAction(hint: string, raw: string) {
+  function showSuggestAction(hint, raw) {
     suggest.innerHTML = "";
-    const query = raw.trim().replace(/^@/, "");
-    const info = document.createElement("p");
+    var query = String(raw || "").trim().replace(/^@/, "");
+    var info = document.createElement("p");
     info.className = "px-4 pt-3 text-xs text-[#8A938D]";
     info.textContent = hint;
     suggest.append(info);
     if (query) {
-      const btn = document.createElement("button");
+      var btn = document.createElement("button");
       btn.type = "button";
       btn.setAttribute("role", "option");
       btn.className = "m-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg bg-[#F0FDF4] px-3 py-2.5 text-left text-sm font-bold text-[#15803D] transition hover:bg-[#DCFCE7]";
-      const plus = document.createElement("span");
+      var plus = document.createElement("span");
       plus.textContent = "+";
       plus.setAttribute("aria-hidden", "true");
-      const label = document.createElement("span");
-      label.textContent = `Agregar "${query}" como invitado`;
+      var label = document.createElement("span");
+      label.textContent = 'Agregar "' + query + '" como invitado';
       btn.append(plus, label);
-      btn.addEventListener("mousedown", (e) => { e.preventDefault(); addMuchos(query); closeDraft(); hideSuggest(); });
+      btn.addEventListener("mousedown", function (e) { e.preventDefault(); addMuchos(query); closeDraft(); hideSuggest(); });
       suggest.append(btn);
     }
     suggest.classList.remove("hidden");
     addInput.setAttribute("aria-expanded", "true");
   }
 
-  function pickUser(nombre: string) {
-    const limpio = nombre.trim().replace(/^@/, "");
-    if (limpio && !jugadores.includes(limpio)) jugadores.push(limpio);
+  function pickUser(nombre) {
+    var limpio = String(nombre || "").trim().replace(/^@/, "");
+    if (limpio && jugadores.indexOf(limpio) === -1) jugadores.push(limpio);
     render();
     hideSuggest();
     closeDraft();
@@ -209,45 +213,46 @@ const faqs = [
   function paintSuggest() {
     if (!encontrados.length) { hideSuggest(); return; }
     suggest.innerHTML = "";
-    encontrados.forEach((u, idx) => {
-      const b = document.createElement("button");
+    encontrados.forEach(function (u, idx) {
+      var b = document.createElement("button");
       b.type = "button";
-      b.id = `suggest-opt-${idx}`;
+      b.id = "suggest-opt-" + idx;
       b.setAttribute("role", "option");
       b.setAttribute("aria-selected", idx === activeIdx ? "true" : "false");
       b.className = "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition hover:bg-[#F0FDF4]" + (idx === activeIdx ? " bg-[#F0FDF4]" : "");
-      const inicial = esc((u.nombre.charAt(0) || "?").toUpperCase());
-      b.innerHTML = `<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white" aria-hidden="true">${inicial}</span><span><span class="block font-bold text-[#101613]">${esc(u.nombre)}</span><span class="block text-xs text-[#8A938D]">Toca para agregar</span></span>`;
-      b.addEventListener("mousedown", (e) => { e.preventDefault(); pickUser(u.nombre); });
+      var inicial = esc(((u.nombre || "").charAt(0) || "?").toUpperCase());
+      b.innerHTML = '<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white" aria-hidden="true">' + inicial + '</span><span><span class="block font-bold text-[#101613]">' + esc(u.nombre) + '</span><span class="block text-xs text-[#8A938D]">Toca para agregar</span></span>';
+      b.addEventListener("mousedown", function (e) { e.preventDefault(); pickUser(u.nombre); });
       suggest.appendChild(b);
     });
     suggest.classList.remove("hidden");
     addInput.setAttribute("aria-expanded", "true");
   }
 
-  function setActive(idx: number) {
+  function setActive(idx) {
+    if (!encontrados.length) return;
     activeIdx = (idx + encontrados.length) % encontrados.length;
     paintSuggest();
-    addInput.setAttribute("aria-activedescendant", `suggest-opt-${activeIdx}`);
+    addInput.setAttribute("aria-activedescendant", "suggest-opt-" + activeIdx);
   }
 
-  async function buscarUsuarios(term: string) {
-    const q = term.trim().replace(/^@/, "");
+  async function buscarUsuarios(term) {
+    var q = String(term || "").trim().replace(/^@/, "");
     if (q.length < 2) { hideSuggest(); return; }
-    const mySeq = ++suggestSeq;
-    suggestCtrl?.abort();
+    var mySeq = ++suggestSeq;
+    if (suggestCtrl) suggestCtrl.abort();
     suggestCtrl = new AbortController();
     try {
-      const res = await fetch(`${apiUrl}/api/usuarios/buscar?q=${encodeURIComponent(q)}`, { signal: suggestCtrl.signal });
+      var res = await fetch(base + "/api/usuarios/buscar?q=" + encodeURIComponent(q), { signal: suggestCtrl.signal });
       if (mySeq !== suggestSeq) return; // respuesta vieja: ignorar
       if (!res.ok) {
         encontrados = [];
         showSuggestAction(res.status === 429 ? "Demasiadas búsquedas, espera un momento…" : "No pudimos buscar usuarios.", q);
         return;
       }
-      const body = await res.json().catch(() => null);
-      const lista: { id: string; nombre: string }[] = Array.isArray(body?.usuarios) ? body.usuarios : [];
-      encontrados = lista.filter((u) => typeof u?.nombre === "string" && !jugadores.includes(u.nombre));
+      var body = await res.json().catch(function () { return null; });
+      var lista = body && Array.isArray(body.usuarios) ? body.usuarios : [];
+      encontrados = lista.filter(function (u) { return u && typeof u.nombre === "string" && jugadores.indexOf(u.nombre) === -1; });
       activeIdx = -1;
       if (!encontrados.length) {
         showSuggestAction("Sin resultados.", q);
@@ -255,55 +260,56 @@ const faqs = [
       }
       paintSuggest();
     } catch (err) {
-      if (err instanceof DOMException && err.name === "AbortError") return;
+      if (err && err.name === "AbortError") return;
       if (mySeq !== suggestSeq) return;
       encontrados = [];
-      showSuggestAction("Sin conexión con el servidor.", term.trim());
+      showSuggestAction("Sin conexión con el servidor.", String(term || "").trim());
     }
   }
 
   // Clic fuera del buscador: cierra el panel al instante (en mousedown, no en
   // blur) para que el clic caiga sobre el control real y no se lo trague el panel.
-  document.addEventListener("mousedown", (e) => {
-    const wrap = document.getElementById("search-wrap");
+  document.addEventListener("mousedown", function (e) {
+    var wrap = document.getElementById("search-wrap");
     if (wrap && e.target instanceof Node && !wrap.contains(e.target)) hideSuggest();
   }, true);
 
   function render() {
     chips.innerHTML = "";
-    jugadores.forEach((j, i) => {
-      const s = document.createElement("span");
+    jugadores.forEach(function (j, i) {
+      var s = document.createElement("span");
       s.className = "inline-flex items-center gap-2 rounded-full bg-[#DCFCE7] py-1.5 pr-2 pl-1.5 text-sm font-semibold text-[#14532D]";
-      const avatar = document.createElement("span");
+      var avatar = document.createElement("span");
       avatar.className = "flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-xs font-bold text-white";
-      avatar.textContent = (j.charAt(0) || "?").toUpperCase();
+      avatar.textContent = ((j || "").charAt(0) || "?").toUpperCase();
       avatar.setAttribute("aria-hidden", "true");
-      const label = document.createElement("span");
+      var label = document.createElement("span");
       label.textContent = j;
-      const rm = document.createElement("button");
+      var rm = document.createElement("button");
       rm.type = "button";
       rm.className = "font-bold text-[#15803D]";
-      rm.setAttribute("aria-label", `Quitar a ${j}`);
+      rm.setAttribute("aria-label", "Quitar a " + j);
       rm.textContent = "×";
-      rm.addEventListener("click", () => { jugadores.splice(i, 1); render(); });
+      rm.addEventListener("click", function () { jugadores.splice(i, 1); render(); });
       s.append(avatar, label, rm);
       chips.appendChild(s);
     });
-    jcount.textContent = `(${jugadores.length})`;
+    jcount.textContent = "(" + jugadores.length + ")";
     jempty.style.display = jugadores.length ? "none" : "";
     sortBtn.disabled = jugadores.length < 2;
   }
 
-  function addMuchos(raw: string) {
-    raw.split(",").map((s) => s.trim().replace(/^@/, "")).filter(Boolean).forEach((n) => {
-      if (!jugadores.includes(n)) jugadores.push(n);
+  function addMuchos(raw) {
+    String(raw || "").split(",").map(function (s) { return s.trim().replace(/^@/, ""); }).filter(Boolean).forEach(function (n) {
+      if (jugadores.indexOf(n) === -1) jugadores.push(n);
     });
-    encontrados = encontrados.filter((u) => !jugadores.includes(u.nombre));
+    encontrados = encontrados.filter(function (u) { return jugadores.indexOf(u.nombre) === -1; });
     paintSuggest();
     render();
   }
 
-  function openDraft(seed: string, focus = true) {
+  function openDraft(seed, focus) {
+    if (focus === undefined) focus = true;
     draftRow.classList.remove("hidden");
     if (document.activeElement !== draftInput) draftInput.value = seed;
     if (focus) draftInput.focus();
@@ -315,79 +321,85 @@ const faqs = [
     addInput.focus();
   }
 
-  addInput.addEventListener("input", () => {
+  addInput.addEventListener("input", function () {
     if (addInput.value.trim()) openDraft(addInput.value, false);
     else draftRow.classList.add("hidden");
     if (suggestTimer) clearTimeout(suggestTimer);
-    suggestTimer = setTimeout(() => buscarUsuarios(addInput.value), 250);
+    suggestTimer = setTimeout(function () { buscarUsuarios(addInput.value); }, 250);
   });
-  addInput.addEventListener("keydown", (e) => {
+  addInput.addEventListener("keydown", function (e) {
     if (e.key === "Escape") { hideSuggest(); return; }
     if (e.key === "ArrowDown" && encontrados.length) { e.preventDefault(); setActive(activeIdx + 1); return; }
     if (e.key === "ArrowUp" && encontrados.length) { e.preventDefault(); setActive(activeIdx - 1); return; }
     if (e.key === "Enter" && addInput.value.trim()) {
       if (activeIdx >= 0 && encontrados[activeIdx]) pickUser(encontrados[activeIdx].nombre);
-      else if (encontrados.length && !addInput.value.includes(",")) pickUser(encontrados[0].nombre);
+      else if (encontrados.length && addInput.value.indexOf(",") === -1) pickUser(encontrados[0].nombre);
       else { addMuchos(addInput.value); closeDraft(); hideSuggest(); }
     }
   });
-  addInput.addEventListener("blur", () => setTimeout(hideSuggest, 150));
-  draftInput.addEventListener("keydown", (e) => {
+  addInput.addEventListener("blur", function () { setTimeout(hideSuggest, 150); });
+  draftInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && draftInput.value.trim()) { addMuchos(draftInput.value); closeDraft(); }
   });
-  document.getElementById("draft-add")!.addEventListener("click", () => {
+  var draftAddBtn = $("draft-add");
+  if (draftAddBtn) draftAddBtn.addEventListener("click", function () {
     if (draftInput.value.trim()) { addMuchos(draftInput.value); closeDraft(); }
   });
-  document.getElementById("draft-close")!.addEventListener("click", closeDraft);
-  document.getElementById("add-guest")!.addEventListener("click", () => {
+  var draftCloseBtn = $("draft-close");
+  if (draftCloseBtn) draftCloseBtn.addEventListener("click", closeDraft);
+  var addGuestBtn = $("add-guest");
+  if (addGuestBtn) addGuestBtn.addEventListener("click", function () {
     openDraft("");
   });
 
-  tnums.forEach((b) => b.addEventListener("click", () => {
-    nEquipos = +b.dataset.n!;
-    tnums.forEach((x) => (x.className = `tnum h-10 w-12 rounded-xl text-sm font-bold transition ${x === b ? "bg-[#16A34A] text-white shadow-[0_6px_16px_rgba(22,163,74,0.45)]" : "bg-[#F1F2F1] text-[#5B6660] hover:bg-[#E4E7E4]"}`));
-  }));
+  tnums.forEach(function (b) { b.addEventListener("click", function () {
+    nEquipos = parseInt(b.getAttribute("data-n") || "2", 10) || 2;
+    tnums.forEach(function (x) { (x.className = "tnum h-10 w-12 rounded-xl text-sm font-bold transition " + (x === b ? "bg-[#16A34A] text-white shadow-[0_6px_16px_rgba(22,163,74,0.45)]" : "bg-[#F1F2F1] text-[#5B6660] hover:bg-[#E4E7E4]")); });
+  }); });
 
-  sortBtn.addEventListener("click", () => {
+  sortBtn.addEventListener("click", function () {
     sortBtn.classList.remove("shuffling");
     void sortBtn.offsetWidth;
     sortBtn.classList.add("shuffling");
-    const sh = [...jugadores].sort(() => Math.random() - 0.5);
+    var sh = jugadores.slice().sort(function () { return Math.random() - 0.5; });
     out.innerHTML = "";
-    Array.from({ length: nEquipos }, (_, i) => {
-      const ms = sh.filter((_, j) => j % nEquipos === i);
-      const d = document.createElement("div");
+    Array.from({ length: nEquipos }, function (_, i) {
+      var ms = sh.filter(function (_, j) { return j % nEquipos === i; });
+      var d = document.createElement("div");
       d.className = "flip-in rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]";
-      d.style.animationDelay = `${150 + i * 110}ms`;
-      const head = document.createElement("div");
+      d.style.animationDelay = (150 + i * 110) + "ms";
+      var head = document.createElement("div");
       head.className = "flex items-center justify-between";
-      const title = document.createElement("p");
+      var title = document.createElement("p");
       title.className = "font-black tracking-wide text-[#16A34A]";
-      title.textContent = `EQUIPO ${i + 1}`;
-      const copyBtn = document.createElement("button");
+      title.textContent = "EQUIPO " + (i + 1);
+      var copyBtn = document.createElement("button");
       copyBtn.type = "button";
       copyBtn.className = "copy-team text-xs font-bold text-[#15803D] hover:underline";
       copyBtn.textContent = "Copiar";
-      copyBtn.addEventListener("click", async () => {
-        const txt = `EQUIPO ${i + 1}: ${ms.join(", ")}`;
-        try {
-          await navigator.clipboard.writeText(txt);
-          copyBtn.textContent = "¡Copiado ✓";
-        } catch {
+      copyBtn.addEventListener("click", function () {
+        var txt = "EQUIPO " + (i + 1) + ": " + ms.join(", ");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).then(function () {
+            copyBtn.textContent = "¡Copiado ✓";
+            setTimeout(function () { copyBtn.textContent = "Copiar"; }, 2000);
+          }, function () {
+            copyBtn.textContent = txt;
+          });
+        } else {
           copyBtn.textContent = txt;
         }
-        setTimeout(() => { copyBtn.textContent = "Copiar"; }, 2000);
       });
       head.append(title, copyBtn);
       d.append(head);
-      ms.forEach((m) => {
-        const p = document.createElement("p");
+      ms.forEach(function (m) {
+        var p = document.createElement("p");
         p.className = "mt-2.5 flex items-center gap-2 text-sm font-semibold text-[#101613]";
-        const av = document.createElement("span");
+        var av = document.createElement("span");
         av.className = "flex h-7 w-7 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white";
-        av.textContent = (m.charAt(0) || "?").toUpperCase();
+        av.textContent = ((m || "").charAt(0) || "?").toUpperCase();
         av.setAttribute("aria-hidden", "true");
-        const nm = document.createElement("span");
+        var nm = document.createElement("span");
         nm.textContent = m;
         p.append(av, nm);
         d.append(p);
@@ -398,30 +410,31 @@ const faqs = [
   });
 
   // FAQ acordeón: una abierta a la vez, despliegue suave + scroll al terminar
-  const faqs = [...document.querySelectorAll(".faq")];
-  const closeFaq = (f) => {
+  var faqs = Array.prototype.slice.call(document.querySelectorAll(".faq"));
+  function closeFaq(f) {
     f.setAttribute("data-open", "0");
-    const wrap = f.querySelector(".faq-wrap");
-    const chev = f.querySelector(".faq-chev");
-    const btn = f.querySelector(".faq-btn");
+    var wrap = f.querySelector(".faq-wrap");
+    var chev = f.querySelector(".faq-chev");
+    var btn = f.querySelector(".faq-btn");
     if (wrap) wrap.style.gridTemplateRows = "0fr";
     if (chev) chev.style.transform = "";
     if (btn) btn.setAttribute("aria-expanded", "false");
-  };
-  faqs.forEach((f) => {
-    const btn = f.querySelector(".faq-btn");
-    const wrap = f.querySelector(".faq-wrap");
-    const chev = f.querySelector(".faq-chev");
-    btn?.addEventListener("click", () => {
-      const opening = f.getAttribute("data-open") !== "1";
-      faqs.forEach((o) => { if (o !== f) closeFaq(o); });
+  }
+  faqs.forEach(function (f) {
+    var btn = f.querySelector(".faq-btn");
+    var wrap = f.querySelector(".faq-wrap");
+    var chev = f.querySelector(".faq-chev");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var opening = f.getAttribute("data-open") !== "1";
+      faqs.forEach(function (o) { if (o !== f) closeFaq(o); });
       f.setAttribute("data-open", opening ? "1" : "0");
       if (wrap) wrap.style.gridTemplateRows = opening ? "1fr" : "0fr";
       if (chev) chev.style.transform = opening ? "rotate(180deg)" : "";
       btn.setAttribute("aria-expanded", opening ? "true" : "false");
       if (opening) {
         // espera a que termine el despliegue y luego scrollea suave
-        setTimeout(() => {
+        setTimeout(function () {
           f.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 450);
       }
@@ -429,4 +442,5 @@ const faqs = [
   });
 
   render();
+})();
 </script>
