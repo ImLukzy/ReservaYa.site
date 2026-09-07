@@ -34,6 +34,8 @@ public class AppDbContext : DbContext
     public DbSet<Suscripcion> Suscripciones => Set<Suscripcion>();
     public DbSet<Sancion> Sanciones => Set<Sancion>();
     public DbSet<HorarioOperativo> Horarios => Set<HorarioOperativo>();
+    public DbSet<PartidoAbierto> PartidosAbiertos => Set<PartidoAbierto>();
+    public DbSet<AnotacionPartido> AnotacionesPartido => Set<AnotacionPartido>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -384,5 +386,43 @@ public class AppDbContext : DbContext
         hor.HasIndex(h => new { h.ComplejoId, h.CanchaId, h.DiaSemana }).HasDatabaseName("Horario_alcance_dia_idx");
         hor.HasOne(h => h.Complejo).WithMany(c => c.Horarios)
             .HasForeignKey(h => h.ComplejoId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("Horario_complejoId_fkey");
+
+        var pab = modelBuilder.Entity<PartidoAbierto>();
+        pab.ToTable("PartidoAbierto").HasKey(p => p.Id).HasName("PartidoAbierto_pkey");
+        pab.Property(p => p.Id).HasColumnName("id");
+        pab.Property(p => p.OrganizadorId).HasColumnName("organizadorId");
+        pab.Property(p => p.Titulo).HasColumnName("titulo");
+        pab.Property(p => p.Descripcion).HasColumnName("descripcion");
+        pab.Property(p => p.Formato).HasColumnName("formato");
+        pab.Property(p => p.Nivel).HasColumnName("nivel");
+        pab.Property(p => p.CuposTotales).HasColumnName("cuposTotales");
+        pab.Property(p => p.Distrito).HasColumnName("distrito");
+        pab.Property(p => p.Cancha).HasColumnName("cancha");
+        pab.Property(p => p.Superficie).HasColumnName("superficie");
+        pab.Property(p => p.Precio).HasColumnName("precio").HasPrecision(10, 2);
+        pab.Property(p => p.Fecha).HasColumnName("fecha").HasColumnType("date");
+        pab.Property(p => p.DesdeMin).HasColumnName("desdeMin");
+        pab.Property(p => p.HastaMin).HasColumnName("hastaMin");
+        pab.Property(p => p.FotoUrl).HasColumnName("fotoUrl");
+        pab.Property(p => p.CreadoEn).HasColumnName("creadoEn")
+            .HasColumnType("timestamp(3) without time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+        pab.HasIndex(p => p.Fecha).HasDatabaseName("PartidoAbierto_fecha_idx");
+        pab.HasIndex(p => p.Distrito).HasDatabaseName("PartidoAbierto_distrito_idx");
+        pab.HasOne(p => p.Organizador).WithMany().HasForeignKey(p => p.OrganizadorId)
+            .OnDelete(DeleteBehavior.Restrict).HasConstraintName("PartidoAbierto_organizadorId_fkey");
+
+        var ano = modelBuilder.Entity<AnotacionPartido>();
+        ano.ToTable("AnotacionPartido").HasKey(a => a.Id).HasName("AnotacionPartido_pkey");
+        ano.Property(a => a.Id).HasColumnName("id");
+        ano.Property(a => a.PartidoId).HasColumnName("partidoId");
+        ano.Property(a => a.UsuarioId).HasColumnName("usuarioId");
+        ano.Property(a => a.CreadoEn).HasColumnName("creadoEn")
+            .HasColumnType("timestamp(3) without time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+        ano.HasIndex(a => new { a.PartidoId, a.UsuarioId }).IsUnique().HasDatabaseName("AnotacionPartido_partidoId_usuarioId_key");
+        ano.HasIndex(a => a.PartidoId).HasDatabaseName("AnotacionPartido_partidoId_idx");
+        ano.HasOne(a => a.Partido).WithMany(p => p.Anotaciones)
+            .HasForeignKey(a => a.PartidoId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("AnotacionPartido_partidoId_fkey");
+        ano.HasOne(a => a.Usuario).WithMany()
+            .HasForeignKey(a => a.UsuarioId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("AnotacionPartido_usuarioId_fkey");
     }
 }
