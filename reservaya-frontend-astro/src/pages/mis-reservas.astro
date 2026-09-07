@@ -1,23 +1,22 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
 const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
 const dashboardReservationsUrl = `${appUrl.replace(/\/$/, "")}/dashboard/reservas`;
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content={`0;url=${dashboardReservationsUrl}`} />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Redirigiendo a tus reservas | ReservaYa</title>
-  </head>
-  <body>
-    <p>
-      Redirigiendo a tus reservas...
-      <a href={dashboardReservationsUrl}>Continuar al dashboard</a>
-    </p>
-    <script define:vars={{ dashboardReservationsUrl }}>
-      window.location.replace(dashboardReservationsUrl);
-    </script>
-  </body>
-</html>
+<BaseLayout title="Mis reservas | ReservaYa" robots="noindex, follow">
+  <meta http-equiv="refresh" content={`0;url=${dashboardReservationsUrl}`} slot="head" />
+  <section class="mx-auto max-w-xl px-4 py-20 text-center">
+    <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#DCFCE7] text-2xl text-[#16A34A]" aria-hidden="true">▤</span>
+    <h1 class="mt-5 text-2xl font-black tracking-tight text-[#101613]">Llevándote a tus reservas…</h1>
+    <p class="mt-2 text-sm text-[#5B6660]">Si no avanzas solo, continúa aquí:</p>
+    <a href={dashboardReservationsUrl} class="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#22C55E] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#16A34A]">
+      Continuar al dashboard <span aria-hidden="true">→</span>
+    </a>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ dashboardReservationsUrl }}>
+  window.location.replace(dashboardReservationsUrl);
+</script>

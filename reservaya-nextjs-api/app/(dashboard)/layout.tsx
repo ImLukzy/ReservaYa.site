@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         email={session.email}
       />
       <main className="relative min-w-0 flex-1 overflow-y-auto">
-        <div className="p-6 md:p-8">{children}</div>
+        <div className="p-4 sm:p-6 md:p-8">{children}</div>
       </main>
     </div>
   );

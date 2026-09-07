@@ -464,7 +464,7 @@ export function ReservasPanel({
                   className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label htmlFor="nr-ini" className="mb-1 block text-xs font-bold text-[#475569]">
                     HORA INICIO

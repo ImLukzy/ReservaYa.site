@@ -1,0 +1,197 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000").replace(/\/$/, "");
+---
+
+<BaseLayout
+  title="Mis partidos | ReservaYa"
+  description="Los partidos que organizas y a los que te anotaste."
+  robots="noindex, follow"
+>
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-8 md:px-8 md:py-10">
+    <div class="mx-auto max-w-3xl">
+      <a href="/completar-cuadro" class="text-sm font-medium text-[#5B6660] transition hover:text-[#101613]">‹ Volver a partidos</a>
+      <h1 class="mt-3 flex items-center gap-2 text-3xl font-black tracking-tight text-[#101613]">
+        <svg class="h-7 w-7 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+        Mis partidos
+      </h1>
+
+      <div class="mt-5 flex gap-2" role="tablist" aria-label="Mis partidos">
+        <button id="tab-organizo" type="button" role="tab" aria-selected="true" class="rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-white transition">Organizo</button>
+        <button id="tab-anotado" type="button" role="tab" aria-selected="false" class="rounded-xl border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-bold text-[#5B6660] transition hover:border-[#22C55E]">Me anoté</button>
+      </div>
+
+      <div id="mp-lista" class="mt-5 space-y-3" aria-live="polite">
+        <div class="animate-pulse space-y-3" aria-hidden="true">
+          <div class="h-28 rounded-2xl bg-[#EDEEEC]"></div>
+        </div>
+      </div>
+
+      <div id="mp-vacio-organizo" class="hidden mt-5 rounded-2xl border border-[#E7E5E4] bg-white px-6 py-14 text-center shadow-sm">
+        <span class="mx-auto flex h-12 w-12 items-center justify-center text-3xl text-[#CBD5E1]" aria-hidden="true">♛</span>
+        <p class="mt-4 font-bold text-[#8A938D]">Aún no organizas ningún partido</p>
+        <a href="/completar-cuadro?publicar=1" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]">Publicar un partido</a>
+      </div>
+
+      <div id="mp-vacio-anotado" class="hidden mt-5 rounded-2xl border border-[#E7E5E4] bg-white px-6 py-14 text-center shadow-sm">
+        <span class="mx-auto flex h-12 w-12 items-center justify-center text-3xl text-[#CBD5E1]" aria-hidden="true">▦</span>
+        <p class="mt-4 font-bold text-[#8A938D]">No te has anotado a ningún partido</p>
+        <a href="/completar-cuadro" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]">Buscar partidos</a>
+      </div>
+
+      <p id="mp-error" class="hidden mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ apiUrl }}>
+(function () {
+  var base = String(apiUrl || "http://localhost:5000").replace(/\/$/, "");
+  function $(id) { return document.getElementById(id); }
+  var lista = $("mp-lista");
+  var vacioO = $("mp-vacio-organizo");
+  var vacioA = $("mp-vacio-anotado");
+  var errEl = $("mp-error");
+  var tabO = $("tab-organizo");
+  var tabA = $("tab-anotado");
+  if (!lista || !vacioO || !vacioA || !tabO || !tabA) return;
+
+  var datos = { organizo: [], meAnote: [] };
+  var tab = "organizo";
+
+  function showError(msg) {
+    if (!errEl) return;
+    if (!msg) { errEl.classList.add("hidden"); errEl.textContent = ""; return; }
+    errEl.textContent = msg;
+    errEl.classList.remove("hidden");
+  }
+
+  function resumen(p) {
+    var cuando = p.cuando || [p.fechaCorta, p.horaCorta].filter(Boolean).join(" ") || p.fecha || "";
+    var lugar = [p.distrito, p.nivel].filter(Boolean).join(" · ");
+    return (cuando ? cuando + " · " : "") + lugar;
+  }
+
+  function pintarTabs() {
+    var on = "rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-white transition";
+    var off = "rounded-xl border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-bold text-[#5B6660] transition hover:border-[#22C55E]";
+    tabO.className = tab === "organizo" ? on : off;
+    tabA.className = tab === "anotado" ? on : off;
+    tabO.setAttribute("aria-selected", tab === "organizo" ? "true" : "false");
+    tabA.setAttribute("aria-selected", tab === "anotado" ? "true" : "false");
+  }
+
+  function tarjeta(p, modo) {
+    var card = document.createElement("div");
+    card.className = "rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-sm";
+    var title = document.createElement("p");
+    title.className = "font-bold text-[#101613]";
+    title.textContent = p.titulo || "Partido abierto";
+    var sub = document.createElement("p");
+    sub.className = "mt-1 text-sm text-[#5B6660]";
+    sub.textContent = resumen(p);
+    card.append(title, sub);
+
+    var meta = document.createElement("div");
+    meta.className = "mt-3 flex flex-wrap items-center gap-2";
+    var pill = document.createElement("span");
+    pill.className = "rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]";
+    pill.textContent = (p.cuposLibres != null ? p.cuposLibres : "–") + " cupos";
+    meta.appendChild(pill);
+    if (modo === "organizo") {
+      var n = Array.isArray(p.inscritos) ? p.inscritos : [];
+      var quienes = document.createElement("span");
+      quienes.className = "text-xs text-[#8A938D]";
+      quienes.textContent = n.length === 0 ? "Sin anotados todavía" : "Anotados: " + n.join(", ");
+      meta.appendChild(quienes);
+    }
+    card.appendChild(meta);
+
+    var actions = document.createElement("div");
+    actions.className = "mt-4 flex flex-wrap gap-2";
+    if (modo === "organizo") {
+      var del = document.createElement("button");
+      del.type = "button";
+      del.className = "rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 transition hover:bg-red-50";
+      del.textContent = "Cancelar partido";
+      del.addEventListener("click", function () {
+        if (!window.confirm("¿Cancelar \"" + (p.titulo || "este partido") + "\"? Se avisará que ya no va.")) return;
+        del.disabled = true;
+        fetch(base + "/api/partidos/" + encodeURIComponent(p.id), { method: "DELETE", credentials: "include" })
+          .then(function (res) {
+            if (res.status === 401) { window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos"); return null; }
+            if (!res.ok) throw new Error("No se pudo cancelar el partido");
+            return res.json().catch(function () { return {}; });
+          })
+          .then(function (body) {
+            if (!body) return;
+            datos.organizo = datos.organizo.filter(function (x) { return x.id !== p.id; });
+            pintar();
+          })
+          .catch(function (e) { del.disabled = false; showError(e && e.message ? e.message : "No se pudo cancelar"); });
+      });
+      actions.appendChild(del);
+    } else {
+      var out = document.createElement("button");
+      out.type = "button";
+      out.className = "rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold text-[#3F4A44] transition hover:border-red-300 hover:text-red-600";
+      out.textContent = "Salirme";
+      out.addEventListener("click", function () {
+        out.disabled = true;
+        fetch(base + "/api/partidos/" + encodeURIComponent(p.id) + "/anotarse", { method: "DELETE", credentials: "include" })
+          .then(function (res) {
+            if (res.status === 401) { window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos"); return null; }
+            if (!res.ok) throw new Error("No pudiste salirte del partido");
+            return res.json().catch(function () { return {}; });
+          })
+          .then(function (body) {
+            if (!body) return;
+            datos.meAnote = datos.meAnote.filter(function (x) { return x.id !== p.id; });
+            pintar();
+          })
+          .catch(function (e) { out.disabled = false; showError(e && e.message ? e.message : "No pudiste salirte"); });
+      });
+      actions.appendChild(out);
+    }
+    card.appendChild(actions);
+    return card;
+  }
+
+  function pintar() {
+    pintarTabs();
+    var arr = tab === "organizo" ? datos.organizo : datos.meAnote;
+    lista.innerHTML = "";
+    arr.forEach(function (p) { lista.appendChild(tarjeta(p, tab)); });
+    vacioO.classList.toggle("hidden", !(tab === "organizo" && arr.length === 0));
+    vacioA.classList.toggle("hidden", !(tab === "anotado" && arr.length === 0));
+  }
+
+  tabO.addEventListener("click", function () { tab = "organizo"; showError(""); pintar(); });
+  tabA.addEventListener("click", function () { tab = "anotado"; showError(""); pintar(); });
+
+  fetch(base + "/api/partidos/mios", { credentials: "include" })
+    .then(function (res) {
+      if (res.status === 401) {
+        window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos");
+        return null;
+      }
+      if (!res.ok) throw new Error("No pudimos cargar tus partidos");
+      return res.json().catch(function () { return null; });
+    })
+    .then(function (body) {
+      if (!body) return;
+      datos.organizo = Array.isArray(body.organizo) ? body.organizo : [];
+      datos.meAnote = Array.isArray(body.meAnote) ? body.meAnote : [];
+      var q = new URLSearchParams(window.location.search).get("tab");
+      if (q === "anotado" || q === "meAnote") tab = "anotado";
+      pintar();
+    })
+    .catch(function (e) {
+      lista.innerHTML = "";
+      vacioO.classList.add("hidden");
+      vacioA.classList.add("hidden");
+      showError(e && e.message ? e.message : "No pudimos cargar tus partidos");
+    });
+})();
+</script>

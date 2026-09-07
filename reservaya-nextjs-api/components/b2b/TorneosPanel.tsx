@@ -411,7 +411,7 @@ export function TorneosPanel() {
               </button>
             </div>
             <label className="mt-4 block text-sm font-semibold text-[#0F172A]">Nombre<input value={fTorneo.nombre} onChange={(e) => setFTorneo((f) => ({ ...f, nombre: e.target.value }))} placeholder="Ej. Copa ReservaYa Verano" className={inputCls} /></label>
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label className="block text-sm font-semibold text-[#0F172A]">Cupo<input type="number" min={0} value={fTorneo.cupo} onChange={(e) => setFTorneo((f) => ({ ...f, cupo: e.target.value }))} className={inputCls} /></label>
               <label className="block text-sm font-semibold text-[#0F172A]">Premio<input value={fTorneo.premio} onChange={(e) => setFTorneo((f) => ({ ...f, premio: e.target.value }))} placeholder="Ej. S/ 1,000" className={inputCls} /></label>
               <label className="block text-sm font-semibold text-[#0F172A]">Inicio<input type="date" value={fTorneo.fechaInicio} onChange={(e) => setFTorneo((f) => ({ ...f, fechaInicio: e.target.value }))} className={inputCls} /></label>

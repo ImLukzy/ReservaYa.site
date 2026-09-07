@@ -1,12 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
+const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const appUrl = (import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000").replace(/\/$/, "");
+
 const niveles = ["Todos los niveles", "Principiante", "Intermedio", "Avanzado"];
-const demo = [
-  { t: "Pichanga intermedia Yanahuara", z: "Yanahuara", n: "Intermedio", cupos: 3, hora: "Hoy 20:00" },
-  { t: "Fútbol 7 mixto Cayma", z: "Cayma", n: "Principiante", cupos: 5, hora: "Mañana 18:00" },
-  { t: "Pádel avanzado Miraflores", z: "Miraflores", n: "Avanzado", cupos: 2, hora: "Sáb 10:00" },
-];
+const formatos = ["Fútbol 5", "Fútbol 6", "Fútbol 7", "Fútbol 8", "Fútbol 9", "Fútbol 11"];
+const superficies = ["Grass sintético", "Losa", "Grass natural"];
 ---
 
 <BaseLayout
@@ -27,17 +27,18 @@ const demo = [
           <p class="mt-5 max-w-md leading-relaxed text-white/65">
             Únete a partidos abiertos cerca de ti o publica el tuyo. Te anotas, el organizador confirma, y a la cancha.
           </p>
-          <div class="mt-7">
-            <a href="/register" class="inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.45)] transition hover:bg-[#16A34A]"><span aria-hidden="true" class="text-lg leading-none">+</span> Publicar partido</a>
+          <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button type="button" data-open-publish class="inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.45)] transition hover:bg-[#16A34A]"><span aria-hidden="true" class="text-lg leading-none">+</span> Publicar partido</button>
+            <a href="/mis-partidos" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10"><span aria-hidden="true">◔</span> Mis partidos</a>
           </div>
         </div>
         <div class="grid gap-4">
           <div class="flex items-center justify-between rounded-2xl border border-white/15 bg-white/[0.07] p-6 backdrop-blur">
-            <div><p class="text-5xl font-black text-white">0</p><p class="mt-1 text-sm text-white/60">cupos libres ahora mismo</p></div>
+            <div><p id="stat-cupos" class="text-5xl font-black text-white">–</p><p class="mt-1 text-sm text-white/60">cupos libres ahora mismo</p></div>
             <svg class="h-10 w-10 text-[#4ADE80]/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c2.8.3 5 2.3 5 5.8"/></svg>
           </div>
           <div class="grid grid-cols-2 gap-4">
-            <div class="rounded-2xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur"><p class="text-4xl font-black text-white">0</p><p class="mt-1 text-xs text-white/60">partidos abiertos</p></div>
+            <div class="rounded-2xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur"><p id="stat-count" class="text-4xl font-black text-white">–</p><p class="mt-1 text-xs text-white/60">partidos abiertos</p></div>
             <div class="rounded-2xl border border-[#22C55E]/40 bg-[#22C55E]/15 p-5 backdrop-blur"><p class="text-4xl font-black text-[#4ADE80]">3</p><p class="mt-1 text-xs text-white/60">niveles de juego</p></div>
           </div>
         </div>
@@ -49,55 +50,451 @@ const demo = [
       <p class="mt-1 text-sm text-[#5B6660]">Filtra por nivel y zona, anótate al que más te guste.</p>
       <div class="relative mt-6">
         <svg class="absolute top-1/2 left-4 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" placeholder="Buscar por distrito, cancha o título..." class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3.5 pr-4 pl-11 text-sm shadow-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
+        <input id="q" placeholder="Buscar por distrito, cancha o título..." autocomplete="off" class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3.5 pr-4 pl-11 text-sm shadow-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
       </div>
       <div id="nivs" class="mt-4 flex flex-wrap gap-2">
         {niveles.map((n, i) => (
           <button type="button" data-n={n} class={`rounded-full border px-4 py-1.5 text-[13px] font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`}>{n}</button>
         ))}
       </div>
-      <p class="mt-3 text-sm text-[#5B6660]">◔ <strong id="count" class="text-[#101613]">3</strong> partidos abiertos</p>
-      <div id="lista" class="mt-4 space-y-3">
-        {demo.map((p) => (
-          <div data-card data-n={p.n} data-txt={`${p.t} ${p.z}`.toLowerCase()} class="flex flex-col justify-between gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-5 sm:flex-row sm:items-center">
-            <div>
-              <p class="font-bold text-[#101613]">{p.t}</p>
-              <p class="mt-1 text-sm text-[#5B6660]">{p.hora} · {p.z} · {p.n}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]">{p.cupos} cupos</span>
-              <button type="button" class="unirse rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]">Anotarme</button>
-            </div>
-          </div>
-        ))}
+      <p class="mt-3 text-sm text-[#5B6660]">◔ <strong id="count" class="text-[#101613]">–</strong> partidos abiertos</p>
+
+      <div id="lista" class="mt-4 space-y-3" aria-live="polite">
+        <div class="animate-pulse space-y-3" aria-hidden="true">
+          <div class="h-24 rounded-2xl bg-[#EDEEEC]"></div>
+          <div class="h-24 rounded-2xl bg-[#EDEEEC]"></div>
+        </div>
       </div>
+
+      <div id="vacio" class="hidden py-14 text-center">
+        <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EEF2FF] text-2xl text-[#94A3B8]" aria-hidden="true">◔◔</span>
+        <p class="mt-5 text-lg font-black text-[#101613]">Aún no hay partidos</p>
+        <p class="mx-auto mt-2 max-w-sm text-sm text-[#5B6660]">Sé el primero: publica tu partido y encuentra con quién jugar.</p>
+        <button type="button" data-open-publish class="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#15803D]"><span aria-hidden="true" class="text-base leading-none">+</span> Publicar partido</button>
+      </div>
+
+      <p id="lista-error" class="hidden mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="alert"></p>
     </div>
   </section>
+
+  <!-- ============ MODAL: PUBLICAR PARTIDO ============ -->
+  <div id="publish-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="publish-title">
+    <div data-publish-close class="absolute inset-0 bg-black/60" aria-hidden="true"></div>
+    <div class="relative z-10 max-h-[calc(100vh-2rem)] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl md:p-7">
+      <div class="flex items-center justify-between">
+        <h3 id="publish-title" class="text-lg font-black text-[#101613]">Publicar un partido</h3>
+        <button type="button" data-publish-close aria-label="Cerrar" class="flex h-8 w-8 items-center justify-center rounded-full text-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600">×</button>
+      </div>
+      <form id="publish-form" class="mt-5 grid gap-5 md:grid-cols-[240px_1fr]" novalidate>
+        <div>
+          <p class="text-xs font-semibold text-[#8A938D]">Foto del partido (opcional)</p>
+          <label for="p-foto" class="mt-2 flex h-44 cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border border-dashed border-[#D6D3D1] bg-[#FAFAF9] text-[#8A938D] transition hover:border-[#22C55E]">
+            <img id="p-foto-preview" alt="" class="hidden h-full w-full object-cover" />
+            <span id="p-foto-empty" class="flex flex-col items-center gap-1">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L6 21"/></svg>
+              <span class="text-xs font-semibold">Subir foto</span>
+            </span>
+          </label>
+          <input id="p-foto" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" />
+          <p class="mt-4 text-xs font-semibold text-[#8A938D]">Descripción</p>
+          <textarea id="p-desc" rows="5" placeholder="Faltan 4, ambiente sano, se pide puntualidad..." class="mt-2 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none"></textarea>
+        </div>
+        <div>
+          <label for="p-titulo" class="text-xs font-semibold text-[#8A938D]">Título</label>
+          <input id="p-titulo" required maxlength="80" placeholder="Ej. Pichanga de los viernes" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none" />
+          <p class="mt-3 text-xs font-semibold text-[#8A938D]">Formato</p>
+          <div id="p-formatos" class="mt-1.5 grid grid-cols-3 gap-2">
+            {formatos.map((f, i) => (
+              <button type="button" data-f={f} class={`rounded-xl px-2 py-2.5 text-[13px] font-bold transition ${i === 2 ? "bg-[#16A34A] text-white" : "bg-[#F1F2F1] text-[#3F4A44] hover:bg-[#E4E7E4]"}`}>{f}</button>
+            ))}
+          </div>
+          <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label for="p-nivel" class="text-xs font-semibold text-[#8A938D]">Nivel</label>
+              <select id="p-nivel" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none">
+                <option>Principiante</option>
+                <option selected>Intermedio</option>
+                <option>Avanzado</option>
+              </select>
+            </div>
+            <div>
+              <label for="p-cupos" class="text-xs font-semibold text-[#8A938D]">Cupos totales</label>
+              <input id="p-cupos" type="number" min="2" max="30" value="14" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+          </div>
+          <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div>
+              <label for="p-fecha" class="text-xs font-semibold text-[#8A938D]">Fecha</label>
+              <input id="p-fecha" type="date" required class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+            <div>
+              <label for="p-desde" class="text-xs font-semibold text-[#8A938D]">Desde</label>
+              <input id="p-desde" type="time" required class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+            <div>
+              <label for="p-hasta" class="text-xs font-semibold text-[#8A938D]">Hasta</label>
+              <input id="p-hasta" type="time" required class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+          </div>
+          <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label for="p-distrito" class="text-xs font-semibold text-[#8A938D]">Distrito</label>
+              <input id="p-distrito" required maxlength="60" placeholder="Ej. Yanahuara" autocomplete="off" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+            <div>
+              <label for="p-cancha" class="text-xs font-semibold text-[#8A938D]">Cancha</label>
+              <input id="p-cancha" required maxlength="80" placeholder="Ej. Complejo Deportivo..." autocomplete="off" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+          </div>
+          <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label for="p-superficie" class="text-xs font-semibold text-[#8A938D]">Superficie</label>
+              <select id="p-superficie" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none">
+                {superficies.map((s) => <option>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label for="p-precio" class="text-xs font-semibold text-[#8A938D]">Precio por persona (S/)</label>
+              <input id="p-precio" type="number" min="0" step="1" placeholder="0" class="mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none" />
+            </div>
+          </div>
+          <p id="publish-status" class="hidden mt-3 rounded-xl px-4 py-3 text-sm" role="alert"></p>
+          <div class="mt-4 flex items-center justify-end gap-2">
+            <button type="button" data-publish-close class="rounded-xl bg-[#EDEEEC] px-5 py-2.5 text-sm font-bold text-[#3F4A44] transition hover:bg-[#E0E1DF]">Cancelar</button>
+            <button id="publish-submit" type="submit" class="inline-flex items-center gap-2 rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D] disabled:opacity-60"><span aria-hidden="true">✈</span> Publicar partido</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: CONFIRMACIÓN DE ANOTACIÓN ============ -->
+  <div id="join-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="join-title">
+    <div data-join-close class="absolute inset-0 bg-black/60" aria-hidden="true"></div>
+    <div class="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-2xl">
+      <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#DCFCE7] text-2xl text-[#16A34A]" aria-hidden="true">✓</span>
+      <h3 id="join-title" class="mt-4 text-xl font-black text-[#101613]">¡Anotado en el partido!</h3>
+      <p id="join-summary" class="mt-2 text-sm leading-relaxed text-[#5B6660]"></p>
+      <div class="mt-5 grid gap-2">
+        <a id="join-share" href="#" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#16A34A]">Compartir por WhatsApp</a>
+        <button type="button" data-join-close class="rounded-xl border border-[#E7E5E4] px-5 py-3 text-sm font-bold text-[#3F4A44] transition hover:border-[#22C55E]">Seguir explorando</button>
+      </div>
+    </div>
+  </div>
 </BaseLayout>
 
-<script>
-  const q = document.getElementById("q") as HTMLInputElement | null;
-  const btns = [...document.querySelectorAll<HTMLButtonElement>("#nivs button")];
-  const cards = [...document.querySelectorAll<HTMLElement>("[data-card]")];
-  let niv = "Todos los niveles";
-  function filtrar() {
-    const t = (q?.value ?? "").toLowerCase().trim();
-    let v = 0;
-    cards.forEach((c) => {
-      const ok = (niv === "Todos los niveles" || c.dataset.n === niv) && (!t || (c.dataset.txt ?? "").includes(t));
-      c.style.display = ok ? "" : "none";
-      if (ok) v++;
-    });
-    document.getElementById("count")!.textContent = String(v);
+<script is:inline define:vars={{ apiUrl, appUrl }}>
+(function () {
+  var base = String(apiUrl || "http://localhost:5000").replace(/\/$/, "");
+  function $(id) { return document.getElementById(id); }
+  var q = $("q");
+  var nivBox = $("nivs");
+  var lista = $("lista");
+  var vacio = $("vacio");
+  var countEl = $("count");
+  var errEl = $("lista-error");
+  var statCupos = $("stat-cupos");
+  var statCount = $("stat-count");
+  if (!q || !lista || !vacio || !countEl) return;
+
+  var partidos = [];
+  var nivel = "Todos los niveles";
+  var formato = "Fútbol 7";
+
+  function showError(msg) {
+    if (!errEl) return;
+    if (!msg) { errEl.classList.add("hidden"); errEl.textContent = ""; return; }
+    errEl.textContent = msg;
+    errEl.classList.remove("hidden");
   }
-  btns.forEach((b) => b.addEventListener("click", () => {
-    niv = b.dataset.n ?? niv;
-    btns.forEach((x) => (x.className = `rounded-full border px-4 py-1.5 text-[13px] font-semibold transition ${x === b ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`));
-    filtrar();
-  }));
-  q?.addEventListener("input", filtrar);
-  document.querySelectorAll(".unirse").forEach((b) => b.addEventListener("click", () => {
-    (b as HTMLButtonElement).textContent = "✓ Anotado";
-    (b as HTMLButtonElement).disabled = true;
-  }));
+
+  function resumen(p) {
+    var cuando = p.cuando || [p.fechaCorta, p.horaCorta].filter(Boolean).join(" ") || p.fecha || "";
+    var lugar = [p.distrito, p.nivel].filter(Boolean).join(" · ");
+    return (cuando ? cuando + " · " : "") + lugar;
+  }
+
+  function pintarStats(visibles) {
+    var cupos = visibles.reduce(function (acc, p) { return acc + (parseInt(p.cuposLibres, 10) || 0); }, 0);
+    if (statCupos) statCupos.textContent = String(cupos);
+    if (statCount) statCount.textContent = String(visibles.length);
+  }
+
+  function tarjeta(p) {
+    var card = document.createElement("div");
+    card.className = "flex flex-col justify-between gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-5 sm:flex-row sm:items-center";
+    var left = document.createElement("div");
+    var title = document.createElement("p");
+    title.className = "font-bold text-[#101613]";
+    title.textContent = p.titulo || "Partido abierto";
+    var sub = document.createElement("p");
+    sub.className = "mt-1 text-sm text-[#5B6660]";
+    sub.textContent = resumen(p);
+    left.append(title, sub);
+    var right = document.createElement("div");
+    right.className = "flex items-center gap-3";
+    var pill = document.createElement("span");
+    pill.className = "rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]";
+    pill.textContent = (p.cuposLibres != null ? p.cuposLibres : "–") + " cupos";
+    var btn = document.createElement("button");
+    btn.type = "button";
+    var lleno = (parseInt(p.cuposLibres, 10) || 0) <= 0 && !p.anotado;
+    if (p.anotado) {
+      btn.className = "rounded-xl bg-[#16A34A] px-4 py-2 text-sm font-bold text-white";
+      btn.textContent = "✓ Anotado";
+      btn.disabled = true;
+    } else if (lleno) {
+      btn.className = "rounded-xl bg-[#EDEEEC] px-4 py-2 text-sm font-bold text-[#8A938D]";
+      btn.textContent = "Lleno";
+      btn.disabled = true;
+    } else {
+      btn.className = "rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]";
+      btn.textContent = "Anotarme";
+      btn.addEventListener("click", function () { anotarse(p, btn); });
+    }
+    right.append(pill, btn);
+    card.append(left, right);
+    return card;
+  }
+
+  function pintar() {
+    var t = q.value.toLowerCase().trim();
+    var visibles = partidos.filter(function (p) {
+      var okN = nivel === "Todos los niveles" || p.nivel === nivel;
+      var txt = ((p.titulo || "") + " " + (p.distrito || "") + " " + (p.cancha || "")).toLowerCase();
+      return okN && (!t || txt.indexOf(t) !== -1);
+    });
+    lista.innerHTML = "";
+    visibles.forEach(function (p) { lista.appendChild(tarjeta(p)); });
+    countEl.textContent = String(visibles.length);
+    vacio.classList.toggle("hidden", !(visibles.length === 0 && partidos.length === 0));
+    pintarStats(partidos);
+  }
+
+  function cargar() {
+    showError("");
+    fetch(base + "/api/partidos", { credentials: "include" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("http " + res.status);
+        return res.json().catch(function () { return null; });
+      })
+      .then(function (body) {
+        var arr = body ? (body.partidos || body.data || body.items) : null;
+        partidos = Array.isArray(arr) ? arr : [];
+        pintar();
+      })
+      .catch(function () {
+        partidos = [];
+        pintar();
+        showError("No pudimos cargar los partidos (API no disponible). Igual puedes publicar el tuyo.");
+      });
+  }
+
+  // ---------- Filtros ----------
+  var nivBtns = nivBox ? Array.prototype.slice.call(nivBox.querySelectorAll("button")) : [];
+  nivBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      nivel = b.getAttribute("data-n") || nivel;
+      nivBtns.forEach(function (x) {
+        x.className = "rounded-full border px-4 py-1.5 text-[13px] font-semibold transition " +
+          (x === b ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]");
+      });
+      pintar();
+    });
+  });
+  q.addEventListener("input", pintar);
+
+  // ---------- Anotarse ----------
+  var joinModal = $("join-modal");
+  function openJoin(p) {
+    if (!joinModal) return;
+    var sum = $("join-summary");
+    if (sum) sum.textContent = (p.titulo || "Partido") + " · " + resumen(p);
+    var share = $("join-share");
+    if (share) {
+      var txt = "Me anoté en \"" + (p.titulo || "un partido") + "\" (" + resumen(p) + ") vía ReservaYa. ¡Súmate!";
+      share.href = "https://wa.me/?text=" + encodeURIComponent(txt);
+    }
+    joinModal.classList.remove("hidden");
+    joinModal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+  }
+  function closeJoin() {
+    if (!joinModal) return;
+    joinModal.classList.add("hidden");
+    joinModal.classList.remove("flex");
+    document.body.style.overflow = "";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-join-close]"), function (el) {
+    el.addEventListener("click", closeJoin);
+  });
+
+  function anotarse(p, btn) {
+    btn.disabled = true;
+    var orig = btn.textContent;
+    btn.textContent = "Anotando...";
+    fetch(base + "/api/partidos/" + encodeURIComponent(p.id) + "/anotarse", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+    })
+      .then(function (res) {
+        if (res.status === 401) {
+          window.location.href = "/login?returnUrl=" + encodeURIComponent("/completar-cuadro");
+          return null;
+        }
+        if (!res.ok) throw new Error("No se pudo completar tu anotación");
+        return res.json().catch(function () { return {}; });
+      })
+      .then(function (body) {
+        if (!body) return;
+        p.anotado = true;
+        if (typeof p.cuposLibres === "number" && p.cuposLibres > 0) p.cuposLibres -= 1;
+        pintar();
+        openJoin(p);
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        btn.textContent = orig;
+        showError(e && e.message ? e.message : "No se pudo completar tu anotación");
+      });
+  }
+
+  // ---------- Modal publicar ----------
+  var pubModal = $("publish-modal");
+  function openPublish() {
+    if (!pubModal) return;
+    pubModal.classList.remove("hidden");
+    pubModal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+    var f = $("p-fecha");
+    if (f && !f.value) {
+      var d = new Date();
+      d.setDate(d.getDate() + 1);
+      f.value = d.toISOString().slice(0, 10);
+    }
+  }
+  function closePublish() {
+    if (!pubModal) return;
+    pubModal.classList.add("hidden");
+    pubModal.classList.remove("flex");
+    document.body.style.overflow = "";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-open-publish]"), function (el) {
+    el.addEventListener("click", openPublish);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-publish-close]"), function (el) {
+    el.addEventListener("click", closePublish);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { closePublish(); closeJoin(); }
+  });
+
+  var fmtBox = $("p-formatos");
+  if (fmtBox) {
+    Array.prototype.forEach.call(fmtBox.querySelectorAll("button"), function (b) {
+      b.addEventListener("click", function () {
+        formato = b.getAttribute("data-f") || formato;
+        Array.prototype.forEach.call(fmtBox.querySelectorAll("button"), function (x) {
+          x.className = "rounded-xl px-2 py-2.5 text-[13px] font-bold transition " +
+            (x === b ? "bg-[#16A34A] text-white" : "bg-[#F1F2F1] text-[#3F4A44] hover:bg-[#E4E7E4]");
+        });
+      });
+    });
+  }
+
+  var fotoInput = $("p-foto");
+  if (fotoInput) {
+    fotoInput.addEventListener("change", function () {
+      var f = fotoInput.files && fotoInput.files[0];
+      var img = $("p-foto-preview");
+      var empty = $("p-foto-empty");
+      if (f && img) {
+        img.src = URL.createObjectURL(f);
+        img.classList.remove("hidden");
+        if (empty) empty.classList.add("hidden");
+      }
+    });
+  }
+
+  var form = $("publish-form");
+  var pubStatus = $("publish-status");
+  function pubMsg(msg, ok) {
+    if (!pubStatus) return;
+    if (!msg) { pubStatus.classList.add("hidden"); pubStatus.textContent = ""; return; }
+    pubStatus.textContent = msg;
+    pubStatus.className = ok
+      ? "mt-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+      : "mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700";
+  }
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      pubMsg("");
+      var titulo = $("p-titulo").value.trim();
+      var fecha = $("p-fecha").value;
+      var desde = $("p-desde").value;
+      var hasta = $("p-hasta").value;
+      var distrito = $("p-distrito").value.trim();
+      var cancha = $("p-cancha").value.trim();
+      if (!titulo || !fecha || !desde || !hasta || !distrito || !cancha) {
+        pubMsg("Completa título, fecha, horarios, distrito y cancha.");
+        return;
+      }
+      var submit = $("publish-submit");
+      if (submit) { submit.disabled = true; submit.textContent = "Publicando..."; }
+      var fd = new FormData();
+      fd.append("titulo", titulo);
+      fd.append("formato", formato);
+      fd.append("nivel", $("p-nivel").value);
+      fd.append("cuposTotales", $("p-cupos").value);
+      fd.append("fecha", fecha);
+      fd.append("desde", desde);
+      fd.append("hasta", hasta);
+      fd.append("distrito", distrito);
+      fd.append("cancha", cancha);
+      fd.append("superficie", $("p-superficie").value);
+      fd.append("precio", $("p-precio").value || "0");
+      fd.append("descripcion", $("p-desc").value.trim());
+      if (fotoInput && fotoInput.files && fotoInput.files[0]) fd.append("foto", fotoInput.files[0]);
+      fetch(base + "/api/partidos", { method: "POST", credentials: "include", body: fd })
+        .then(function (res) {
+          if (res.status === 401) {
+            window.location.href = "/login?returnUrl=" + encodeURIComponent("/completar-cuadro");
+            return null;
+          }
+          if (!res.ok) throw new Error("No se pudo publicar tu partido");
+          return res.json().catch(function () { return {}; });
+        })
+        .then(function (body) {
+          if (!body) return;
+          closePublish();
+          form.reset();
+          var img = $("p-foto-preview");
+          var empty = $("p-foto-empty");
+          if (img) { img.src = ""; img.classList.add("hidden"); }
+          if (empty) empty.classList.remove("hidden");
+          pubMsg("");
+          cargar();
+          pubMsgOk("¡Partido publicado! Ya aparece en la lista.");
+        })
+        .catch(function (err) {
+          pubMsg(err && err.message ? err.message : "No se pudo publicar tu partido");
+        })
+        .finally(function () {
+          if (submit) { submit.disabled = false; submit.innerHTML = "<span>✈</span> Publicar partido"; }
+        });
+    });
+  }
+  function pubMsgOk(msg) {
+    showError("");
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.className = "mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700";
+  }
+
+  cargar();
+  if (new URLSearchParams(window.location.search).get("publicar") === "1") openPublish();
+})();
 </script>

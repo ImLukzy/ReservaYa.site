@@ -1,0 +1,92 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Libro de Reclamaciones | ReservaYa"
+  description="Registra tu queja o reclamo. Te respondemos en un plazo máximo de 15 días hábiles."
+  robots="noindex, follow"
+>
+  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-14 md:px-8">
+    <div class="mx-auto max-w-2xl">
+      <span class="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-[#DCFCE7]/60 px-4 py-1.5 text-xs font-bold text-[#15803D]">Defensa del consumidor</span>
+      <h1 class="reveal mt-4 text-4xl font-black tracking-tight text-[#101613] md:text-5xl">Libro de <span class="text-[#16A34A]">Reclamaciones</span></h1>
+      <p class="mt-3 text-[#5B6660]">Registra tu queja o reclamo y te respondemos en un plazo máximo de 15 días hábiles, conforme al Código de Protección y Defensa del Consumidor (Ley N.º 29571).</p>
+
+      <form data-inbox="inboxMejikai" class="mt-8 rounded-2xl border border-[#E7E5E4] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="lr-nombre" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">NOMBRE COMPLETO</label>
+            <input id="lr-nombre" name="nombre" type="text" required autocomplete="name" placeholder="Tu nombre" class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none" />
+          </div>
+          <div>
+            <label for="lr-email" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">CORREO ELECTRÓNICO</label>
+            <input id="lr-email" name="email" type="email" required autocomplete="email" placeholder="tu@correo.com" class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none" />
+          </div>
+        </div>
+        <div class="mt-4">
+          <label for="lr-tipo" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">TIPO</label>
+          <select id="lr-tipo" name="tipo" class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none">
+            <option>Queja</option>
+            <option>Reclamo</option>
+          </select>
+        </div>
+        <div class="mt-4">
+          <label for="lr-detalle" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">DETALLE</label>
+          <textarea id="lr-detalle" name="detalle" rows="5" required minlength="10" placeholder="Cuéntanos qué pasó, con fechas y datos del servicio..." class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none"></textarea>
+        </div>
+        <div class="mt-4">
+          <label for="lr-pedido" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">PEDIDO</label>
+          <textarea id="lr-pedido" name="pedido" rows="3" required minlength="5" placeholder="¿Qué esperas que hagamos?" class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none"></textarea>
+        </div>
+        <p data-status class="hidden mt-4 rounded-xl px-4 py-3 text-sm" role="status"></p>
+        <button data-submit type="submit" class="mt-5 w-full rounded-2xl bg-[#16A34A] py-3.5 font-bold text-white transition hover:bg-[#15803D] disabled:opacity-60">Enviar reclamo</button>
+        <p class="mt-3 text-center text-xs text-[#8A938D]">También puedes escribirnos a <a href="mailto:hola@reservaya.pe" class="font-bold text-[#16A34A] hover:underline">hola@reservaya.pe</a></p>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+(function () {
+  // Respaldo cuando no hay endpoint de bandeja configurado: el manejador
+  // global de BaseLayout solo actúa si existe; si no, validamos y
+  // ofrecemos enviarlo por correo con los datos prellenados.
+  if (document.body.dataset.inboxEndpoint) return;
+  var form = document.querySelector('form[data-inbox="inboxMejikai"]');
+  if (!form) return;
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var status = form.querySelector("[data-status]");
+    var btn = form.querySelector("[data-submit]");
+    var data = new FormData(form);
+    var nombre = String(data.get("nombre") || "").trim();
+    var email = String(data.get("email") || "").trim();
+    var detalle = String(data.get("detalle") || "").trim();
+    var pedido = String(data.get("pedido") || "").trim();
+    function msg(t, ok) {
+      if (!status) return;
+      status.textContent = t;
+      status.className = ok
+        ? "mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+        : "mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700";
+    }
+    if (nombre.length < 3 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || detalle.length < 10 || pedido.length < 5) {
+      msg("Revisa los datos: nombre, correo válido, detalle (mín. 10 caracteres) y pedido.");
+      return;
+    }
+    if (btn) btn.setAttribute("disabled", "true");
+    var body = "Nombre: " + nombre + "\nCorreo: " + email + "\nTipo: " + String(data.get("tipo") || "") + "\n\nDetalle:\n" + detalle + "\n\nPedido:\n" + pedido;
+    msg("Copiamos tu reclamo. Envíanoslo a hola@reservaya.pe para registrarlo con este contenido.", true);
+    try {
+      if (navigator.clipboard) navigator.clipboard.writeText(body).catch(function () {});
+    } catch (err) {}
+    var mail = document.createElement("a");
+    mail.href = "mailto:hola@reservaya.pe?subject=" + encodeURIComponent("Reclamo - Libro de Reclamaciones") + "&body=" + encodeURIComponent(body);
+    mail.className = "mt-3 inline-flex items-center gap-2 rounded-2xl border border-[#E7E5E4] px-5 py-2.5 text-sm font-bold text-[#101613] transition hover:border-[#22C55E]";
+    mail.textContent = "Abrir mi correo con el reclamo listo →";
+    if (status && status.parentNode) status.parentNode.insertBefore(mail, status.nextSibling);
+    if (btn) btn.removeAttribute("disabled");
+  });
+})();
+</script>

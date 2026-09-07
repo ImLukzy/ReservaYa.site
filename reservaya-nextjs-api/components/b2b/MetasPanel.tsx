@@ -332,7 +332,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
             <form action={guardar}>
               <label className={labelCls} htmlFor="meta-titulo">Título</label>
               <input id="meta-titulo" name="titulo" required maxLength={80} placeholder="Ej. Llegar a S/ 8,000 en septiembre" className={inputCls} />
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className={labelCls} htmlFor="meta-tipo">Tipo</label>
                   <select id="meta-tipo" name="tipo" className={inputCls} defaultValue="INGRESOS">
@@ -344,7 +344,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
                   <input id="meta-objetivo" name="objetivo" type="number" min="1" step="any" required placeholder="8000" className={inputCls} />
                 </div>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className={labelCls} htmlFor="meta-ini">Periodo inicio</label>
                   <input id="meta-ini" name="periodoInicio" type="date" required defaultValue={iniMes} className={inputCls} />

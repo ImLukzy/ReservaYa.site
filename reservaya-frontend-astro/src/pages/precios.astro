@@ -23,8 +23,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           ["Gestión Total", "89.90", "Agenda + caja + equipo", ["Todo lo de Publicación", "Agenda sin solapamientos", "Caja POS + Yape/Culqi", "Roles para tu personal"]],
           ["Red de Sedes", "199", "Multi-sede + reportes", ["Todo lo de Gestión Total", "Sedes ilimitadas", "Reportes y metas globales", "Soporte prioritario"]],
         ].map(([n, p, d, feats], i) => (
-          <div class={`reveal rounded-2xl border bg-white p-7 ${i === 1 ? "border-[#22C55E] shadow-[0_8px_30px_rgba(34,197,94,0.18)]" : "border-[#E7E5E4]"}`} data-reveal-delay={String(i * 100)}>
-            <h2 class="font-bold text-[#101613]">{n}</h2>
+            <div class={`reveal relative rounded-2xl border bg-white p-7 ${i === 1 ? "border-[#22C55E] shadow-[0_8px_30px_rgba(34,197,94,0.18)]" : "border-[#E7E5E4]"}`} data-reveal-delay={String(i * 100)}>
+              {i === 1 && (
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#16A34A] px-4 py-1 text-[11px] font-black tracking-wide whitespace-nowrap text-white uppercase">Más popular</span>
+              )}
+              <h2 class="font-bold text-[#101613]">{n}</h2>
             <p class="mt-2 text-4xl font-black text-[#101613]">S/ <span class="precio" data-men={p} data-anu={p === "0" ? "0" : String((parseFloat(p) * 0.8).toFixed(2))}>{p}</span><small class="text-sm font-normal text-[#8A938D]">/mes</small></p>
             <p class="mt-1 text-sm text-[#5B6660]">{d}</p>
             <ul class="mt-4 space-y-2 text-sm text-[#3F4A44]">

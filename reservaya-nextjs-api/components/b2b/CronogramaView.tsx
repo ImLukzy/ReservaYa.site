@@ -518,7 +518,7 @@ export function CronogramaView({
               <button
                 type="button"
                 onClick={() => abrirModal('nueva')}
-                className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] sm:flex-none"
               >
                 <Plus size={16} strokeWidth={2.5} /> Nueva reserva
               </button>
@@ -743,15 +743,15 @@ export function CronogramaView({
   // Vista Mes
   function renderVistaMes() {
     return (
-      <div className="mt-3 overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
-        <div className="grid grid-cols-7 border-b border-[#E7E5E4] bg-[#FAFAF9]">
+      <div className="mt-3 overflow-x-auto rounded-2xl border border-[#E7E5E4] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+        <div className="grid min-w-[560px] grid-cols-7 border-b border-[#E7E5E4] bg-[#FAFAF9]">
           {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => (
             <p key={d} className="py-2 text-center text-[11px] font-bold tracking-wide text-[#64748B] uppercase">
               {d}
             </p>
           ))}
         </div>
-        <div className="grid grid-cols-7">
+        <div className="grid min-w-[560px] grid-cols-7">
           {mesGrid.map((d) => {
             const lista = porDia.get(d) ?? [];
             const esOtroMes = d.slice(0, 7) !== fecha.slice(0, 7);
@@ -1007,12 +1007,12 @@ export function CronogramaView({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">◔ CRONOGRAMA</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Calendario operativo</h1>
+          <h1 className="mt-1 text-xl font-bold tracking-tight text-[#0F172A] sm:text-[28px]">Calendario operativo</h1>
           <p className="text-sm text-[#64748B]">
             Ve la ocupación por día, semana y mes. Toca un bloque para gestionarlo.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           <a
             href="/admin/ayuda"
             aria-label="Ayuda"
@@ -1031,7 +1031,7 @@ export function CronogramaView({
           <button
             type="button"
             onClick={() => abrirModal('bloqueo')}
-            className="flex items-center gap-1.5 rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] transition hover:border-[#F97316] hover:text-[#C2410C]"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] transition hover:border-[#F97316] hover:text-[#C2410C] sm:flex-none"
           >
             <Ban size={16} strokeWidth={2} /> Bloquear horario
           </button>

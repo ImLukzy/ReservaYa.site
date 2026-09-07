@@ -55,7 +55,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
             </div>
             <div>
               <p class="mb-1.5 text-[11px] font-bold tracking-wider text-[#8A938D]">GÉNERO <span class="font-normal normal-case">· opcional</span></p>
-              <div id="rg-genero" class="grid grid-cols-3 gap-2">
+              <div id="rg-genero" class="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 {["Masculino", "Femenino", "Prefiero no decir"].map((g, i) => (
                   <button type="button" data-g={g} class={`gen rounded-xl border px-2 py-2.5 text-[13px] font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#F0FDF4] text-[#15803D]" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`}>{g}</button>
                 ))}

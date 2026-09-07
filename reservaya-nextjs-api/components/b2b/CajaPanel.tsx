@@ -772,7 +772,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
           <form action={guardarMovimientoSimple}>
             <label className={labelCls} htmlFor="mov-desc">Descripción</label>
             <input id="mov-desc" name="descripcion" required maxLength={120} placeholder="Ej. Compra de gaseosas" className={inputCls} />
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className={labelCls} htmlFor="mov-monto">Monto (S/)</label>
                 <input id="mov-monto" name="monto" type="number" min="0.01" step="0.01" required placeholder="0.00" className={inputCls} />
@@ -798,7 +798,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
           <form action={guardarProducto}>
             <label className={labelCls} htmlFor="prod-nombre">Nombre</label>
             <input id="prod-nombre" name="nombre" required maxLength={80} defaultValue={modalProd.edit?.nombre ?? ''} placeholder="Ej. Agua 600ml" className={inputCls} />
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className={labelCls} htmlFor="prod-cat">Categoría</label>
                 <select id="prod-cat" name="categoria" className={inputCls} defaultValue={modalProd.edit?.categoria ?? 'SNACK'}>

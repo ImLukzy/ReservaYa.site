@@ -25,7 +25,11 @@ const torneos = [
         {torneos.map((t) => (
           <article class="overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
             <div class="relative bg-gradient-to-b from-[#0A3D22] to-[#060A08] p-5 pb-8 text-center">
-              <span class="absolute top-3 left-3 rounded-full bg-[#DCFCE7] px-3 py-1 text-[11px] font-bold text-[#15803D]">Inscripciones abiertas</span>
+              {t.inscritos >= 8 ? (
+                <span class="absolute top-3 left-3 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white/80">Cupo lleno</span>
+              ) : (
+                <span class="absolute top-3 left-3 rounded-full bg-[#DCFCE7] px-3 py-1 text-[11px] font-bold text-[#15803D]">Inscripciones abiertas</span>
+              )}
               <p class="mt-6 text-6xl text-white/90">🏆</p>
               <h2 class="mt-3 text-lg font-black tracking-wide text-white">{t.nombre}</h2>
             </div>
@@ -39,7 +43,11 @@ const torneos = [
             </div>
             <div class="flex items-center justify-between border-t border-gray-100 bg-[#FAFAF9] p-4">
               <p class="text-lg font-black text-[#101613]">{t.precio} <small class="text-xs font-normal text-[#8A938D]">{t.por}</small></p>
-              <button type="button" data-torneo={t.nombre} class="inscribir btn-press rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]">Inscribirse →</button>
+              {t.inscritos >= 8 ? (
+                <button type="button" disabled class="rounded-xl bg-[#EDEEEC] px-4 py-2 text-sm font-bold text-[#8A938D]">Lleno</button>
+              ) : (
+                <button type="button" data-torneo={t.nombre} class="inscribir btn-press rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]">Inscribirse →</button>
+              )}
             </div>
           </article>
         ))}

@@ -49,7 +49,7 @@ const owners = [
         <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4ADE80] opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-[#4ADE80]"></span></span>
         Todo el Perú · Canchas disponibles ahora
       </span>
-      <h1 class="text-shadow-hero mt-7 max-w-3xl font-black leading-[0.93] tracking-tight text-white [font-family:'Poppins','Inter',sans-serif] text-[clamp(3.8rem,10vw,8rem)]">
+      <h1 class="text-shadow-hero mt-7 max-w-3xl font-black leading-[0.93] tracking-tight text-white text-[clamp(2.9rem,10vw,8rem)]">
         Busca.<br />Reserva.<br /><span class="text-glow-green text-[#4ADE80]">Ya</span><span class="text-white">.</span>
       </h1>
       <p class="text-shadow-hero mt-6 max-w-md text-lg leading-relaxed text-white/80 md:text-xl">
@@ -87,7 +87,7 @@ const owners = [
 
   <!-- ============ CINTA DE DISTRITOS (carrusel infinito) ============ -->
   <div class="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-y border-[#22C55E]/20 bg-[#060A08] py-2">
-    <div class="flex w-max will-change-transform" id="cities-marquee" data-marquee data-speed="90" data-dir="1">
+    <div class="flex w-max will-change-transform" id="cities-marquee" data-marquee data-speed="90" data-dir="1" data-hover="never">
       {[...cities, ...cities].map((c, i) => (
         <span class={`mr-2 whitespace-nowrap px-5 py-2 text-sm font-black tracking-wider ${i%2===0 ? "bg-white text-black" : "bg-[#0B120D] text-[#4ADE80]"} rounded-[2px]`}>{c}</span>
       ))}

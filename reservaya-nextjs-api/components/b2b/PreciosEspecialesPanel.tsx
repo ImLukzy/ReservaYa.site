@@ -204,7 +204,7 @@ export function PreciosEspecialesPanel() {
             />
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div>
               <label htmlFor="regla-desde" className={labelCls}>Desde</label>
               <input
@@ -281,7 +281,7 @@ export function PreciosEspecialesPanel() {
             <p className="mt-1.5 text-xs text-[#64748B]">Deja una franja vacía para mantener su precio normal.</p>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div>
               <label htmlFor="inicio-tarde" className={labelCls}>La tarde empieza</label>
               <input
@@ -382,7 +382,7 @@ export function PreciosEspecialesPanel() {
                       <Trash2 size={17} strokeWidth={1.85} />
                     </button>
                   </div>
-                  <div className="mt-3 grid grid-cols-3 gap-2">
+                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
                     {[
                       { t: `Día · hasta ${formatearHora(r.inicioTarde)}`, v: r.precioDia },
                       { t: `Tarde · hasta ${formatearHora(r.inicioNoche)}`, v: r.precioTarde },
