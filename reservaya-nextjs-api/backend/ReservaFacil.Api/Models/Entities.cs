@@ -316,3 +316,40 @@ public class HorarioOperativo
 
     public Complejo? Complejo { get; set; }
 }
+
+// Partido abierto publicado por un jugador (/completar-cuadro): otros
+// jugadores se anotan hasta llenar los cupos. Sin complejo asociado.
+public class PartidoAbierto
+{
+    public string Id { get; set; } = "";
+    public string OrganizadorId { get; set; } = "";
+    public string Titulo { get; set; } = "";
+    public string? Descripcion { get; set; }
+    public string Formato { get; set; } = "Fútbol 7";
+    public string Nivel { get; set; } = "Intermedio";
+    public int CuposTotales { get; set; }
+    public string Distrito { get; set; } = "";
+    public string Cancha { get; set; } = "";
+    public string? Superficie { get; set; }
+    public decimal Precio { get; set; }
+    public DateTime Fecha { get; set; }
+    public int DesdeMin { get; set; }
+    public int HastaMin { get; set; }
+    public string? FotoUrl { get; set; }
+    public DateTime CreadoEn { get; set; }
+
+    public Usuario? Organizador { get; set; }
+    public List<AnotacionPartido> Anotaciones { get; set; } = new();
+}
+
+// Un jugador anotado a un partido abierto (una sola vez por partido).
+public class AnotacionPartido
+{
+    public string Id { get; set; } = "";
+    public string PartidoId { get; set; } = "";
+    public string UsuarioId { get; set; } = "";
+    public DateTime CreadoEn { get; set; }
+
+    public PartidoAbierto? Partido { get; set; }
+    public Usuario? Usuario { get; set; }
+}
