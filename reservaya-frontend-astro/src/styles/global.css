@@ -523,17 +523,17 @@ a[class*="border"]:active {
   background: #22C55E;
 }
 
-/* Hero: ken burns + transiciones suaves */
+/* Hero: ken burns continuo (efecto video) + transiciones suaves */
 .hero-bg {
-  transition: opacity 1.4s ease;
+  transition: opacity 1.4s ease, transform 7s ease;
   transform: scale(1.02);
 }
 .hero-bg.is-active {
-  animation: kenburns 8s ease-out forwards;
+  animation: kenburns 22s ease-in-out infinite alternate;
 }
 @keyframes kenburns {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.1); }
+  from { transform: scale(1.02) translate(0, 0); }
+  to { transform: scale(1.13) translate(-1.5%, 1%); }
 }
 
 .hero-progress {

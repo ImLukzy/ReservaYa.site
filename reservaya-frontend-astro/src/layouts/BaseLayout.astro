@@ -13,7 +13,6 @@ interface Props {
   description?: string;
   image?: string;
   announcement?: string | null;
-  announcementBadge?: string | null;
   robots?: string;
 }
 
@@ -22,7 +21,6 @@ const {
   description = "Reserva tu cancha deportiva de forma rápida y sencilla",
   image = "/og-default.png",
   announcement = "⚽ Crea tu carné de jugador estilo FIFA y compártelo con tus causas",
-  announcementBadge = "",
   robots = "index, follow"
 } = Astro.props;
 
@@ -81,8 +79,7 @@ const currentPath = Astro.url.pathname;
 const showLoginModal = currentPath !== "/login";
 const showRegisterModal = currentPath !== "/register";
 const navItems = [
-  { href: "/#como-funciona", label: "Cómo funciona", tone: "white" },
-  { href: "/canchas", label: "Canchas", tone: "white" },
+  { href: "/canchas", label: "Buscar canchas", tone: "white" },
   { href: "/completar-cuadro", label: "Partidos", tone: "white", icon: "◔" },
   { href: "/sortear", label: "Armar equipos", tone: "green", icon: "⨯" },
   { href: "/torneos", label: "Torneos", tone: "yellow", icon: "♛" },
@@ -143,6 +140,28 @@ const navItems = [
     href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
   />
   <style is:global>
+    /* Carrusel de anuncios: slides apilados, fundido suave al rotar. */
+    /* El color va explícito: la regla base `span` de global.css los
+       pintaría de gris si solo heredaran. */
+    #announcement-bar .ann-text {
+      color: #fff;
+    }
+    .ann-slide {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      pointer-events: none;
+    }
+    .ann-slide.ann-on {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ann-slide { transition: none; }
+    }
+
     #desktop-auth-actions,
     #desktop-user-actions {
       display: none;
@@ -227,17 +246,36 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
       <div
         id="announcement-bar"
         class="sticky top-0 z-50 w-full flex items-center justify-center px-2 md:px-0 min-h-[40px]"
-        style="will-change:transform; background: linear-gradient(90deg, #0A2E1F, #14532D);"
+        style="will-change:transform; background: linear-gradient(90deg, #04140A, #14532D 55%, #04140A);"
         role="status"
         aria-live="polite"
       >
-        <div class="relative flex items-center justify-center w-full max-w-full py-1.5">
-          <span class="mx-auto text-white text-[13px] md:text-sm font-medium tracking-tight select-none text-center px-10">
-            {announcement}
-            {announcementBadge && (
-              <span class="ml-2 inline-block rounded-full border border-[#4ADE80]/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#4ADE80]">{announcementBadge}</span>
-            )}
-          </span>
+        <div class="relative flex items-center w-full max-w-full py-1.5">
+          <div class="absolute left-2 md:left-6 flex items-center gap-1.5" role="tablist" aria-label="Anuncios">
+            {[0, 1, 2, 3].map((i) => (
+              <button type="button" role="tab" data-ann-dot={i} aria-label={`Ver anuncio ${i + 1}`} class={`ann-dot h-1.5 rounded-full transition-all ${i === 0 ? "w-4 bg-[#4ADE80]" : "w-1.5 bg-white/30 hover:bg-white/60"}`}></button>
+            ))}
+          </div>
+          <div class="mx-auto grid w-full max-w-full px-14 text-center md:px-20">
+            <span class="ann-slide ann-on flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="false">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00D2FF" d="M4 3.5v17l9.5-8.5z"/><path fill="#FFE000" d="M4 3.5l9.5 8.5 3-2.7z"/><path fill="#FF3A44" d="M4 20.5l9.5-8.5 3 2.7z"/><path fill="#00F076" d="M16.5 9.3l3-2.7-3-2.7zM16.5 14.7l3 2.7-3 2.7z"/></svg>
+              <span class="ann-text">ReservaYa ya está en Google Play — Descarga la app gratis</span>
+              <span class="shrink-0 rounded-full border border-[#4ADE80]/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#4ADE80]">Nuevo</span>
+            </span>
+            <span class="ann-slide flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="true">
+              <span class="shrink-0 font-bold text-[#4ADE80]" aria-hidden="true">⨯</span>
+              <span class="ann-text">Arma equipos parejos — ¿nadie quiere elegir? Sortéalos gratis</span>
+            </span>
+            <span class="ann-slide flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="true">
+              <span class="shrink-0 font-bold text-[#4ADE80]" aria-hidden="true">✦</span>
+              <span class="ann-text">Crea tu carné de jugador estilo FIFA y compártelo con tus causas</span>
+            </span>
+            <span class="ann-slide flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="true">
+              <svg class="h-4 w-4 shrink-0 text-[#4ADE80]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg>
+              <span class="ann-text">Ayúdanos a crecer — Síguenos en Instagram</span>
+              <a href="https://www.instagram.com/reservaya.pe" target="_blank" rel="noopener" class="shrink-0 rounded-full border border-[#4ADE80]/50 px-2.5 py-0.5 text-[11px] font-bold text-[#4ADE80] transition hover:bg-[#4ADE80]/10">@reservaya.pe</a>
+            </span>
+          </div>
           <button
             id="announcement-close"
             aria-label="Cerrar anuncio"
@@ -385,20 +423,65 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
 
   <Footer />
 
-  <script is:inline>
-    import './scripts/theme.ts';
+  <script>
+    import '../scripts/theme.ts';
+  </script>
+  <script>
+    import '../scripts/menu.ts';
+  </script>
+  <script>
+    import '../scripts/reveal.ts';
+  </script>
+  <script>
+    import '../scripts/motion.ts';
+  </script>
+  <script>
+    import '../scripts/smooth-wheel.ts';
   </script>
   <script is:inline>
-    import './scripts/menu.ts';
-  </script>
-  <script is:inline>
-    import './scripts/reveal.ts';
-  </script>
-  <script is:inline>
-    import './scripts/motion.ts';
-  </script>
-  <script is:inline>
-    import './scripts/smooth-wheel.ts';
+    // Carrusel de anuncios: rota solo cada 5s; los puntitos saltan a cada mensaje.
+    (function () {
+      var bar = document.getElementById("announcement-bar");
+      if (!bar) return;
+      var slides = Array.prototype.slice.call(bar.querySelectorAll(".ann-slide"));
+      var dots = Array.prototype.slice.call(bar.querySelectorAll(".ann-dot"));
+      if (!slides.length) return;
+      var KEY = "announcement-hidden:rotativo-v1";
+      try {
+        var raw = localStorage.getItem(KEY);
+        if (raw) {
+          var saved = JSON.parse(raw);
+          if (Date.now() - saved.t < 7 * 24 * 60 * 60 * 1000) { bar.remove(); return; }
+          localStorage.removeItem(KEY);
+        }
+      } catch (e) {}
+      var i = 0;
+      var timer = null;
+      function show(n) {
+        i = (n + slides.length) % slides.length;
+        slides.forEach(function (s, k) {
+          var on = k === i;
+          s.classList.toggle("ann-on", on);
+          s.setAttribute("aria-hidden", on ? "false" : "true");
+        });
+        dots.forEach(function (d, k) {
+          var on = k === i;
+          d.className = "ann-dot h-1.5 rounded-full transition-all " + (on ? "w-4 bg-[#4ADE80]" : "w-1.5 bg-white/30 hover:bg-white/60");
+          d.setAttribute("aria-selected", on ? "true" : "false");
+        });
+      }
+      dots.forEach(function (d, k) {
+        d.addEventListener("click", function () { show(k); });
+      });
+      var close = document.getElementById("announcement-close");
+      if (close) close.addEventListener("click", function () {
+        try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now() })); } catch (e) {}
+        if (timer) clearInterval(timer);
+        bar.remove();
+      });
+      show(0);
+      timer = setInterval(function () { if (!document.hidden) show(i + 1); }, 5000);
+    })();
   </script>
   <script is:inline>
     // Motor reveal en línea (respaldo garantizado, JS plano).
@@ -566,9 +649,6 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
         }, 4000);
       })();
     })();
-  </script>
-  <script is:inline>
-    import './scripts/announcement.ts';
   </script>
   <script is:inline define:vars={{ apiUrl }}>
     const authApiUrl = apiUrl.replace(/\/$/, "");
