@@ -27,7 +27,6 @@ const MODULOS_DUENO: readonly string[] = [
   'metas',
   'configuracion',
   'novedades',
-  'ai',
   'clientes',
   'horarios',
 ];

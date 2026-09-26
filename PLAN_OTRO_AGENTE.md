@@ -192,7 +192,13 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | Extra: contraste AA de CTA verdes (landing) | ✅ | 74 superficies verdes con texto blanco (2.28–3.30:1) → texto #060C08 (8.66 / 5.99:1). 0/480 nodos < 4.5:1 en reposo y 0 en hover (116 controles) (spec 13). Panel → spec 14 |
 | Extra: contraste AA de CTA verdes (panel + login) | ✅ | 45 cadenas + `active` de `Button` + `CronogramaView` + `.btn-accent` → texto #060C08. 0/204 nodos < 4.5:1 y 0 en hover/active (64 controles, 72 vistas, 4 roles) (spec 14) |
 | BLOQUEO-API #1: recuperar contraseña | ✅ | `forgot-password` + `reset-password` en la API (token HMAC sin estado, 30 min, un solo uso, `TokenVersion++` cierra sesiones, Resend) sin migraciones; `/reset-password` en Astro y enlace en el login del panel. B2 16/16, F2 18/18, envío real por Resend OK (spec 15) |
-| BLOQUEO-API #2: género sin persistencia | ✅ | Opción A: se retira el campo de `register.astro`, `jugador/perfil.astro` y `ConfigPanel.tsx`, y se purga el `genero` viejo de `localStorage`. Sin migraciones ni cambios en la API (spec 16). Candidata a spec 17: perfil del panel (PII en `localStorage` y mensaje falso tras un 400) |
+| BLOQUEO-API #2: género sin persistencia | ✅ | Opción A: se retira el campo de `register.astro`, `jugador/perfil.astro` y `ConfigPanel.tsx`, y se purga el `genero` viejo de `localStorage`. Sin migraciones ni cambios en la API (spec 16). El perfil del panel (PII en `localStorage` y mensaje falso tras un 400) pasa a la spec 19 |
+| Extra: scroll de la rueda con retardo | ✅ | Se elimina `smooth-wheel.ts` (secuestraba `wheel` con un LERP de 0.075 y chocaba con `scroll-behavior: smooth`). Latencia de 450-1017 ms → 13-30 ms; p95 de frame 10 ms, 0 long tasks (spec 17) |
+| Rediseño 1/5: retirar la IA y lo redundante | ✅ | IA del panel, `B2BModulePage`, modales inalcanzables y blog de plantilla eliminados; −26.5 MB de imágenes; 34 clases CSS muertas (24 en la landing y 10 en el panel) (spec 18) |
+| Rediseño 2/5: botones y conexiones | ⏳ | `PUT` de resultado de torneo con 404, perfil del panel, WhatsApp falso, campanas sin backend, «Ayuda», «Tutoriales» y «Editar perfil» mudos (spec 19) |
+| Rediseño 3/5: sistema de diseño + landing | ⏳ | «Tablero de cancha»: tokens, Barlow, tablero real de canchas libres, sin datos inventados (spec 20) |
+| Rediseño 4/5: panel | ⏳ | Spec 21, tras la 20 |
+| Rediseño 5/5: unificar el área del jugador | ⏳ | Spec 22, con decisión aparte (landing pública; lo que requiere sesión, en el panel) |
 
 ⛔ **BLOQUEO-API**
 - ~~`POST /api/auth/forgot-password` no existe~~ → resuelto en la spec 15 (rama `agents/backend-password-reset`).
