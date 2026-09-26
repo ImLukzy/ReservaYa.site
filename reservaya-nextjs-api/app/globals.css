@@ -141,7 +141,7 @@ a:focus-visible {
 /* Botón acento con micro-interacción universal */
 .btn-accent {
   background: #22C55E;
-  color: #fff;
+  color: #060C08;
   transition: all 0.15s;
 }
 

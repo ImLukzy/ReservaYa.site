@@ -22,7 +22,7 @@ export const card =
   'rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]';
 
 export const btnPrimary =
-  'rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-[0_4px_14px_rgba(34,197,94,0.4)] active:scale-[0.98]';
+  'rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-[0_4px_14px_rgba(34,197,94,0.4)] active:scale-[0.98]';
 
 export const btnDark =
   'rounded-xl bg-[#060C08] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#0A1A11] active:scale-[0.98]';

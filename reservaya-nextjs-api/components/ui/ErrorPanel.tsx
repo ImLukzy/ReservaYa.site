@@ -27,7 +27,7 @@ export function ErrorPanel({
       <button
         type="button"
         onClick={reintentar}
-        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A]"
+        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
       >
         <RotateCw className="h-4 w-4" aria-hidden="true" /> Reintentar
       </button>

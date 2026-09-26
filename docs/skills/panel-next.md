@@ -10,3 +10,4 @@
 6. **Efectos (lint `react-hooks/set-state-in-effect`):** no llamar `setState` síncrono en el cuerpo de `useEffect`; derivar en render, usar `key` para resetear, o setear dentro del callback async.
 7. **Permisos:** matriz en `lib/permissions.ts`; si falta un dato de otra sede es `BLOQUEO-API`, no workaround.
 8. **Verificación:** `npm run typecheck` + `npm run lint` (0 errores) + `npm run build` si se tocan rutas; `npm run db:check` antes de commit.
+9. **Estilo:** sobre verde sólido (`#22C55E`/`#16A34A`) el texto va en `#060C08`, nunca blanco; no usar `active:bg-[#15803D]` con texto oscuro (3.94:1) (spec 14).

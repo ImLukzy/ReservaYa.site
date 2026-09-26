@@ -220,7 +220,7 @@ export function ResenasPanel() {
               action={
                 <a
                   href="/admin/complejos"
-                  className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                  className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
                 >
                   Compartir mi página
                 </a>
@@ -306,7 +306,7 @@ export function ResenasPanel() {
               <button
                 type="submit"
                 disabled={enviando || !texto.trim()}
-                className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A] disabled:opacity-50"
+                className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A] disabled:opacity-50"
               >
                 {enviando ? 'Publicando…' : 'Publicar respuesta'}
               </button>

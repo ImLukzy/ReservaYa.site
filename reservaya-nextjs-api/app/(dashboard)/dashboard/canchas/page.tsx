@@ -195,7 +195,7 @@ export default async function CanchasPage({
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="submit"
-            className="rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A]"
+            className="rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
           >
             🔍 Buscar canchas
           </button>

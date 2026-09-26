@@ -262,7 +262,7 @@ export function ReservasPanel({
           <button
             type="button"
             onClick={abrirModal}
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
           >
             <Plus size={18} strokeWidth={2.5} /> Nueva reserva
           </button>
@@ -332,7 +332,7 @@ export function ReservasPanel({
               <button
                 type="button"
                 onClick={abrirModal}
-                className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+                className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
               >
                 <Plus size={16} strokeWidth={2.5} /> Nueva reserva
               </button>
@@ -376,7 +376,7 @@ export function ReservasPanel({
                         type="button"
                         disabled={ocupada}
                         onClick={() => cambiarEstado(r.id, 'CONFIRMADA')}
-                        className="rounded-xl bg-[#22C55E] px-3.5 py-2 text-xs font-bold text-white transition-all hover:bg-[#16A34A] disabled:opacity-60"
+                        className="rounded-xl bg-[#22C55E] px-3.5 py-2 text-xs font-bold text-[#060C08] transition-all hover:bg-[#16A34A] disabled:opacity-60"
                       >
                         {ocupada ? 'Guardando…' : 'Confirmar'}
                       </button>
@@ -530,7 +530,7 @@ export function ReservasPanel({
                 type="button"
                 onClick={crearReserva}
                 disabled={guardando}
-                className="flex-1 rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] disabled:opacity-60"
+                className="flex-1 rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] disabled:opacity-60"
               >
                 {guardando ? 'Guardando…' : 'Guardar reserva'}
               </button>

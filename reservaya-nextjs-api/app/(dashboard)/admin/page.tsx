@@ -106,7 +106,7 @@ export default async function AdminPage() {
           </button>
           <Link
             href="/admin/agenda"
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
           >
             <Plus size={18} strokeWidth={2.5} /> Reserva manual
           </Link>
@@ -136,7 +136,7 @@ export default async function AdminPage() {
           href="https://wa.me/51907425900"
           target="_blank"
           rel="noopener noreferrer"
-          className="relative shrink-0 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A]"
+          className="relative shrink-0 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
         >
           💬 Escríbenos · 907 425 900
         </a>

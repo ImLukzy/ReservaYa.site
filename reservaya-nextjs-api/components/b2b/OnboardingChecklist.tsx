@@ -32,7 +32,7 @@ export function OnboardingChecklist({ completados = [] }: { completados?: readon
                   className={cn(
                     'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2',
                     ok
-                      ? 'border-[#22C55E] bg-[#22C55E] text-white'
+                      ? 'border-[#22C55E] bg-[#22C55E] text-[#060C08]'
                       : 'border-[#E2E8F0] bg-white text-[#94A3B8]'
                   )}
                 >
@@ -47,7 +47,7 @@ export function OnboardingChecklist({ completados = [] }: { completados?: readon
                       className={cn(
                         'mt-2 inline-block rounded-lg px-4 py-2 text-sm font-bold transition-all active:scale-[0.98]',
                         current
-                          ? 'bg-[#22C55E] text-white hover:bg-[#16A34A] hover:shadow-md'
+                          ? 'bg-[#22C55E] text-[#060C08] hover:bg-[#16A34A] hover:shadow-md'
                           : 'border border-[#E2E8F0] text-[#475569] hover:text-[#0F172A]'
                       )}
                     >

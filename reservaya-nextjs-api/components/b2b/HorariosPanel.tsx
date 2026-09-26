@@ -236,7 +236,7 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
         type="button"
         onClick={guardar}
         disabled={guardando || !complejoId}
-        className="mt-4 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A] disabled:opacity-50"
+        className="mt-4 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A] disabled:opacity-50"
       >
         {guardando ? 'Guardando…' : 'Guardar horario'}
       </button>

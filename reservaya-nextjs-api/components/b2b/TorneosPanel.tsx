@@ -316,7 +316,7 @@ export function TorneosPanel() {
           <button
             type="button"
             onClick={() => setModalCrear(true)}
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
           >
             <Plus size={18} strokeWidth={2.5} /> Crear torneo
           </button>
@@ -355,7 +355,7 @@ export function TorneosPanel() {
                 <button
                   type="button"
                   onClick={() => setModalCrear(true)}
-                  className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                  className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
                 >
                   + Crear mi primer torneo
                 </button>
@@ -424,7 +424,7 @@ export function TorneosPanel() {
               <label className="block text-sm font-semibold text-[#0F172A]">Inicio<input type="date" value={fTorneo.fechaInicio} onChange={(e) => setFTorneo((f) => ({ ...f, fechaInicio: e.target.value }))} className={inputCls} /></label>
               <label className="block text-sm font-semibold text-[#0F172A]">Fin<input type="date" value={fTorneo.fechaFin} onChange={(e) => setFTorneo((f) => ({ ...f, fechaFin: e.target.value }))} className={inputCls} /></label>
             </div>
-            <button type="submit" disabled={ocupado} className="mt-5 w-full rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-white hover:bg-[#16A34A] disabled:opacity-50">
+            <button type="submit" disabled={ocupado} className="mt-5 w-full rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A] disabled:opacity-50">
               {ocupado ? 'Creando…' : 'Crear torneo'}
             </button>
             <p className="mt-3 font-mono text-[11px] text-[#94A3B8]">POST /api/torneos</p>
@@ -481,7 +481,7 @@ export function TorneosPanel() {
                   <p className="text-sm font-bold text-[#0F172A]">
                     Inscripciones · {detalle.inscritos}{detalle.cupo > 0 ? `/${detalle.cupo}` : ''}
                   </p>
-                  <button type="button" onClick={() => setModalInscripcion(true)} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#16A34A]">
+                  <button type="button" onClick={() => setModalInscripcion(true)} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-[#060C08] hover:bg-[#16A34A]">
                     + Inscribir
                   </button>
                 </div>
@@ -503,7 +503,7 @@ export function TorneosPanel() {
               <div className="rounded-2xl border border-[#E7E5E4] bg-white p-4">
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm font-bold text-[#0F172A]">Fixture · {detalle.partidos.length} partidos</p>
-                  <button type="button" onClick={() => setModalPartido(true)} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#16A34A]">
+                  <button type="button" onClick={() => setModalPartido(true)} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-[#060C08] hover:bg-[#16A34A]">
                     + Partido
                   </button>
                 </div>
@@ -527,7 +527,7 @@ export function TorneosPanel() {
                             <input value={fResultado.gl} onChange={(e) => setFResultado((f) => (f ? { ...f, gl: e.target.value } : f))} type="number" min={0} aria-label="Goles local" className="w-16 rounded-lg border border-[#E7E5E4] px-2 py-1.5 text-sm" />
                             <span className="text-sm font-bold">–</span>
                             <input value={fResultado.gv} onChange={(e) => setFResultado((f) => (f ? { ...f, gv: e.target.value } : f))} type="number" min={0} aria-label="Goles visita" className="w-16 rounded-lg border border-[#E7E5E4] px-2 py-1.5 text-sm" />
-                            <button type="submit" disabled={ocupado} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
+                            <button type="submit" disabled={ocupado} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-[#060C08] disabled:opacity-50">
                               Guardar
                             </button>
                             <button type="button" onClick={() => setFResultado(null)} className="text-xs font-bold text-[#64748B]">
@@ -558,7 +558,7 @@ export function TorneosPanel() {
             <label className="mt-3 block text-sm font-semibold text-[#0F172A]">Responsable (opcional)<input value={fInsc.responsable} onChange={(e) => setFInsc((f) => ({ ...f, responsable: e.target.value }))} placeholder="Ej. 999 888 777" className={inputCls} /></label>
             <div className="mt-4 flex gap-2">
               <button type="button" onClick={() => setModalInscripcion(false)} className="flex-1 rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold">Cancelar</button>
-              <button type="submit" disabled={ocupado} className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white disabled:opacity-50">Inscribir</button>
+              <button type="submit" disabled={ocupado} className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-[#060C08] disabled:opacity-50">Inscribir</button>
             </div>
           </form>
         </div>
@@ -574,7 +574,7 @@ export function TorneosPanel() {
             <label className="mt-3 block text-sm font-semibold text-[#0F172A]">Fecha (opcional)<input type="date" value={fPartido.fecha} onChange={(e) => setFPartido((f) => ({ ...f, fecha: e.target.value }))} className={inputCls} /></label>
             <div className="mt-4 flex gap-2">
               <button type="button" onClick={() => setModalPartido(false)} className="flex-1 rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold">Cancelar</button>
-              <button type="submit" disabled={ocupado} className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white disabled:opacity-50">Agregar</button>
+              <button type="submit" disabled={ocupado} className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-[#060C08] disabled:opacity-50">Agregar</button>
             </div>
           </form>
         </div>

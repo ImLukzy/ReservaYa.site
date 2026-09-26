@@ -55,7 +55,7 @@ const inputCls =
   'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
 const labelCls = 'mb-1 block text-xs font-bold text-[#475569]';
 const btnPrimary =
-  'rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50';
+  'rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50';
 const btnGhost =
   'rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] transition-colors hover:border-[#22C55E]';
 

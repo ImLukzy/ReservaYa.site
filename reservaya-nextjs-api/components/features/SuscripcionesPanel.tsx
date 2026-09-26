@@ -109,7 +109,7 @@ export function SuscripcionesPanel({ iniciales }: { iniciales: Suscripcion[] }) 
                             type="button"
                             disabled={accionId === s.id}
                             onClick={() => accion(s.id, 'aprobar')}
-                            className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-white transition hover:bg-[#16A34A] disabled:opacity-50"
+                            className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-[#060C08] transition hover:bg-[#16A34A] disabled:opacity-50"
                           >
                             Aprobar
                           </button>
