@@ -18,7 +18,7 @@ const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:50
       </h1>
 
       <div class="mt-5 flex gap-2" role="tablist" aria-label="Mis partidos">
-        <button id="tab-organizo" type="button" role="tab" aria-selected="true" class="rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-white transition">Organizo</button>
+        <button id="tab-organizo" type="button" role="tab" aria-selected="true" class="rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-[#060C08] transition">Organizo</button>
         <button id="tab-anotado" type="button" role="tab" aria-selected="false" class="rounded-xl border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-bold text-[#5B6660] transition hover:border-[#22C55E]">Me anoté</button>
       </div>
 
@@ -31,13 +31,13 @@ const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:50
       <div id="mp-vacio-organizo" class="hidden mt-5 rounded-2xl border border-[#E7E5E4] bg-white px-6 py-14 text-center shadow-sm">
         <span class="mx-auto flex h-12 w-12 items-center justify-center text-3xl text-[#CBD5E1]" aria-hidden="true">♛</span>
         <p class="mt-4 font-bold text-[#8A938D]">Aún no organizas ningún partido</p>
-        <a href="/completar-cuadro?publicar=1" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]">Publicar un partido</a>
+        <a href="/completar-cuadro?publicar=1" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Publicar un partido</a>
       </div>
 
       <div id="mp-vacio-anotado" class="hidden mt-5 rounded-2xl border border-[#E7E5E4] bg-white px-6 py-14 text-center shadow-sm">
         <span class="mx-auto flex h-12 w-12 items-center justify-center text-3xl text-[#CBD5E1]" aria-hidden="true">▦</span>
         <p class="mt-4 font-bold text-[#8A938D]">No te has anotado a ningún partido</p>
-        <a href="/completar-cuadro" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#15803D]">Buscar partidos</a>
+        <a href="/completar-cuadro" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Buscar partidos</a>
       </div>
 
       <p id="mp-error" class="hidden mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
@@ -74,7 +74,7 @@ const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:50
   }
 
   function pintarTabs() {
-    var on = "rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-white transition";
+    var on = "rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-[#060C08] transition";
     var off = "rounded-xl border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-bold text-[#5B6660] transition hover:border-[#22C55E]";
     tabO.className = tab === "organizo" ? on : off;
     tabA.className = tab === "anotado" ? on : off;

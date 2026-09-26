@@ -17,8 +17,8 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
         <p class="mt-4 max-w-md leading-relaxed text-[#5B6660]">Y vamos por toda Latinoamérica. Reserva, arma tu equipo y no te quedes sin jugar.</p>
         <div class="mt-6 flex items-center gap-3">
           <div class="flex -space-x-2">
-            {[["J", "#16A34A"], ["M", "#2563EB"], ["A", "#F59E0B"], ["S", "#EC4899"], ["C", "#8B5CF6"]].map(([l, c]) => (
-              <span class="flex h-9 w-9 items-center justify-center rounded-full text-xs font-black text-white ring-2 ring-[#F7F6F3]" style={`background:${c}`}>{l}</span>
+            {[["J", "#16A34A", "#060C08"], ["M", "#2563EB", "#fff"], ["A", "#F59E0B", "#fff"], ["S", "#EC4899", "#fff"], ["C", "#8B5CF6", "#fff"]].map(([l, c, t]) => (
+              <span class="flex h-9 w-9 items-center justify-center rounded-full text-xs font-black ring-2 ring-[#F7F6F3]" style={`background:${c};color:${t}`}>{l}</span>
             ))}
           </div>
           <div class="text-sm"><p class="font-bold text-[#101613]">+100 jugadores</p><p class="text-xs text-[#8A938D]">ya son parte de ReservaYa</p></div>
@@ -71,7 +71,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
               <p class="mt-1.5 text-[11px] text-[#8A938D]">Te lo sugerimos desde tu nombre — cámbialo si quieres.</p>
             </div>
             <p class="hidden text-sm font-semibold text-red-600" data-err></p>
-            <button id="to-step2" type="button" class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-white transition hover:bg-[#15803D]">Siguiente <span aria-hidden="true">→</span></button>
+            <button id="to-step2" type="button" class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-[#060C08] transition hover:bg-[#22C55E]">Siguiente <span aria-hidden="true">→</span></button>
           </div>
         </div>
 
@@ -101,7 +101,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
             <p class="hidden text-sm font-semibold text-red-600" data-err></p>
             <div class="flex gap-2">
               <button id="back-step1" type="button" class="rounded-xl border border-[#E7E5E4] bg-white px-5 py-3.5 text-sm font-bold text-[#3F4A44] transition hover:border-[#22C55E]">← Atrás</button>
-              <button id="rg-submit" type="button" class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-white transition hover:bg-[#15803D] disabled:opacity-60">Crear mi cuenta <span aria-hidden="true">→</span></button>
+              <button id="rg-submit" type="button" class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-[#060C08] transition hover:bg-[#22C55E] disabled:opacity-60">Crear mi cuenta <span aria-hidden="true">→</span></button>
             </div>
           </div>
         </div>
