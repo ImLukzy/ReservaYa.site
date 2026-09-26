@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Bell, ChevronRight, CircleHelp, HeartHandshake, Plus, Sparkles } from 'lucide-react';
+import { Bell, ChevronRight, CircleHelp, HeartHandshake, ListChecks, Plus } from 'lucide-react';
 import * as api from '@/lib/api';
 import type { DashboardAdmin } from '@/lib/api';
 import { getSession } from '@/lib/session';
@@ -148,7 +148,7 @@ export default async function AdminPage() {
         className="mt-3 flex items-center gap-3 rounded-xl border border-[#E7E5E4] bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.02)] transition hover:border-[#22C55E]"
       >
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#15803D]">
-          <Sparkles size={18} strokeWidth={1.85} />
+          <ListChecks size={18} strokeWidth={1.85} />
         </span>
         <span className="min-w-0 flex-1">
           <strong className="block text-sm font-bold text-[#101613]">
@@ -226,9 +226,9 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {/* Tu día + AI */}
-      <div className="mt-4 grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5 lg:col-span-2">
+      {/* Tu día */}
+      <div className="mt-4">
+        <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
           <p className="text-[11px] font-bold tracking-[0.14em] text-[#64748B]">TU DÍA DE HOY</p>
           <p className="mt-1 text-xl font-black text-[#0F172A]">
             {reservasHoy.length} <span className="text-sm font-semibold text-[#64748B]">reservas</span>
@@ -268,24 +268,6 @@ export default async function AdminPage() {
               <span className="h-2 w-2 rounded-full bg-[#E7E5E4]" /> Libre
             </span>
           </div>
-        </div>
-        <div className="relative overflow-hidden rounded-2xl bg-black p-6 text-center text-white">
-          <div className="pointer-events-none absolute -top-10 left-1/2 h-40 w-64 -translate-x-1/2 rounded-full bg-[#22C55E]/25 blur-3xl" />
-          <span className="rounded-full border border-[#22C55E]/40 px-2.5 py-1 text-[10px] font-bold tracking-wider text-[#4ADE80]">
-            ✨ PRÓXIMAMENTE
-          </span>
-          <p className="mt-3 text-2xl font-black">
-            Reserva<span className="text-[#4ADE80]">Ya</span> AI
-          </p>
-          <p className="mx-auto mt-2 max-w-[220px] text-xs text-white/55">
-            Pregúntale por tus números y te responde al toque.
-          </p>
-          <Link
-            href="/admin/reportes"
-            className="mt-5 block rounded-xl border border-white/15 py-2.5 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
-          >
-            Explorar reportes →
-          </Link>
         </div>
       </div>
 

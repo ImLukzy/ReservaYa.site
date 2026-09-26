@@ -1,8 +1,6 @@
 ---
 // Layout: BaseLayout
 import Footer from "../components/Footer.astro";
-import LoginForm from "../components/LoginForm.astro";
-import RegisterForm from "../components/RegisterForm.astro";
 
 import "../styles/tailwind.css";
 import "../styles/global.css";
@@ -79,8 +77,6 @@ const structuredData = [
   }
 ];
 const currentPath = Astro.url.pathname;
-const showLoginModal = currentPath !== "/login";
-const showRegisterModal = currentPath !== "/register";
 const navItems = [
   { href: "/canchas", label: "Buscar canchas", tone: "white" },
   { href: "/completar-cuadro", label: "Partidos", tone: "white", icon: "◔" },
@@ -396,34 +392,6 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
     <slot />
   </main>
 
-  {showLoginModal && (
-    <div id="login-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
-      <div data-login-modal-close class="modal-backdrop-enter absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
-      <div class="modal-card-enter relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
-        <button type="button" data-login-modal-close aria-label="Cerrar inicio de sesión" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">&times;</button>
-        <div class="text-center">
-          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background:linear-gradient(135deg,var(--accent-main),#211112);">🏟️</div>
-          <h2 id="login-modal-title" class="text-2xl font-bold tracking-tight" style="color:var(--text-main);">Inicia sesión</h2>
-          <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed" style="color:var(--text-muted);">Continúa para gestionar tus solicitudes y jugar confirmado.</p>
-        </div>
-        <div class="mt-7"><LoginForm /></div>
-      </div>
-    </div>
-  )}
-  {showRegisterModal && (
-    <div id="register-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="register-modal-title">
-      <div data-register-modal-close class="modal-backdrop-enter absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true"></div>
-      <div class="modal-card-enter relative z-10 max-h-[calc(100vh-4rem)] w-full max-w-[470px] overflow-y-auto rounded-2xl p-7 shadow-2xl md:p-9" style="background:var(--bg-card);border:1px solid var(--border-main);">
-        <button type="button" data-register-modal-close aria-label="Cerrar registro" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-xl transition hover:bg-[var(--bg-muted)]" style="color:var(--text-muted);">&times;</button>
-        <div class="text-center">
-          <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg" style="background:linear-gradient(135deg,var(--accent-main),#211112);">🏟️</div>
-          <h2 id="register-modal-title" class="text-2xl font-bold tracking-tight" style="color:var(--text-main);">Crea tu cuenta</h2>
-          <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed" style="color:var(--text-muted);">Regístrate para solicitar y administrar tus reservas.</p>
-        </div>
-        <div class="mt-7"><RegisterForm /></div>
-      </div>
-    </div>
-  )}
 
   <Footer />
 
@@ -438,9 +406,6 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   </script>
   <script>
     import '../scripts/motion.ts';
-  </script>
-  <script>
-    import '../scripts/smooth-wheel.ts';
   </script>
   <script is:inline>
     // Carrusel de anuncios: rota solo cada 5s; los puntitos saltan a cada mensaje.
@@ -813,62 +778,6 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
       }, { once: true });
     }
   </script>
-  {showLoginModal && <script>
-    const loginModal = document.getElementById("login-modal");
-    const loginTriggers = document.querySelectorAll("[data-login-modal-trigger]");
-    let loginReturnFocus: HTMLElement | null = null;
-    const closeLoginModal = () => {
-      if (!loginModal) return;
-      loginModal.classList.add("hidden");
-      loginModal.classList.remove("flex");
-      document.body.style.overflow = "";
-      loginReturnFocus?.focus();
-    };
-    const openLoginModal = (event: Event) => {
-      event.preventDefault();
-      if (!loginModal) return;
-      loginReturnFocus = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
-      loginModal.classList.remove("hidden");
-      loginModal.classList.add("flex");
-      document.body.style.overflow = "hidden";
-      loginModal.querySelector("input")?.focus();
-    };
-    loginTriggers.forEach((trigger) => trigger.addEventListener("click", openLoginModal));
-    loginModal?.querySelectorAll("[data-login-modal-close]").forEach((element) => {
-      element.addEventListener("click", closeLoginModal);
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeLoginModal();
-    });
-  </script>}
-  {showRegisterModal && <script>
-    const registerModal = document.getElementById("register-modal");
-    const registerTriggers = document.querySelectorAll("[data-register-modal-trigger]");
-    let registerReturnFocus: HTMLElement | null = null;
-    const closeRegisterModal = () => {
-      if (!registerModal) return;
-      registerModal.classList.add("hidden");
-      registerModal.classList.remove("flex");
-      document.body.style.overflow = "";
-      registerReturnFocus?.focus();
-    };
-    const openRegisterModal = (event: Event) => {
-      event.preventDefault();
-      if (!registerModal) return;
-      registerReturnFocus = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
-      registerModal.classList.remove("hidden");
-      registerModal.classList.add("flex");
-      document.body.style.overflow = "hidden";
-      registerModal.querySelector("input")?.focus();
-    };
-    registerTriggers.forEach((trigger) => trigger.addEventListener("click", openRegisterModal));
-    registerModal?.querySelectorAll("[data-register-modal-close]").forEach((element) => {
-      element.addEventListener("click", closeRegisterModal);
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeRegisterModal();
-    });
-  </script>}
   <script>
     const inboxEndpoint = document.body.dataset.inboxEndpoint || "";
     if (inboxEndpoint) {

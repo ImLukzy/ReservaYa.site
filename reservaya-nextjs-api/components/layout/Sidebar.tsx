@@ -12,7 +12,6 @@ import {
   CalendarClock,
   ScanLine,
   Wallet,
-  Sparkles,
   BarChart3,
   Target,
   TicketPercent,
@@ -71,7 +70,6 @@ const GROUPS_ADMIN: NavGroup[] = [
   {
     label: 'Análisis',
     items: [
-      { href: '/admin/ai', label: 'ReservaYa AI', icon: Sparkles },
       { href: '/admin/reportes', label: 'Reportes', icon: BarChart3 },
       { href: '/admin/metas', label: 'Metas', icon: Target },
     ],

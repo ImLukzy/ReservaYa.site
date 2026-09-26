@@ -11,13 +11,12 @@ decide disponibilidad, estados, totales y permisos.
 ## `src/` (estado vigente)
 | Carpeta | Contenido |
 |---|---|
-| `pages/` | 21 rutas: 19 `.astro` + `legal/privacy.md` y `legal/terms.md` (tabla abajo) |
-| `layouts/BaseLayout.astro` | Shell: header, barra rotativa, modales de login/registro, menú de sesión, SEO, GA |
-| `components/` | `Footer`, `LoginForm`, `RegisterForm` (modales del layout) |
-| `scripts/` | `menu`, `motion`, `reveal`, `smooth-wheel`, `theme` (TS procesado por Vite) |
+| `pages/` | 22 rutas: 20 `.astro` + `legal/privacy.md` y `legal/terms.md` (tabla abajo) |
+| `layouts/BaseLayout.astro` | Shell: header, barra rotativa, menú de sesión, SEO, GA. Login y registro viven solo en `/login` y `/register` (sin modales: spec 18) |
+| `components/` | `Footer` |
+| `scripts/` | `menu`, `motion`, `reveal`, `theme` (TS procesado por Vite). La rueda del ratón usa el scroll nativo: no interceptar `wheel` (spec 17) |
 | `styles/` | `global.css`, `motion.css`, `tailwind.css` |
-| `content/blog` + `content.config.ts` | Colección `blog` (Markdown) |
-| `assets/` | Imágenes importadas |
+| `assets/hero/` | Fondos del hero (`astro:assets`, spec 11) |
 
 ## Rutas
 | Ruta | Datos |
