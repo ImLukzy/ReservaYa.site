@@ -17,21 +17,32 @@ public class AuthController : ControllerBase
 {
     private const string DummyHash = "$2b$10$Qbvnz2V7d7r63v/L9yyl6uJW2VFsqnai64.tYwftiPeOwaWYOUTuu";
 
+    private const string EnlaceInvalido = "Enlace inválido o vencido";
+
     private readonly AppDbContext _db;
     private readonly JwtService _jwt;
     private readonly IRateLimiter _rateLimiter;
     private readonly ILogger<AuthController> _logger;
+    private readonly PasswordResetTokens _resetTokens;
+    private readonly PasswordResetOptions _resetOptions;
+    private readonly EmailQueue _emailQueue;
 
     public AuthController(
         AppDbContext db,
         JwtService jwt,
         IRateLimiter rateLimiter,
-        ILogger<AuthController> logger)
+        ILogger<AuthController> logger,
+        PasswordResetTokens resetTokens,
+        PasswordResetOptions resetOptions,
+        EmailQueue emailQueue)
     {
         _db = db;
         _jwt = jwt;
         _rateLimiter = rateLimiter;
         _logger = logger;
+        _resetTokens = resetTokens;
+        _resetOptions = resetOptions;
+        _emailQueue = emailQueue;
     }
 
     [HttpPost("login")]
@@ -167,6 +178,66 @@ public class AuthController : ControllerBase
         }
 
         Response.Cookies.Delete(JwtService.CookieName);
+        return Ok(new { ok = true });
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    {
+        var normalizedEmail = (request.Email ?? "").Trim().ToLowerInvariant();
+        if (normalizedEmail.Length > 254 || !System.Net.Mail.MailAddress.TryCreate(normalizedEmail, out _))
+            return BadRequest(new { error = "Escribe un correo válido" });
+
+        if (_rateLimiter.IsLimited($"forgot:{ClientIp()}:{normalizedEmail}", 5, TimeSpan.FromHours(1)) ||
+            _rateLimiter.IsLimited($"forgot:{ClientIp()}", 20, TimeSpan.FromHours(1)))
+            return StatusCode(429, new { error = "Demasiados intentos. Espera unos minutos" });
+
+        var usuario = await _db.Usuarios.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+
+        // Misma respuesta exista o no la cuenta; el envío va por la cola.
+        if (usuario is { Activo: true } && !string.IsNullOrEmpty(_resetOptions.ResetUrl))
+        {
+            var link = $"{_resetOptions.ResetUrl}#t={_resetTokens.Create(usuario)}";
+            if (!_emailQueue.Enqueue(PasswordResetEmail.Build(usuario.Nombre, usuario.Email, link)))
+                _logger.LogError("Cola de emails llena: no se encoló la recuperación de {UserId}", usuario.Id);
+        }
+
+        return Ok(new { ok = true });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+        if (_rateLimiter.IsLimited($"reset:{ClientIp()}", 10, TimeSpan.FromMinutes(15)))
+            return StatusCode(429, new { error = "Demasiados intentos. Espera unos minutos" });
+
+        var claims = _resetTokens.Read(request.Token ?? "");
+        if (claims is null)
+            return BadRequest(new { error = EnlaceInvalido });
+
+        if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 6)
+            return BadRequest(new { error = "La contraseña debe tener al menos 6 caracteres" });
+
+        var usuario = await _db.Usuarios.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == claims.UserId);
+        if (usuario is null || !usuario.Activo || usuario.TokenVersion != claims.TokenVersion ||
+            !PasswordResetTokens.SameFingerprint(usuario.Password, claims.PasswordFingerprint))
+            return BadRequest(new { error = EnlaceInvalido });
+
+        // Condicionado a TokenVersion y hash actuales: un segundo uso del mismo enlace
+        // (o uno en paralelo) no actualiza filas. TokenVersion+1 cierra todas las sesiones.
+        var nuevoHash = Bcrypt.HashPassword(request.Password, 10);
+        var filas = await _db.Usuarios
+            .Where(u => u.Id == usuario.Id && u.TokenVersion == claims.TokenVersion && u.Password == usuario.Password)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(u => u.Password, nuevoHash)
+                .SetProperty(u => u.TokenVersion, u => u.TokenVersion + 1));
+        if (filas == 0)
+            return BadRequest(new { error = EnlaceInvalido });
+
+        Response.Cookies.Delete(JwtService.CookieName);
+        _logger.LogInformation("Contraseña restablecida para el usuario {UserId}", usuario.Id);
         return Ok(new { ok = true });
     }
 

@@ -59,6 +59,10 @@ Guarda esas 4 claves: son tus logins de producción.
    | `DATABASE_URL` | URL **direct** de `reservaya-prod` + `?sslmode=require` |
    | `JWT_SECRET` | genera una con `openssl rand -base64 48` (**la misma** va a Vercel) |
    | `FRONTEND_ORIGIN` | `https://TU-PANEL.vercel.app,https://TU-LANDING.pages.dev` (se ajusta en el paso 5) |
+   | `EMAIL_PROVIDER` | `resend` (ya viene en `render.yaml`) |
+   | `RESEND_API_KEY` | API key de https://resend.com (Dashboard → API Keys) |
+   | `EMAIL_FROM` | `ReservaYa <no-reply@TU-DOMINIO>`; el dominio debe estar verificado en Resend (Domains → registros DNS) |
+   | `PASSWORD_RESET_URL` | `https://TU-LANDING.pages.dev/reset-password` |
 4. Deploy. Anota la URL: `https://reservaya-api-xxxx.onrender.com`.
 5. Prueba: `https://.../healthz` → `{"ok":true}` (la primera tarda ~1 min: cold start).
 

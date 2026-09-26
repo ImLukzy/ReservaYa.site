@@ -96,6 +96,14 @@ export default function LoginPage() {
               className="auth-input w-full px-4 py-3 rounded-lg focus:outline-none transition"
               placeholder="••••••••"
             />
+            <p className="mt-2 text-right">
+              <a
+                href={`${publicAppUrl.replace(/\/$/, '')}/forgot-password`}
+                className="auth-link text-sm font-medium hover:underline"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
+            </p>
           </div>
 
           <button
