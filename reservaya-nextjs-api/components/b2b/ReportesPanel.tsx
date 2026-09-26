@@ -178,7 +178,7 @@ export function ReportesPanel({
             onClick={exportarExcel}
             className="flex h-9 items-center gap-1.5 rounded-xl bg-[#0F172A] px-4 text-sm font-bold text-white transition-all hover:bg-black active:scale-[0.98]"
           >
-            <Download size={16} /> Exportar Excel
+            <Download size={16} /> Exportar CSV
           </button>
         </div>
       </div>

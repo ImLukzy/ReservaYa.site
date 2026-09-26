@@ -322,17 +322,6 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
               Registrarse
             </a>
           </div>
-          <div class="relative hidden md:block">
-            <button id="notif-button" type="button" aria-label="Notificaciones" aria-expanded="false" class="relative flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9"/></svg>
-              <span id="notif-dot" class="absolute top-1.5 right-1.5 hidden h-2 w-2 rounded-full bg-[#22C55E]"></span>
-            </button>
-            <div id="notif-panel" class="absolute right-0 top-11 hidden w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white text-left shadow-2xl">
-              <p class="border-b border-gray-100 px-4 py-3 text-sm font-bold text-gray-900">Notificaciones</p>
-              <div id="notif-list" class="max-h-64 overflow-y-auto px-4 py-6 text-center text-sm text-gray-500">No tienes avisos por ahora</div>
-              <a href={`${appUrl}/dashboard/reservas`} class="block border-t border-gray-100 px-4 py-3 text-center text-sm font-bold text-[#16A34A] hover:underline">Ver todas mis notificaciones</a>
-            </div>
-          </div>
           <div id="desktop-user-actions" class="auth-user relative items-center">
             <button id="desktop-user-button" type="button" class="flex items-center gap-2 rounded-full py-1 pr-1 pl-1 text-sm text-white" aria-label="Abrir menú de cuenta" aria-expanded="false">
               <span id="desktop-user-initials" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#22C55E] text-sm font-bold text-[#060C08]">U</span>
@@ -632,8 +621,6 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
     const mobileUserName = document.getElementById("mobile-user-name");
     const desktopUserMenu = document.getElementById("desktop-user-menu");
     const desktopUserButton = document.getElementById("desktop-user-button");
-    const notifButton = document.getElementById("notif-button");
-    const notifPanel = document.getElementById("notif-panel");
 
     const setAuthenticatedUser = (user) => {
       const name = user?.nombre?.trim() || "Mi cuenta";
@@ -666,21 +653,12 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
 
     desktopUserButton?.addEventListener("click", (e) => {
       e.stopPropagation();
-      notifPanel?.classList.add("hidden");
       const open = desktopUserMenu?.classList.toggle("hidden") === false;
       desktopUserButton.setAttribute("aria-expanded", String(open));
     });
 
-    notifButton?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      desktopUserMenu?.classList.add("hidden");
-      const open = notifPanel?.classList.toggle("hidden") === false;
-      notifButton.setAttribute("aria-expanded", String(open));
-    });
-
     document.addEventListener("click", () => {
       desktopUserMenu?.classList.add("hidden");
-      notifPanel?.classList.add("hidden");
     });
 
     const logout = async () => {

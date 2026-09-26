@@ -195,7 +195,7 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | BLOQUEO-API #2: género sin persistencia | ✅ | Opción A: se retira el campo de `register.astro`, `jugador/perfil.astro` y `ConfigPanel.tsx`, y se purga el `genero` viejo de `localStorage`. Sin migraciones ni cambios en la API (spec 16). El perfil del panel (PII en `localStorage` y mensaje falso tras un 400) pasa a la spec 19 |
 | Extra: scroll de la rueda con retardo | ✅ | Se elimina `smooth-wheel.ts` (secuestraba `wheel` con un LERP de 0.075 y chocaba con `scroll-behavior: smooth`). Latencia de 450-1017 ms → 13-30 ms; p95 de frame 10 ms, 0 long tasks (spec 17) |
 | Rediseño 1/5: retirar la IA y lo redundante | ✅ | IA del panel, `B2BModulePage`, modales inalcanzables y blog de plantilla eliminados; −26.5 MB de imágenes; 34 clases CSS muertas (24 en la landing y 10 en el panel) (spec 18) |
-| Rediseño 2/5: botones y conexiones | ⏳ | `PUT` de resultado de torneo con 404, perfil del panel, WhatsApp falso, campanas sin backend, «Ayuda», «Tutoriales» y «Editar perfil» mudos (spec 19) |
+| Rediseño 2/5: botones y conexiones | ✅ | Módulo Torneos alineado con la API (alta, estados, inscripción, partido y resultado); perfil y suscripción reales; WhatsApp oculto sin número; sin campanas ni botones mudos. Contrato 0/0 · 201 botones (200 con efecto + 1 descarga) · 144 enlaces OK (spec 19) |
 | Rediseño 3/5: sistema de diseño + landing | ⏳ | «Tablero de cancha»: tokens, Barlow, tablero real de canchas libres, sin datos inventados (spec 20) |
 | Rediseño 4/5: panel | ⏳ | Spec 21, tras la 20 |
 | Rediseño 5/5: unificar el área del jugador | ⏳ | Spec 22, con decisión aparte (landing pública; lo que requiere sesión, en el panel) |

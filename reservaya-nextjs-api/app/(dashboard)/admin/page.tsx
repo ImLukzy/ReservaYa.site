@@ -1,12 +1,13 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Bell, ChevronRight, CircleHelp, HeartHandshake, ListChecks, Plus } from 'lucide-react';
+import { ChevronRight, HeartHandshake, ListChecks, Plus } from 'lucide-react';
 import * as api from '@/lib/api';
 import type { DashboardAdmin } from '@/lib/api';
 import { getSession } from '@/lib/session';
 import { getComplejos } from '@/lib/b2b-api';
 import { NovedadCard } from '@/components/b2b/DashboardWidgets';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { whatsappUrl, whatsappVisible } from '@/lib/whatsapp';
 import { crearCarga } from '@/lib/carga';
 import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
@@ -90,20 +91,6 @@ export default async function AdminPage() {
           <p className="text-sm text-[#64748B] capitalize">{fechaLarga} De {ahora.getFullYear()}</p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notificaciones"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E7E5E4] bg-white text-[#64748B]"
-          >
-            <Bell size={18} strokeWidth={1.85} />
-          </button>
-          <button
-            type="button"
-            aria-label="Ayuda"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E7E5E4] bg-white text-sm font-bold text-[#64748B]"
-          >
-            <CircleHelp size={18} strokeWidth={1.85} />
-          </button>
           <Link
             href="/admin/agenda"
             className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
@@ -132,14 +119,16 @@ export default async function AdminPage() {
             </p>
           </div>
         </div>
-        <a
-          href="https://wa.me/51907425900"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative shrink-0 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
-        >
-          💬 Escríbenos · 907 425 900
-        </a>
+        {whatsappUrl() && (
+          <a
+            href={whatsappUrl() ?? undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative shrink-0 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
+          >
+            Escríbenos por WhatsApp · {whatsappVisible()}
+          </a>
+        )}
       </div>
 
       {/* Checklist */}

@@ -55,11 +55,23 @@
 | A6 | Gates | `typecheck`, `lint`, `test` y `build` del panel; `astro check` y `build` | 0 errores |
 
 ## 6. Checklist
-- [ ] T1: C1 y C2.
-- [ ] T2: C3 y B1–B4.
-- [ ] T3: Script de recorrido de clics (A3) en el scratchpad.
-- [ ] T4: A1–A6 y §7; borrar los datos de prueba.
+- [x] T1: C1 y C2.
+- [x] T2: C3 y B1–B4.
+- [x] T3: Script de recorrido de clics (A3) en el scratchpad.
+- [x] T4: A1–A6 y §7; borrar los datos de prueba.
 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
+| 2026-09-26 | Cambio de alcance | — | Por instrucción del usuario, «Ayuda», «Tutoriales» y «Editar perfil» se **eliminan** en vez de enlazarse. Se conservan los enlaces que ya funcionaban (menú «Ayuda» y el icono de ayuda de Torneos, ambos a `/admin/ayuda`) |
+| 2026-09-26 | C1 ampliado | ✅ | `TorneosPanel` estaba desalineado con `TorneosController` en todo el módulo: el alta no enviaba `complejoId` (siempre 400); usaba `cupo` en vez de `cupoMax` y el estado `INSCRIPCIONES` en vez de `INSCRIPCIONES_ABIERTAS`; las inscripciones mandaban `responsable` en vez de `telefono`; los partidos, `local`/`visita` en vez de `equipoA`/`equipoB`; el resultado iba a una ruta inexistente con `golesLocal`/`golesVisita`; y nunca se pedía el detalle (`GET /api/torneos/{id}`). El contrato pasa a `lib/torneos.ts` (funciones puras + 4 tests); el panel suma el selector de complejo y los 5 estados reales |
+| 2026-09-26 | C2 ampliado | ✅ | `ConfigPanel` pasa a 2 pestañas reales: «Mi perfil» (`GET /api/auth/me`; nombre, correo y nacimiento de solo lectura; `PATCH /api/usuarios/me` solo con los campos cambiados, `telefono`/`username`) y «Suscripción» (`GET` y `POST /api/suscripciones`). Fuera: «Cobros» (solo `localStorage`), «Tu plan» (texto fijo + WhatsApp) y «Pagos» (leía `/api/abonos`, que es el payout al dueño y no pagos de suscripción). Se borran `ry_perfil` y `ry_cobros` del navegador |
+| 2026-09-26 | C3 | ✅ | `lib/whatsapp.ts` (+ 2 tests): sin `NEXT_PUBLIC_WHATSAPP_NUMBER` no se muestra el flotante ni el botón «Escríbenos» del banner de `/admin`, que llevaba escrito a mano el 907 425 900 (si es el número real, ponlo en esa variable) |
+| 2026-09-26 | B1–B4 | ✅ | Fuera la campana de `/admin`, de `TopBar` y de la landing (botón, panel y script); «Ayuda» de `/admin` y de `ReservasPanel`, «Tutoriales» de `TopBar`, «Editar perfil» de `/dashboard/carne` y la pestaña «Cobros». `ReportesPanel`: «Exportar Excel» → «Exportar CSV» (genera `.csv`) |
+| 2026-09-26 | A1 | ✅ | Escáner de contrato por segmentos y método (84 combinaciones ruta+método del frontend contra 89 rutas de la API): 0 sin ruta y 0 con método distinto |
+| 2026-09-26 | A2 | ✅ | Escáner estático: 0 `<button>` sin acción y 0 enlaces internos rotos en la landing y el panel |
+| 2026-09-26 | A3 | ✅ | Recorrido de clics a 1280 px (landing anónima, panel anónimo y 4 roles, 55 rutas; backend falso con las formas reales): 201 botones pulsados, 200 con efecto; el restante («Exportar CSV») descarga `reportes-2026-09.csv` (41 filas), verificado con el evento `download`. 144 enlaces comprobados: 144 OK. 0 errores JS |
+| 2026-09-26 | A4 | ✅ | Flujo de Torneos en el navegador: lista (1/8, «En curso») → detalle («Los Andes vs Misti FC», teléfono) → resultado `PUT /api/torneos/partidos/p1 {"golesA":2,"golesB":1}` → recarga del detalle; estado `{"estado":"FINALIZADO"}`; alta con `complejoId`, `cupoMax` y `fechaInicio`. 6/6 |
+| 2026-09-26 | A5 | ✅ | Perfil: `localStorage` sin `ry_*`; pestañas «Mi perfil» y «Suscripción»; `PATCH /api/usuarios/me {"telefono":"987 111 222"}` → «Perfil guardado.»; `POST /api/suscripciones {"complejoId":"c1","plan":"MENSUAL"}`; 0 enlaces a `wa.me` sin número. 6/6 |
+| 2026-09-26 | A6 | ✅ | Panel: `typecheck` 0, `lint` 0 errores (los 2 warnings ya existían), `test` 27/27 (6 nuevos), `build` OK. Landing: `astro check` 0 y build de 22 páginas. Builds finales sin variables de prueba; `db:check` OK. 375 px: 0 px de scroll horizontal en `/`, `/admin`, `/admin/torneos`, `/admin/configuracion`, `/admin/reservas` y `/dashboard/carne` |
+| 2026-09-26 | Pendiente | — | No se probó contra la API real con un dueño de verdad (hace falta una cuenta SUPERADMIN con complejo). El contrato se validó contra las formas de los controladores (tests + escáner) |
