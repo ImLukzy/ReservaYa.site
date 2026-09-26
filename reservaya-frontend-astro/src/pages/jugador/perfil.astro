@@ -213,9 +213,14 @@ const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:500
       const el = $(par[0]);
       if (!el) continue;
       const insignia = par[1] ? el.querySelector("span.absolute") : null;
-      const insigniaHtml = insignia ? insignia.outerHTML : "";
       if (src) {
-        el.innerHTML = '<img src="' + src + '" alt="Foto de perfil" class="h-full w-full rounded-2xl object-cover" />' + insigniaHtml;
+        // DOM API, no innerHTML: fotoUrl viene de la API y no se interpola en HTML.
+        const img = document.createElement("img");
+        img.setAttribute("src", src);
+        img.alt = "Foto de perfil";
+        img.className = "h-full w-full rounded-2xl object-cover";
+        el.replaceChildren(img);
+        if (insignia) el.appendChild(insignia);
       } else if (perfil) {
         el.textContent = (perfil.nombre || "?").trim().charAt(0).toUpperCase();
         if (insignia) el.appendChild(insignia);

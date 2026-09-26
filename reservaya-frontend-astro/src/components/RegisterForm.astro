@@ -33,7 +33,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
   </p>
 </form>
 
-<script define:vars={{ apiUrl, appUrl }}>
+<script is:inline define:vars={{ apiUrl, appUrl }}>
   const form = document.getElementById("reservaya-register-form");
   const status = document.getElementById("register-status");
   const submit = document.getElementById("register-submit");
