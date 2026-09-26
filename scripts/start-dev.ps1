@@ -1,15 +1,22 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 
+# True si algo acepta conexiones en el puerto por IPv4 o IPv6
+# (Astro/Vite en Windows escucha solo en ::1; Kestrel y Next también en 127.0.0.1).
 function Test-Port($Port) {
-    try {
-        $c = New-Object Net.Sockets.TcpClient
-        $r = $c.BeginConnect("127.0.0.1", $Port, $null, $null)
-        $ok = $r.AsyncWaitHandle.WaitOne(400)
-        $c.Close()
-        return $ok
-    } catch { return $false }
+    foreach ($ip in @("127.0.0.1", "::1")) {
+        $c = $null
+        try {
+            $c = New-Object Net.Sockets.TcpClient([Net.IPAddress]::Parse($ip).AddressFamily)
+            $r = $c.BeginConnect($ip, $Port, $null, $null)
+            if ($r.AsyncWaitHandle.WaitOne(400) -and $c.Connected) { return $true }
+        } catch {
+        } finally {
+            if ($c) { $c.Close() }
+        }
+    }
+    return $false
 }
 
 function Wait-Healthy($Port, $Name, $TimeoutSec = 90) {
@@ -54,7 +61,7 @@ Start-DevService `
     -WorkingDirectory $root `
     -Wait
 
-# 2. Next.js (Turbopack acelera la navegación y el hot reload)
+# 2. Next.js ("dev" usa --webpack: Turbopack dev en Windows da 404 en rutas dentro de grupos (auth)/(dashboard))
 Start-DevService `
     -Port 3000 `
     -Name "Panel Next.js" `

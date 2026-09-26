@@ -38,8 +38,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: reservaya-nextjs-api/package-lock.json
       - run: npm ci
-      - run: npx tsc --noEmit
+      - run: npm run typecheck
       - run: npm run lint
+      - run: npm test
+      - run: npm run build
+        env:
+          # Solo para compilar: lib/config.ts exige >= 32 caracteres. No es un secreto real.
+          JWT_SECRET: ci-build-only-not-a-real-secret-0123456789
 
   db-check:
     name: DB Check
