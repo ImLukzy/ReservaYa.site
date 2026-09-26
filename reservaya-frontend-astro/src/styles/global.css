@@ -167,7 +167,7 @@ body {
   --accent-hover: #16A34A;
   --accent-neon: #4ADE80;
   --accent-soft: #DCFCE7;
-  --accent-contrast: #FFFFFF;
+  --accent-contrast: #060C08;
   --accent-warn: #EAB308;
   --sidebar: #060C08;
   --announce-from: #0A2E1F;
@@ -521,7 +521,7 @@ a[class*="border"]:active {
 
 ::selection {
   background: #22C55E;
-  color: #fff;
+  color: #060C08;
 }
 
 ::-webkit-scrollbar {

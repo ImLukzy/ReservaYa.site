@@ -71,7 +71,7 @@ const owners = [
         Reserva en minutos. Sin llamadas, sin WhatsApp.
       </p>
       <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <a href="/canchas" class="btn-press btn-shine group inline-flex items-center justify-center gap-2.5 rounded-2xl bg-[#22C55E] px-8 py-4 text-[15px] font-bold text-white shadow-[0_12px_40px_rgba(34,197,94,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#16A34A] hover:shadow-[0_18px_50px_rgba(34,197,94,0.55)]">
+        <a href="/canchas" class="btn-press btn-shine group inline-flex items-center justify-center gap-2.5 rounded-2xl bg-[#22C55E] px-8 py-4 text-[15px] font-bold text-[#060C08] shadow-[0_12px_40px_rgba(34,197,94,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#16A34A] hover:shadow-[0_18px_50px_rgba(34,197,94,0.55)]">
           Buscar canchas <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </a>
         <a href="/duenos" class="inline-flex items-center justify-center gap-2.5 rounded-2xl border border-white/25 bg-white/[0.07] px-8 py-4 text-[15px] font-semibold text-white shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/[0.14]">
@@ -145,7 +145,7 @@ const owners = [
                 </div>
                 <div class="mt-6 flex gap-2">
                   <button type="button" data-how-prev class="rounded-xl border border-white/20 px-5 py-2.5 text-sm font-bold hover:bg-white/10">← Anterior</button>
-                  <button type="button" data-how-next class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A]">Siguiente →</button>
+                  <button type="button" data-how-next class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A]">Siguiente →</button>
                 </div>
               </div>
               <div class="rounded-2xl border border-white/10 bg-[#081009]/90 p-4 shadow-2xl">
@@ -186,7 +186,7 @@ const owners = [
                 </div>
                 <div class="mt-6 flex gap-2">
                   <button type="button" data-how-prev class="rounded-xl border border-white/20 px-5 py-2.5 text-sm font-bold hover:bg-white/10">← Anterior</button>
-                  <button type="button" data-how-next class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A]">Siguiente →</button>
+                  <button type="button" data-how-next class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A]">Siguiente →</button>
                 </div>
               </div>
               <div class="on-dark rounded-2xl border border-white/10 bg-[#0B100C]/95 p-6 shadow-2xl">
@@ -225,7 +225,7 @@ const owners = [
                 </div>
                 <div class="mt-6 flex gap-2">
                   <button type="button" data-how-prev class="rounded-xl border border-white/20 px-5 py-2.5 text-sm font-bold hover:bg-white/10">← Anterior</button>
-                  <a href="/canchas" class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A]">Reservar ahora →</a>
+                  <a href="/canchas" class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A]">Reservar ahora →</a>
                 </div>
               </div>
               <div class="on-dark rounded-2xl border border-white/10 bg-[#0B100C]/95 p-8 text-center shadow-2xl">
@@ -287,7 +287,7 @@ const owners = [
           <div class="mt-6 flex items-center justify-between"><span class="rounded-md bg-[#FEF9C3] px-2 py-1 text-xs">💳</span><span class="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-bold text-[#16A34A]">✓ OK</span></div>
         </article>
         <article class="rounded-2xl border border-[#E7E5E4] bg-white p-6">
-          <div class="flex items-start justify-between"><div class="flex -space-x-1.5">{["C","D","L","M"].map(l => <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#16A34A] text-[10px] font-bold text-white ring-2 ring-white">{l}</span>)}<span class="pl-2 text-xs font-bold text-[#5B6660]">+</span></div><span class="text-5xl font-black text-[#E7E5E4]">03</span></div>
+          <div class="flex items-start justify-between"><div class="flex -space-x-1.5">{["C","D","L","M"].map(l => <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#16A34A] text-[10px] font-bold text-[#060C08] ring-2 ring-white">{l}</span>)}<span class="pl-2 text-xs font-bold text-[#5B6660]">+</span></div><span class="text-5xl font-black text-[#E7E5E4]">03</span></div>
           <h3 class="mt-4 font-black text-[#101613]">Divide el pago</h3>
           <p class="mt-1 text-sm text-[#5B6660]">Comparte el costo entre los jugadores.</p>
           <div class="mt-4 flex h-2 overflow-hidden rounded-full"><span class="w-1/4 bg-[#14532D]"></span><span class="w-1/4 bg-[#0E7490]"></span><span class="w-1/4 bg-[#14532D]"></span><span class="w-1/4 bg-[#4ADE80]"></span></div>
@@ -332,7 +332,7 @@ const owners = [
         {[...players, ...players].map(p => (
           <article class="mr-4 w-80 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full bg-[#22C55E] text-xs font-black text-white">{p.init}</span><div><p class="text-sm font-bold text-white">{p.name}</p><p class="text-xs text-white/40">{p.zone}</p></div></div>
+              <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full bg-[#22C55E] text-xs font-black text-[#060C08]">{p.init}</span><div><p class="text-sm font-bold text-white">{p.name}</p><p class="text-xs text-white/40">{p.zone}</p></div></div>
               <span class="rounded-md bg-[#22C55E]/10 px-2 py-1 text-[10px] font-bold text-[#4ADE80]">Jugador</span>
             </div>
             <p class="mt-3 text-xs tracking-widest text-[#EAB308]">★★★★★</p>
@@ -378,7 +378,7 @@ const owners = [
         <div class="flex items-center justify-between"><p class="text-sm font-bold">● Reservas en vivo</p><span class="text-xs font-bold text-[#16A34A]">HOY</span></div>
         <div id="live-books" class="mt-4 space-y-2.5">
           {[["M","Marco A.","21:00"],["C","Carlos M.","08:00"],["E","Equipo Tigres","09:00"]].map(b => (
-            <div class="live-row flex items-center justify-between rounded-xl bg-[#F7F8F7] px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#16A34A] text-xs font-black text-white">{b[0]}</span><span class="text-sm font-bold">{b[1]}</span></div><span class="text-xs font-bold text-[#16A34A]">{b[2]}</span></div>
+            <div class="live-row flex items-center justify-between rounded-xl bg-[#F7F8F7] px-3 py-2.5"><div class="flex items-center gap-2.5"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#16A34A] text-xs font-black text-[#060C08]">{b[0]}</span><span class="text-sm font-bold">{b[1]}</span></div><span class="text-xs font-bold text-[#16A34A]">{b[2]}</span></div>
           ))}
         </div>
       </div>
@@ -390,7 +390,7 @@ const owners = [
     </div>
     <div class="mx-auto mt-4 flex max-w-5xl flex-col items-center justify-between gap-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 md:flex-row">
       <div><p class="font-black">¿Tienes un complejo?</p><p class="text-sm text-[#3F4A44]">Regístrate gratis y empieza a recibir reservas hoy.</p></div>
-      <div class="flex items-center gap-3"><span class="hidden text-xs text-[#5B6660] md:block">Sin tarjeta · 100% gratis</span><a href="/duenos" class="rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#15803D]">Registrar mi complejo gratis →</a></div>
+      <div class="flex items-center gap-3"><span class="hidden text-xs text-[#5B6660] md:block">Sin tarjeta · 100% gratis</span><a href="/duenos" class="rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Registrar mi complejo gratis →</a></div>
     </div>
   </section>
 
@@ -403,7 +403,7 @@ const owners = [
       <p class="text-[11px] font-bold uppercase tracking-[0.3em] text-[#4ADE80]">Empieza hoy · Es gratis</p>
       <h2 class="reveal mt-5 font-black leading-[0.95] tracking-tight text-white text-[clamp(3rem,9vw,7.5rem)]">¿Listo para <span class="text-[#4ADE80]">jugar?</span></h2>
       <p class="mx-auto mt-5 max-w-xl leading-relaxed text-white/60">Únete a miles de jugadores que ya reservan sus canchas favoritas en Perú sin llamadas ni filas.</p>
-      <a href="/canchas" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-8 py-4 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Reservar una cancha <span aria-hidden="true">→</span></a>
+      <a href="/canchas" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-8 py-4 font-bold text-[#060C08] shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Reservar una cancha <span aria-hidden="true">→</span></a>
       <div class="mx-auto mt-10 flex max-w-xl flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
         <span>Sin tarjeta requerida</span><span class="hidden sm:block">·</span><span>100% gratuito para jugadores</span><span class="hidden sm:block">·</span><span>Cancela cuando quieras</span>
       </div>

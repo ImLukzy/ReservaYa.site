@@ -39,7 +39,7 @@ const tipos = [
 
       <div id="tipos" class="mt-4 flex flex-wrap justify-center gap-2">
         {tipos.map(([v, l], i) => (
-          <button type="button" data-tipo={v} class={`pill rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`}>{l}</button>
+          <button type="button" data-tipo={v} class={`pill rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition ${i === 0 ? "border-[#22C55E] bg-[#22C55E] text-[#060C08]" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]"}`}>{l}</button>
         ))}
       </div>
       <div class="mt-3 flex flex-wrap justify-center gap-2">
@@ -94,7 +94,7 @@ const tipos = [
           <h2 class="text-2xl font-black tracking-tight text-[#101613] md:text-3xl">¿Tienes una idea para mejorar Reserva<span class="text-[#16A34A]">Ya</span>?</h2>
           <p class="mt-2 text-sm text-[#5B6660]">Cuéntanos qué te gustaría ver. Leemos todo.</p>
         </div>
-        <a href="/mejoras" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#15803D]">Comparte tu idea <span aria-hidden="true">→</span></a>
+        <a href="/mejoras" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#16A34A] px-6 py-3 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Comparte tu idea <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -118,7 +118,7 @@ const tipos = [
       </div>
       <div id="modal-op-lista" class="mt-4 max-h-80 space-y-3 overflow-y-auto"></div>
       <p class="mt-4 text-xs text-[#8A938D]">¿Jugaste aquí? Califica desde tu reserva completada en la app.</p>
-      <a id="modal-op-app" href={`${appUrl.replace(/\/$/, "")}/dashboard/reservas`} class="mt-2 inline-block rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white hover:bg-[#16A34A]">Ir a mis reservas →</a>
+      <a id="modal-op-app" href={`${appUrl.replace(/\/$/, "")}/dashboard/reservas`} class="mt-2 inline-block rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-[#060C08] hover:bg-[#16A34A]">Ir a mis reservas →</a>
     </div>
   </div>
 </BaseLayout>
@@ -176,7 +176,7 @@ const tipos = [
       head.appendChild(em);
     }
     var badge = document.createElement("span");
-    badge.className = "absolute top-3 left-3 rounded-full bg-[#22C55E] px-2.5 py-1 text-[11px] font-bold text-white";
+    badge.className = "absolute top-3 left-3 rounded-full bg-[#22C55E] px-2.5 py-1 text-[11px] font-bold text-[#060C08]";
     badge.textContent = TIPO_LABEL[cancha.tipo] || cancha.tipo;
     var stars = document.createElement("button");
     stars.type = "button";
@@ -204,7 +204,7 @@ const tipos = [
     small.textContent = "/hora";
     precio.appendChild(small);
     var a = document.createElement("a");
-    a.className = "rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16A34A]";
+    a.className = "rounded-xl bg-[#22C55E] px-4 py-2 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]";
     a.textContent = "Reservar";
     a.href = cancha.complejoId ? app + "/dashboard/canchas?complejoId=" + cancha.complejoId : app + "/dashboard/canchas";
     body.appendChild(h3);
@@ -386,7 +386,7 @@ const tipos = [
       tipo = b.getAttribute("data-tipo") || "Todos";
       document.querySelectorAll("#tipos .pill").forEach(function (x) {
         x.className = "pill rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition " +
-          (x === b ? "border-[#22C55E] bg-[#22C55E] text-white" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]");
+          (x === b ? "border-[#22C55E] bg-[#22C55E] text-[#060C08]" : "border-[#E7E5E4] bg-white text-[#3F4A44] hover:border-[#22C55E]");
       });
       cargar();
     });

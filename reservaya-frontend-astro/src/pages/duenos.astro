@@ -57,7 +57,7 @@ const quotes = [
         Miles de jugadores buscan cancha en el Perú ahora mismo: ¿la tuya aparece?
       </p>
       <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <a href="/register?plan=dueno" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3.5 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.5)] transition hover:bg-[#16A34A]">Publica tu cancha gratis <span aria-hidden="true">→</span></a>
+        <a href="/register?plan=dueno" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3.5 font-bold text-[#060C08] shadow-[0_10px_36px_rgba(34,197,94,0.5)] transition hover:bg-[#16A34A]">Publica tu cancha gratis <span aria-hidden="true">→</span></a>
         <a href="#planes" class="inline-flex items-center justify-center rounded-xl border border-white/25 px-6 py-3.5 font-semibold transition hover:bg-white/10">Ver planes y precios</a>
         <span class="text-xs text-white/40">Gratis · la publicas tú mismo en minutos</span>
       </div>
@@ -91,14 +91,14 @@ const quotes = [
           </ul>
           <p class="mt-4 rounded-lg border border-[#EAB308]/40 bg-[#EAB308]/10 px-2.5 py-2 font-bold text-[#EAB308]">♛ Torneos <span class="ml-1 rounded bg-[#EAB308] px-1 text-[10px] text-black">BETA</span></p>
           <div class="mt-4 flex items-center gap-2 border-t border-white/10 px-2 pt-3">
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-[11px] font-black">J</span>
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-[11px] font-black text-[#060C08]">J</span>
             <div><p class="text-[11px] font-bold text-white">Juan Carlos</p><p class="text-[10px] text-white/40">Ir a la app · Cerrar sesión</p></div>
           </div>
         </aside>
         <div class="bg-[#F5F5F3] p-4 text-[#101613] md:p-5">
           <div class="flex items-center justify-between">
             <div><p class="text-[10px] font-bold uppercase tracking-widest text-[#8A938D]">◉ Dashboard · Arequipa</p><p class="text-lg font-black">Buenos días, Juan Carlos 👋</p><p class="text-[11px] text-[#8A938D]">Sábado, 20 de julio de 2026</p></div>
-            <button type="button" class="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#16A34A]">+ Reserva manual</button>
+            <button type="button" class="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-bold text-[#060C08] hover:bg-[#16A34A]">+ Reserva manual</button>
           </div>
           <div class="mt-4 grid gap-3 lg:grid-cols-3">
             <div class="on-dark rounded-xl bg-[#060C08] p-4 text-white lg:col-span-2">
@@ -131,7 +131,7 @@ const quotes = [
               {[["JUE 31","Nicolas T. · Cancha 1 · 16:00 - 17:00 · S/80"],["VIE 01","Ariana P. · Cancha 2 · 19:00 - 20:00 · S/70"],["SAB 02","Equipo Tigres · Cancha 1 · 21:00 - 22:00 · S/80"]].map(r => (
                 <div class="pending-row flex items-center justify-between gap-2 rounded-lg bg-[#FFFBEB] px-3 py-2 text-[12px]">
                   <span class="font-bold">{r[0]} · <span class="font-normal text-[#5B6660]">{r[1]}</span></span>
-                  <span class="flex gap-1.5"><button type="button" data-ok class="rounded-md bg-[#22C55E] px-2.5 py-1 text-[11px] font-bold text-white">✓ Confirmar</button><button type="button" data-no class="rounded-md border border-red-200 px-2.5 py-1 text-[11px] font-bold text-red-500">Rechazar</button></span>
+                  <span class="flex gap-1.5"><button type="button" data-ok class="rounded-md bg-[#22C55E] px-2.5 py-1 text-[11px] font-bold text-[#060C08]">✓ Confirmar</button><button type="button" data-no class="rounded-md border border-red-200 px-2.5 py-1 text-[11px] font-bold text-red-500">Rechazar</button></span>
                 </div>
               ))}
             </div>
@@ -175,7 +175,7 @@ const quotes = [
           <div class="flex items-center justify-between"><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">Hoy · Canchas disponibles</p><span class="text-[11px] font-bold text-[#4ADE80]">● En vivo</span></div>
           <div id="live-slots" class="mt-4 grid grid-cols-3 gap-2">
             {["07:00","08:00","09:00","10:00","11:00","12:00"].map((h,i) => (
-              <button type="button" data-slot={h} class={`slot rounded-xl px-3 py-3 text-sm font-bold transition ${i===0?"bg-[#22C55E] text-white":"bg-white/[0.07] text-white/80 hover:bg-white/[0.14]"}`}>{h}</button>
+              <button type="button" data-slot={h} class={`slot rounded-xl px-3 py-3 text-sm font-bold transition ${i===0?"bg-[#22C55E] text-[#060C08]":"bg-white/[0.07] text-white/80 hover:bg-white/[0.14]"}`}>{h}</button>
             ))}
           </div>
           <div id="slot-toast" class="mt-3 rounded-xl border border-[#22C55E]/30 bg-[#22C55E]/10 px-4 py-2.5 text-xs"><span class="font-bold text-[#4ADE80]">Nueva reserva · 07:00</span><span class="float-right text-white/50">S/ 80</span></div>
@@ -236,7 +236,7 @@ const quotes = [
             ))}
           </div>
           <div class="mt-4 flex items-center justify-between border-t border-white/10 pt-4"><span class="text-sm text-white/50">Total del ticket</span><span class="text-xl font-black text-[#4ADE80]">S/ <span id="ticket-total">0</span></span></div>
-          <button id="cobrar" type="button" class="mt-3 w-full rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-white transition hover:bg-[#16A34A]">Cobrar ticket</button>
+          <button id="cobrar" type="button" class="mt-3 w-full rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]">Cobrar ticket</button>
           <p id="cobro-msg" class="mt-2 hidden text-center text-xs font-bold text-[#4ADE80]">✓ Venta registrada y stock descontado</p>
         </div>
       </div>
@@ -247,7 +247,7 @@ const quotes = [
           <div id="role-list" class="mt-4 space-y-2.5">
             {[["Y","Dueño",1],["A","Admin",0],["J","Vendedor",0]].map(r => (
               <button type="button" data-role={r[1]} class={`role flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${r[2]?"border-[#22C55E]/50 bg-[#22C55E]/10":"border-transparent bg-white/[0.04] hover:bg-white/[0.08]"}`}>
-                <span class={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${r[2]?"bg-[#22C55E] text-white":"bg-white/10 text-white/60"}`}>{r[0]}</span>
+                <span class={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${r[2]?"bg-[#22C55E] text-[#060C08]":"bg-white/10 text-white/60"}`}>{r[0]}</span>
                 <span class="font-bold text-white/85">{r[1]}</span>
                 <span class="ml-auto text-white/35">✂</span>
               </button>
@@ -299,7 +299,7 @@ const quotes = [
 
       <div class="mt-4 flex flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-[#060A08] p-7 text-white md:flex-row md:items-center md:p-9">
         <div><p class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#4ADE80]">¿Listo?</p><h3 class="mt-2 text-2xl font-black text-white md:text-3xl">Empieza gratis. Sin contratos.</h3><p class="mt-1 text-sm text-white/55">Cargamos tus canchas, horarios y precios por ti.</p></div>
-        <a href="/register?plan=dueno" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#22C55E] px-7 py-3.5 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Quiero unirme <span aria-hidden="true">→</span></a>
+        <a href="/register?plan=dueno" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#22C55E] px-7 py-3.5 font-bold text-[#060C08] shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Quiero unirme <span aria-hidden="true">→</span></a>
       </div>
 
       <div id="planes" class="mt-14">
@@ -323,7 +323,7 @@ const quotes = [
               <ul class="mt-4 space-y-2 text-sm text-[#3F4A44]">
                 {(feats as string[]).map((f) => <li>✓ {f}</li>)}
               </ul>
-              <a href="/register?plan=dueno" class={`mt-6 block rounded-xl py-3 text-center font-bold transition ${i === 1 ? "bg-[#22C55E] text-white hover:bg-[#16A34A]" : "border border-[#E7E5E4] hover:border-[#22C55E]"}`}>Empezar gratis</a>
+              <a href="/register?plan=dueno" class={`mt-6 block rounded-xl py-3 text-center font-bold transition ${i === 1 ? "bg-[#22C55E] text-[#060C08] hover:bg-[#16A34A]" : "border border-[#E7E5E4] hover:border-[#22C55E]"}`}>Empezar gratis</a>
             </div>
           ))}
         </div>
@@ -394,7 +394,7 @@ const quotes = [
                 <span class="text-6xl leading-none text-[#22C55E]/30">❝</span>
                 <blockquote class="text-xl leading-relaxed md:text-2xl">"{qq[3]} <span class="text-[#4ADE80]">{qq[4]}</span>"</blockquote>
                 <figcaption class="mt-8 flex items-center justify-between">
-                  <span class="flex items-center gap-3"><span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#22C55E] font-black text-white">{qq[0]}</span><span><strong class="block text-sm text-white">{qq[1]}</strong><span class="text-xs text-white/40">{qq[2]}</span></span></span>
+                  <span class="flex items-center gap-3"><span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#22C55E] font-black text-[#060C08]">{qq[0]}</span><span><strong class="block text-sm text-white">{qq[1]}</strong><span class="text-xs text-white/40">{qq[2]}</span></span></span>
                   <span class="tracking-[0.2em] text-[#EAB308]">★★★★★</span>
                 </figcaption>
               </figure>
@@ -435,7 +435,7 @@ const quotes = [
       <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-[#4ADE80]">Empieza hoy · Es gratis</p>
       <h2 class="reveal mt-5 text-5xl font-black tracking-tight text-white md:text-7xl">¿Tienes una <span class="text-[#4ADE80]">cancha deportiva?</span></h2>
       <p class="mx-auto mt-5 max-w-md leading-relaxed text-white/55">3 meses gratis. Si te gusta, S/ 89.90 al mes. Si no, lo dejas. Sin contratos.</p>
-      <a href="/register?plan=dueno" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-8 py-4 font-bold text-white shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Publica tu cancha gratis <span aria-hidden="true">→</span></a>
+      <a href="/register?plan=dueno" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-8 py-4 font-bold text-[#060C08] shadow-[0_10px_36px_rgba(34,197,94,0.4)] transition hover:bg-[#16A34A]">Publica tu cancha gratis <span aria-hidden="true">→</span></a>
       <div class="mx-auto mt-10 flex max-w-xl flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
         <span>Sin tarjeta requerida</span><span class="hidden sm:block">·</span><span>3 meses gratis, luego S/ 89.90/mes</span><span class="hidden sm:block">·</span><span>Cancela cuando quieras</span>
       </div>
@@ -497,7 +497,7 @@ const quotes = [
       const done = i < ri;
       const dot = s.querySelector<HTMLElement>(".reg-dot");
       const bar = s.querySelector<HTMLElement>(".reg-bar");
-      if (dot) { dot.textContent = done ? "✓" : ""; dot.style.background = done ? "#22C55E" : "transparent"; dot.style.borderColor = done ? "#22C55E" : "rgba(255,255,255,0.25)"; dot.style.color = "#fff"; }
+      if (dot) { dot.textContent = done ? "✓" : ""; dot.style.background = done ? "#22C55E" : "transparent"; dot.style.borderColor = done ? "#22C55E" : "rgba(255,255,255,0.25)"; dot.style.color = "#060C08"; }
       if (bar) bar.style.width = done ? "100%" : (i === ri ? "45%" : "0%");
     });
     if (ri === 0 && pct) pct.textContent = "12";
@@ -508,7 +508,7 @@ const quotes = [
   const toast = document.getElementById("slot-toast");
   document.querySelectorAll<HTMLElement>("#live-slots .slot").forEach((b) => b.addEventListener("click", () => {
     document.querySelectorAll("#live-slots .slot").forEach((x) => { x.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-white/[0.07] text-white/80 hover:bg-white/[0.14]"; });
-    b.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-[#22C55E] text-white";
+    b.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-[#22C55E] text-[#060C08]";
     if (toast) {
       toast.innerHTML = "";
       const span1 = document.createElement("span");
@@ -591,7 +591,7 @@ const quotes = [
       const on = x === b;
       x.className = `role flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${on ? "border-[#22C55E]/50 bg-[#22C55E]/10" : "border-transparent bg-white/[0.04] hover:bg-white/[0.08]"}`;
       const av = x.querySelector("span");
-      if (av) av.className = `flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${on ? "bg-[#22C55E] text-white" : "bg-white/10 text-white/60"}`;
+      if (av) av.className = `flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${on ? "bg-[#22C55E] text-[#060C08]" : "bg-white/10 text-white/60"}`;
     });
     paintPerms(b.dataset.role || "Dueño");
   }));
