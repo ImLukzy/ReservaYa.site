@@ -11,7 +11,6 @@ interface Perfil {
   nombre: string;
   telefono: string;
   fechaNacimiento: string;
-  genero: string;
   nombreNegocio: string;
 }
 
@@ -32,7 +31,7 @@ interface Abono {
 const PERFIL_KEY = 'ry_perfil';
 const COBROS_KEY = 'ry_cobros';
 
-const PERFIL_VACIO: Perfil = { nombre: '', telefono: '', fechaNacimiento: '', genero: '', nombreNegocio: '' };
+const PERFIL_VACIO: Perfil = { nombre: '', telefono: '', fechaNacimiento: '', nombreNegocio: '' };
 const COBROS_DEFAULT: Cobros = { yape: true, tarjeta: false, efectivo: true };
 
 function leerLocal<T>(key: string, fallback: T): T {
@@ -43,6 +42,23 @@ function leerLocal<T>(key: string, fallback: T): T {
   } catch {
     return fallback;
   }
+}
+
+// Solo los campos vigentes: un `genero` guardado por versiones anteriores se descarta (spec 16).
+function leerPerfilLocal(): Perfil {
+  const p = leerLocal<Perfil>(PERFIL_KEY, PERFIL_VACIO);
+  const limpio: Perfil = {
+    nombre: p.nombre,
+    telefono: p.telefono,
+    fechaNacimiento: p.fechaNacimiento,
+    nombreNegocio: p.nombreNegocio,
+  };
+  try {
+    if ('genero' in p) localStorage.setItem(PERFIL_KEY, JSON.stringify(limpio));
+  } catch {
+    /* almacenamiento no disponible */
+  }
+  return limpio;
 }
 
 function parseAbonos(body: unknown): Abono[] {
@@ -89,7 +105,7 @@ export function ConfigPanel() {
   // Hidrata perfil: localStorage primero + intenta completar con la sesión real.
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect -- lectura de localStorage tras hidratar (SSR sin window) */
-    setPerfil(leerLocal<Perfil>(PERFIL_KEY, PERFIL_VACIO));
+    setPerfil(leerPerfilLocal());
     setCobros(leerLocal<Cobros>(COBROS_KEY, COBROS_DEFAULT));
     /* eslint-enable react-hooks/set-state-in-effect */
     void fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
@@ -172,7 +188,6 @@ export function ConfigPanel() {
             nombre: perfil.nombre,
             telefono: perfil.telefono,
             fechaNacimiento: perfil.fechaNacimiento || null,
-            genero: perfil.genero || null,
             nombreNegocio: perfil.nombreNegocio,
           }),
         });
@@ -264,16 +279,6 @@ export function ConfigPanel() {
                   <input type="date" value={perfil.fechaNacimiento} onChange={(e) => setP('fechaNacimiento', e.target.value)} className={inputCls} />
                 </label>
                 <label className="text-sm font-semibold text-[#0F172A]">
-                  Género
-                  <select value={perfil.genero} onChange={(e) => setP('genero', e.target.value)} className={cn(inputCls, 'bg-white')}>
-                    <option value="">Seleccionar…</option>
-                    <option value="masculino">Masculino</option>
-                    <option value="femenino">Femenino</option>
-                    <option value="otro">Otro</option>
-                    <option value="prefiero-no-decir">Prefiero no decir</option>
-                  </select>
-                </label>
-                <label className="text-sm font-semibold text-[#0F172A] md:col-span-2">
                   Nombre del negocio
                   <input value={perfil.nombreNegocio} onChange={(e) => setP('nombreNegocio', e.target.value)} placeholder="Ej. Canchas El Golazo" className={inputCls} />
                 </label>

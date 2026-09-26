@@ -13,7 +13,7 @@ Nunca `DATABASE_URL` ni secretos aquí: todo `PUBLIC_*` termina en el HTML.
 ## Endpoints usados por Astro
 | M | Ruta | Sesión | Página |
 |---|---|---|---|
-| POST | `/api/auth/login` · `/api/auth/register` · `/api/auth/logout` | — | login, register, layout |
+| POST | `/api/auth/login` · `/api/auth/register` · `/api/auth/logout` | — | login, register, layout (el registro no recoge género: spec 16) |
 | GET | `/api/auth/me` | sí | layout, perfil, mejoras |
 | POST | `/api/auth/forgot-password` `{ email }` | — | forgot-password: 200 `{ ok }` exista o no la cuenta · 400 correo inválido · 429 límite (spec 15) |
 | POST | `/api/auth/reset-password` `{ token, password }` | — | reset-password: 200 `{ ok }` y cierra todas las sesiones · 400 `Enlace inválido o vencido` / contraseña < 6 · 429 (enlace de 30 min, un solo uso, token en `#t=`) |
