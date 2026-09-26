@@ -1,6 +1,7 @@
 # Blueprint Render: API .NET (plan free). La DB vive en Neon (no usar la de Render).
 # Uso: dashboard Render → New → Blueprint → repo ImLukzy/ReservaYa → Apply.
-# Luego completa a mano: DATABASE_URL (Neon prod), FRONTEND_ORIGIN (tus URLs).
+# Luego completa a mano: DATABASE_URL (Neon prod), FRONTEND_ORIGIN (tus URLs) y el
+# email de recuperación: RESEND_API_KEY, EMAIL_FROM, PASSWORD_RESET_URL.
 services:
   - type: web
     name: reservaya-api
@@ -19,4 +20,13 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_ORIGIN
+        sync: false
+      # Recuperación de contraseña (spec 15): Resend por API HTTP.
+      - key: EMAIL_PROVIDER
+        value: resend
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: PASSWORD_RESET_URL
         sync: false

@@ -104,6 +104,51 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton(new JwtService(jwtSecret));
 builder.Services.AddSingleton<IRateLimiter, MemoryRateLimiter>();
 
+// Recuperación de contraseña (spec 15): Resend en producción, log solo en desarrollo.
+var emailProvider = (Environment.GetEnvironmentVariable("EMAIL_PROVIDER") ?? "").Trim().ToLowerInvariant();
+var resendApiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY");
+var emailFrom = Environment.GetEnvironmentVariable("EMAIL_FROM");
+var passwordResetUrl = Environment.GetEnvironmentVariable("PASSWORD_RESET_URL")?.Trim().TrimEnd('/');
+if (passwordResetUrl is not null &&
+    (!Uri.TryCreate(passwordResetUrl, UriKind.Absolute, out var resetUri) || resetUri.Scheme is not ("http" or "https")))
+    passwordResetUrl = null;
+
+builder.Services.AddSingleton(new PasswordResetTokens(jwtSecret));
+builder.Services.AddSingleton(new PasswordResetOptions(passwordResetUrl));
+builder.Services.AddSingleton<EmailQueue>();
+builder.Services.AddHostedService<EmailQueueWorker>();
+string emailStatus;
+if (passwordResetUrl is null)
+{
+    builder.Services.AddSingleton<IEmailSender, DisabledEmailSender>();
+    emailStatus = "desactivado (falta o es inválida PASSWORD_RESET_URL)";
+}
+else if (emailProvider == "resend" && !string.IsNullOrWhiteSpace(resendApiKey) && !string.IsNullOrWhiteSpace(emailFrom))
+{
+    builder.Services.AddHttpClient(ResendEmailSender.ClientName, client =>
+    {
+        client.BaseAddress = new Uri("https://api.resend.com/");
+        client.DefaultRequestHeaders.Authorization = new("Bearer", resendApiKey);
+        client.Timeout = TimeSpan.FromSeconds(10);
+    });
+    builder.Services.AddSingleton<IEmailSender>(sp =>
+        new ResendEmailSender(
+            sp.GetRequiredService<IHttpClientFactory>(),
+            emailFrom,
+            sp.GetRequiredService<ILogger<ResendEmailSender>>()));
+    emailStatus = "resend";
+}
+else if (emailProvider == "log" && builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<IEmailSender, LogEmailSender>();
+    emailStatus = "log (solo desarrollo)";
+}
+else
+{
+    builder.Services.AddSingleton<IEmailSender, DisabledEmailSender>();
+    emailStatus = "desactivado (revisa EMAIL_PROVIDER, RESEND_API_KEY y EMAIL_FROM)";
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -165,6 +210,11 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+if (emailStatus.StartsWith("desactivado", StringComparison.Ordinal))
+    app.Logger.LogError("Email de recuperación de contraseña {Estado}", emailStatus);
+else
+    app.Logger.LogInformation("Email de recuperación de contraseña: {Estado}", emailStatus);
 
 app.UseCors();
 app.UseAuthentication();

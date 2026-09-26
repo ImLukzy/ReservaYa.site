@@ -14,6 +14,8 @@ interface Props {
   image?: string;
   announcement?: string | null;
   robots?: string;
+  /** false en páginas con datos sensibles en la URL (p. ej. /reset-password): no carga GA. */
+  analytics?: boolean;
 }
 
 const {
@@ -21,7 +23,8 @@ const {
   description = "Reserva tu cancha deportiva de forma rápida y sencilla",
   image = "/og-default.png",
   announcement = "⚽ Crea tu carné de jugador estilo FIFA y compártelo con tus causas",
-  robots = "index, follow"
+  robots = "index, follow",
+  analytics = true
 } = Astro.props;
 
 const siteURL = Astro.site?.toString() || "https://reservaya.com";
@@ -223,7 +226,7 @@ const navItems = [
       location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
     }
   </script>
-  {gaId && (
+  {gaId && analytics && (
     <>
       <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
       <script is:inline>{`window.dataLayer = window.dataLayer || [];

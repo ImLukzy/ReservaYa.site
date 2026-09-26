@@ -15,7 +15,8 @@ Nunca `DATABASE_URL` ni secretos aquí: todo `PUBLIC_*` termina en el HTML.
 |---|---|---|---|
 | POST | `/api/auth/login` · `/api/auth/register` · `/api/auth/logout` | — | login, register, layout |
 | GET | `/api/auth/me` | sí | layout, perfil, mejoras |
-| POST | `/api/auth/forgot-password` | — | forgot-password — ⛔ **no implementado en la API** (404; la página muestra el mensaje genérico igualmente) |
+| POST | `/api/auth/forgot-password` `{ email }` | — | forgot-password: 200 `{ ok }` exista o no la cuenta · 400 correo inválido · 429 límite (spec 15) |
+| POST | `/api/auth/reset-password` `{ token, password }` | — | reset-password: 200 `{ ok }` y cierra todas las sesiones · 400 `Enlace inválido o vencido` / contraseña < 6 · 429 (enlace de 30 min, un solo uso, token en `#t=`) |
 | GET | `/api/canchas/disponibles` · `/api/canchas/opciones` | — | canchas |
 | GET | `/api/resenas/publicas` | — | canchas |
 | GET | `/api/reservas` | sí | perfil |
