@@ -192,9 +192,10 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | Extra: contraste AA de CTA verdes (landing) | ✅ | 74 superficies verdes con texto blanco (2.28–3.30:1) → texto #060C08 (8.66 / 5.99:1). 0/480 nodos < 4.5:1 en reposo y 0 en hover (116 controles) (spec 13). Panel → spec 14 |
 | Extra: contraste AA de CTA verdes (panel + login) | ✅ | 45 cadenas + `active` de `Button` + `CronogramaView` + `.btn-accent` → texto #060C08. 0/204 nodos < 4.5:1 y 0 en hover/active (64 controles, 72 vistas, 4 roles) (spec 14) |
 | BLOQUEO-API #1: recuperar contraseña | ✅ | `forgot-password` + `reset-password` en la API (token HMAC sin estado, 30 min, un solo uso, `TokenVersion++` cierra sesiones, Resend) sin migraciones; `/reset-password` en Astro y enlace en el login del panel. B2 16/16, F2 18/18, envío real por Resend OK (spec 15) |
+| BLOQUEO-API #2: género sin persistencia | ✅ | Opción A: se retira el campo de `register.astro`, `jugador/perfil.astro` y `ConfigPanel.tsx`, y se purga el `genero` viejo de `localStorage`. Sin migraciones ni cambios en la API (spec 16). Candidata a spec 17: perfil del panel (PII en `localStorage` y mensaje falso tras un 400) |
 
 ⛔ **BLOQUEO-API**
 - ~~`POST /api/auth/forgot-password` no existe~~ → resuelto en la spec 15 (rama `agents/backend-password-reset`).
-- `register.astro`: el selector de género no se envía; no hay campo en la API ni columna `genero` (haría falta una migración) (spec 02 §8).
+- ~~`register.astro`: el selector de género no se envía~~ → resuelto en la spec 16 (opción A: el campo se retira; no queda ningún bloqueo abierto).
 
 `db:check` (2026-09-25): OK · 19 tablas · 82/82 nombres · 198 columnas · 0 migraciones pendientes.
