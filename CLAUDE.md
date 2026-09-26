@@ -37,3 +37,4 @@ reservaya-nextjs-api/          Next 16 :3000 — panel /dashboard /admin /supera
 - Sesión: cookie HttpOnly `token` emitida por la API; el cliente nunca lee el JWT. Roles: `USUARIO` `ADMIN` `SUPERADMIN` `TECNICO` (sin `PERSONAL`).
 - Multitenancy: `TECNICO` = plataforma; cada `SUPERADMIN` solo sus complejos; 403 cross-owner lo decide la API.
 - Rama `agents/frontend-nextjs-ui`: solo `reservaya-frontend-astro/src/**` y `public/**`, y `app/` `components/` `lib/` del panel (+ `docs/`, `.github/`).
+- Comandos IA: `/spec` (escribir spec y esperar "aprobado") · `/gates` (correr gates y anotar §7) · `@explorer` (haiku, solo lectura) · `@reviewer` (revisión vs spec). Hook `.claude/settings.json` bloquea editar `.env`, `prisma/**`, `Migrations/**`, `Entities.cs`, `AppDbContext.cs`, `bin/obj/.next/dist`.
