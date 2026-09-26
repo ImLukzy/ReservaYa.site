@@ -205,8 +205,9 @@ const navItems = [
   </style>
 
   
-  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   <script
+    is:inline
     type="application/ld+json"
     set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -224,7 +225,7 @@ const navItems = [
   </script>
   {gaId && (
     <>
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
       <script is:inline>{`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
@@ -812,7 +813,7 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   {showLoginModal && <script>
     const loginModal = document.getElementById("login-modal");
     const loginTriggers = document.querySelectorAll("[data-login-modal-trigger]");
-    let loginReturnFocus = null;
+    let loginReturnFocus: HTMLElement | null = null;
     const closeLoginModal = () => {
       if (!loginModal) return;
       loginModal.classList.add("hidden");
@@ -820,10 +821,10 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
       document.body.style.overflow = "";
       loginReturnFocus?.focus();
     };
-    const openLoginModal = (event) => {
+    const openLoginModal = (event: Event) => {
       event.preventDefault();
       if (!loginModal) return;
-      loginReturnFocus = event.currentTarget;
+      loginReturnFocus = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
       loginModal.classList.remove("hidden");
       loginModal.classList.add("flex");
       document.body.style.overflow = "hidden";
@@ -840,7 +841,7 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   {showRegisterModal && <script>
     const registerModal = document.getElementById("register-modal");
     const registerTriggers = document.querySelectorAll("[data-register-modal-trigger]");
-    let registerReturnFocus = null;
+    let registerReturnFocus: HTMLElement | null = null;
     const closeRegisterModal = () => {
       if (!registerModal) return;
       registerModal.classList.add("hidden");
@@ -848,10 +849,10 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
       document.body.style.overflow = "";
       registerReturnFocus?.focus();
     };
-    const openRegisterModal = (event) => {
+    const openRegisterModal = (event: Event) => {
       event.preventDefault();
       if (!registerModal) return;
-      registerReturnFocus = event.currentTarget;
+      registerReturnFocus = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
       registerModal.classList.remove("hidden");
       registerModal.classList.add("flex");
       document.body.style.overflow = "hidden";
@@ -868,7 +869,7 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   <script>
     const inboxEndpoint = document.body.dataset.inboxEndpoint || "";
     if (inboxEndpoint) {
-      const forms = document.querySelectorAll("[data-inbox='inboxMejikai']");
+      const forms = document.querySelectorAll<HTMLFormElement>("[data-inbox='inboxMejikai']");
       forms.forEach((form) => {
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
@@ -887,7 +888,7 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
             if (!res.ok) throw new Error("Request failed");
             if (status) status.textContent = "Mensaje enviado. Te responderemos pronto.";
             form.reset();
-          } catch (err) {
+          } catch {
             if (status) status.textContent = "No se pudo enviar. Intenta de nuevo.";
           } finally {
             if (submitBtn) submitBtn.removeAttribute("disabled");

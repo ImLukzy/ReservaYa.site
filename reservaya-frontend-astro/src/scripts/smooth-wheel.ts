@@ -16,7 +16,7 @@
     return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
   }
 
-  function innerScrollable(el) {
+  function innerScrollable(el: Node | null) {
     while (el && el !== document.body && el !== document.documentElement) {
       if (el instanceof HTMLElement) {
         var oy = getComputedStyle(el).overflowY;

@@ -416,7 +416,7 @@ const owners = [
   // ---------- Marquesinas infinitas (motor JS: movimiento garantizado y suave) ----------
   // Un solo mecanismo (rAF + translate3d): no depende de keyframes CSS,
   // velocidad constante en px/s, pausa al hover, loop perfecto.
-  document.querySelectorAll("[data-marquee]").forEach((track) => {
+  document.querySelectorAll<HTMLElement>("[data-marquee]").forEach((track) => {
     const speed = parseFloat(track.dataset.speed || "90");
     const dir = track.dataset.dir === "-1" ? -1 : 1;
     let x = 0, half = 0, calibrated = false, paused = false;
@@ -434,7 +434,7 @@ const owners = [
       host?.addEventListener("mouseleave", () => { paused = false; });
     }
     let last = performance.now();
-    const step = (now) => {
+    const step = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (!paused && !document.hidden && half > 0) {
@@ -451,12 +451,12 @@ const owners = [
   // ---------- Hero carrusel ----------
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const heroImgs = Array.from(document.querySelectorAll(".hero-bg"));
-  const heroDots = Array.from(document.querySelectorAll("[data-hero-dot]"));
+  const heroDots = Array.from(document.querySelectorAll<HTMLElement>("[data-hero-dot]"));
   const heroSection = heroImgs[0]?.closest("section");
-  let heroIdx = 0, heroTimer;
+  let heroIdx = 0, heroTimer: ReturnType<typeof setInterval> | undefined;
   const heroCounter = document.getElementById("hero-counter");
   const heroProgress = document.getElementById("hero-progress");
-  const showHero = (i) => {
+  const showHero = (i: number) => {
     heroIdx = (i + heroImgs.length) % heroImgs.length;
     heroImgs.forEach((img, k) => {
       const on = k === heroIdx;
@@ -478,12 +478,12 @@ const owners = [
 
   // ---------- Cómo funciona: carrusel 01-03 ----------
   const track = document.getElementById("how-track");
-  const dots = Array.from(document.querySelectorAll("[data-how-dot]"));
+  const dots = Array.from(document.querySelectorAll<HTMLElement>("[data-how-dot]"));
   const label = document.getElementById("how-label");
   const giant = document.getElementById("how-giant");
   const names = ["Busca · 01/03", "Reserva · 02/03", "Juega · 03/03"];
-  let howIdx = 0, howTimer;
-  const showHow = (i) => {
+  let howIdx = 0, howTimer: ReturnType<typeof setInterval> | undefined;
+  const showHow = (i: number) => {
     howIdx = (i + 3) % 3;
     if (track) track.style.transform = `translateX(-${howIdx * 100}%)`;
     dots.forEach((d, k) => {
@@ -499,7 +499,7 @@ const owners = [
   document.querySelectorAll("[data-how-prev]").forEach(b => b.addEventListener("click", () => { showHow(howIdx - 1); autoHow(); }));
   // swipe
   const viewport = document.getElementById("how-viewport");
-  let sx = null;
+  let sx: number | null = null;
   viewport?.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive: true });
   viewport?.addEventListener("touchend", e => {
     if (sx === null) return;
@@ -513,10 +513,10 @@ const owners = [
   autoHow();
 
   // ---------- Mini mapa: buscador + filtro formato ----------
-  const search = document.getElementById("map-search");
+  const search = document.querySelector<HTMLInputElement>("#map-search");
   const count = document.getElementById("map-count");
-  const pinsEls = Array.from(document.querySelectorAll(".map-pin"));
-  let fmtFilter = null;
+  const pinsEls = Array.from(document.querySelectorAll<HTMLElement>(".map-pin"));
+  let fmtFilter: string | null = null;
   const applyMap = () => {
     const q = (search?.value || "").toLowerCase().trim();
     let visible = 0;
@@ -531,10 +531,10 @@ const owners = [
     if (count) count.textContent = `${visible} cancha${visible === 1 ? "" : "s"} cerca de ti`;
   };
   search?.addEventListener("input", applyMap);
-  document.querySelectorAll(".fmt-btn").forEach(b => b.addEventListener("click", () => {
-    const f = b.dataset.fmtFilter;
+  document.querySelectorAll<HTMLElement>(".fmt-btn").forEach(b => b.addEventListener("click", () => {
+    const f = b.dataset.fmtFilter || null;
     fmtFilter = fmtFilter === f ? null : f;
-    document.querySelectorAll(".fmt-btn").forEach(x => {
+    document.querySelectorAll<HTMLElement>(".fmt-btn").forEach(x => {
       const active = x.dataset.fmtFilter === fmtFilter;
       x.className = `fmt-btn rounded-md px-2.5 py-1 text-[11px] font-bold ${active ? "bg-[#22C55E]/30 text-[#4ADE80]" : "bg-white/10 text-white/70"}`;
     });
@@ -546,13 +546,13 @@ const owners = [
 
   // ---------- Reserva: slots + confirmación ----------
   let slot = "08:00";
-  const slotBtns = Array.from(document.querySelectorAll(".slot-btn"));
+  const slotBtns = Array.from(document.querySelectorAll<HTMLElement>(".slot-btn"));
   const summary = document.getElementById("book-summary");
   const ticketRange = document.getElementById("ticket-range");
   const ticketHour = document.getElementById("ticket-hour");
   const ticketCode = document.getElementById("ticket-code");
   const bookMsg = document.getElementById("book-msg");
-  const fmtHour = (h) => {
+  const fmtHour = (h: string) => {
     const [hh, mm] = h.split(":").map(Number);
     const end = hh + 1;
     return { range: `${h} - ${String(end).padStart(2, "0")}:00`, ampm: `${hh > 12 ? hh - 12 : hh}:${String(mm).padStart(2, "0")} ${hh >= 12 ? "PM" : "AM"}` };
@@ -578,9 +578,9 @@ const owners = [
   });
 
   // ---------- Estrellas ----------
-  document.querySelectorAll("#stars [data-star]").forEach(s => s.addEventListener("click", () => {
+  document.querySelectorAll<HTMLElement>("#stars [data-star]").forEach(s => s.addEventListener("click", () => {
     const v = parseInt(s.dataset.star || "5", 10);
-    document.querySelectorAll("#stars [data-star]").forEach(x => {
+    document.querySelectorAll<HTMLElement>("#stars [data-star]").forEach(x => {
       x.style.opacity = parseInt(x.dataset.star || "0", 10) <= v ? "1" : "0.3";
     });
   }));
@@ -591,10 +591,11 @@ const owners = [
     entries.forEach(e => {
       if (!e.isIntersecting) return;
       const el = e.target;
+      if (!(el instanceof HTMLElement)) return;
       const target = parseInt(el.dataset.count || "0", 10);
       const suffix = el.dataset.suffix || "";
       const t0 = performance.now();
-      const tick = (t) => {
+      const tick = (t: number) => {
         const p = Math.min(1, (t - t0) / 1200);
         el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
         if (p < 1) requestAnimationFrame(tick);

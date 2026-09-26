@@ -318,7 +318,7 @@ const quotes = [
           ].map(([n, p, d, feats], i) => (
             <div class={`rounded-2xl border bg-white p-7 ${i === 1 ? "border-[#22C55E] shadow-[0_8px_30px_rgba(34,197,94,0.18)]" : "border-[#E7E5E4]"}`}>
               <h3 class="font-bold text-[#101613]">{n}</h3>
-              <p class="mt-2 text-4xl font-black text-[#101613]">S/ <span class="precio" data-men={p} data-anu={p === "0" ? "0" : String((parseFloat(p) * 0.8).toFixed(2))}>{p}</span><small class="text-sm font-normal text-[#8A938D]">/mes</small></p>
+              <p class="mt-2 text-4xl font-black text-[#101613]">S/ <span class="precio" data-men={p} data-anu={p === "0" ? "0" : String((parseFloat(String(p)) * 0.8).toFixed(2))}>{p}</span><small class="text-sm font-normal text-[#8A938D]">/mes</small></p>
               <p class="mt-1 text-sm text-[#5B6660]">{d}</p>
               <ul class="mt-4 space-y-2 text-sm text-[#3F4A44]">
                 {(feats as string[]).map((f) => <li>✓ {f}</li>)}
@@ -451,10 +451,11 @@ const quotes = [
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
       const el = e.target;
+      if (!(el instanceof HTMLElement)) return;
       const target = parseInt(el.dataset.count || "0", 10);
       const useK = el.hasAttribute("data-format");
       const t0 = performance.now();
-      const tick = (t) => {
+      const tick = (t: number) => {
         const p = Math.min(1, (t - t0) / 1400);
         const v = Math.round(target * (1 - Math.pow(1 - p, 3)));
         el.textContent = useK ? (v >= 1000 ? "2,500" : v.toLocaleString("es-PE")) : v.toLocaleString("es-PE");
@@ -467,7 +468,7 @@ const quotes = [
   counters.forEach((c) => cio.observe(c));
 
   // ---------- Chart draw ----------
-  const line = document.getElementById("dash-line");
+  const line = document.querySelector<SVGPathElement>("#dash-line");
   if (line) {
     const len = line.getTotalLength();
     line.style.strokeDasharray = String(len);
@@ -494,8 +495,8 @@ const quotes = [
     ri = (ri + 1) % (steps.length + 2);
     steps.forEach((s, i) => {
       const done = i < ri;
-      const dot = s.querySelector(".reg-dot");
-      const bar = s.querySelector(".reg-bar");
+      const dot = s.querySelector<HTMLElement>(".reg-dot");
+      const bar = s.querySelector<HTMLElement>(".reg-bar");
       if (dot) { dot.textContent = done ? "✓" : ""; dot.style.background = done ? "#22C55E" : "transparent"; dot.style.borderColor = done ? "#22C55E" : "rgba(255,255,255,0.25)"; dot.style.color = "#fff"; }
       if (bar) bar.style.width = done ? "100%" : (i === ri ? "45%" : "0%");
     });
@@ -505,7 +506,7 @@ const quotes = [
 
   // ---------- Paso 02: slots en vivo ----------
   const toast = document.getElementById("slot-toast");
-  document.querySelectorAll("#live-slots .slot").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll<HTMLElement>("#live-slots .slot").forEach((b) => b.addEventListener("click", () => {
     document.querySelectorAll("#live-slots .slot").forEach((x) => { x.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-white/[0.07] text-white/80 hover:bg-white/[0.14]"; });
     b.className = "slot rounded-xl px-3 py-3 text-sm font-bold transition bg-[#22C55E] text-white";
     if (toast) {
@@ -547,12 +548,12 @@ const quotes = [
   // ---------- Caja y stock ----------
   let ticket = 0;
   const ticketEl = document.getElementById("ticket-total");
-  document.querySelectorAll(".prod").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll<HTMLElement>(".prod").forEach((b) => b.addEventListener("click", () => {
     let stock = parseInt(b.dataset.stock || "0", 10);
     if (stock <= 0) return;
     stock--;
     b.dataset.stock = String(stock);
-    const s = b.querySelector(".stock");
+    const s = b.querySelector<HTMLElement>(".stock");
     if (s) { s.textContent = `${stock} u.`; if (stock <= 5) s.style.color = "#EAB308"; }
     ticket += parseInt(b.dataset.price || "0", 10);
     if (ticketEl) ticketEl.textContent = String(ticket);
@@ -566,13 +567,13 @@ const quotes = [
   });
 
   // ---------- Roles ----------
-  const perms = {
+  const perms: Record<string, string[]> = {
     "Dueño": ["Todo el negocio", "Ingresos y reportes", "Crea administradores"],
     "Admin": ["Su sede y sus canchas", "Reservas, caja y reportes de su sede", "No ve las otras sedes"],
     "Vendedor": ["Opera reservas y caja", "Valida códigos de acceso", "NO ve tus ingresos"],
   };
   const permList = document.getElementById("role-perms");
-  const paintPerms = (role) => {
+  const paintPerms = (role: string) => {
     if (!permList) return;
     permList.innerHTML = "";
     (perms[role] || []).forEach((p) => {
@@ -585,7 +586,7 @@ const quotes = [
       permList.appendChild(li);
     });
   };
-  document.querySelectorAll(".role").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll<HTMLElement>(".role").forEach((b) => b.addEventListener("click", () => {
     document.querySelectorAll(".role").forEach((x) => {
       const on = x === b;
       x.className = `role flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${on ? "border-[#22C55E]/50 bg-[#22C55E]/10" : "border-transparent bg-white/[0.04] hover:bg-white/[0.08]"}`;
@@ -599,8 +600,8 @@ const quotes = [
   // ---------- Planes toggle ----------
   const bm = document.getElementById("btn-men");
   const ba = document.getElementById("btn-anu");
-  const precios = Array.from(document.querySelectorAll(".precio"));
-  const modo = (anual) => {
+  const precios = Array.from(document.querySelectorAll<HTMLElement>(".precio"));
+  const modo = (anual: boolean) => {
     precios.forEach((p) => { p.textContent = anual ? p.dataset.anu || "" : p.dataset.men || ""; });
     if (bm) bm.className = `rounded-full px-4 py-2 ${!anual ? "bg-[#060A08] text-white" : "text-[#5B6660]"}`;
     if (ba) ba.className = `rounded-full px-4 py-2 ${anual ? "bg-[#060A08] text-white" : "text-[#5B6660]"}`;
@@ -609,17 +610,19 @@ const quotes = [
   ba?.addEventListener("click", () => modo(true));
 
   // ---------- Inscripción torneo ----------
-  const insc = document.getElementById("insc");
+  const insc = document.querySelector<HTMLInputElement>("#insc");
   const paintInsc = () => {
     const v = parseInt(insc?.value || "280", 10) || 0;
-    document.getElementById("insc-val").textContent = v.toLocaleString("es-PE");
-    document.getElementById("insc-total").textContent = (v * 8).toLocaleString("es-PE");
+    const val = document.getElementById("insc-val");
+    const total = document.getElementById("insc-total");
+    if (val) val.textContent = v.toLocaleString("es-PE");
+    if (total) total.textContent = (v * 8).toLocaleString("es-PE");
   };
   insc?.addEventListener("input", paintInsc);
 
   // ---------- Bracket interactivo ----------
-  const sfSlots = Array.from(document.querySelectorAll('[data-round="sf"] .slot-b'));
-  const fSlots = Array.from(document.querySelectorAll('[data-round="f"] .slot-b'));
+  const sfSlots = Array.from(document.querySelectorAll<HTMLElement>('[data-round="sf"] .slot-b'));
+  const fSlots = Array.from(document.querySelectorAll<HTMLElement>('[data-round="f"] .slot-b'));
   const champ = document.getElementById("champion");
   const seed = [["Los Pumas","Los Cracks"],["Atlético 10","Los Tigres"]];
   // seed inicial como la referencia
@@ -630,19 +633,19 @@ const quotes = [
   fSlots[0].textContent = "Los Pumas"; fSlots[0].dataset.slot = "Los Pumas";
   fSlots[1].textContent = "Atlético 10"; fSlots[1].dataset.slot = "Atlético 10";
   if (champ) champ.textContent = "Los Pumas";
-  const clearDown = (round) => {
+  const clearDown = (round: string) => {
     if (round === "qf") { sfSlots.forEach((s) => { s.textContent = "—"; s.dataset.slot = ""; }); }
     if (round === "qf" || round === "sf") { fSlots.forEach((s) => { s.textContent = "—"; s.dataset.slot = ""; }); if (champ) champ.textContent = "—"; }
   };
-  document.querySelectorAll('[data-round="qf"] [data-match]').forEach((m) => {
-    m.querySelectorAll(".team").forEach((t) => t.addEventListener("click", () => {
+  document.querySelectorAll<HTMLElement>('[data-round="qf"] [data-match]').forEach((m) => {
+    m.querySelectorAll<HTMLElement>(".team").forEach((t) => t.addEventListener("click", () => {
       const mi = parseInt(m.dataset.match || "0", 10);
       // cada llave QF alimenta un slot de semis (mi 0,1 -> SF0 ; mi 2,3 -> SF1)
       const sf = mi < 2 ? 0 : 1;
       const slot = sfSlots[sf * 2 + (mi % 2)];
       slot.textContent = t.dataset.team || "";
       slot.dataset.slot = t.dataset.team || "";
-      m.querySelectorAll(".team").forEach((x) => { x.style.borderColor = x === t ? "#4ADE80" : ""; x.style.background = x === t ? "rgba(34,197,94,0.15)" : ""; });
+      m.querySelectorAll<HTMLElement>(".team").forEach((x) => { x.style.borderColor = x === t ? "#4ADE80" : ""; x.style.background = x === t ? "rgba(34,197,94,0.15)" : ""; });
       clearDown("sf");
     }));
   });
@@ -660,9 +663,9 @@ const quotes = [
 
   // ---------- Testimonios carrusel ----------
   const qt = document.getElementById("quote-track");
-  const qdots = Array.from(document.querySelectorAll("[data-q]"));
-  let qi = 0, qtimer;
-  const showQ = (i) => {
+  const qdots = Array.from(document.querySelectorAll<HTMLElement>("[data-q]"));
+  let qi = 0, qtimer: ReturnType<typeof setInterval> | undefined;
+  const showQ = (i: number) => {
     qi = (i + qdots.length) % qdots.length;
     if (qt) qt.style.transform = `translateX(-${qi * 100}%)`;
     qdots.forEach((d, k) => { d.className = `h-1.5 rounded-full transition-all ${k === qi ? "w-6 bg-[#4ADE80]" : "w-1.5 bg-white/25"}`; });
@@ -679,7 +682,7 @@ const quotes = [
     const ans = item.querySelector(".faq-a");
     const icon = item.querySelector(".faq-icon");
     btn?.addEventListener("click", () => {
-      const open = ans?.classList.toggle("grid-rows-[0fr]");
+      ans?.classList.toggle("grid-rows-[0fr]");
       const isOpen = !ans?.classList.contains("grid-rows-[0fr]");
       ans?.classList.toggle("grid-rows-[1fr]", isOpen);
       btn.setAttribute("aria-expanded", String(isOpen));

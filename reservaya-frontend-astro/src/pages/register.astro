@@ -112,7 +112,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
   </section>
 </BaseLayout>
 
-<script define:vars={{ apiUrl, appUrl }}>
+<script is:inline define:vars={{ apiUrl, appUrl }}>
   const steps = [...document.querySelectorAll(".reg-step")];
   const bars = [...document.querySelectorAll(".step-bar")];
   const nombre = document.getElementById("rg-nombre");

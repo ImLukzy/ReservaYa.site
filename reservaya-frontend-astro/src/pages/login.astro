@@ -59,7 +59,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
   </section>
 </BaseLayout>
 
-<script define:vars={{ apiUrl, appUrl }}>
+<script is:inline define:vars={{ apiUrl, appUrl }}>
   const form = document.getElementById("login-page-form");
   const status = document.getElementById("lp-status");
   const submit = document.getElementById("lp-submit");
@@ -116,13 +116,9 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
       }
       const role = body?.usuario?.rol;
       const params = new URLSearchParams(window.location.search);
-      const defaultUrl = role === "SUPERADMIN"
-        ? `${appUrl}/superadmin`
-        : role === "TECNICO"
-          ? `${appUrl}/tecnico`
-          : role === "ADMIN"
-            ? `${appUrl}/admin`
-            : `${appUrl}/dashboard`;
+      // Espejo de fallbackPorRol (reservaya-nextjs-api/lib/permissions.ts).
+      const inicio = { TECNICO: "/tecnico", SUPERADMIN: "/admin", ADMIN: "/admin/agenda" };
+      const defaultUrl = appUrl + (inicio[role] || "/dashboard");
       window.location.href = getSafeReturnUrl(params.get("returnUrl"), defaultUrl);
     } catch (error) {
       status.textContent = error instanceof TypeError
