@@ -174,7 +174,8 @@ body {
   --announce-to: #14532D;
 }
 
-/* ReservaYa es solo modo claro: las secciones oscuras usan colores explícitos. */
+/* ReservaYa es solo modo claro: las secciones oscuras usan colores explícitos;
+   si un contenedor oscuro tiene textos sin clase de color, lleva `on-dark`. */
 
  /* =========================================================
    BASE
@@ -230,6 +231,17 @@ main [id] {
   strong {
     color: var(--text-main);
     font-weight: 600;
+  }
+
+  /* Títulos: span/em/strong internos heredan el color del heading. */
+  :is(h1, h2, h3, h4, h5, h6) :is(span, em, strong) {
+    color: inherit;
+  }
+
+  /* Superficie oscura: estos textos heredan el color que declara el
+     contenedor (text-white, text-white/60…) en vez de la paleta clara. */
+  .on-dark :is(h1, h2, h3, h4, h5, p, span, li, em, strong) {
+    color: inherit;
   }
 }
 
