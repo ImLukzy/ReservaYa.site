@@ -9,5 +9,5 @@
 5. **Redirecciones:** `returnUrl` pasa por `getSafeReturnUrl` (`src/pages/login.astro`): solo rutas `/…` locales o mismo origen.
 6. **Sin PII hardcodeada** ni mocks de datos reales; estados vacíos/skeleton neutros.
 7. **Sin `alert()`** ni `console.*` sueltos: mensajes en la UI (toast o texto de error).
-8. **Estilo:** fondo `#FAFAF9`/blanco, texto `#101613`/`#5B6660`/`#8A938D`, acento verde `#22C55E`; bordes `#E7E5E4`. Móvil primero, sin scroll horizontal a 375 px. Contenedor oscuro: color explícito en cada texto o `on-dark` en el contenedor; la capa base de `global.css` fija color en `h1–h5, p, span, li, em, strong` y corta la herencia.
+8. **Estilo:** fondo `#FAFAF9`/blanco, texto `#101613`/`#5B6660`/`#8A938D`, acento verde `#22C55E`; bordes `#E7E5E4`. Móvil primero, sin scroll horizontal a 375 px. Contenedor oscuro: color explícito en cada texto o `on-dark` en el contenedor; la capa base de `global.css` fija color en `h1–h5, p, span, li, em, strong` y corta la herencia, salvo `span/em/strong` dentro de headings (spec 10) y de enlaces o botones (spec 12).
 9. **Verificación:** `npx astro check` (0 errores) + `npm run build` + `node --check` sobre el JS inline emitido en `dist/` cuando se toca un script inline.
