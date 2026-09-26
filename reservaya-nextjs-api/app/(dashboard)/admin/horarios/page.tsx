@@ -4,6 +4,8 @@ import { canAccess, fallbackPorRol } from '@/lib/permissions';
 import { getComplejos } from '@/lib/b2b-api';
 import * as api from '@/lib/api';
 import { HorariosPanel } from '@/components/b2b/HorariosPanel';
+import { crearCarga } from '@/lib/carga';
+import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,13 +14,15 @@ export default async function HorariosPage() {
   if (!session) redirect('/login');
   if (!canAccess('horarios', session.rol)) redirect(fallbackPorRol(session.rol));
 
+  const carga = crearCarga();
   const [complejos, canchas] = await Promise.all([
-    getComplejos().catch(() => []),
-    api.getCanchas().catch(() => []),
+    carga.de(getComplejos(), [], 'los complejos'),
+    carga.de(api.getCanchas(), [], 'las canchas'),
   ]);
 
   return (
     <div>
+      <AvisoCarga errores={carga.errores} />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Horario operativo</h1>
         <p className="text-gray-500 mt-1">

@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { login } from '@/lib/api-client'
 import { ApiError } from '@/lib/api-types'
 import { publicAppUrl } from '@/lib/public-app'
+import { fallbackPorRol } from '@/lib/permissions'
+import { returnUrlSeguro } from '@/lib/redirect'
 
 const MSG_BLOQUEO = 'Demasiados intentos. Espera 15 minutos antes de reintentar.'
 
@@ -27,16 +29,12 @@ export default function LoginPage() {
       setLoading(false)
       // Si viene de la web pública (Astro /mis-reservas), vuelve ahí tras entrar.
       const params = new URLSearchParams(window.location.search)
-      const returnUrl = params.get('returnUrl')
-      if (returnUrl && (/^\/[^/]/.test(returnUrl) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(returnUrl))) {
+      const returnUrl = returnUrlSeguro(params.get('returnUrl'), window.location.origin, [publicAppUrl])
+      if (returnUrl) {
         window.location.href = returnUrl
         return
       }
-      const rol = data.usuario.rol
-      if (rol === 'SUPERADMIN') router.push('/superadmin')
-      else if (rol === 'TECNICO') router.push('/tecnico')
-      else if (rol === 'ADMIN') router.push('/admin')
-      else router.push('/dashboard')
+      router.push(fallbackPorRol(data.usuario.rol))
     } catch (error) {
       setLoading(false)
       if (error instanceof ApiError && error.status === 429) {

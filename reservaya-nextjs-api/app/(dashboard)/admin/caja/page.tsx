@@ -3,6 +3,8 @@ import { getSession } from '@/lib/session';
 import { canAccess, fallbackPorRol } from '@/lib/permissions';
 import { getCanchas } from '@/lib/api';
 import { CajaPanel } from '@/components/b2b/CajaPanel';
+import { crearCarga } from '@/lib/carga';
+import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,16 +13,20 @@ export default async function Page() {
   if (!session) redirect('/login');
   if (!canAccess('caja', session.rol)) redirect(fallbackPorRol(session.rol));
 
-  const canchas = await getCanchas(true).catch(() => []);
+  const carga = crearCarga();
+  const canchas = await carga.de(getCanchas(true), [], 'las canchas');
 
   return (
-    <CajaPanel
-      canchas={canchas.map((c) => ({
-        id: c.id,
-        nombre: c.nombre,
-        tipo: String(c.tipo),
-        precioPorHora: String(c.precioPorHora),
-      }))}
-    />
+    <>
+      <AvisoCarga errores={carga.errores} />
+      <CajaPanel
+        canchas={canchas.map((c) => ({
+          id: c.id,
+          nombre: c.nombre,
+          tipo: String(c.tipo),
+          precioPorHora: String(c.precioPorHora),
+        }))}
+      />
+    </>
   );
 }

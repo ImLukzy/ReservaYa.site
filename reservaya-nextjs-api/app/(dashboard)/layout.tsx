@@ -12,7 +12,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         email={session.email}
       />
       <main className="relative min-w-0 flex-1 overflow-y-auto">
-        <div className="p-4 sm:p-6 md:p-8">{children}</div>
+        {/* pt-16 hasta lg: deja libre el botón de menú fijo (Sidebar, left-4 top-4). */}
+        <div className="px-4 pb-4 pt-16 sm:px-6 sm:pb-6 md:px-8 md:pb-8 lg:pt-8">{children}</div>
       </main>
     </div>
   );

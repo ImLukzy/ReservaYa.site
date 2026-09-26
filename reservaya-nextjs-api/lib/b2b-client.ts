@@ -1,5 +1,6 @@
 // Cliente B2B para Client Components: fetch('/api/...') con credentials include.
 // Sin mocks: todo sale del backend .NET. Este módulo NO importa next/headers.
+import { apiRequest as request } from './http';
 
 export type CategoriaProducto = 'SNACK' | 'ALQUILER' | 'SERVICIO';
 export type MetodoPago = 'EFECTIVO' | 'YAPE' | 'CULQI' | 'TARJETA' | 'TRANSFERENCIA';
@@ -57,25 +58,8 @@ export interface MetaDto {
   periodoFin: string;
 }
 
-export class B2BApiError extends Error {
-  status: number;
-  constructor(status: number, message: string) {
-    super(message);
-    this.name = 'B2BApiError';
-    this.status = status;
-  }
-}
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
-    ...init,
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
-    credentials: 'include',
-  });
-  const body = await res.json().catch(() => null);
-  if (!res.ok) throw new B2BApiError(res.status, body?.error ?? `Error ${res.status}`);
-  return body as T;
-}
+// Mismo error que el resto del panel (lib/api-types.ts); alias por compatibilidad.
+export { ApiError as B2BApiError } from './api-types';
 
 export const soles = (n: number) =>
   `S/ ${n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

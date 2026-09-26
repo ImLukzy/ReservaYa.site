@@ -4,6 +4,8 @@ import { canAccess, fallbackPorRol } from '@/lib/permissions';
 import { getCanchas, getReservas } from '@/lib/api';
 import { getComplejos } from '@/lib/b2b-api';
 import { CronogramaView } from '@/components/b2b/CronogramaView';
+import { crearCarga } from '@/lib/carga';
+import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,18 +14,22 @@ export default async function Page() {
   if (!session) redirect('/login');
   if (!canAccess('agenda', session.rol)) redirect(fallbackPorRol(session.rol));
 
+  const carga = crearCarga();
   const [canchas, reservas, complejos] = await Promise.all([
-    getCanchas(true).catch(() => []),
-    getReservas().catch(() => []),
-    getComplejos().catch(() => []),
+    carga.de(getCanchas(true), [], 'las canchas'),
+    carga.de(getReservas(), [], 'las reservas'),
+    carga.de(getComplejos(), [], 'los complejos'),
   ]);
 
   return (
-    <CronogramaView
-      canchas={canchas}
-      reservasIniciales={reservas}
-      complejos={complejos}
-      fechaInicial={new Date().toISOString().slice(0, 10)}
-    />
+    <>
+      <AvisoCarga errores={carga.errores} />
+      <CronogramaView
+        canchas={canchas}
+        reservasIniciales={reservas}
+        complejos={complejos}
+        fechaInicial={new Date().toISOString().slice(0, 10)}
+      />
+    </>
   );
 }

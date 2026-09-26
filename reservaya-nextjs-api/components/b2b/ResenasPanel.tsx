@@ -66,6 +66,14 @@ function fechaCorta(f: string): string {
   return d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+// GET /api/resenas (404 = aún sin reseñas). Lanza si la API falla.
+async function obtenerResenas(): Promise<Resena[]> {
+  const res = await fetch('/api/resenas', { credentials: 'include', cache: 'no-store' });
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error(`Error ${res.status}`);
+  return parseResenas(await res.json().catch(() => null));
+}
+
 export function ResenasPanel() {
   const [resenas, setResenas] = useState<Resena[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -75,25 +83,23 @@ export function ResenasPanel() {
   const [enviando, setEnviando] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
-  const cargar = useCallback(async () => {
+  // setState solo en callbacks de la promesa; el reintento usa `recargar`.
+  const cargar = useCallback(
+    () =>
+      obtenerResenas()
+        .then(setResenas, () => {
+          setError('No se pudieron cargar las reseñas. Revisa tu conexión e inténtalo de nuevo.');
+          setResenas([]);
+        })
+        .finally(() => setCargando(false)),
+    []
+  );
+
+  const recargar = useCallback(() => {
     setCargando(true);
     setError(null);
-    try {
-      const res = await fetch('/api/resenas', { credentials: 'include', cache: 'no-store' });
-      if (res.status === 404) {
-        setResenas([]);
-        return;
-      }
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      const body = await res.json().catch(() => null);
-      setResenas(parseResenas(body));
-    } catch {
-      setError('No se pudieron cargar las reseñas. Revisa tu conexión e inténtalo de nuevo.');
-      setResenas([]);
-    } finally {
-      setCargando(false);
-    }
-  }, []);
+    return cargar();
+  }, [cargar]);
 
   useEffect(() => {
     void cargar();
@@ -199,7 +205,7 @@ export function ResenasPanel() {
             <p className="text-sm font-semibold text-[#0F172A]">{error}</p>
             <button
               type="button"
-              onClick={() => void cargar()}
+              onClick={() => void recargar()}
               className="mt-3 rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold text-[#0F172A] hover:border-[#22C55E]"
             >
               Reintentar

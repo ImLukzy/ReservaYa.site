@@ -1,16 +1,5 @@
 import type { Cancha, CanchaInput, EstadoReserva, Rol, UsuarioSesion } from './api-types'
-import { ApiError } from './api-types'
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, {
-    ...init,
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
-    credentials: 'include',
-  })
-  const body = await response.json().catch(() => null)
-  if (!response.ok) throw new ApiError(response.status, body?.error ?? `Error ${response.status}`)
-  return body as T
-}
+import { apiRequest as request } from './http'
 
 export const login = (email: string, password: string) =>
   request<{ usuario: UsuarioSesion }>('/api/auth/login', {

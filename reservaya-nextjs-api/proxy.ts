@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { config as appConfig } from '@/lib/config'
+import { fallbackPorRol } from '@/lib/permissions'
+import type { Rol } from '@/lib/api-types'
 import { jwtVerify } from 'jose'
+
+// Zonas del panel y roles que pueden entrar (el resto va a su inicio).
+const ZONAS: ReadonlyArray<[prefijo: string, roles: readonly Rol[]]> = [
+  ['/dashboard', ['USUARIO']],
+  ['/admin', ['ADMIN', 'SUPERADMIN', 'TECNICO']],
+  ['/superadmin', ['SUPERADMIN']],
+  ['/tecnico', ['TECNICO']],
+]
+const ROLES: readonly string[] = ['USUARIO', 'ADMIN', 'SUPERADMIN', 'TECNICO']
 
 export async function proxy(request: NextRequest) {
   const token = request.cookies.get(appConfig.jwtCookieName)?.value
@@ -11,25 +22,19 @@ export async function proxy(request: NextRequest) {
   try {
     const secret = new TextEncoder().encode(appConfig.jwtSecret)
     const { payload } = await jwtVerify(token, secret)
-    const role = payload.rol as string
+    // Rol desconocido (p. ej. PERSONAL heredado) = token inválido: evita bucles de redirección.
+    if (typeof payload.rol !== 'string' || !ROLES.includes(payload.rol)) throw new Error('rol')
+    const role = payload.rol as Rol
+
+    const path = request.nextUrl.pathname
+    const zona = ZONAS.find(([prefijo]) => path === prefijo || path.startsWith(prefijo + '/'))
+    if (zona && !zona[1].includes(role)) {
+      return NextResponse.redirect(new URL(fallbackPorRol(role), request.url))
+    }
 
     const response = NextResponse.next()
     response.headers.set('Cache-Control', 'private, no-store, max-age=0')
     response.headers.set('Pragma', 'no-cache')
-
-    // Redirect by role if accessing wrong dashboard.
-    const path = request.nextUrl.pathname
-    const expectedPath = getDashboardPath(role)
-    if (path.startsWith('/dashboard') && role !== 'USUARIO') {
-      return NextResponse.redirect(new URL(expectedPath, request.url))
-    }
-    if (path.startsWith('/admin') && role !== 'ADMIN' && role !== 'SUPERADMIN' && role !== 'TECNICO') {
-      return NextResponse.redirect(new URL(expectedPath, request.url))
-    }
-    if (path.startsWith('/superadmin') && role !== 'SUPERADMIN') {
-      return NextResponse.redirect(new URL(expectedPath, request.url))
-    }
-
     return response
   } catch {
     const response = NextResponse.redirect(new URL('/login', request.url))
@@ -38,15 +43,6 @@ export async function proxy(request: NextRequest) {
   }
 }
 
-function getDashboardPath(role: string): string {
-  switch (role) {
-    case 'TECNICO': return '/tecnico'
-    case 'SUPERADMIN': return '/admin'
-    case 'ADMIN': return '/admin/agenda'
-    default: return '/dashboard'
-  }
-}
-
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/superadmin/:path*'],
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/superadmin/:path*', '/tecnico/:path*'],
 }

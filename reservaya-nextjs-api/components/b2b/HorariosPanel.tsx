@@ -42,17 +42,21 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
   const [complejoId, setComplejoId] = useState(complejos[0]?.id ?? '');
   const [canchaId, setCanchaId] = useState('');
   const [dias, setDias] = useState<DiaRow[]>(DEFECTO);
-  const [cargando, setCargando] = useState(false);
+  const [cargando, setCargando] = useState(Boolean(complejos[0]?.id));
   const [guardando, setGuardando] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; texto: string } | null>(null);
 
   const canchasDelComplejo = canchas.filter((c) => c.complejoId === complejoId);
 
+  // Spinner y limpieza al cambiar de local/cancha; el efecto solo carga.
+  function marcarCarga() {
+    setCargando(true);
+    setMsg(null);
+  }
+
   useEffect(() => {
     if (!complejoId) return;
     let vivo = true;
-    setCargando(true);
-    setMsg(null);
     (async () => {
       try {
         const qs = canchaId
@@ -144,6 +148,7 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
             id="h-complejo"
             value={complejoId}
             onChange={(e) => {
+              marcarCarga();
               setComplejoId(e.target.value);
               setCanchaId('');
             }}
@@ -161,7 +166,10 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
           <select
             id="h-cancha"
             value={canchaId}
-            onChange={(e) => setCanchaId(e.target.value)}
+            onChange={(e) => {
+              marcarCarga();
+              setCanchaId(e.target.value);
+            }}
             className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25"
           >
             <option value="">Todo el local</option>

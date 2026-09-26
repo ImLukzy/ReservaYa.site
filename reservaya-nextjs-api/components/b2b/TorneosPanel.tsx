@@ -111,6 +111,14 @@ async function api<T>(ruta: string, init?: RequestInit): Promise<T> {
 const inputCls =
   'mt-1.5 w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/30';
 
+// GET /api/torneos (404 = aún sin torneos). Lanza si la API falla.
+async function obtenerTorneos(): Promise<Torneo[]> {
+  const res = await fetch('/api/torneos', { credentials: 'include', cache: 'no-store' });
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error(`Error ${res.status}`);
+  return parseTorneos(await res.json().catch(() => null));
+}
+
 export function TorneosPanel() {
   const [torneos, setTorneos] = useState<Torneo[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -127,24 +135,23 @@ export function TorneosPanel() {
   const [fPartido, setFPartido] = useState({ local: '', visita: '', fecha: '' });
   const [fResultado, setFResultado] = useState<{ id: string; gl: string; gv: string } | null>(null);
 
-  const cargar = useCallback(async () => {
+  // setState solo en callbacks de la promesa; acciones y reintento usan `recargar`.
+  const cargar = useCallback(
+    () =>
+      obtenerTorneos()
+        .then(setTorneos, () => {
+          setError('No se pudieron cargar los torneos. Revisa tu conexión e inténtalo de nuevo.');
+          setTorneos([]);
+        })
+        .finally(() => setCargando(false)),
+    []
+  );
+
+  const recargar = useCallback(() => {
     setCargando(true);
     setError(null);
-    try {
-      const res = await fetch('/api/torneos', { credentials: 'include', cache: 'no-store' });
-      if (res.status === 404) {
-        setTorneos([]);
-        return;
-      }
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      setTorneos(parseTorneos(await res.json().catch(() => null)));
-    } catch {
-      setError('No se pudieron cargar los torneos. Revisa tu conexión e inténtalo de nuevo.');
-      setTorneos([]);
-    } finally {
-      setCargando(false);
-    }
-  }, []);
+    return cargar();
+  }, [cargar]);
 
   useEffect(() => {
     void cargar();
@@ -189,7 +196,7 @@ export function TorneosPanel() {
       setToast('Torneo creado.');
       setModalCrear(false);
       setFTorneo({ nombre: '', cupo: '16', premio: '', fechaInicio: '', fechaFin: '' });
-      await cargar();
+      await recargar();
     } catch (err) {
       setToast(err instanceof Error ? err.message : 'No se pudo crear.');
     } finally {
@@ -237,7 +244,7 @@ export function TorneosPanel() {
       setToast('Equipo inscrito.');
       setModalInscripcion(false);
       setFInsc({ equipo: '', responsable: '' });
-      await cargar();
+      await recargar();
     } catch (err) {
       setToast(err instanceof Error ? err.message : 'No se pudo inscribir.');
     } finally {
@@ -261,7 +268,7 @@ export function TorneosPanel() {
       setToast('Partido agregado al fixture.');
       setModalPartido(false);
       setFPartido({ local: '', visita: '', fecha: '' });
-      await cargar();
+      await recargar();
     } catch (err) {
       setToast(err instanceof Error ? err.message : 'No se pudo agregar.');
     } finally {
@@ -280,7 +287,7 @@ export function TorneosPanel() {
       });
       setToast('Resultado registrado.');
       setFResultado(null);
-      await cargar();
+      await recargar();
     } catch (err) {
       setToast(err instanceof Error ? err.message : 'No se pudo registrar.');
     } finally {
@@ -332,7 +339,7 @@ export function TorneosPanel() {
             <p className="text-sm font-semibold text-[#0F172A]">{error}</p>
             <button
               type="button"
-              onClick={() => void cargar()}
+              onClick={() => void recargar()}
               className="mt-3 rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold text-[#0F172A] hover:border-[#22C55E]"
             >
               Reintentar

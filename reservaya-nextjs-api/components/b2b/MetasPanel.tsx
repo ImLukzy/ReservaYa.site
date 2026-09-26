@@ -100,24 +100,38 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
     }
   }, []);
 
+  // setState solo en callbacks de la promesa; `refrescar` añade spinner para acciones.
+  const cargarMetas = useCallback(
+    () =>
+      getMetas()
+        .then((res) => {
+          setMetas(res.metas);
+          registrarCompletadas(res.metas);
+        })
+        .catch((e) => setError(e instanceof B2BApiError ? e.message : 'No se pudieron cargar las metas'))
+        .finally(() => setCargando(false)),
+    [registrarCompletadas]
+  );
+
   const refrescar = useCallback(async () => {
     setCargando(true);
     setError(null);
-    try {
-      const res = await getMetas();
-      setMetas(res.metas);
-      registrarCompletadas(res.metas);
-    } catch (e) {
-      setError(e instanceof B2BApiError ? e.message : 'No se pudieron cargar las metas');
-    } finally {
-      setCargando(false);
-    }
-  }, [registrarCompletadas]);
+    await cargarMetas();
+  }, [cargarMetas]);
 
+  // Historial en localStorage + hora de referencia: se leen tras hidratar (SSR sin window).
+  const [ahora, setAhora] = useState<number | null>(null);
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- sincroniza con localStorage y el reloj */
     setHistorial(leerHistorial());
-    void refrescar();
-  }, [refrescar]);
+    setAhora(Date.now());
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
+  // Revalida las metas iniciales del servidor sin spinner.
+  useEffect(() => {
+    void cargarMetas();
+  }, [cargarMetas]);
 
   async function guardar(fd: FormData) {
     setGuardando(true);
@@ -162,9 +176,10 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
   }
 
   const histFiltrado = useMemo(() => {
-    const limite = Date.now() - (histTab === 'semanal' ? 7 : 30) * 24 * 60 * 60 * 1000;
+    if (ahora === null) return [];
+    const limite = ahora - (histTab === 'semanal' ? 7 : 30) * 24 * 60 * 60 * 1000;
     return historial.filter((h) => new Date(h.completadaEn).getTime() >= limite);
-  }, [historial, histTab]);
+  }, [historial, histTab, ahora]);
 
   const hoy = new Date();
   const iniMes = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;

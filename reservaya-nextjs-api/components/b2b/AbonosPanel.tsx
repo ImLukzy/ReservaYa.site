@@ -60,6 +60,8 @@ export function AbonosPanel() {
   const [guardando, setGuardando] = useState(false);
   const [errorCuenta, setErrorCuenta] = useState<string | null>(null);
 
+  // Lectura única de localStorage tras hidratar (en SSR no hay window): sincroniza con un sistema externo.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(CUENTA_KEY);
@@ -76,6 +78,7 @@ export function AbonosPanel() {
       // Sin cuenta guardada: se muestra el aviso amarillo.
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     let vivo = true;

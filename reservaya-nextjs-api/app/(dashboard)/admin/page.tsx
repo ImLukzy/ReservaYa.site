@@ -7,6 +7,8 @@ import { getSession } from '@/lib/session';
 import { getComplejos } from '@/lib/b2b-api';
 import { NovedadCard } from '@/components/b2b/DashboardWidgets';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { crearCarga } from '@/lib/carga';
+import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,10 +24,11 @@ export default async function AdminPage() {
   if (session.rol === 'ADMIN') redirect('/admin/agenda');
   if (session.rol === 'TECNICO') redirect('/tecnico');
 
+  const carga = crearCarga();
   const [dashboard, reservas, complejos] = await Promise.all([
     api.getDashboard() as Promise<DashboardAdmin>,
-    api.getReservas().catch(() => []),
-    getComplejos().catch(() => []),
+    carga.de(api.getReservas(), [], 'las reservas'),
+    carga.de(getComplejos(), [], 'los complejos'),
   ]);
 
   const ahora = new Date();
@@ -74,6 +77,7 @@ export default async function AdminPage() {
 
   return (
     <div>
+      <AvisoCarga errores={carga.errores} />
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>

@@ -17,7 +17,6 @@ import type { Cancha, EstadoReserva, Reserva } from '@/lib/api';
 import type { ComplejoResumen } from '@/lib/b2b-api';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
 
 type Vista = 'dia' | 'semana' | 'mes' | 'horarios';
 type FiltroEstado = 'TODOS' | EstadoReserva;
@@ -110,6 +109,10 @@ function estiloBloque(r: Reserva): string {
   }
 }
 
+const DIAS_CORTO = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const aHHMM = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+const SIN_HORARIO = 'Sin horario: se genera Lun–Dom 08:00–21:00 con la primera reserva.';
+
 export function CronogramaView({
   canchas,
   reservasIniciales,
@@ -157,19 +160,15 @@ export function CronogramaView({
   const [horarioGuardando, setHorarioGuardando] = useState(false);
   const [horarioMsg, setHorarioMsg] = useState<{ ok: boolean; texto: string } | null>(null);
 
-  const DIAS_CORTO = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  const aHHMM = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  // Cancha sin local: no hay horario que pedir (se genera con la primera reserva).
+  const modalSinLocal = Boolean(modal && mCancha) && !canchas.find((c) => c.id === mCancha)?.complejoId;
+  const horarioTexto = modalSinLocal ? SIN_HORARIO : horarioTxt;
 
   // Horario operativo de la cancha elegida (se genera solo Lun–Dom 08:00–21:00).
   useEffect(() => {
     if (!modal || !mCancha) return;
-    const cancha = canchas.find((c) => c.id === mCancha);
-    const cid = cancha?.complejoId ?? null;
-    if (!cid) {
-      setHorarioTxt('Sin horario: se genera Lun–Dom 08:00–21:00 con la primera reserva.');
-      setHorarioRows([]);
-      return;
-    }
+    const cid = canchas.find((c) => c.id === mCancha)?.complejoId ?? null;
+    if (!cid) return;
     let vivo = true;
     (async () => {
       try {
@@ -179,7 +178,7 @@ export function CronogramaView({
           Array.isArray(body?.horarios) ? body.horarios : [];
         if (!vivo) return;
         if (rows.length === 0) {
-          setHorarioTxt('Sin horario: se genera Lun–Dom 08:00–21:00 con la primera reserva.');
+          setHorarioTxt(SIN_HORARIO);
           setHorarioRows([]);
           return;
         }
@@ -211,8 +210,6 @@ export function CronogramaView({
   useEffect(() => {
     if (vista !== 'horarios' || !horarioComplejoId) return;
     let vivo = true;
-    setHorarioCargando(true);
-    setHorarioMsg(null);
     (async () => {
       try {
         const qs = horarioCanchaId
@@ -249,6 +246,17 @@ export function CronogramaView({
       vivo = false;
     };
   }, [vista, horarioComplejoId, horarioCanchaId, canchas]);
+
+  // Spinner y limpieza al cambiar de local/cancha o volver a la vista; el efecto solo carga.
+  function marcarCargaHorario() {
+    setHorarioCargando(true);
+    setHorarioMsg(null);
+  }
+
+  function cambiarVista(v: Vista) {
+    if (v === 'horarios' && vista !== 'horarios' && horarioComplejoId) marcarCargaHorario();
+    setVista(v);
+  }
 
   const canchasPorId = useMemo(() => new Map(canchas.map((c) => [c.id, c])), [canchas]);
 
@@ -383,7 +391,7 @@ export function CronogramaView({
       setFormError('Fecha inválida.');
       return;
     }
-    if (horarioRows.length > 0) {
+    if (!modalSinLocal && horarioRows.length > 0) {
       const dow = new Date(`${mFecha}T12:00:00`).getDay();
       const row = horarioRows.find((r) => r.dia === dow);
       if (!row || !row.activo) {
@@ -600,6 +608,7 @@ export function CronogramaView({
               id="cr-h-complejo"
               value={horarioComplejoId}
               onChange={(e) => {
+                marcarCargaHorario();
                 setHorarioComplejoId(e.target.value);
                 setHorarioCanchaId('');
               }}
@@ -617,7 +626,10 @@ export function CronogramaView({
             <select
               id="cr-h-cancha"
               value={horarioCanchaId}
-              onChange={(e) => setHorarioCanchaId(e.target.value)}
+              onChange={(e) => {
+                marcarCargaHorario();
+                setHorarioCanchaId(e.target.value);
+              }}
               className="w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm font-semibold text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
             >
               <option value="">Todo el local</option>
@@ -690,7 +702,7 @@ export function CronogramaView({
         </button>
         <p className="mt-2 text-xs text-[#94A3B8]">
           Si un local no tiene horario, se genera Lun–Dom 08:00–21:00 con su primera reserva.
-          Las reservas fuera de horario muestran "Fuera de horario" y los días cerrados "Cerrado ese día".
+          Las reservas fuera de horario muestran “Fuera de horario” y los días cerrados “Cerrado ese día”.
         </p>
         <div className="flex flex-wrap gap-4 border-t border-[#F1F0EE] px-4 py-3 text-[11px] font-semibold text-[#64748B]">
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-[#22C55E]" /> Confirmada</span>
@@ -907,8 +919,8 @@ export function CronogramaView({
                   <option key={c.id} value={c.id}>{c.nombre} · S/ {Number(c.precioPorHora)}/h</option>
                 ))}
               </select>
-              {horarioTxt && (
-                <p className="mt-1.5 text-xs font-semibold text-[#15803D]">🕐 {horarioTxt}</p>
+              {horarioTexto && (
+                <p className="mt-1.5 text-xs font-semibold text-[#15803D]">🕐 {horarioTexto}</p>
               )}
             </div>
             <div>
@@ -1189,7 +1201,7 @@ export function CronogramaView({
               key={v}
               role="tab"
               aria-selected={vista === v}
-              onClick={() => setVista(v)}
+              onClick={() => cambiarVista(v)}
               className={cn(
                 'px-4 py-2 text-sm font-bold capitalize transition',
                 vista === v ? 'bg-[#0F172A] text-white' : 'text-[#475569] hover:text-[#0F172A]'
