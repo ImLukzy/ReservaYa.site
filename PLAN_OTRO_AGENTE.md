@@ -190,6 +190,7 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | Extra: hero premium (`/`) | ✅ | Fondos locales AVIF/WebP (1918 KB → 65 KB en móvil), sin parpadeo gris, control único pausable (WCAG 2.2.2/2.5.8), copy Arequipa; 27/27 Playwright (spec 11) |
 | Extra: glifos en enlaces y botones | ✅ | Regla global `:is(a, button) :is(span, em, strong)` + avatar de `/duenos`; 214/214 spans heredan el color del control, 0 cambios fuera de controles, ningún contraste empeora (spec 12) |
 | Extra: contraste AA de CTA verdes (landing) | ✅ | 74 superficies verdes con texto blanco (2.28–3.30:1) → texto #060C08 (8.66 / 5.99:1). 0/480 nodos < 4.5:1 en reposo y 0 en hover (116 controles) (spec 13). Panel → spec 14 |
+| Extra: contraste AA de CTA verdes (panel + login) | ✅ | 45 cadenas + `active` de `Button` + `CronogramaView` + `.btn-accent` → texto #060C08. 0/204 nodos < 4.5:1 y 0 en hover/active (64 controles, 72 vistas, 4 roles) (spec 14) |
 
 ⛔ **BLOQUEO-API**
 - `POST /api/auth/forgot-password` no existe en `AuthController` (404). `forgot-password.astro` igualmente muestra "revisa tu correo" (spec 07 §8).

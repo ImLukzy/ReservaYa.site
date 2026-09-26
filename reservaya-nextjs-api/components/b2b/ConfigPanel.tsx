@@ -281,7 +281,7 @@ export function ConfigPanel() {
               <button
                 type="submit"
                 disabled={guardando}
-                className="mt-5 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] active:scale-[0.98] disabled:opacity-50"
+                className="mt-5 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98] disabled:opacity-50"
               >
                 {guardando ? 'Guardando…' : 'Guardar'}
               </button>

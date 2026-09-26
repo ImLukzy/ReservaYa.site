@@ -68,7 +68,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <Link
           href="/dashboard/canchas"
-          className="bg-[#22C55E] hover:bg-[#16A34A] text-white rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-green-900/20"
+          className="bg-[#22C55E] hover:bg-[#16A34A] text-[#060C08] rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-green-900/20"
         >
           <span className="text-4xl">🏟️</span>
           <div>

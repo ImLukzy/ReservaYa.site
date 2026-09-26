@@ -195,7 +195,7 @@ export function EquipoPanel() {
             type="button"
             onClick={() => setModal(true)}
             disabled={!complejoId}
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:opacity-50"
           >
             <Plus size={18} strokeWidth={2.5} /> Agregar
           </button>
@@ -256,7 +256,7 @@ export function EquipoPanel() {
             action={
               <a
                 href="/admin/complejos"
-                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
               >
                 Ir a Complejos
               </a>
@@ -271,7 +271,7 @@ export function EquipoPanel() {
               <button
                 type="button"
                 onClick={() => setModal(true)}
-                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
               >
                 + Agregar a tu primera persona
               </button>
@@ -281,7 +281,7 @@ export function EquipoPanel() {
           <ul className="divide-y divide-[#F1F0EE]">
             {miembros.map((m) => (
               <li key={m.id} className="flex flex-wrap items-center gap-3 px-4 py-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-lg font-black text-white">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-lg font-black text-[#060C08]">
                   {(m.nombre.trim().charAt(0) || '·').toUpperCase()}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -390,7 +390,7 @@ export function EquipoPanel() {
               <button
                 type="submit"
                 disabled={guardando}
-                className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A] disabled:opacity-50"
+                className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A] disabled:opacity-50"
               >
                 {guardando ? 'Agregando…' : 'Agregar'}
               </button>

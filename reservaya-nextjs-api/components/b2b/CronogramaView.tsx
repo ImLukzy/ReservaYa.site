@@ -511,7 +511,7 @@ export function CronogramaView({
             action={
               <a
                 href="/admin/canchas"
-                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
               >
                 Agregar cancha
               </a>
@@ -526,7 +526,7 @@ export function CronogramaView({
               <button
                 type="button"
                 onClick={() => abrirModal('nueva')}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] sm:flex-none"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] sm:flex-none"
               >
                 <Plus size={16} strokeWidth={2.5} /> Nueva reserva
               </button>
@@ -696,7 +696,7 @@ export function CronogramaView({
           type="button"
           onClick={guardarHorarios}
           disabled={horarioGuardando || !horarioComplejoId}
-          className="mt-4 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#16A34A] disabled:opacity-50"
+          className="mt-4 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A] disabled:opacity-50"
         >
           {horarioGuardando ? 'Guardando…' : 'Guardar horario'}
         </button>
@@ -786,7 +786,7 @@ export function CronogramaView({
                 <span
                   className={cn(
                     'inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold',
-                    esHoy ? 'bg-[#22C55E] text-white' : 'text-[#0F172A]'
+                    esHoy ? 'bg-[#22C55E] text-[#060C08]' : 'text-[#0F172A]'
                   )}
                 >
                   {Number(d.slice(8, 10))}
@@ -856,7 +856,7 @@ export function CronogramaView({
                 type="button"
                 disabled={accionando}
                 onClick={() => cambiarEstado(detalle, 'CONFIRMADA')}
-                className="flex-1 rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] disabled:opacity-60"
+                className="flex-1 rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] disabled:opacity-60"
               >
                 {accionando ? 'Guardando…' : 'Confirmar'}
               </button>
@@ -1001,8 +1001,8 @@ export function CronogramaView({
               onClick={guardar}
               disabled={guardando}
               className={cn(
-                'flex-1 rounded-xl py-2.5 text-sm font-bold text-white transition-all disabled:opacity-60',
-                modal === 'nueva' ? 'bg-[#22C55E] hover:bg-[#16A34A]' : 'bg-[#F97316] hover:bg-[#EA580C]'
+                'flex-1 rounded-xl py-2.5 text-sm font-bold transition-all disabled:opacity-60',
+                modal === 'nueva' ? 'bg-[#22C55E] text-[#060C08] hover:bg-[#16A34A]' : 'bg-[#F97316] text-white hover:bg-[#EA580C]'
               )}
             >
               {guardando ? 'Guardando…' : modal === 'nueva' ? 'Guardar reserva' : 'Bloquear'}
@@ -1036,7 +1036,7 @@ export function CronogramaView({
           <button
             type="button"
             onClick={() => abrirModal('nueva')}
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
           >
             <Plus size={18} strokeWidth={2.5} /> Nueva reserva
           </button>

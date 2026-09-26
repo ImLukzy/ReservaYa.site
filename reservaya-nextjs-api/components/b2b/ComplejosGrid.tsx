@@ -516,7 +516,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
             <button
               type="button"
               onClick={copiar}
-              className="btn-press btn-shine mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-white transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+              className="btn-press btn-shine mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
             >
               {copiado ? <Check size={18} strokeWidth={2} /> : <Copy size={18} strokeWidth={2} />}
               {copiado ? '¡Link copiado!' : 'Copiar Link de WhatsApp'}

@@ -313,7 +313,7 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
         {/* Usuario */}
         <div className="border-t border-white/10 p-4">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-bold text-white">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-bold text-[#060C08]">
               {initial}
             </div>
             <div className="min-w-0 flex-1">
