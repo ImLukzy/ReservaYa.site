@@ -38,14 +38,19 @@ export function ReservaForm({
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [cotizado, setCotizado] = useState<{ total: string; regla: string | null } | null>(
-    totalInicial ? { total: totalInicial, regla: reglaInicial } : null
-  )
-  const [cotizando, setCotizando] = useState(false)
+  // Cotización del backend ligada a los datos con que se pidió: si cambian, se muestra la base.
+  const [cotizacion, setCotizacion] = useState<{ clave: string; total: string; regla: string | null } | null>(null)
+  const [intentada, setIntentada] = useState<string | null>(null)
 
   const horasDisponiblesFin = form.horaInicio
     ? HORAS.filter((h) => h.value > form.horaInicio)
     : []
+
+  const completo = Boolean(form.fecha && form.horaInicio && form.horaFin && form.horaFin > form.horaInicio)
+  const clave = `${cancha.id}|${form.fecha}|${form.horaInicio}|${form.horaFin}`
+  const base = totalInicial ? { total: totalInicial, regla: reglaInicial } : null
+  const cotizado = completo && cotizacion?.clave === clave ? cotizacion : base
+  const cotizando = completo && intentada !== clave
 
   const calcularTotal = () => {
     if (!form.horaInicio || !form.horaFin) return 0
@@ -56,12 +61,8 @@ export function ReservaForm({
   // Cotización real del backend (aplica tarifa nocturna/feriados). El total
   // final siempre lo calcula el servidor al crear la reserva.
   useEffect(() => {
-    if (!form.fecha || !form.horaInicio || !form.horaFin || form.horaFin <= form.horaInicio) {
-      setCotizado(totalInicial ? { total: totalInicial, regla: reglaInicial } : null)
-      return
-    }
+    if (!completo) return
     let vivo = true
-    setCotizando(true)
     const t = setTimeout(async () => {
       try {
         const res = await fetch(
@@ -69,19 +70,18 @@ export function ReservaForm({
           { credentials: 'include' }
         )
         const body = await res.json().catch(() => null)
-        if (vivo && res.ok && body?.total) setCotizado({ total: String(body.total), regla: body.regla ?? null })
+        if (vivo && res.ok && body?.total) setCotizacion({ clave, total: String(body.total), regla: body.regla ?? null })
       } catch {
         // Se mantiene la estimación base.
       } finally {
-        if (vivo) setCotizando(false)
+        if (vivo) setIntentada(clave)
       }
     }, 350)
     return () => {
       vivo = false
       clearTimeout(t)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.fecha, form.horaInicio, form.horaFin, cancha.id])
+  }, [completo, clave, cancha.id, form.fecha, form.horaInicio, form.horaFin])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

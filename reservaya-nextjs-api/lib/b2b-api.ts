@@ -1,15 +1,22 @@
-import { cookies } from 'next/headers';
-import { config } from './config';
-import { ApiError } from './api-types';
+import 'server-only';
+import { getJson, serverFetch } from './server-fetch';
 
 export interface ComplejoResumen {
   id: string;
   nombre: string;
   distrito: string;
   slug: string;
-  canchas: number;
+  totalCanchas: number;
   ocupacion: number;
   publicado: boolean;
+}
+
+export interface HorarioFila {
+  id: string;
+  complejoId: string;
+  canchaId: string | null;
+  diaSemana: number;
+  activo: boolean;
 }
 
 export interface MovimientoResumen {
@@ -21,30 +28,18 @@ export interface MovimientoResumen {
   creadoEn: string;
 }
 
-async function serverFetch(path: string, init?: RequestInit): Promise<Response> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(config.jwtCookieName)?.value;
-  const headers = new Headers(init?.headers);
-  headers.set('Content-Type', 'application/json');
-  if (token) headers.set('Cookie', `${config.jwtCookieName}=${token}`);
-  const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:5000';
-  return fetch(`${backendUrl}${path}`, { ...init, headers, cache: 'no-store' });
-}
-
-async function getJson<T>(path: string): Promise<T> {
-  const res = await serverFetch(path);
-  if (!res.ok) {
-    const body = await res.json().catch(() => null);
-    throw new ApiError(res.status, body?.error ?? `Error ${res.status}`);
-  }
-  return (await res.json()) as T;
-}
-
-// Neutral ante backend aún sin estos endpoints: devuelve [] y la UI muestra
-// estado vacío con CTA en lugar de romper (los mocks antiguos ocultaban esto).
+// Lanza ApiError si la API falla; las páginas lo muestran con crearCarga + <AvisoCarga />.
 export async function getComplejos(): Promise<ComplejoResumen[]> {
   const data = await getJson<{ complejos: ComplejoResumen[] }>('/api/complejos');
   return data.complejos ?? [];
+}
+
+// Filas guardadas del complejo (y de sus canchas); vacío = rige el horario por defecto de la API.
+export async function getHorarios(complejoId: string): Promise<HorarioFila[]> {
+  const data = await getJson<{ horarios: HorarioFila[] }>(
+    `/api/horarios?complejoId=${encodeURIComponent(complejoId)}`
+  );
+  return data.horarios ?? [];
 }
 
 export async function getCajaDelDia(): Promise<{ total: number; movimientos: MovimientoResumen[] }> {

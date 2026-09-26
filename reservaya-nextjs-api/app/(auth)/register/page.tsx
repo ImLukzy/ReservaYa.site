@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { register } from '@/lib/api-client'
 import { publicAppUrl } from '@/lib/public-app'
+import { returnUrlSeguro } from '@/lib/redirect'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -39,8 +40,8 @@ export default function RegisterPage() {
     }
     setLoading(false)
     const params = new URLSearchParams(window.location.search)
-    const returnUrl = params.get('returnUrl')
-    if (returnUrl && (/^\/[^/]/.test(returnUrl) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(returnUrl))) {
+    const returnUrl = returnUrlSeguro(params.get('returnUrl'), window.location.origin, [publicAppUrl])
+    if (returnUrl) {
       window.location.href = returnUrl
       return
     }

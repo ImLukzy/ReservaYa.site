@@ -8,7 +8,8 @@ export async function ComplejosDashboard({ iniciales }: { iniciales?: ComplejoCa
   await requireRole(['ADMIN', 'SUPERADMIN', 'TECNICO']);
   // La página ya trae los datos del servidor; si no se pasan, se cargan aquí.
   const complejos: ComplejoCard[] =
-    iniciales ?? (await getComplejos().catch(() => [])).map((c) => ({ ...c, telefono: undefined, direccion: undefined }));
+    iniciales ??
+    (await getComplejos().catch(() => [])).map((c) => ({ ...c, canchas: c.totalCanchas, telefono: undefined, direccion: undefined }));
 
   return (
     <div>

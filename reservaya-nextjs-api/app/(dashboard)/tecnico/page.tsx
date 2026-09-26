@@ -1,16 +1,20 @@
 import Link from 'next/link';
 import * as api from '@/lib/api';
+import { crearCarga } from '@/lib/carga';
+import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TecnicoPage() {
+  const carga = crearCarga();
   const [report, pendientes] = await Promise.all([
-    api.getReporteGlobal().catch(() => null),
-    api.getSuscripciones(undefined, 'PENDIENTE').catch(() => []),
+    carga.de(api.getReporteGlobal(), null, 'el reporte'),
+    carga.de(api.getSuscripciones(undefined, 'PENDIENTE'), [], 'las suscripciones'),
   ]);
 
   return (
     <div>
+      <AvisoCarga errores={carga.errores} />
       <div className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#15803D]">Plataforma ReservaYa</p>
         <h1 className="mt-2 text-3xl font-black text-gray-900">Panel técnico</h1>

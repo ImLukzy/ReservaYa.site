@@ -88,8 +88,10 @@ export function ConfigPanel() {
 
   // Hidrata perfil: localStorage primero + intenta completar con la sesión real.
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- lectura de localStorage tras hidratar (SSR sin window) */
     setPerfil(leerLocal<Perfil>(PERFIL_KEY, PERFIL_VACIO));
     setCobros(leerLocal<Cobros>(COBROS_KEY, COBROS_DEFAULT));
+    /* eslint-enable react-hooks/set-state-in-effect */
     void fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .then((body) => {
@@ -118,7 +120,6 @@ export function ConfigPanel() {
 
   useEffect(() => {
     if (tab !== 'pagos') return;
-    setCargandoPagos(true);
     void fetch('/api/abonos', { credentials: 'include', cache: 'no-store' })
       .then((r) => {
         if (!r.ok) throw new Error();
@@ -128,6 +129,12 @@ export function ConfigPanel() {
       .catch(() => setAbonos([]))
       .finally(() => setCargandoPagos(false));
   }, [tab]);
+
+  // El spinner de Pagos se enciende al entrar a la pestaña; el efecto solo carga.
+  function cambiarTab(id: Tab) {
+    if (id === 'pagos' && tab !== 'pagos') setCargandoPagos(true);
+    setTab(id);
+  }
 
   function setP<K extends keyof Perfil>(k: K, v: Perfil[K]) {
     setPerfil((p) => ({ ...p, [k]: v }));
@@ -215,7 +222,7 @@ export function ConfigPanel() {
                 <button
                   key={t.id}
                   type="button"
-                  onClick={() => setTab(t.id)}
+                  onClick={() => cambiarTab(t.id)}
                   aria-current={tab === t.id ? 'page' : undefined}
                   className={cn(
                     'mb-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors',

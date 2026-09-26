@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import type { UsuarioSesion, Rol } from './api'
 import * as api from './api'
 import { config } from './config'
+import { fallbackPorRol } from './permissions'
 
 export async function getSession(): Promise<UsuarioSesion | null> {
   const cookieStore = await cookies()
@@ -11,15 +12,6 @@ export async function getSession(): Promise<UsuarioSesion | null> {
 
   // C# es la autoridad de autenticación, roles, cuenta activa y tokenVersion.
   return api.getSession()
-}
-
-export function getDashboardPorRol(rol: Rol): string {
-  switch (rol) {
-    case 'TECNICO': return '/tecnico'
-    case 'SUPERADMIN': return '/admin'
-    case 'ADMIN': return '/admin/agenda'
-    default: return '/dashboard'
-  }
 }
 
 export async function requireAuth(): Promise<UsuarioSesion> {
@@ -33,7 +25,7 @@ export async function requireRole(
 ): Promise<UsuarioSesion> {
   const session = await requireAuth()
   if (!roles.includes(session.rol)) {
-    redirect(getDashboardPorRol(session.rol))
+    redirect(fallbackPorRol(session.rol))
   }
   return session
 }

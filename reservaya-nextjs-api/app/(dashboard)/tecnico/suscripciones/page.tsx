@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import * as api from '@/lib/api';
 import { SuscripcionesPanel } from '@/components/features/SuscripcionesPanel';
+import { crearCarga } from '@/lib/carga';
+import { AvisoCarga } from '@/components/ui/AvisoCarga';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,10 +21,12 @@ export default async function SuscripcionesPage({
   searchParams: Promise<{ estado?: string }>;
 }) {
   const { estado } = await searchParams;
-  const lista = await api.getSuscripciones(undefined, estado || undefined).catch(() => []);
+  const carga = crearCarga();
+  const lista = await carga.de(api.getSuscripciones(undefined, estado || undefined), [], 'las suscripciones');
 
   return (
     <div>
+      <AvisoCarga errores={carga.errores} />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Suscripciones</h1>
         <p className="text-gray-500 mt-1">Aprueba solicitudes de dueños y gestiona la vitrina.</p>

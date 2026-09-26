@@ -1,14 +1,12 @@
-import { cookies } from 'next/headers'
-import { config } from './config'
+import 'server-only'
+import { getJson, serverFetch } from './server-fetch'
 
 import type {
   BusquedaCanchas,
   Cancha,
   CanchaDisponible,
-  CanchaInput,
   ClienteResumen,
   Cotizacion,
-  EstadoReserva,
   OpcionesBusqueda,
   Reserva,
   Rol,
@@ -21,7 +19,6 @@ import type {
   DashboardSuperadmin,
   ReporteGlobal,
 } from './api-types'
-import { ApiError } from './api-types'
 export type {
   Rol,
   EstadoReserva,
@@ -53,98 +50,6 @@ export type {
   ReporteGlobal,
 } from './api-types'
 export { ApiError } from './api-types'
-
-export async function clientRequest<T>(path: string, init?: RequestInit): Promise<T> {
-    const res = await fetch(path, {
-      ...init,
-      headers: { 'Content-Type': 'application/json', ...init?.headers },
-      credentials: 'include',
-    })
-    const body = await res.json().catch(() => null)
-    if (!res.ok) throw new ApiError(res.status, body?.error ?? `Error ${res.status}`)
-    return body as T
-}
-
-export function login(email: string, password: string) {
-    return clientRequest<{ usuario: UsuarioSesion }>('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
-}
-
-export function register(nombre: string, email: string, password: string) {
-    return clientRequest<{ usuario: UsuarioSesion }>('/api/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ nombre, email, password }),
-    })
-}
-
-export function logout() {
-    return clientRequest<{ ok: boolean }>('/api/auth/logout', { method: 'POST' })
-}
-
-export function createCancha(input: CanchaInput) {
-    return clientRequest<{ cancha: Cancha }>('/api/canchas', {
-      method: 'POST',
-      body: JSON.stringify(input),
-    })
-}
-
-export function updateCancha(id: string, input: Partial<CanchaInput>) {
-    return clientRequest<{ cancha: Cancha }>(`/api/canchas/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(input),
-    })
-}
-
-export function deleteCancha(id: string) {
-    return clientRequest<{ ok: boolean }>(`/api/canchas/${id}`, { method: 'DELETE' })
-}
-
-export function createReserva(input: {
-    canchaId: string
-    fecha: string
-    horaInicio: number
-    horaFin: number
-    notas: string
-  }) {
-    return clientRequest('/api/reservas', { method: 'POST', body: JSON.stringify(input) })
-}
-
-export function updateReserva(id: string, estado: EstadoReserva) {
-    return clientRequest(`/api/reservas/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ estado }),
-    })
-}
-
-export function updateUsuario(id: string, input: { activo?: boolean; rol?: Rol }) {
-    return clientRequest(`/api/usuarios/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(input),
-    })
-}
-
-// Fetch del lado del servidor que reenvía la cookie de sesión al backend.
-// Next reenvía /api/* a la API ASP.NET Core vía next.config.ts rewrites.
-async function serverFetch(path: string, init?: RequestInit): Promise<Response> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(config.jwtCookieName)?.value
-  const headers = new Headers(init?.headers)
-  if (token) headers.set('Cookie', `${config.jwtCookieName}=${token}`)
-
-  const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:5000'
-  return fetch(`${backendUrl}${path}`, { ...init, headers, cache: 'no-store' })
-}
-
-async function getJson<T>(path: string): Promise<T> {
-  const res = await serverFetch(path)
-  if (!res.ok) {
-    const body = await res.json().catch(() => null)
-    throw new ApiError(res.status, body?.error ?? `Error ${res.status}`)
-  }
-  return (await res.json()) as T
-}
 
 // Sesión: valida contra el backend (activo + tokenVersion) vía /api/auth/me.
 // Devuelve null si la sesión no es válida.

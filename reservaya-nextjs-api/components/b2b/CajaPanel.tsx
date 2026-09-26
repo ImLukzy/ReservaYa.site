@@ -162,25 +162,25 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
   const [montoCierre, setMontoCierre] = useState('');
   const [cierreInfo, setCierreInfo] = useState<{ diferencia: number } | null>(null);
 
-  const refrescar = useCallback(async (conSpinner = false) => {
-    if (conSpinner) setCargando(true);
-    setError(null);
-    try {
-      const [hoy, prods, sesion] = await Promise.all([getCajaHoy(), getProductos(), getCajaSesion()]);
-      setMovimientos(hoy.movimientos);
-      setVendidoHoy(num(hoy.total));
-      setProductos(prods.productos);
-      setCaja(sesion.caja);
-      setResumen(sesion.resumen);
-    } catch (e) {
-      setError(e instanceof B2BApiError ? e.message : 'No se pudo cargar la caja');
-    } finally {
-      setCargando(false);
-    }
-  }, []);
+  // setState solo en callbacks de la promesa: el estado inicial ya es "cargando" y el error se limpia al recargar bien.
+  const refrescar = useCallback(
+    () =>
+      Promise.all([getCajaHoy(), getProductos(), getCajaSesion()])
+        .then(([hoy, prods, sesion]) => {
+          setError(null);
+          setMovimientos(hoy.movimientos);
+          setVendidoHoy(num(hoy.total));
+          setProductos(prods.productos);
+          setCaja(sesion.caja);
+          setResumen(sesion.resumen);
+        })
+        .catch((e) => setError(e instanceof B2BApiError ? e.message : 'No se pudo cargar la caja'))
+        .finally(() => setCargando(false)),
+    []
+  );
 
   useEffect(() => {
-    void refrescar(true);
+    void refrescar();
   }, [refrescar]);
 
   const filtrados = useMemo(
@@ -207,23 +207,15 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
   const [totalShown, setTotalShown] = useState(0);
   const prevSubtotal = useRef(0);
 
-  // Total con conteo animado (solo números → 60fps)
+  // Total con conteo animado (solo números → 60fps); todo setState ocurre dentro del rAF.
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setTotalShown(subtotal);
-      prevSubtotal.current = subtotal;
-      return;
-    }
     const from = prevSubtotal.current;
     prevSubtotal.current = subtotal;
-    if (from === subtotal) {
-      setTotalShown(subtotal);
-      return;
-    }
+    const instantaneo = from === subtotal || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let raf = 0;
     const t0 = performance.now();
     const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / 400);
+      const p = instantaneo ? 1 : Math.min(1, (t - t0) / 400);
       setTotalShown(from + (subtotal - from) * (1 - Math.pow(1 - p, 3)));
       if (p < 1) raf = requestAnimationFrame(tick);
     };
