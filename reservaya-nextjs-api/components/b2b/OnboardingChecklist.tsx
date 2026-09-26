@@ -6,20 +6,26 @@ import { cn } from '@/lib/utils';
 const STEPS = [
   { t: 'Crea tu complejo', d: 'Registra sede, dirección y WhatsApp', href: '/admin/complejos/nuevo' },
   { t: 'Agrega tus canchas', d: 'Tipo, precio por hora y formato', href: '/admin/canchas' },
-  { t: 'Configura tus horarios', d: 'Turnos sin solapamientos automáticos', href: '/admin/configuracion' },
-  { t: 'Sube tus fotos', d: '5+ fotos = +40% reservas', href: '/admin/complejos' },
+  { t: 'Configura tus horarios', d: 'Turnos sin solapamientos automáticos', href: '/admin/horarios' },
+  { t: 'Sube tus fotos', d: '5+ fotos = +40% reservas', href: '/admin/canchas' },
   { t: 'Comparte tu página', d: 'QR + link para WhatsApp', href: '/admin/complejos' },
 ] as const;
 
-export function OnboardingChecklist({ done = 0 }: { done?: number }) {
+/** `completados[i]` = paso i hecho (ver `pasosOnboarding` en lib/onboarding.ts). */
+export function OnboardingChecklist({ completados = [] }: { completados?: readonly boolean[] }) {
+  const actual = STEPS.findIndex((_, i) => !completados[i]);
+  const hechos = STEPS.filter((_, i) => completados[i]).length;
   return (
     <div>
       <TopBar breadcrumb="Extras / Centro de ayuda" title="Activa tu negocio en 5 pasos" />
       <div className="mx-auto mt-6 max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-8 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+        <p className="mb-6 text-sm font-semibold text-[#475569]">
+          {hechos} de {STEPS.length} pasos completados
+        </p>
         <ol className="relative space-y-8 before:absolute before:top-2 before:bottom-2 before:left-[15px] before:w-px before:bg-[#E2E8F0]">
           {STEPS.map((s, i) => {
-            const ok = i < done;
-            const current = i === done;
+            const ok = Boolean(completados[i]);
+            const current = i === actual;
             return (
               <li key={s.t} className="relative flex gap-4 pl-1">
                 <span
