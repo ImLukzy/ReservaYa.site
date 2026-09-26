@@ -186,6 +186,7 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | P2-13 CI | ✅ | Lint 17 errores → 0; CI con `test` + `build` (spec 06). Necesita el secreto `DATABASE_URL` para el job `db-check` |
 | P2-14 Docs Astro | ✅ | Sin duplicados y al día, 302 → 129 líneas (spec 07) |
 | Extra: onboarding `/admin/ayuda` | 🟡 | Progreso real con `complejos`/`canchas`/`horarios` + `totalCanchas` corregido en 3 vistas; falta verlo con cuenta de dueño (spec 09) |
+| Extra: headings sobre fondos oscuros | ✅ | `.on-dark` + herencia en headings (`global.css`), 12 contenedores; 13 títulos pasan de 1.52–3.40:1 a AA (≥ 9:1; «S/ 112», texto grande, ≥ 3.3:1) (26/26 Playwright) (spec 10) |
 
 ⛔ **BLOQUEO-API**
 - `POST /api/auth/forgot-password` no existe en `AuthController` (404). `forgot-password.astro` igualmente muestra "revisa tu correo" (spec 07 §8).
