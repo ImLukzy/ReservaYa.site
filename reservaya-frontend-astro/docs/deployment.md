@@ -1,27 +1,10 @@
 # Despliegue
 
-## Componentes
+La guía paso a paso (Cloudflare Pages para esta landing, Vercel para el panel,
+Render para la API, Neon) está en [`DEPLOY_GRATIS.md`](../../DEPLOY_GRATIS.md).
 
-En producción se recomienda publicar:
-
-1. `dist/` de Astro detrás de Nginx.
-2. Next.js como servicio independiente mientras termina la migración.
-3. ASP.NET Core detrás de Nginx o un reverse proxy administrado.
-4. PostgreSQL en Neon, sin modificar migraciones desde el frontend.
-
-## Variables de producción
-
-Configurar en el entorno de compilación:
-
-```text
-PUBLIC_RESERVAYA_API_URL=https://api.example.com
-PUBLIC_RESERVAYA_APP_URL=https://app.example.com
-```
-
-La API debe permitir mediante CORS los orígenes reales de Astro y Next.js.
-También deben revisarse `Secure`, `SameSite` y el dominio de la cookie JWT
-cuando los servicios usen dominios distintos.
-
-El archivo `deploy/nginx-https.conf` es una referencia inicial. Antes de
-usarlo, sustituir dominios de ejemplo, certificados y upstreams por los valores
-del servidor real.
+## Lo propio de Astro
+- Build estático: `npm run build` → publicar `dist/`.
+- Variables `PUBLIC_*` ([api.md](./api.md)) con las URLs públicas reales **al compilar**; cambiarlas exige un build nuevo.
+- La API debe permitir por CORS el origen de la landing y el del panel (`FRONTEND_ORIGIN` en la API).
+- Si landing, panel y API están en dominios distintos, la cookie `token` necesita `SameSite=None; Secure` (`COOKIE_SECURE`).

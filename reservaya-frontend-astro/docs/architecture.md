@@ -1,47 +1,38 @@
-# Arquitectura de ReservaYa
-
-## Objetivo
-
-Astro es la aplicación web pública de ReservaYa. Presenta la marca, ayuda a los
-usuarios a encontrar canchas y consume la API mediante HTTP. La lógica de
-negocio y el acceso a datos no viven en Astro.
+# Arquitectura
 
 ```text
-Usuario
-  ↓
-Astro (sitio público)
-  ↓ HTTP + cookies
-ASP.NET Core API :5000
-  ↓
-EF Core / Npgsql
-  ↓
-PostgreSQL administrado por Neon
+Navegador ── Astro estático (:4321) ──HTTP + cookie HttpOnly──► API ASP.NET Core (:5000) ── EF Core ──► Neon Postgres
+         └── Panel Next.js (:3000): /dashboard /admin /tecnico (mismo backend)
 ```
 
-Durante la transición, Next.js conserva los dashboards que todavía no se han
-migrado a Astro. Ambos frontends consumen la misma API.
+Astro no tiene lógica de negocio ni acceso a datos: todo sale de la API, que
+decide disponibilidad, estados, totales y permisos.
 
-## Responsabilidad de cada carpeta
+## `src/` (estado vigente)
+| Carpeta | Contenido |
+|---|---|
+| `pages/` | 21 rutas: 19 `.astro` + `legal/privacy.md` y `legal/terms.md` (tabla abajo) |
+| `layouts/BaseLayout.astro` | Shell: header, barra rotativa, modales de login/registro, menú de sesión, SEO, GA |
+| `components/` | `Footer`, `LoginForm`, `RegisterForm` (modales del layout) |
+| `scripts/` | `menu`, `motion`, `reveal`, `smooth-wheel`, `theme` (TS procesado por Vite) |
+| `styles/` | `global.css`, `motion.css`, `tailwind.css` |
+| `content/blog` + `content.config.ts` | Colección `blog` (Markdown) |
+| `assets/` | Imágenes importadas |
 
-- `src/pages`: composición de páginas y rutas Astro.
-- `src/components`: componentes visuales reutilizables.
-- `src/features`: módulos de negocio que agrupan UI, servicios y tipos.
-- `src/services`: clientes HTTP; nunca consultar Prisma o PostgreSQL desde el
-  navegador.
-- `src/config`: lectura y validación de variables `PUBLIC_*`.
-- `src/types`: contratos TypeScript compartidos por el frontend.
-- `src/hooks`: comportamiento reutilizable del cliente cuando sea necesario.
-- `src/layouts`: shell global, navegación y footer.
-- `src/styles`: Tailwind y estilos globales.
-- `docs`: decisiones, API, desarrollo y despliegue.
+## Rutas
+| Ruta | Datos |
+|---|---|
+| `/` · `/duenos` · `/precios` · `/publica-tu-cancha` · `/torneos` · `/ayuda` · `/legal/privacy` · `/legal/terms` | Estáticas (demos interactivas sin API) |
+| `/canchas` | `GET /api/canchas/disponibles`, `/api/canchas/opciones`, `/api/resenas/publicas` |
+| `/login` · `/register` · `/forgot-password` | `POST /api/auth/*` (ver [api.md](./api.md)) |
+| `/jugador/perfil` | `/api/auth/me`, `/api/reservas`, `PATCH /api/usuarios/me`, `POST /api/usuarios/me/foto` |
+| `/mis-reservas` | Redirige al panel (`PUBLIC_RESERVAYA_APP_URL/dashboard/reservas`) |
+| `/completar-cuadro` · `/mis-partidos` | `/api/partidos*` |
+| `/sortear` | `GET /api/usuarios/buscar` |
+| `/mejoras` · `/libro-reclamaciones` | Formularios → `PUBLIC_INBOXMEJIKAI_ENDPOINT` (`mejoras` además lee `/api/auth/me`) |
+| `/404` · `/500` | Errores |
 
-Las capas nuevas se incorporan gradualmente. Las páginas existentes pueden
-seguir usando componentes de `src/components` hasta completar la migración.
-
-## Flujo de autenticación
-
-1. Astro envía las credenciales a `POST /api/auth/login`.
-2. ASP.NET Core establece la cookie HttpOnly.
-3. Las solicitudes posteriores usan `credentials: "include"`.
-4. La API autoriza cada operación y filtra los datos por usuario.
-5. Astro nunca guarda el JWT en `localStorage` ni expone contraseñas.
+## Sesión
+1. `POST /api/auth/login` o `register` → la API fija la cookie HttpOnly `token`.
+2. Toda petición autenticada usa `credentials: "include"`; Astro nunca lee ni guarda el JWT.
+3. Tras entrar se redirige a `returnUrl` validado (`getSafeReturnUrl` en `login.astro`) o al inicio del rol en el panel.

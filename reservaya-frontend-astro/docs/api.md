@@ -1,33 +1,37 @@
 # Integración con la API
 
-## Variables
+## Variables (build-time, `.env` a partir de `.env.example`)
+| Variable | Uso | Local |
+|---|---|---|
+| `PUBLIC_RESERVAYA_API_URL` | Base de la API ASP.NET Core | `http://localhost:5000` |
+| `PUBLIC_RESERVAYA_APP_URL` | Base del panel Next.js | `http://localhost:3000` |
+| `PUBLIC_GA_ID` | Google Analytics (opcional) | vacío |
+| `PUBLIC_INBOXMEJIKAI_ENDPOINT` | Receptor de formularios de contacto/mejoras (opcional) | vacío |
 
-Copiar `.env.example` como `.env` en desarrollo. El archivo `.env` real no se
-versiona y nunca debe aparecer en logs, capturas o documentación.
-
-| Variable | Uso | Ejemplo local |
-| --- | --- | --- |
-| `PUBLIC_RESERVAYA_API_URL` | URL base de ASP.NET Core | `http://localhost:5000` |
-| `PUBLIC_RESERVAYA_APP_URL` | URL del panel Next.js durante la transición | `http://localhost:3000` |
-| `PUBLIC_GA_ID` | ID opcional de Analytics | vacío |
+Nunca `DATABASE_URL` ni secretos aquí: todo `PUBLIC_*` termina en el HTML.
 
 ## Endpoints usados por Astro
+| M | Ruta | Sesión | Página |
+|---|---|---|---|
+| POST | `/api/auth/login` · `/api/auth/register` · `/api/auth/logout` | — | login, register, layout |
+| GET | `/api/auth/me` | sí | layout, perfil, mejoras |
+| POST | `/api/auth/forgot-password` | — | forgot-password — ⛔ **no implementado en la API** (404; la página muestra el mensaje genérico igualmente) |
+| GET | `/api/canchas/disponibles` · `/api/canchas/opciones` | — | canchas |
+| GET | `/api/resenas/publicas` | — | canchas |
+| GET | `/api/reservas` | sí | perfil |
+| PATCH | `/api/usuarios/me` | sí | perfil |
+| POST | `/api/usuarios/me/foto` | sí | perfil (multipart) |
+| GET | `/api/usuarios/buscar` | sí | sortear |
+| GET / POST | `/api/partidos` | GET — / POST sí | completar-cuadro |
+| GET | `/api/partidos/mios` | sí | mis-partidos |
+| POST / DELETE | `/api/partidos/{id}/anotarse` | sí | completar-cuadro, mis-partidos |
+| DELETE | `/api/partidos/{id}` | sí | mis-partidos |
 
-| Método | Ruta | Sesión | Uso |
-| --- | --- | --- | --- |
-| `GET` | `/api/canchas?activas=true` | No | Listar canchas disponibles |
-| `POST` | `/api/auth/login` | No | Iniciar sesión |
-| `POST` | `/api/auth/register` | No | Crear cuenta |
-| `GET` | `/api/reservas` | Sí | Consultar reservas del usuario |
-| `POST` | `/api/reservas` | Sí | Crear solicitud pendiente |
-| `PATCH` | `/api/reservas/{id}` | Sí | Cancelar una solicitud pendiente |
-
-## Errores esperados
-
-- `400`: datos incompletos, fecha u horario inválido.
-- `401`: no hay una sesión válida; redirigir a login.
-- `403`: la cuenta no tiene permisos para la operación.
-- `409`: el horario ya fue confirmado por otra reserva.
-
-El backend es la fuente de verdad para disponibilidad, estados, totales y
-permisos. El cálculo visual del total en Astro es únicamente una estimación.
+## Errores
+| Código | Significado | Qué hace la UI |
+|---|---|---|
+| 400 | Datos inválidos, fuera de horario | Mensaje `error` de la API |
+| 401 | Sin sesión | Redirige a `/login?returnUrl=…` (perfil muestra aviso) |
+| 403 | Sin permiso / otra sede | Mensaje `error` |
+| 409 | Conflicto (horario tomado, username usado) | Mensaje `error` |
+| 429 | Demasiados intentos de login | "Espera 15 minutos" |
