@@ -1,52 +1,23 @@
-# Guía de desarrollo
+# Desarrollo
 
-## Requisitos
+## Ejecutar
+| Comando (en esta carpeta) | Qué hace |
+|---|---|
+| `npm run dev` | Astro en `http://localhost:4321` |
+| `npm run build` | Genera `dist/` (no se versiona) |
+| `npm run preview` | Sirve `dist/` |
+| `npx astro check` | Tipos y diagnósticos de `.astro` |
 
-- Node.js compatible con la versión declarada en `package.json`.
-- API ASP.NET Core ejecutándose en `http://localhost:5000`.
-- Next.js ejecutándose en `http://localhost:3000` para las áreas aún no migradas.
+Desde la raíz del monorepo: `npm run dev:api` (API :5000) o `npm run dev:all`
+(API → Next → Astro, cada uno en su ventana). Variables en [api.md](./api.md).
 
-## Instalación y ejecución
-
-```powershell
-npm install
-Copy-Item .env.example .env
-npm run dev
-```
-
-Astro queda disponible en `http://localhost:4321`.
-
-En otra terminal, desde la raíz del repositorio, inicia la API:
-
-```powershell
-npm run dev:api
-```
-
-ASP.NET Core queda disponible en `http://localhost:5000`. Ambos procesos deben
-estar ejecutándose para que funcionen el inicio de sesión y las reservas.
-
-Para iniciar los tres servicios en procesos independientes y evitar que se
-detengan al cerrar la terminal que lanzó el comando:
-
-```powershell
-npm run dev:all
-```
-
-## Validación
-
-Antes de abrir un cambio:
-
-```powershell
-npm run build
-```
-
-El build genera `dist/`, que es un artefacto local y no se versiona.
+## Validar antes de integrar
+1. `npx astro check` → 0 errores (lo exige el CI, `.github/workflows/ci.yml`).
+2. `npm run build`.
+3. Si tocaste un `<script is:inline>` o `define:vars`: `node --check` sobre el JS
+   inline emitido en `dist/` (un cast TS ahí deja la página muerta en producción).
 
 ## Convenciones
-
-- Mantener la lógica de negocio en ASP.NET Core.
-- Usar TypeScript estricto y evitar `any`.
-- No incluir secretos en el repositorio.
-- Reutilizar componentes y servicios antes de duplicar lógica.
-- Usar nombres de dominio de ReservaYa.
-- Documentar cambios de arquitectura en `docs/`.
+Las reglas de código (JS plano en scripts inline, sin `innerHTML` con datos,
+URLs por variables `PUBLIC_*`, sin PII ni `alert()`) están en
+[`docs/skills/astro-landing.md`](../../docs/skills/astro-landing.md).

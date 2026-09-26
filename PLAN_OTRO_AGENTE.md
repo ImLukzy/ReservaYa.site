@@ -164,3 +164,31 @@ como `BLOQUEO-API` con endpoint, payload y error exacto.
 Por cada ítem: `✅ hecho (archivos) + cómo se verificó` o `⏭️ no hecho (motivo)` o
 `⛔ BLOQUEO-API (endpoint, payload, respuesta exacta)`. Más: lista de ramas/commits,
 salida de `db:check`, y pendientes que detectaste fuera de tu alcance.
+
+## 6. Estado del backlog (2026-09-25, rama `agents/frontend-nextjs-ui`, sin commit)
+
+Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
+
+| Ítem | Estado | Spec / nota |
+|---|---|---|
+| P0-1 Open redirect | ✅ | Astro ya lo tenía (`getSafeReturnUrl`). El panel (`app/(auth)/login` y `register`) aceptaba `/\evil.com` → `lib/redirect.ts` + tests (spec 03) |
+| P0-2 XSS `innerHTML` | ✅ | Quedaba `jugador/perfil.astro` `pintarFoto` → DOM API (spec 01) |
+| P0-3 PII | ✅ | Ya estaba; verificado con `grep` (spec 01) |
+| P1-4 `/canchas` mock | ✅ | Ya estaba (datos reales; componentes duplicados eliminados) |
+| P1-5 `localhost` en mejoras | ✅ | Ya estaba |
+| P1-6 404/500 | ✅ | Ya estaba |
+| P1-7 `astro check` | ✅ | 95 errores → 0 (spec 02) |
+| P1-8 Scripts | ✅ | `is:inline` explícito; 299 scripts inline pasan `node --check` (spec 02) |
+| P1-9 Proxy JWT | ✅ | `jose` ya estaba. + `/tecnico` en `matcher` (**aviso: se cambió el matcher**), rol desconocido = token inválido, un solo mapa `fallbackPorRol` (spec 03) |
+| P1-10 Errores visibles | ✅ | 25 `.catch(() => [])` → `crearCarga` + `<AvisoCarga>`; `error.tsx` en `app/` y `app/(dashboard)/` (spec 04) |
+| P1-11 Unificar API | ✅ | `lib/http.ts` (cliente) + `lib/server-fetch.ts` (servidor) (spec 05) |
+| P1-12 Deps/scripts | ✅ | Ya estaba; se añadió `npm test` (`node --test`, 13 tests) |
+| P2-13 CI | ✅ | Lint 17 errores → 0; CI con `test` + `build` (spec 06). Necesita el secreto `DATABASE_URL` para el job `db-check` |
+| P2-14 Docs Astro | ✅ | Sin duplicados y al día, 302 → 129 líneas (spec 07) |
+| Extra: onboarding `/admin/ayuda` | 🟡 | Progreso real con `complejos`/`canchas`/`horarios` + `totalCanchas` corregido en 3 vistas; falta verlo con cuenta de dueño (spec 09) |
+
+⛔ **BLOQUEO-API**
+- `POST /api/auth/forgot-password` no existe en `AuthController` (404). `forgot-password.astro` igualmente muestra "revisa tu correo" (spec 07 §8).
+- `register.astro`: el selector de género no se envía; no hay campo en la API ni columna `genero` (haría falta una migración) (spec 02 §8).
+
+`db:check` (2026-09-25): OK · 19 tablas · 82/82 nombres · 198 columnas · 0 migraciones pendientes.
