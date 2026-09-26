@@ -188,6 +188,7 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | Extra: onboarding `/admin/ayuda` | 🟡 | Progreso real con `complejos`/`canchas`/`horarios` + `totalCanchas` corregido en 3 vistas; falta verlo con cuenta de dueño (spec 09) |
 | Extra: headings sobre fondos oscuros | ✅ | `.on-dark` + herencia en headings (`global.css`), 12 contenedores; 13 títulos pasan de 1.52–3.40:1 a AA (≥ 9:1; «S/ 112», texto grande, ≥ 3.3:1) (26/26 Playwright) (spec 10) |
 | Extra: hero premium (`/`) | ✅ | Fondos locales AVIF/WebP (1918 KB → 65 KB en móvil), sin parpadeo gris, control único pausable (WCAG 2.2.2/2.5.8), copy Arequipa; 27/27 Playwright (spec 11) |
+| Extra: glifos en enlaces y botones | ✅ | Regla global `:is(a, button) :is(span, em, strong)` + avatar de `/duenos`; 214/214 spans heredan el color del control, 0 cambios fuera de controles, ningún contraste empeora (spec 12) |
 
 ⛔ **BLOQUEO-API**
 - `POST /api/auth/forgot-password` no existe en `AuthController` (404). `forgot-password.astro` igualmente muestra "revisa tu correo" (spec 07 §8).

@@ -238,6 +238,11 @@ main [id] {
     color: inherit;
   }
 
+  /* Controles: iconos y fragmentos de etiqueta heredan el color del enlace o botón. */
+  :is(a, button) :is(span, em, strong) {
+    color: inherit;
+  }
+
   /* Superficie oscura: estos textos heredan el color que declara el
      contenedor (text-white, text-white/60…) en vez de la paleta clara. */
   .on-dark :is(h1, h2, h3, h4, h5, p, span, li, em, strong) {
