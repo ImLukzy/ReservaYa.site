@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   CalendarDays,
-  CircleHelp,
   Download,
   Plus,
   Trash2,
@@ -243,14 +242,6 @@ export function ReservasPanel({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Ayuda"
-            title="Ayuda"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E7E5E4] bg-white text-sm font-bold text-[#64748B] transition-colors hover:border-[#22C55E] hover:text-[#22C55E]"
-          >
-            <CircleHelp size={18} strokeWidth={1.85} />
-          </button>
           <button
             type="button"
             onClick={exportarCSV}

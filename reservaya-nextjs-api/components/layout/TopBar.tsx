@@ -1,7 +1,5 @@
 'use client';
 
-import { Bell, CircleHelp } from 'lucide-react';
-
 export function TopBar({
   breadcrumb,
   title,
@@ -20,24 +18,7 @@ export function TopBar({
             <h1 className="truncate text-xl font-bold tracking-tight text-[#0F172A] sm:text-[28px]">{title}</h1>
           )}
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {action}
-          <button
-            type="button"
-            aria-label="Tutoriales"
-            title="Tutoriales guiados"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E2E8F0] bg-white text-sm font-bold text-[#64748B] transition-colors hover:border-[#22C55E] hover:text-[#22C55E]"
-          >
-            <CircleHelp size={18} strokeWidth={1.85} />
-          </button>
-          <button
-            type="button"
-            aria-label="Notificaciones"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E2E8F0] bg-white text-[#64748B] transition-colors hover:border-[#22C55E] hover:text-[#22C55E]"
-          >
-            <Bell size={18} strokeWidth={1.85} />
-          </button>
-        </div>
+        {action && <div className="flex shrink-0 items-center gap-2">{action}</div>}
       </div>
     </div>
   );

@@ -1,9 +1,12 @@
 import { MessageCircle } from 'lucide-react';
+import { whatsappUrl } from '@/lib/whatsapp';
 
 export function WhatsAppFloat() {
+  const href = whatsappUrl();
+  if (!href) return null;
   return (
     <a
-      href="https://wa.me/51999999999"
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Soporte por WhatsApp"

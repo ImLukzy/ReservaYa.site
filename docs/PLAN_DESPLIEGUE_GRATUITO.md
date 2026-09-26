@@ -75,6 +75,7 @@ Navegador ──► Panel (Vercel) ──rewrite /api/* y /uploads/* (BACKEND_UR
 | `BACKEND_URL` | `https://reservaya-api.onrender.com` (`API_URL`) | Lo usan los rewrites `/api/*` y `/uploads/*` (**se fija al compilar**) y el `serverFetch` |
 | `JWT_SECRET` | `<exactamente el mismo que en Render>` | `proxy.ts` verifica la firma de la cookie `token` |
 | `NEXT_PUBLIC_PUBLIC_APP_URL` | `https://reservaya.pages.dev` (`LANDING_URL`) | Enlaces del panel hacia la landing (inicio, «¿Olvidaste tu contraseña?»). Se fija al compilar |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | `<51 + tu número, solo dígitos>` | Opcional. Si falta, no se muestra ningún botón de WhatsApp (spec 19). Se fija al compilar |
 
 - **No hace falta:** `NEXT_PUBLIC_API_URL` (el código no la lee; todo va por `BACKEND_URL`), `FRONTEND_ORIGIN`, `COOKIE_SECURE` ni `DATABASE_URL`, que solo usan `db:check` y `prisma.config.ts`, no el runtime.
 4. **Deploy.** Comprueba: `PANEL_URL/login` carga, y un login incorrecto responde «Credenciales inválidas» (es un 401 de la API a través del rewrite).
