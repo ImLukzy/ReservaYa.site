@@ -1,29 +1,32 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/ui/Button.astro";
+import { EMAIL } from "../lib/contacto";
+
+const pasos = [
+  ["Crea tu cuenta", "Con tu nombre, correo, fecha de nacimiento y una contraseña."],
+  ["Busca una cancha libre", "En Canchas eliges distrito, deporte, día y hora. Solo ves las que están libres, con su precio."],
+  ["Envía la reserva", "Pulsas Reservar y la confirmas desde tu cuenta. Puedes dejar una nota para el complejo."],
+  ["Espera la confirmación", "La reserva queda pendiente hasta que el complejo la confirma. Mientras tanto no bloquea el horario."],
+  ["Juega con tu código", "Con la reserva confirmada ves tu código en Mi partido. Lo muestras al llegar a la cancha."],
+];
 ---
 
-<BaseLayout
-  title="Ayuda | ReservaYa"
-  description="Guía rápida para reservar una cancha en ReservaYa."
->
-  <section class="py-16">
-    <div class="mx-auto max-w-3xl">
-      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#4ADE80]">Centro de ayuda</p>
-      <h1 class="reveal mt-3 text-4xl font-black text-white">Reserva tu cancha paso a paso</h1>
-      <div class="reveal mt-10 space-y-5" data-reveal-delay="120">
-        {[
-          ["1. Crea tu cuenta", "Regístrate con tu nombre, correo y una contraseña segura."],
-          ["2. Revisa las canchas", "Consulta las canchas activas, precios y capacidad desde la sección Canchas."],
-          ["3. Envía una solicitud", "Elige la fecha, hora de inicio y hora de fin. Puedes añadir una nota para el administrador."],
-          ["4. Espera la confirmación", "Tu solicitud queda pendiente hasta que el administrador la revise. Las solicitudes pendientes no bloquean el horario."],
-          ["5. Juega con tu código", "Cuando sea confirmada, encontrarás tu código de reserva en Mi partido. Las reservas confirmadas bloquean ese horario."],
-        ].map(([title, text]) => (
-          <article class="rounded-2xl border border-white/10 bg-[#060A08] p-6">
-            <h2 class="text-lg font-bold text-white">{title}</h2>
-            <p class="mt-2 leading-relaxed text-white/75">{text}</p>
-          </article>
-        ))}
-      </div>
-    </div>
+<BaseLayout title="Cómo reservar | ReservaYa" description="Guía para reservar una cancha en ReservaYa, paso a paso.">
+  <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
+    <h1 class="text-3xl lg:text-4xl">Cómo reservar una cancha</h1>
+    <ol class="mt-8 border-t border-cal">
+      {pasos.map(([t, d], i) => (
+        <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-cal py-5">
+          <span class="font-display text-2xl font-bold tabular-nums">{i + 1}</span>
+          <div>
+            <h2 class="text-xl">{t}</h2>
+            <p class="mt-1 text-pizarra">{d}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="mt-8 text-pizarra">¿Algo no funciona? Escríbenos a <a href={`mailto:${EMAIL}`} class="font-semibold text-cesped-hondo underline">{EMAIL}</a>.</p>
+    <Button href="/canchas" class="mt-6">Buscar canchas</Button>
   </section>
 </BaseLayout>

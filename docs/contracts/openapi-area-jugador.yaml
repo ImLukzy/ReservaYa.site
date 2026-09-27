@@ -1,0 +1,652 @@
+openapi: 3.1.0
+info:
+  title: ReservaYa API — Contrato de Área Jugador y Vitrina Pública
+  description: >
+    Especificación OpenAPI de los contratos compartidos entre la landing pública
+    (reservaya-frontend-astro), el panel de usuario (reservaya-nextjs-api) y
+    el backend (.NET 10 ReservaFacil.Api) para el área del jugador bajo
+    arquitectura desacoplada.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Backend local .NET
+  - url: http://localhost:3000
+    description: Proxy Next.js local
+  - url: https://reservaya-api.onrender.com
+    description: Backend Render producción
+
+paths:
+  /api/canchas/disponibles:
+    get:
+      summary: Vitrina de canchas con disponibilidad y cotización estimada
+      description: >
+        Devuelve canchas activas y visibles. Si se proporcionan fecha y horas (en minutos),
+        calcula la disponibilidad real y el precio estimado con promociones.
+      parameters:
+        - name: fecha
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2026-09-28"
+        - name: horaInicio
+          in: query
+          required: false
+          description: Minutos desde la medianoche (ej. 480 para 08:00)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1440
+            example: 480
+        - name: horaFin
+          in: query
+          required: false
+          description: Minutos desde la medianoche (ej. 540 para 09:00)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1440
+            example: 540
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: distrito
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: tipo
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [FUTBOL, FUTBOL5, FUTBOL7, PADEL, TENIS, BASQUET, VOLLEYBALL, LOZA]
+        - name: complejoId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listado de canchas disponibles
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, canchas, total, limiteAplicado]
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  total:
+                    type: integer
+                    example: 12
+                  limiteAplicado:
+                    type: boolean
+                    example: false
+                  canchas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CanchaDisponible'
+        '400':
+          description: Error en parámetros de slot o tipo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRespuesta'
+
+  /api/canchas/opciones:
+    get:
+      summary: Opciones de filtrado para el buscador de canchas
+      responses:
+        '200':
+          description: Opciones de distritos, complejos y deportes
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [distritos, ciudades, complejos]
+                properties:
+                  distritos:
+                    type: array
+                    items:
+                      type: string
+                  ciudades:
+                    type: array
+                    items:
+                      type: string
+                  duenos:
+                    type: array
+                    items:
+                      type: object
+                  complejos:
+                    type: array
+                    items:
+                      type: object
+                  sugerencias:
+                    type: array
+                    items:
+                      type: string
+
+  /api/canchas/{id}/cotizar:
+    get:
+      summary: Cotizar reserva de cancha según reglas de precio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fecha
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: horaInicio
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: horaFin
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cotización calculada
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, total]
+                properties:
+                  ok:
+                    type: boolean
+                  total:
+                    type: string
+                    example: "45.00"
+                  regla:
+                    type: string
+                    nullable: true
+
+  /api/resenas/publicas:
+    get:
+      summary: Reseñas públicas y valoración agregada por complejo
+      parameters:
+        - name: complejoId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Promedio de valoración y lista de opiniones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [promedio, total, resenas]
+                properties:
+                  promedio:
+                    type: number
+                    example: 4.8
+                  total:
+                    type: integer
+                    example: 24
+                  resenas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Resena'
+
+  /api/auth/me:
+    get:
+      summary: Obtener perfil de la sesión actual autenticada
+      responses:
+        '200':
+          description: Sesión válida
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [usuario]
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioSesion'
+        '401':
+          description: Sin sesión activa
+
+  /api/auth/login:
+    post:
+      summary: Iniciar sesión con email y contraseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login exitoso, cookie Set-Cookie emitida
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, usuario]
+                properties:
+                  ok:
+                    type: boolean
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioSesion'
+        '401':
+          description: Credenciales incorrectas
+        '429':
+          description: Rate limit excedido
+
+  /api/auth/register:
+    post:
+      summary: Registrar nuevo jugador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, email, password, fechaNacimiento, username]
+              properties:
+                nombre:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                fechaNacimiento:
+                  type: string
+                  format: date
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Registro exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, usuario]
+                properties:
+                  ok:
+                    type: boolean
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioSesion'
+
+  /api/auth/logout:
+    post:
+      summary: Cerrar sesión activa y expirar cookie
+      responses:
+        '200':
+          description: Sesión cerrada
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok]
+                properties:
+                  ok:
+                    type: boolean
+
+  /api/reservas:
+    get:
+      summary: Listar reservas del jugador autenticado
+      responses:
+        '200':
+          description: Reservas del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [reservas]
+                properties:
+                  reservas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reserva'
+    post:
+      summary: Crear reserva de cancha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [canchaId, fecha, horaInicio, horaFin]
+              properties:
+                canchaId:
+                  type: string
+                fecha:
+                  type: string
+                  format: date
+                horaInicio:
+                  type: integer
+                horaFin:
+                  type: integer
+                notas:
+                  type: string
+      responses:
+        '200':
+          description: Reserva creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, reserva]
+                properties:
+                  ok:
+                    type: boolean
+                  reserva:
+                    $ref: '#/components/schemas/Reserva'
+
+  /api/reservas/{id}:
+    patch:
+      summary: Modificar o cancelar reserva
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [estado]
+              properties:
+                estado:
+                  type: string
+                  enum: [CANCELADA]
+      responses:
+        '200':
+          description: Reserva actualizada
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, reserva]
+                properties:
+                  ok:
+                    type: boolean
+                  reserva:
+                    $ref: '#/components/schemas/Reserva'
+
+  /api/resenas:
+    post:
+      summary: Calificar un complejo tras completar una reserva
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [complejoId, puntuacion]
+              properties:
+                complejoId:
+                  type: string
+                puntuacion:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                comentario:
+                  type: string
+      responses:
+        '200':
+          description: Reseña guardada
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, resena]
+                properties:
+                  ok:
+                    type: boolean
+                  resena:
+                    $ref: '#/components/schemas/Resena'
+
+  /api/usuarios/me:
+    patch:
+      summary: Actualizar datos personales del jugador
+      description: Permite actualizar teléfono siempre; fechaNacimiento solo una vez; username solo una vez al año.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                telefono:
+                  type: string
+                fechaNacimiento:
+                  type: string
+                  format: date
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Perfil actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, usuario]
+                properties:
+                  ok:
+                    type: boolean
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioSesion'
+        '400':
+          description: Intento de cambiar fecha ya fijada o formato inválido
+        '409':
+          description: Intento de cambiar username antes del año
+
+  /api/partidos:
+    get:
+      summary: Listar partidos abiertos para completar cuadro
+      responses:
+        '200':
+          description: Partidos públicos disponibles
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [partidos]
+                properties:
+                  partidos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Partido'
+
+  /api/partidos/mios:
+    get:
+      summary: Listar partidos creados o en los que participa el jugador
+      responses:
+        '200':
+          description: Partidos del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [partidos]
+                properties:
+                  partidos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Partido'
+
+components:
+  schemas:
+    Cancha:
+      type: object
+      required: [id, nombre, tipo, precioPorHora]
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        tipo:
+          type: string
+        precioPorHora:
+          type: string
+        descripcion:
+          type: string
+          nullable: true
+        imagen:
+          type: string
+          nullable: true
+        complejoId:
+          type: string
+          nullable: true
+        complejo:
+          $ref: '#/components/schemas/ComplejoRef'
+
+    ComplejoRef:
+      type: object
+      required: [id, nombre, distrito, ciudad]
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        distrito:
+          type: string
+        ciudad:
+          type: string
+
+    CanchaDisponible:
+      type: object
+      required: [cancha, disponible]
+      properties:
+        cancha:
+          $ref: '#/components/schemas/Cancha'
+        disponible:
+          type: boolean
+        motivo:
+          type: string
+          nullable: true
+        totalEstimado:
+          type: string
+          nullable: true
+        reglaPrecio:
+          type: string
+          nullable: true
+
+    Reserva:
+      type: object
+      required: [id, canchaId, fecha, horaInicio, horaFin, estado]
+      properties:
+        id:
+          type: string
+        canchaId:
+          type: string
+        fecha:
+          type: string
+        horaInicio:
+          type: integer
+        horaFin:
+          type: integer
+        estado:
+          type: string
+          enum: [PENDIENTE, CONFIRMADA, COMPLETADA, CANCELADA]
+        total:
+          type: string
+        codigo:
+          type: string
+          nullable: true
+        cancha:
+          $ref: '#/components/schemas/Cancha'
+
+    Resena:
+      type: object
+      required: [puntuacion]
+      properties:
+        id:
+          type: string
+        puntuacion:
+          type: integer
+        comentario:
+          type: string
+          nullable: true
+        respuestaDueno:
+          type: string
+          nullable: true
+        creadoEn:
+          type: string
+        usuario:
+          type: object
+          properties:
+            nombre:
+              type: string
+
+    UsuarioSesion:
+      type: object
+      required: [id, email, nombre, rol]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        nombre:
+          type: string
+        username:
+          type: string
+          nullable: true
+        fechaNacimiento:
+          type: string
+          nullable: true
+        telefono:
+          type: string
+          nullable: true
+        fotoUrl:
+          type: string
+          nullable: true
+        rol:
+          type: string
+          enum: [USUARIO, ADMIN, SUPERADMIN, TECNICO]
+
+    Partido:
+      type: object
+      required: [id, creadorId, fecha, horaInicio]
+      properties:
+        id:
+          type: string
+        creadorId:
+          type: string
+        fecha:
+          type: string
+        horaInicio:
+          type: integer
+        horaFin:
+          type: integer
+        cuposTotales:
+          type: integer
+        cuposDisponibles:
+          type: integer
+
+    ErrorRespuesta:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: "Parámetros inválidos"

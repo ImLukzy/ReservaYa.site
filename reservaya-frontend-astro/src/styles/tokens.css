@@ -1,0 +1,94 @@
+/* Sistema «Tablero de cancha» (spec 20). Único archivo con valores de color:
+   el resto usa las utilidades (bg-sillar, text-basalto…) o var(--color-*). */
+
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/barlow-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/barlow-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/barlow-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/barlow-condensed-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/barlow-condensed-700.woff2") format("woff2");
+}
+
+@theme static {
+  /* Color. Contrastes medidos en la spec 20 (§4). */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-sillar: #f3f4f1;        /* fondo de página */
+  --color-piedra: #e7e9e4;        /* hover y estados neutros; pizarra encima 4.9 */
+  --color-tiza: #ffffff;          /* superficies y filas del tablero */
+  --color-cesped: #17804a;        /* único acento: acción, libre, foco; tiza encima 4.97 */
+  --color-cesped-hondo: #116a3c;  /* hover del acento y texto verde; 6.0 sobre sillar */
+  --color-cesped-suave: #e3f1e8;  /* fondo de «libre»; cesped-hondo encima 5.7 */
+  --color-basalto: #1f2a24;       /* texto principal; 13.4 sobre sillar */
+  --color-pizarra: #5a6660;       /* texto secundario; 5.43 sobre sillar */
+  --color-cal: #d6dbd3;           /* líneas de estructura, nunca texto */
+  --color-borde: #8a948e;         /* borde de campos, ≥ 3:1 */
+  --color-sol: #f0b429;           /* un solo uso: valoraciones; basalto encima 7.96 */
+  --color-error: #b42318;         /* 6.57 sobre tiza */
+  --color-error-suave: #fdecea;   /* error encima 5.75 */
+  --color-velo: rgb(31 42 36 / 0.5); /* fondo tras un diálogo */
+
+  /* Tipografía: señalética (display) + cuerpo de la misma familia. */
+  --font-*: initial;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala tercera mayor (1.25): 14 · 16 · 20 · 25 · 31 · 39 · 49 px. */
+  --text-*: initial;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.35;
+  --text-xl: 1.5625rem;
+  --text-xl--line-height: 1.15;
+  --text-2xl: 1.9375rem;
+  --text-2xl--line-height: 1.08;
+  --text-3xl: 2.4375rem;
+  --text-3xl--line-height: 1.05;
+  --text-4xl: 3.0625rem;
+  --text-4xl--line-height: 1.05;
+
+  /* Radio por jerarquía: controles 6 px, superficies 12 px, filas del tablero 0. */
+  --radius-*: initial;
+  --radius-control: 6px;
+  --radius-surface: 12px;
+
+  --shadow-*: initial;
+  --shadow-pop: 0 12px 32px -12px rgb(31 42 36 / 0.35);
+
+  --container-page: 70rem;
+  --container-texto: 42rem;
+
+  --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

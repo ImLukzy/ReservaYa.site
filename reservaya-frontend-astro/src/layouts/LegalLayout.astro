@@ -1,0 +1,15 @@
+---
+// Páginas legales en Markdown (src/pages/legal/*.md).
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  frontmatter: { title: string; description?: string };
+}
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout title={`${frontmatter.title} | ReservaYa`} description={frontmatter.description ?? frontmatter.title}>
+  <article class="prosa mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
+    <slot />
+  </article>
+</BaseLayout>

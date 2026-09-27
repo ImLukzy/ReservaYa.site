@@ -1,112 +1,45 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
-const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
+import AuthCard from "../components/AuthCard.astro";
+import Field from "../components/ui/Field.astro";
+import Button from "../components/ui/Button.astro";
+import { API, APP } from "../lib/entorno";
+import { BOTON } from "../lib/estilos";
+
+const apiUrl = API;
+const appUrl = APP;
 ---
 
-<BaseLayout
-  title="Registro | ReservaYa"
-  description="Sé parte de la red de jugadores más grande del Perú."
-  robots="noindex, follow"
->
-  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F7F6F3] px-4 py-12 md:px-8 md:py-16">
-    <div class="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-2">
-      <div class="reveal lg:pt-16">
-        <p class="text-6xl font-black tracking-tight text-[#101613] md:text-7xl">Reserva<span class="text-[#16A34A]">Ya</span></p>
-        <h1 class="mt-8 text-3xl font-extrabold tracking-tight text-[#101613] md:text-4xl">Sé parte de la red de jugadores más grande del <span class="text-[#16A34A]">Perú.</span></h1>
-        <p class="mt-4 max-w-md leading-relaxed text-[#5B6660]">Y vamos por toda Latinoamérica. Reserva, arma tu equipo y no te quedes sin jugar.</p>
-        <div class="mt-6 flex items-center gap-3">
-          <div class="flex -space-x-2">
-            {[["J", "#16A34A", "#060C08"], ["M", "#2563EB", "#fff"], ["A", "#F59E0B", "#fff"], ["S", "#EC4899", "#fff"], ["C", "#8B5CF6", "#fff"]].map(([l, c, t]) => (
-              <span class="flex h-9 w-9 items-center justify-center rounded-full text-xs font-black ring-2 ring-[#F7F6F3]" style={`background:${c};color:${t}`}>{l}</span>
-            ))}
-          </div>
-          <div class="text-sm"><p class="font-bold text-[#101613]">+100 jugadores</p><p class="text-xs text-[#8A938D]">ya son parte de ReservaYa</p></div>
-        </div>
-      </div>
+<BaseLayout title="Crear cuenta | ReservaYa" description="Crea tu cuenta de ReservaYa para reservar canchas en Arequipa." robots="noindex, follow">
+  <AuthCard titulo="Crea tu cuenta" texto="Te pedimos lo justo para reservar y para que te agreguen a los partidos.">
+    <p slot="arriba" id="rg-paso" class="mb-2 text-sm font-medium text-pizarra">Paso 1 de 2</p>
 
-      <div class="reveal mx-auto w-full max-w-md" data-reveal-delay="120">
-        <div class="flex gap-2" aria-hidden="true">
-          <span class="step-bar h-1.5 flex-1 rounded-full bg-[#16A34A]"></span>
-          <span class="step-bar h-1.5 flex-1 rounded-full bg-[#E4E7E4]"></span>
-          <span class="step-bar h-1.5 flex-1 rounded-full bg-[#E4E7E4]"></span>
-        </div>
+    <div class="reg-step space-y-4" data-step="1">
+      <Field id="rg-nombre" type="text" etiqueta="Nombre completo" autocomplete="name" placeholder="Nombre y apellido" />
+      <Field id="rg-fecha" type="date" etiqueta="Fecha de nacimiento" nota="No se puede cambiar después." />
+      <Field id="rg-user" type="text" etiqueta="Tu usuario" autocomplete="username" placeholder="tucrack10" nota="Con él te agregan a sorteos y partidos. Lo sugerimos desde tu nombre." />
+      <p hidden class="text-sm font-medium text-error" data-err role="alert"></p>
+      <Button id="to-step2" class="w-full">Continuar</Button>
+    </div>
 
-        <!-- PASO 1 -->
-        <div class="reg-step" data-step="1">
-          <h2 class="mt-6 text-center text-xl font-extrabold text-[#101613]">Cuéntanos de ti</h2>
-          <p class="mt-1 text-center text-sm text-[#5B6660]">Tu nombre, tu edad y cómo te llamamos.</p>
-          <div class="mt-6 space-y-4">
-            <div>
-              <label for="rg-nombre" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">NOMBRE COMPLETO</label>
-              <div class="relative">
-                <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" aria-hidden="true">◔</span>
-                <input id="rg-nombre" type="text" autocomplete="name" placeholder="Jair Quispe"
-                  class="w-full rounded-xl border-2 border-[#22C55E] bg-white py-3 pr-4 pl-11 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:outline-none" />
-              </div>
-            </div>
-            <div>
-              <label for="rg-fecha" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">FECHA DE NACIMIENTO</label>
-              <div class="relative">
-                <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" aria-hidden="true">▤</span>
-                <input id="rg-fecha" type="date"
-                  class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3 pr-4 pl-11 text-sm text-[#101613] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
-              </div>
-            </div>
-            <div>
-              <label for="rg-user" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">TU USUARIO <span class="font-normal normal-case">· para que te agreguen a sorteos</span></label>
-              <div class="relative">
-                <span class="absolute top-1/2 left-4 -translate-y-1/2 font-semibold text-gray-400" aria-hidden="true">@</span>
-                <input id="rg-user" type="text" placeholder="tucrack10"
-                  class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3 pr-4 pl-10 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
-              </div>
-              <p class="mt-1.5 text-[11px] text-[#8A938D]">Te lo sugerimos desde tu nombre — cámbialo si quieres.</p>
-            </div>
-            <p class="hidden text-sm font-semibold text-red-600" data-err></p>
-            <button id="to-step2" type="button" class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-[#060C08] transition hover:bg-[#22C55E]">Siguiente <span aria-hidden="true">→</span></button>
-          </div>
-        </div>
-
-        <!-- PASO 2 -->
-        <div class="reg-step hidden" data-step="2">
-          <h2 class="mt-6 text-center text-xl font-extrabold text-[#101613]">Crea tu cuenta</h2>
-          <p class="mt-1 text-center text-sm text-[#5B6660]">Con esto entras a reservar y a tus partidos.</p>
-          <div class="mt-6 space-y-4">
-            <div>
-              <label for="rg-email" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">CORREO ELECTRÓNICO</label>
-              <div class="relative">
-                <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400" aria-hidden="true">✉</span>
-                <input id="rg-email" type="email" autocomplete="email" placeholder="tu@correo.com"
-                  class="w-full rounded-xl border border-[#E7E5E4] bg-white py-3 pr-4 pl-11 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
-              </div>
-            </div>
-            <div>
-              <label for="rg-pass" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">CONTRASEÑA</label>
-              <input id="rg-pass" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres"
-                class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
-            </div>
-            <div>
-              <label for="rg-pass2" class="mb-1.5 block text-[11px] font-bold tracking-wider text-[#8A938D]">CONFIRMA TU CONTRASEÑA</label>
-              <input id="rg-pass2" type="password" autocomplete="new-password" placeholder="Repite tu contraseña"
-                class="w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
-            </div>
-            <p class="hidden text-sm font-semibold text-red-600" data-err></p>
-            <div class="flex gap-2">
-              <button id="back-step1" type="button" class="rounded-xl border border-[#E7E5E4] bg-white px-5 py-3.5 text-sm font-bold text-[#3F4A44] transition hover:border-[#22C55E]">← Atrás</button>
-              <button id="rg-submit" type="button" class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#16A34A] py-3.5 font-bold text-[#060C08] transition hover:bg-[#22C55E] disabled:opacity-60">Crear mi cuenta <span aria-hidden="true">→</span></button>
-            </div>
-          </div>
-        </div>
-
-        <p class="mt-5 text-center text-xs text-[#8A938D]">¿Ya tienes cuenta? <a href="/login" class="font-bold text-[#16A34A] hover:underline">Inicia sesión</a></p>
+    <div class="reg-step space-y-4" data-step="2" hidden>
+      <Field id="rg-email" type="email" etiqueta="Correo" autocomplete="email" placeholder="tu@correo.com" />
+      <Field id="rg-pass" type="password" etiqueta="Contraseña" autocomplete="new-password" nota="Mínimo 6 caracteres." />
+      <Field id="rg-pass2" type="password" etiqueta="Repite la contraseña" autocomplete="new-password" />
+      <p hidden class="text-sm font-medium text-error" data-err role="alert"></p>
+      <div class="flex gap-3">
+        <Button id="back-step1" variante="secundario">Atrás</Button>
+        <Button id="rg-submit" class="flex-1">Crear mi cuenta</Button>
       </div>
     </div>
-  </section>
+
+    <p slot="pie" class="text-pizarra">¿Ya tienes cuenta? <a href="/login" class={BOTON.texto}>Entrar</a></p>
+  </AuthCard>
 </BaseLayout>
 
 <script is:inline define:vars={{ apiUrl, appUrl }}>
   const steps = [...document.querySelectorAll(".reg-step")];
-  const bars = [...document.querySelectorAll(".step-bar")];
+  const pasoLabel = document.getElementById("rg-paso");
   const nombre = document.getElementById("rg-nombre");
   const fecha = document.getElementById("rg-fecha");
   const user = document.getElementById("rg-user");
@@ -116,25 +49,23 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
   const submit = document.getElementById("rg-submit");
 
   function goStep(n) {
-    steps.forEach((s) => s.classList.toggle("hidden", s.dataset.step !== String(n)));
-    bars.forEach((b, i) => {
-      b.className = `step-bar h-1.5 flex-1 rounded-full ${i < n ? "bg-[#16A34A]" : "bg-[#E4E7E4]"}`;
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    steps.forEach((s) => { s.hidden = s.dataset.step !== String(n); });
+    if (pasoLabel) pasoLabel.textContent = `Paso ${n} de 2`;
+    const primero = document.querySelector(`.reg-step[data-step="${n}"] input`);
+    if (primero) primero.focus();
   }
   function err(step, msg) {
     const p = document.querySelector(`.reg-step[data-step="${step}"] [data-err]`);
     if (!p) return;
-    if (!msg) { p.classList.add("hidden"); return; }
-    p.textContent = msg;
-    p.classList.remove("hidden");
+    p.textContent = msg || "";
+    p.hidden = !msg;
   }
 
   // Sugerir @usuario desde el nombre
   nombre?.addEventListener("input", () => {
     if (document.activeElement === user) return;
     const base = nombre.value.trim().toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")
       .replace(/[^a-z0-9]+/g, "");
     if (base.length >= 3 && !user.dataset.touched) {
       user.value = base.slice(0, 14) + Math.floor(10 + Math.random() * 90);
@@ -145,7 +76,7 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
   document.getElementById("to-step2")?.addEventListener("click", () => {
     if (nombre.value.trim().length < 3) return err(1, "Escribe tu nombre completo.");
     if (!fecha.value) return err(1, "Elige tu fecha de nacimiento.");
-    if (!/^[a-zA-Z0-9_.]{3,20}$/.test(user.value.trim())) return err(1, "Tu usuario: 3-20 caracteres (letras, números, _ o .).");
+    if (!/^[a-zA-Z0-9_.]{3,20}$/.test(user.value.trim())) return err(1, "Tu usuario: de 3 a 20 caracteres (letras, números, _ o .).");
     err(1, "");
     goStep(2);
   });
@@ -158,9 +89,9 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
     if (pass.value !== pass2.value) return err(2, "Las contraseñas no coinciden.");
     err(2, "");
     submit.disabled = true;
-    submit.innerHTML = "Creando cuenta...";
+    submit.textContent = "Creando cuenta...";
     try {
-      const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/auth/register`, {
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -177,10 +108,10 @@ const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:300
       window.location.href = `${appUrl}/dashboard`;
     } catch (error) {
       err(2, error instanceof TypeError
-        ? "No se pudo conectar con el servidor. Verifica que esté en ejecución."
+        ? "No se pudo conectar con el servidor. Inténtalo de nuevo en unos minutos."
         : error instanceof Error ? error.message : "No se pudo crear la cuenta");
       submit.disabled = false;
-      submit.innerHTML = 'Crear mi cuenta <span aria-hidden="true">→</span>';
+      submit.textContent = "Crear mi cuenta";
     }
   });
 </script>

@@ -1,0 +1,36 @@
+---
+// Tabla única de planes (/duenos#planes; /precios redirige aquí).
+// Precios y límites comerciales vigentes en el copy anterior (spec 20 §7).
+import Button from "./ui/Button.astro";
+import Icon from "./ui/Icon.astro";
+import Badge from "./ui/Badge.astro";
+
+const planes = [
+  { nombre: "Publicación", precio: "0", nota: "Gratis", texto: "Para aparecer en la búsqueda y recibir reservas.", incluye: ["Perfil público del complejo", "Reservas en línea todo el día", "1 complejo con hasta 2 canchas"], principal: false },
+  { nombre: "Gestión total", precio: "89.90", nota: "al mes", texto: "Para llevar el día a día del complejo.", incluye: ["Todo lo de Publicación", "Agenda sin choques de horario", "Caja y ventas del día", "Trabajadores con su propio acceso"], principal: true },
+  { nombre: "Red de sedes", precio: "199", nota: "al mes", texto: "Para dueños con varias sedes.", incluye: ["Todo lo de Gestión total", "Sedes sin límite", "Reportes y metas de todas tus sedes", "Atención prioritaria"], principal: false },
+];
+---
+
+<section id="planes" aria-labelledby="planes-titulo" class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
+  <h2 id="planes-titulo" class="text-2xl lg:text-3xl">Planes y precios</h2>
+  <p class="mt-2 max-w-xl text-pizarra">Sin contratos. Con pago anual pagas 20 % menos: S/ 71.92 al mes en Gestión total y S/ 159.20 en Red de sedes.</p>
+  <div class="mt-6 grid overflow-hidden rounded-surface border border-cal bg-tiza md:grid-cols-3">
+    {planes.map((p) => (
+      <article class="flex flex-col border-b border-cal p-6 last:border-b-0 md:border-b-0 md:border-l md:first:border-l-0">
+        <h3 class="text-xl">{p.nombre}</h3>
+        <p class="mt-3 flex items-baseline gap-2">
+          <span class="font-display text-4xl font-bold tabular-nums">S/ {p.precio}</span>
+          {p.precio === "0" ? <Badge tono="libre">{p.nota}</Badge> : <span class="text-pizarra">{p.nota}</span>}
+        </p>
+        <p class="mt-2 text-pizarra">{p.texto}</p>
+        <ul class="mt-4 flex-1 space-y-2">
+          {p.incluye.map((i) => (
+            <li class="flex gap-2"><Icon nombre="ok" class="mt-0.5 h-5 w-5 shrink-0 text-cesped-hondo" />{i}</li>
+          ))}
+        </ul>
+        <Button href="/register?plan=dueno" variante={p.principal ? "primario" : "secundario"} class="mt-6 w-full">Empezar con {p.nombre}</Button>
+      </article>
+    ))}
+  </div>
+</section>

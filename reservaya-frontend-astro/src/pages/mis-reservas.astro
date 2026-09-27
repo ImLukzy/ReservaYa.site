@@ -1,22 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { APP } from "../lib/entorno";
+import { BOTON } from "../lib/estilos";
 
-const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
-const dashboardReservationsUrl = `${appUrl.replace(/\/$/, "")}/dashboard/reservas`;
+const destino = `${APP}/dashboard/reservas`;
 ---
 
 <BaseLayout title="Mis reservas | ReservaYa" robots="noindex, follow">
-  <meta http-equiv="refresh" content={`0;url=${dashboardReservationsUrl}`} slot="head" />
-  <section class="mx-auto max-w-xl px-4 py-20 text-center">
-    <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#DCFCE7] text-2xl text-[#16A34A]" aria-hidden="true">▤</span>
-    <h1 class="mt-5 text-2xl font-black tracking-tight text-[#101613]">Llevándote a tus reservas…</h1>
-    <p class="mt-2 text-sm text-[#5B6660]">Si no avanzas solo, continúa aquí:</p>
-    <a href={dashboardReservationsUrl} class="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#22C55E] px-6 py-3 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]">
-      Continuar al dashboard <span aria-hidden="true">→</span>
-    </a>
+  <meta http-equiv="refresh" content={`0;url=${destino}`} slot="head" />
+  <section class="mx-auto max-w-texto px-4 py-16 text-center">
+    <h1 class="text-2xl">Te llevamos a tus reservas</h1>
+    <p class="mt-2 text-pizarra">Si no pasa nada en unos segundos, entra desde aquí.</p>
+    <a href={destino} class={`${BOTON.primario} mt-5`}>Ver mis reservas</a>
   </section>
 </BaseLayout>
 
-<script is:inline define:vars={{ dashboardReservationsUrl }}>
-  window.location.replace(dashboardReservationsUrl);
+<script is:inline define:vars={{ destino }}>
+  window.location.replace(destino);
 </script>

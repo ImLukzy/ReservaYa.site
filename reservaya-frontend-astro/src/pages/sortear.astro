@@ -1,146 +1,80 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+import { API } from "../lib/entorno";
+import { BOTON, CAMPO, ETIQUETA } from "../lib/estilos";
 
-const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000").replace(/\/$/, "");
-
-const faqs = [
-  {
-    q: "¿Cómo sortear equipos de fútbol parejos?",
-    a: "Agrega a los jugadores por su @usuario (o como invitados), elige en cuántos equipos separarlos y toca Sortear. ReservaYa reparte equipos equilibrados según el nivel de cada uno.",
-  },
-  {
-    q: "¿Puedo separar en 2, 3 o 4 equipos?",
-    a: "Sí. Elige 2 para la pichanga clásica, 3 para rotar un equipo afuera o 4 para un mini-torneo. El reparto siempre busca que queden parejos.",
-  },
-  {
-    q: "¿Sirve para una pichanga de 10, 14 o más?",
-    a: "Sí. Agrega a todos separados por comas (ej: Juan, Pedro, Luis) y se agregan de una. Funciona con cualquier cantidad de jugadores.",
-  },
-  {
-    q: "¿Es gratis?",
-    a: "Totalmente gratis y sin cuenta. Los jugadores con @usuario guardan su nivel para futuros sorteos más parejos.",
-  },
+const apiUrl = API;
+const preguntas = [
+  ["¿Cómo se reparten los equipos?", "Al azar y del mismo tamaño: si sobra alguien, un equipo queda con uno más."],
+  ["¿Puedo separar en 2, 3 o 4 equipos?", "Sí. Elige 2 para la pichanga clásica, 3 para rotar un equipo afuera o 4 para un mini torneo."],
+  ["¿Cómo agrego a muchos de una vez?", "Escribe los nombres separados por comas (Juan, Pedro, Luis) y se agregan todos."],
+  ["¿Necesito cuenta?", "No. Con cuenta puedes buscar a tus amigos por su @usuario; sin cuenta los agregas como invitados."],
 ];
 ---
 
-<BaseLayout
-  title="Arma los equipos | ReservaYa"
-  description="El sorteador de equipos de ReservaYa: agrega jugadores y reparte equipos parejos."
-  announcement="🎾 ReservaYa ya está en Google Play — Descarga la app gratis"
->
-  <section class="relative w-full overflow-hidden bg-[#F7F6F3] px-4 py-12 md:px-8">
-    <svg class="pointer-events-none absolute inset-0 mx-auto h-full w-full max-w-6xl opacity-[0.05]" viewBox="0 0 800 600" fill="none" stroke="#15803D" stroke-width="4" aria-hidden="true">
-      <line x1="60" y1="0" x2="60" y2="600"/><line x1="740" y1="0" x2="740" y2="600"/>
-      <circle cx="400" cy="300" r="170"/>
-    </svg>
+<BaseLayout title="Arma equipos parejos | ReservaYa" description="Escribe los nombres de los jugadores y repártelos al azar en 2, 3 o 4 equipos.">
+  <section class="mx-auto max-w-texto px-4 pb-12 pt-8 md:px-6 lg:pt-12">
+    <h1 class="text-3xl lg:text-4xl">Arma los equipos</h1>
+    <p class="mt-3 text-lg text-pizarra">Agrega a los que van a jugar y reparte los equipos al azar, sin discusiones.</p>
 
-    <div class="relative mx-auto max-w-3xl">
-      <span class="inline-flex items-center gap-1.5 rounded-full border border-[#BBF7D0] bg-[#DCFCE7]/60 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#15803D]">✨ Nuevo · ReservaYa</span>
-      <h1 class="reveal mt-4 font-black leading-[0.95] tracking-tight text-[#101613] text-[clamp(2.6rem,12vw,4.75rem)]">
-        ARMA LOS <span class="text-[#16A34A]">EQUIPOS</span>
-      </h1>
-      <p class="mt-5 max-w-2xl leading-relaxed text-[#5B6660]">
-        El <strong class="font-bold text-[#101613]">sorteador de equipos</strong> de ReservaYa: agrega a tus jugadores por su
-        <strong class="font-bold text-[#101613]"> @usuario</strong> y reparte equipos <strong class="font-bold text-[#16A34A]">parejos</strong> según cómo juega cada uno.
-        Se acabó el "elige tú los equipos".
-      </p>
-
-      <!-- AGREGA JUGADORES -->
-      <div class="mt-8 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-        <p class="flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-[#101613]">
-          <span class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#16A34A] text-[11px] text-[#16A34A]">⌕</span>
-          AGREGA JUGADORES
-        </p>
-        <div id="search-wrap" class="relative mt-3">
-          <span class="absolute top-1/2 left-4 -translate-y-1/2 font-semibold text-gray-400">@</span>
-          <input
-            id="add-input"
-            placeholder="Busca por @usuario o nombre..."
-            autocomplete="off"
-            role="combobox"
-            aria-expanded="false"
-            aria-controls="suggest"
-            aria-autocomplete="list"
-            class="w-full rounded-xl border border-[#EDEEEC] bg-[#F5F6F5] py-3 pr-4 pl-10 text-sm text-[#101613] placeholder:text-[#9AA3AD] focus:border-[#22C55E] focus:bg-white focus:outline-none"
-          />
-          <div id="suggest" role="listbox" aria-label="Usuarios encontrados" class="absolute right-0 left-0 z-20 mt-2 hidden max-h-64 overflow-y-auto rounded-xl border border-[#E7E5E4] bg-white shadow-[0_12px_32px_rgba(0,0,0,0.12)]"></div>
-        </div>
-
-        <div id="draft-row" class="hidden">
-          <div class="mt-3 flex gap-2">
-            <input
-              id="draft-input"
-              placeholder="Juan, Pedro, Luis..."
-              autocomplete="off"
-              class="flex-1 rounded-xl border-2 border-[#22C55E] bg-white px-4 py-2.5 text-sm text-[#101613] focus:outline-none"
-            />
-            <button id="draft-add" type="button" class="shrink-0 rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Agregar</button>
-            <button id="draft-close" type="button" aria-label="Descartar" class="shrink-0 px-1 text-xl text-gray-400 hover:text-gray-600">×</button>
-          </div>
-          <p class="mt-1.5 text-xs text-[#8A938D]">Separa varios con comas y se agregan todos de una.</p>
-        </div>
-
-        <button id="add-guest" type="button" class="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#86EFAC] bg-[#F0FDF4] py-3 text-sm font-bold text-[#15803D] transition hover:border-[#22C55E] hover:bg-[#DCFCE7]/50">
-          <span aria-hidden="true">◔◔</span> Agregar invitado (sin cuenta)
-        </button>
+    <div class="mt-8 rounded-surface border border-cal bg-tiza p-5">
+      <label for="add-input" class={ETIQUETA}>Agrega jugadores</label>
+      <div id="search-wrap" class="relative">
+        <Icon nombre="buscar" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-pizarra" />
+        <input id="add-input" placeholder="@usuario o nombre" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="suggest" aria-autocomplete="list" class={`${CAMPO} h-11 pl-10`} />
+        <div id="suggest" role="listbox" aria-label="Usuarios encontrados" hidden class="absolute inset-x-0 z-20 mt-2 max-h-64 overflow-y-auto rounded-surface border border-cal bg-tiza shadow-pop"></div>
       </div>
-
-      <!-- JUGADORES -->
-      <div class="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-        <p class="flex items-center gap-2 text-[13px] font-extrabold tracking-wide text-[#101613]">
-          <span class="text-[#16A34A]" aria-hidden="true">◔◔</span>
-          JUGADORES <span id="jcount" class="text-[#16A34A]">(0)</span>
-        </p>
-        <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
-        <p id="jempty" class="py-8 text-center text-sm text-[#8A938D]">Busca y agrega a los que van a jugar.</p>
-      </div>
-
-      <!-- CUÁNTOS + SORTEAR -->
-      <div class="mt-4 flex flex-col justify-between gap-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center">
-        <div>
-          <p class="text-[11px] font-bold tracking-wide text-[#6B7280]">¿CUÁNTOS EQUIPOS?</p>
-          <div id="tnums" class="mt-2 flex gap-2">
-            {[2, 3, 4].map((n) => (
-              <button type="button" data-n={n} class={`tnum h-10 w-12 rounded-xl text-sm font-bold transition ${n === 2 ? "bg-[#16A34A] text-[#060C08] shadow-[0_6px_16px_rgba(22,163,74,0.45)]" : "bg-[#F1F2F1] text-[#5B6660] hover:bg-[#E4E7E4]"}`}>{n}</button>
-            ))}
-          </div>
+      <div id="draft-row" hidden class="mt-3">
+        <label for="draft-input" class={ETIQUETA}>Invitados sin cuenta</label>
+        <div class="flex gap-2">
+          <input id="draft-input" placeholder="Juan, Pedro, Luis" autocomplete="off" class={`${CAMPO} h-11 flex-1`} />
+          <Button id="draft-add" class="shrink-0">Agregar</Button>
+          <button id="draft-close" type="button" aria-label="Descartar invitados" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-control text-pizarra hover:bg-piedra"><Icon nombre="cerrar" /></button>
         </div>
-        <button id="sortear" type="button" disabled class="btn-press flex items-center justify-center gap-2 rounded-2xl bg-[#BBF7D0] px-10 py-4 font-black tracking-wide text-[#15803D] transition enabled:bg-[#22C55E] enabled:text-[#060C08] enabled:shadow-[0_8px_20px_rgba(34,197,94,0.4)] enabled:hover:bg-[#16A34A]">
-          <span aria-hidden="true">⨯</span> SORTEAR
-        </button>
+        <p class="mt-1.5 text-sm text-pizarra">Separa varios con comas y se agregan todos.</p>
       </div>
+      <Button id="add-guest" variante="secundario" class="mt-3 w-full"><Icon nombre="mas" class="h-4 w-4" />Agregar invitado sin cuenta</Button>
+    </div>
 
-      <div id="out" class="mt-4 grid gap-4 md:grid-cols-2"></div>
+    <div class="mt-4 rounded-surface border border-cal bg-tiza p-5">
+      <h2 class="font-sans text-base font-semibold">Jugadores <span id="jcount" class="font-display tabular-nums text-pizarra">(0)</span></h2>
+      <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
+      <p id="jempty" class="py-6 text-center text-pizarra">Todavía no hay jugadores.</p>
+    </div>
 
-      <!-- FAQ -->
-      <div class="mt-10 rounded-3xl border border-[#E7E5E4] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-10">
-        <h2 class="reveal text-2xl font-extrabold tracking-tight text-[#101613] md:text-[28px]">Sorteador de equipos de fútbol</h2>
-        <p class="mt-2 leading-relaxed text-[#5B6660]">
-          Separa a tus jugadores en <strong class="font-bold text-[#101613]">2, 3 o 4 equipos parejos</strong> en segundos.
-          Ideal para tu pichanga, con imagen lista para el grupo de WhatsApp.
-        </p>
-        <div class="mt-6 space-y-3">
-          {faqs.map((f) => (
-            <div class="faq scroll-mt-32 overflow-hidden rounded-2xl border border-[#EDEEEC] bg-[#F7F8F7]" data-open="0">
-              <button type="button" class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-[15px] font-bold text-[#101613]" aria-expanded="false">
-                {f.q}
-                <span class="faq-chev shrink-0 text-lg text-gray-400 transition-transform duration-300">⌄</span>
-              </button>
-              <div class="faq-wrap grid grid-rows-[0fr] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                <div class="overflow-hidden"><p class="faq-body px-5 pb-5 text-[15px] leading-relaxed text-[#5B6660]">{f.a}</p></div>
-              </div>
-            </div>
+    <div class="mt-4 flex flex-col gap-4 rounded-surface border border-cal bg-tiza p-5 sm:flex-row sm:items-end sm:justify-between">
+      <fieldset>
+        <legend class={ETIQUETA}>¿Cuántos equipos?</legend>
+        <div id="tnums" class="flex gap-2">
+          {[2, 3, 4].map((n) => (
+            <button type="button" data-n={n} aria-pressed={n === 2 ? "true" : "false"} class="tnum h-11 w-12 rounded-control border border-borde bg-tiza font-display text-lg font-semibold tabular-nums aria-pressed:border-basalto aria-pressed:bg-basalto aria-pressed:text-tiza">{n}</button>
           ))}
         </div>
-      </div>
+      </fieldset>
+      <Button id="sortear" disabled class="sm:px-10">Sortear equipos</Button>
+    </div>
+
+    <div id="out" class="mt-4 grid gap-4 sm:grid-cols-2" aria-live="polite"></div>
+
+    <h2 class="mt-12 text-2xl">Preguntas</h2>
+    <div class="mt-4 border-t border-cal">
+      {preguntas.map(([p, r]) => (
+        <details class="group border-b border-cal">
+          <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 font-semibold [&::-webkit-details-marker]:hidden">
+            {p}<Icon nombre="mas" class="h-5 w-5 shrink-0 text-pizarra transition-transform group-open:rotate-45" />
+          </summary>
+          <p class="pb-4 text-pizarra">{r}</p>
+        </details>
+      ))}
     </div>
   </section>
 </BaseLayout>
 
-<script is:inline define:vars={{ apiUrl }}>
+<script is:inline define:vars={{ apiUrl, claseTexto: BOTON.texto }}>
 (function () {
-  var base = String(apiUrl || "http://localhost:5000").replace(/\/$/, "");
-  // Estado (declarado primero: las funciones de abajo lo usan)
+  var base = String(apiUrl);
   var jugadores = [];
   var nEquipos = 2;
   var encontrados = [];
@@ -162,43 +96,36 @@ const faqs = [
   var tnums = Array.prototype.slice.call(document.querySelectorAll(".tnum"));
   if (!addInput || !suggest || !draftRow || !draftInput || !chips || !jcount || !jempty || !out || !sortBtn) return;
 
-  function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c; }); }
+  function nodo(tag, clase, texto) {
+    var n = document.createElement(tag);
+    if (clase) n.className = clase;
+    if (texto !== undefined) n.textContent = texto;
+    return n;
+  }
 
   function hideSuggest() {
-    suggestCtrl?.abort();
+    if (suggestCtrl) suggestCtrl.abort();
     suggestCtrl = null;
-    suggest.classList.add("hidden");
-    suggest.innerHTML = "";
+    suggest.hidden = true;
+    suggest.replaceChildren();
     encontrados = [];
     activeIdx = -1;
     addInput.setAttribute("aria-expanded", "false");
     addInput.removeAttribute("aria-activedescendant");
   }
 
-  // Mensaje con acción: el panel flota sobre los controles de abajo, así que
-  // nunca mostramos texto muerto — siempre un botón que agrega como invitado.
+  // Sin resultados o sin conexión: siempre una acción (agregar como invitado), nunca texto muerto.
   function showSuggestAction(hint, raw) {
-    suggest.innerHTML = "";
     var query = String(raw || "").trim().replace(/^@/, "");
-    var info = document.createElement("p");
-    info.className = "px-4 pt-3 text-xs text-[#8A938D]";
-    info.textContent = hint;
-    suggest.append(info);
+    suggest.replaceChildren(nodo("p", "px-4 pt-3 text-sm text-pizarra", hint));
     if (query) {
-      var btn = document.createElement("button");
+      var btn = nodo("button", "m-2 flex min-h-11 w-[calc(100%-1rem)] items-center gap-2 rounded-control bg-cesped-suave px-3 text-left font-semibold text-cesped-hondo", 'Agregar "' + query + '" como invitado');
       btn.type = "button";
       btn.setAttribute("role", "option");
-      btn.className = "m-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg bg-[#F0FDF4] px-3 py-2.5 text-left text-sm font-bold text-[#15803D] transition hover:bg-[#DCFCE7]";
-      var plus = document.createElement("span");
-      plus.textContent = "+";
-      plus.setAttribute("aria-hidden", "true");
-      var label = document.createElement("span");
-      label.textContent = 'Agregar "' + query + '" como invitado';
-      btn.append(plus, label);
       btn.addEventListener("mousedown", function (e) { e.preventDefault(); addMuchos(query); closeDraft(); hideSuggest(); });
       suggest.append(btn);
     }
-    suggest.classList.remove("hidden");
+    suggest.hidden = false;
     addInput.setAttribute("aria-expanded", "true");
   }
 
@@ -212,20 +139,20 @@ const faqs = [
 
   function paintSuggest() {
     if (!encontrados.length) { hideSuggest(); return; }
-    suggest.innerHTML = "";
+    suggest.replaceChildren();
     encontrados.forEach(function (u, idx) {
-      var b = document.createElement("button");
+      var b = nodo("button", "flex min-h-11 w-full items-center gap-3 px-4 py-2 text-left hover:bg-sillar" + (idx === activeIdx ? " bg-sillar" : ""));
       b.type = "button";
       b.id = "suggest-opt-" + idx;
       b.setAttribute("role", "option");
       b.setAttribute("aria-selected", idx === activeIdx ? "true" : "false");
-      b.className = "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition hover:bg-[#F0FDF4]" + (idx === activeIdx ? " bg-[#F0FDF4]" : "");
-      var inicial = esc(((u.nombre || "").charAt(0) || "?").toUpperCase());
-      b.innerHTML = '<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white" aria-hidden="true">' + inicial + '</span><span><span class="block font-bold text-[#101613]">' + esc(u.nombre) + '</span><span class="block text-xs text-[#8A938D]">Toca para agregar</span></span>';
+      var av = nodo("span", "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-basalto text-sm font-semibold text-tiza", ((u.nombre || "").charAt(0) || "?").toUpperCase());
+      av.setAttribute("aria-hidden", "true");
+      b.append(av, nodo("span", "font-semibold", u.nombre));
       b.addEventListener("mousedown", function (e) { e.preventDefault(); pickUser(u.nombre); });
       suggest.appendChild(b);
     });
-    suggest.classList.remove("hidden");
+    suggest.hidden = false;
     addInput.setAttribute("aria-expanded", "true");
   }
 
@@ -244,20 +171,17 @@ const faqs = [
     suggestCtrl = new AbortController();
     try {
       var res = await fetch(base + "/api/usuarios/buscar?q=" + encodeURIComponent(q), { signal: suggestCtrl.signal });
-      if (mySeq !== suggestSeq) return; // respuesta vieja: ignorar
+      if (mySeq !== suggestSeq) return;
       if (!res.ok) {
         encontrados = [];
-        showSuggestAction(res.status === 429 ? "Demasiadas búsquedas, espera un momento…" : "No pudimos buscar usuarios.", q);
+        showSuggestAction(res.status === 429 ? "Demasiadas búsquedas; espera un momento." : "No pudimos buscar usuarios.", q);
         return;
       }
       var body = await res.json().catch(function () { return null; });
       var lista = body && Array.isArray(body.usuarios) ? body.usuarios : [];
       encontrados = lista.filter(function (u) { return u && typeof u.nombre === "string" && jugadores.indexOf(u.nombre) === -1; });
       activeIdx = -1;
-      if (!encontrados.length) {
-        showSuggestAction("Sin resultados.", q);
-        return;
-      }
+      if (!encontrados.length) { showSuggestAction("Sin resultados.", q); return; }
       paintSuggest();
     } catch (err) {
       if (err && err.name === "AbortError") return;
@@ -267,35 +191,35 @@ const faqs = [
     }
   }
 
-  // Clic fuera del buscador: cierra el panel al instante (en mousedown, no en
-  // blur) para que el clic caiga sobre el control real y no se lo trague el panel.
   document.addEventListener("mousedown", function (e) {
-    var wrap = document.getElementById("search-wrap");
+    var wrap = $("search-wrap");
     if (wrap && e.target instanceof Node && !wrap.contains(e.target)) hideSuggest();
   }, true);
 
   function render() {
-    chips.innerHTML = "";
+    chips.replaceChildren();
     jugadores.forEach(function (j, i) {
-      var s = document.createElement("span");
-      s.className = "inline-flex items-center gap-2 rounded-full bg-[#DCFCE7] py-1.5 pr-2 pl-1.5 text-sm font-semibold text-[#14532D]";
-      var avatar = document.createElement("span");
-      avatar.className = "flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-xs font-bold text-[#060C08]";
-      avatar.textContent = ((j || "").charAt(0) || "?").toUpperCase();
-      avatar.setAttribute("aria-hidden", "true");
-      var label = document.createElement("span");
-      label.textContent = j;
-      var rm = document.createElement("button");
+      var s = nodo("span", "inline-flex min-h-9 items-center gap-2 rounded-full bg-sillar py-1 pl-3 pr-1 font-medium", j);
+      var rm = nodo("button", "flex h-8 w-8 items-center justify-center rounded-full text-pizarra hover:bg-piedra hover:text-basalto");
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("class", "h-4 w-4");
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "2");
+      svg.setAttribute("aria-hidden", "true");
+      var trazo = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      trazo.setAttribute("d", "M18 6 6 18M6 6l12 12");
+      svg.append(trazo);
+      rm.append(svg);
       rm.type = "button";
-      rm.className = "font-bold text-[#15803D]";
       rm.setAttribute("aria-label", "Quitar a " + j);
-      rm.textContent = "×";
       rm.addEventListener("click", function () { jugadores.splice(i, 1); render(); });
-      s.append(avatar, label, rm);
+      s.append(rm);
       chips.appendChild(s);
     });
     jcount.textContent = "(" + jugadores.length + ")";
-    jempty.style.display = jugadores.length ? "none" : "";
+    jempty.hidden = jugadores.length > 0;
     sortBtn.disabled = jugadores.length < 2;
   }
 
@@ -309,13 +233,12 @@ const faqs = [
   }
 
   function openDraft(seed, focus) {
-    if (focus === undefined) focus = true;
-    draftRow.classList.remove("hidden");
+    draftRow.hidden = false;
     if (document.activeElement !== draftInput) draftInput.value = seed;
-    if (focus) draftInput.focus();
+    if (focus !== false) draftInput.focus();
   }
   function closeDraft() {
-    draftRow.classList.add("hidden");
+    draftRow.hidden = true;
     draftInput.value = "";
     addInput.value = "";
     addInput.focus();
@@ -323,7 +246,7 @@ const faqs = [
 
   addInput.addEventListener("input", function () {
     if (addInput.value.trim()) openDraft(addInput.value, false);
-    else draftRow.classList.add("hidden");
+    else draftRow.hidden = true;
     if (suggestTimer) clearTimeout(suggestTimer);
     suggestTimer = setTimeout(function () { buscarUsuarios(addInput.value); }, 250);
   });
@@ -341,104 +264,53 @@ const faqs = [
   draftInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && draftInput.value.trim()) { addMuchos(draftInput.value); closeDraft(); }
   });
-  var draftAddBtn = $("draft-add");
-  if (draftAddBtn) draftAddBtn.addEventListener("click", function () {
+  $("draft-add")?.addEventListener("click", function () {
     if (draftInput.value.trim()) { addMuchos(draftInput.value); closeDraft(); }
   });
-  var draftCloseBtn = $("draft-close");
-  if (draftCloseBtn) draftCloseBtn.addEventListener("click", closeDraft);
-  var addGuestBtn = $("add-guest");
-  if (addGuestBtn) addGuestBtn.addEventListener("click", function () {
-    openDraft("");
-  });
+  $("draft-close")?.addEventListener("click", closeDraft);
+  $("add-guest")?.addEventListener("click", function () { openDraft(""); });
 
-  tnums.forEach(function (b) { b.addEventListener("click", function () {
-    nEquipos = parseInt(b.getAttribute("data-n") || "2", 10) || 2;
-    tnums.forEach(function (x) { (x.className = "tnum h-10 w-12 rounded-xl text-sm font-bold transition " + (x === b ? "bg-[#16A34A] text-[#060C08] shadow-[0_6px_16px_rgba(22,163,74,0.45)]" : "bg-[#F1F2F1] text-[#5B6660] hover:bg-[#E4E7E4]")); });
-  }); });
+  tnums.forEach(function (b) {
+    b.addEventListener("click", function () {
+      nEquipos = parseInt(b.getAttribute("data-n") || "2", 10) || 2;
+      tnums.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    });
+  });
 
   sortBtn.addEventListener("click", function () {
-    sortBtn.classList.remove("shuffling");
-    void sortBtn.offsetWidth;
-    sortBtn.classList.add("shuffling");
-    var sh = jugadores.slice().sort(function () { return Math.random() - 0.5; });
-    out.innerHTML = "";
-    Array.from({ length: nEquipos }, function (_, i) {
-      var ms = sh.filter(function (_, j) { return j % nEquipos === i; });
-      var d = document.createElement("div");
-      d.className = "flip-in rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]";
-      d.style.animationDelay = (150 + i * 110) + "ms";
-      var head = document.createElement("div");
-      head.className = "flex items-center justify-between";
-      var title = document.createElement("p");
-      title.className = "font-black tracking-wide text-[#16A34A]";
-      title.textContent = "EQUIPO " + (i + 1);
-      var copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "copy-team text-xs font-bold text-[#15803D] hover:underline";
-      copyBtn.textContent = "Copiar";
-      copyBtn.addEventListener("click", function () {
-        var txt = "EQUIPO " + (i + 1) + ": " + ms.join(", ");
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(txt).then(function () {
-            copyBtn.textContent = "¡Copiado ✓";
-            setTimeout(function () { copyBtn.textContent = "Copiar"; }, 2000);
-          }, function () {
-            copyBtn.textContent = txt;
-          });
-        } else {
-          copyBtn.textContent = txt;
-        }
-      });
-      head.append(title, copyBtn);
-      d.append(head);
-      ms.forEach(function (m) {
-        var p = document.createElement("p");
-        p.className = "mt-2.5 flex items-center gap-2 text-sm font-semibold text-[#101613]";
-        var av = document.createElement("span");
-        av.className = "flex h-7 w-7 items-center justify-center rounded-full bg-[#060A08] text-xs font-bold text-white";
-        av.textContent = ((m || "").charAt(0) || "?").toUpperCase();
-        av.setAttribute("aria-hidden", "true");
-        var nm = document.createElement("span");
-        nm.textContent = m;
-        p.append(av, nm);
-        d.append(p);
-      });
-      out.appendChild(d);
-    });
+    var sh = jugadores.slice();
+    for (var k = sh.length - 1; k > 0; k--) {
+      var r = Math.floor(Math.random() * (k + 1));
+      var t = sh[k]; sh[k] = sh[r]; sh[r] = t;
+    }
+    out.replaceChildren();
+    for (var i = 0; i < nEquipos; i++) {
+      (function (i) {
+        var ms = sh.filter(function (_, j) { return j % nEquipos === i; });
+        var d = nodo("div", "fila-entra rounded-surface border border-cal bg-tiza p-5");
+        d.style.animationDelay = i * 60 + "ms";
+        var head = nodo("div", "flex items-center justify-between");
+        var copyBtn = nodo("button", claseTexto + " text-sm", "Copiar");
+        copyBtn.type = "button";
+        copyBtn.addEventListener("click", function () {
+          var txt = "Equipo " + (i + 1) + ": " + ms.join(", ");
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(function () {
+              copyBtn.textContent = "Copiado";
+              setTimeout(function () { copyBtn.textContent = "Copiar"; }, 2000);
+            }, function () { copyBtn.textContent = "No se pudo copiar"; });
+          } else {
+            copyBtn.textContent = "No se pudo copiar";
+          }
+        });
+        head.append(nodo("h3", "text-xl", "Equipo " + (i + 1)), copyBtn);
+        var ul = nodo("ul", "mt-2 border-t border-cal");
+        ms.forEach(function (m) { ul.append(nodo("li", "border-b border-cal py-2 font-medium last:border-b-0", m)); });
+        d.append(head, ul);
+        out.appendChild(d);
+      })(i);
+    }
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  });
-
-  // FAQ acordeón: una abierta a la vez, despliegue suave + scroll al terminar
-  var faqs = Array.prototype.slice.call(document.querySelectorAll(".faq"));
-  function closeFaq(f) {
-    f.setAttribute("data-open", "0");
-    var wrap = f.querySelector(".faq-wrap");
-    var chev = f.querySelector(".faq-chev");
-    var btn = f.querySelector(".faq-btn");
-    if (wrap) wrap.style.gridTemplateRows = "0fr";
-    if (chev) chev.style.transform = "";
-    if (btn) btn.setAttribute("aria-expanded", "false");
-  }
-  faqs.forEach(function (f) {
-    var btn = f.querySelector(".faq-btn");
-    var wrap = f.querySelector(".faq-wrap");
-    var chev = f.querySelector(".faq-chev");
-    if (!btn) return;
-    btn.addEventListener("click", function () {
-      var opening = f.getAttribute("data-open") !== "1";
-      faqs.forEach(function (o) { if (o !== f) closeFaq(o); });
-      f.setAttribute("data-open", opening ? "1" : "0");
-      if (wrap) wrap.style.gridTemplateRows = opening ? "1fr" : "0fr";
-      if (chev) chev.style.transform = opening ? "rotate(180deg)" : "";
-      btn.setAttribute("aria-expanded", opening ? "true" : "false");
-      if (opening) {
-        // espera a que termine el despliegue y luego scrollea suave
-        setTimeout(function () {
-          f.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 450);
-      }
-    });
   });
 
   render();

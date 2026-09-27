@@ -1,72 +1,40 @@
 ---
-title: Privacy Policy
-description: How ReservaYa collects, uses, and protects your information.
+layout: ../../layouts/LegalLayout.astro
+title: Política de privacidad
+description: Qué datos recoge ReservaYa, para qué los usa y cómo los protege.
 ---
 
-# Privacy Policy
+# Política de privacidad
 
-_Last updated: January 2026_
+En ReservaYa respetamos tu privacidad y protegemos tus datos personales.
 
-At **ReservaYa**, we respect your privacy and are committed to protecting your personal information.
+## 1. Datos que recogemos
+- Datos de tu cuenta: nombre, correo, fecha de nacimiento, usuario y, si los agregas, teléfono y foto.
+- Tus reservas y los partidos que publicas o a los que te anotas.
+- Los mensajes que nos envías (sugerencias y reclamos).
+- Datos de uso y técnicos: páginas visitadas, tipo de navegador y dispositivo.
 
----
-
-## 1. Information We Collect
-
-We may collect the following information:
-
-- Personal details (name, email) when you contact us
-- Usage data such as pages visited and interactions
-- Technical data such as browser type and device information
-
----
-
-## 2. How We Use Your Information
-
-Your information may be used to:
-
-- Respond to inquiries
-- Improve our website and services
-- Ensure security and performance
-
----
+## 2. Para qué los usamos
+- Gestionar tus reservas con los complejos.
+- Responder tus consultas y reclamos.
+- Mejorar el sitio y mantenerlo seguro.
 
 ## 3. Cookies
+Usamos una cookie de sesión para mantenerte dentro de tu cuenta. Si la bloqueas en tu navegador, no podrás entrar.
 
-We may use cookies to enhance your browsing experience. You can disable cookies in your browser settings if you prefer.
+## 4. Protección
+Aplicamos medidas técnicas y de organización para proteger tus datos contra accesos o divulgación no autorizados.
 
----
+## 5. Servicios de terceros
+Usamos Google Analytics para entender cómo se usa el sitio y proveedores de alojamiento. Estos proveedores están obligados a proteger tu información.
 
-## 4. Data Protection
+## 6. Tus derechos
+Puedes pedir acceso a tus datos, corregirlos o eliminarlos, y retirar tu consentimiento cuando corresponda.
 
-We implement appropriate technical and organizational measures to protect your personal data against unauthorized access or disclosure.
+## 7. Cambios
+Podemos actualizar esta política. Los cambios se publican en esta página.
 
----
+## 8. Contacto
+Para consultas de privacidad, escribe a [hola@reservaya.pe](mailto:hola@reservaya.pe).
 
-## 5. Third-Party Services
-
-We use Google Analytics to understand usage patterns and improve the site. We may also use third-party hosting. These providers are obligated to protect your information.
-
----
-
-## 6. Your Rights
-
-You have the right to:
-
-- Access your personal data
-- Request correction or deletion
-- Withdraw consent where applicable
-
----
-
-## 7. Changes to This Policy
-
-This Privacy Policy may be updated periodically. Any changes will be posted on this page.
-
----
-
-## 8. Contact Us
-
-For privacy-related questions, contact us at:
-
-📧 **contacto@reservaya.com**
+_Última actualización: 26 de septiembre de 2026_

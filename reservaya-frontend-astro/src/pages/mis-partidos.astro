@@ -1,53 +1,43 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import EmptyState from "../components/ui/EmptyState.astro";
+import Button from "../components/ui/Button.astro";
+import { API } from "../lib/entorno";
+import { AVISO, BOTON } from "../lib/estilos";
 
-const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const apiUrl = API;
+const pestana = "min-h-11 border-b-2 border-transparent px-4 font-semibold text-pizarra hover:text-basalto aria-selected:border-cesped aria-selected:text-basalto";
+const clases = { secundario: BOTON.secundario };
 ---
 
-<BaseLayout
-  title="Mis partidos | ReservaYa"
-  description="Los partidos que organizas y a los que te anotaste."
-  robots="noindex, follow"
->
-  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-8 md:px-8 md:py-10">
-    <div class="mx-auto max-w-3xl">
-      <a href="/completar-cuadro" class="text-sm font-medium text-[#5B6660] transition hover:text-[#101613]">‹ Volver a partidos</a>
-      <h1 class="mt-3 flex items-center gap-2 text-3xl font-black tracking-tight text-[#101613]">
-        <svg class="h-7 w-7 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
-        Mis partidos
-      </h1>
+<BaseLayout title="Mis partidos | ReservaYa" description="Los partidos que organizas y a los que te anotaste." robots="noindex, follow">
+  <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
+    <a href="/completar-cuadro" class={`${BOTON.texto} text-sm`}>Volver a partidos abiertos</a>
+    <h1 class="mt-2 text-3xl lg:text-4xl">Mis partidos</h1>
 
-      <div class="mt-5 flex gap-2" role="tablist" aria-label="Mis partidos">
-        <button id="tab-organizo" type="button" role="tab" aria-selected="true" class="rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-[#060C08] transition">Organizo</button>
-        <button id="tab-anotado" type="button" role="tab" aria-selected="false" class="rounded-xl border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-bold text-[#5B6660] transition hover:border-[#22C55E]">Me anoté</button>
-      </div>
-
-      <div id="mp-lista" class="mt-5 space-y-3" aria-live="polite">
-        <div class="animate-pulse space-y-3" aria-hidden="true">
-          <div class="h-28 rounded-2xl bg-[#EDEEEC]"></div>
-        </div>
-      </div>
-
-      <div id="mp-vacio-organizo" class="hidden mt-5 rounded-2xl border border-[#E7E5E4] bg-white px-6 py-14 text-center shadow-sm">
-        <span class="mx-auto flex h-12 w-12 items-center justify-center text-3xl text-[#CBD5E1]" aria-hidden="true">♛</span>
-        <p class="mt-4 font-bold text-[#8A938D]">Aún no organizas ningún partido</p>
-        <a href="/completar-cuadro?publicar=1" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Publicar un partido</a>
-      </div>
-
-      <div id="mp-vacio-anotado" class="hidden mt-5 rounded-2xl border border-[#E7E5E4] bg-white px-6 py-14 text-center shadow-sm">
-        <span class="mx-auto flex h-12 w-12 items-center justify-center text-3xl text-[#CBD5E1]" aria-hidden="true">▦</span>
-        <p class="mt-4 font-bold text-[#8A938D]">No te has anotado a ningún partido</p>
-        <a href="/completar-cuadro" class="mt-4 inline-block rounded-xl bg-[#16A34A] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#22C55E]">Buscar partidos</a>
-      </div>
-
-      <p id="mp-error" class="hidden mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+    <div class="mt-6 flex border-b border-cal" role="tablist" aria-label="Mis partidos">
+      <button id="tab-organizo" type="button" role="tab" aria-selected="true" class={pestana}>Organizo</button>
+      <button id="tab-anotado" type="button" role="tab" aria-selected="false" class={pestana}>Me anoté</button>
     </div>
+
+    <ul id="mp-lista" class="mt-4 overflow-hidden rounded-surface border border-cal bg-tiza empty:hidden" aria-live="polite">
+      <li class="h-40 px-5 py-4" aria-hidden="true"><span class="esqueleto block h-5 w-1/2"></span><span class="esqueleto mt-2 block h-4 w-1/3"></span><span class="esqueleto mt-4 block h-4 w-2/5"></span><span class="esqueleto mt-4 block h-11 w-40"></span></li>
+    </ul>
+
+    <EmptyState id="mp-vacio-organizo" oculto class="mt-4" titulo="Todavía no organizas partidos" texto="Publica uno y encuentra con quién jugar.">
+      <Button href="/completar-cuadro?publicar=1">Publicar un partido</Button>
+    </EmptyState>
+    <EmptyState id="mp-vacio-anotado" oculto class="mt-4" titulo="No te anotaste a ningún partido" texto="Mira los partidos abiertos de tu distrito.">
+      <Button href="/completar-cuadro">Ver partidos abiertos</Button>
+    </EmptyState>
+
+    <p id="mp-error" hidden class={`mt-4 ${AVISO.error}`} role="alert"></p>
   </section>
 </BaseLayout>
 
-<script is:inline define:vars={{ apiUrl }}>
+<script is:inline define:vars={{ apiUrl, clases }}>
 (function () {
-  var base = String(apiUrl || "http://localhost:5000").replace(/\/$/, "");
+  var base = String(apiUrl);
   function $(id) { return document.getElementById(id); }
   var lista = $("mp-lista");
   var vacioO = $("mp-vacio-organizo");
@@ -62,109 +52,83 @@ const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:50
 
   function showError(msg) {
     if (!errEl) return;
-    if (!msg) { errEl.classList.add("hidden"); errEl.textContent = ""; return; }
-    errEl.textContent = msg;
-    errEl.classList.remove("hidden");
+    errEl.textContent = msg || "";
+    errEl.hidden = !msg;
   }
 
   function resumen(p) {
     var cuando = p.cuando || [p.fechaCorta, p.horaCorta].filter(Boolean).join(" ") || p.fecha || "";
-    var lugar = [p.distrito, p.nivel].filter(Boolean).join(" · ");
-    return (cuando ? cuando + " · " : "") + lugar;
+    return [cuando, p.distrito, p.nivel].filter(Boolean).join(", ");
   }
 
-  function pintarTabs() {
-    var on = "rounded-xl bg-[#16A34A] px-5 py-2.5 text-sm font-bold text-[#060C08] transition";
-    var off = "rounded-xl border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-bold text-[#5B6660] transition hover:border-[#22C55E]";
-    tabO.className = tab === "organizo" ? on : off;
-    tabA.className = tab === "anotado" ? on : off;
-    tabO.setAttribute("aria-selected", tab === "organizo" ? "true" : "false");
-    tabA.setAttribute("aria-selected", tab === "anotado" ? "true" : "false");
+  function aLogin() { window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos"); }
+
+  function accion(texto, alPulsar) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = clases.secundario;
+    b.textContent = texto;
+    b.addEventListener("click", function () { alPulsar(b); });
+    return b;
   }
 
-  function tarjeta(p, modo) {
-    var card = document.createElement("div");
-    card.className = "rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-sm";
+  function quitar(p, url, lista, error) {
+    return function (btn) {
+      btn.disabled = true;
+      fetch(url, { method: "DELETE", credentials: "include" })
+        .then(function (res) {
+          if (res.status === 401) { aLogin(); return null; }
+          if (!res.ok) throw new Error(error);
+          return res.json().catch(function () { return {}; });
+        })
+        .then(function (body) {
+          if (!body) return;
+          datos[lista] = datos[lista].filter(function (x) { return x.id !== p.id; });
+          pintar();
+        })
+        .catch(function (e) { btn.disabled = false; showError(e && e.message ? e.message : error); });
+    };
+  }
+
+  function fila(p, modo) {
+    var li = document.createElement("li");
+    li.className = "border-b border-cal px-5 py-4 last:border-b-0";
     var title = document.createElement("p");
-    title.className = "font-bold text-[#101613]";
+    title.className = "font-semibold";
     title.textContent = p.titulo || "Partido abierto";
     var sub = document.createElement("p");
-    sub.className = "mt-1 text-sm text-[#5B6660]";
+    sub.className = "text-sm text-pizarra";
     sub.textContent = resumen(p);
-    card.append(title, sub);
-
-    var meta = document.createElement("div");
-    meta.className = "mt-3 flex flex-wrap items-center gap-2";
-    var pill = document.createElement("span");
-    pill.className = "rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]";
-    pill.textContent = (p.cuposLibres != null ? p.cuposLibres : "–") + " cupos";
-    meta.appendChild(pill);
+    var meta = document.createElement("p");
+    meta.className = "mt-2 text-sm";
+    var cupos = (p.cuposLibres != null ? p.cuposLibres : "–") + " cupos libres";
     if (modo === "organizo") {
       var n = Array.isArray(p.inscritos) ? p.inscritos : [];
-      var quienes = document.createElement("span");
-      quienes.className = "text-xs text-[#8A938D]";
-      quienes.textContent = n.length === 0 ? "Sin anotados todavía" : "Anotados: " + n.join(", ");
-      meta.appendChild(quienes);
-    }
-    card.appendChild(meta);
-
-    var actions = document.createElement("div");
-    actions.className = "mt-4 flex flex-wrap gap-2";
-    if (modo === "organizo") {
-      var del = document.createElement("button");
-      del.type = "button";
-      del.className = "rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 transition hover:bg-red-50";
-      del.textContent = "Cancelar partido";
-      del.addEventListener("click", function () {
-        if (!window.confirm("¿Cancelar \"" + (p.titulo || "este partido") + "\"? Se avisará que ya no va.")) return;
-        del.disabled = true;
-        fetch(base + "/api/partidos/" + encodeURIComponent(p.id), { method: "DELETE", credentials: "include" })
-          .then(function (res) {
-            if (res.status === 401) { window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos"); return null; }
-            if (!res.ok) throw new Error("No se pudo cancelar el partido");
-            return res.json().catch(function () { return {}; });
-          })
-          .then(function (body) {
-            if (!body) return;
-            datos.organizo = datos.organizo.filter(function (x) { return x.id !== p.id; });
-            pintar();
-          })
-          .catch(function (e) { del.disabled = false; showError(e && e.message ? e.message : "No se pudo cancelar"); });
-      });
-      actions.appendChild(del);
+      meta.textContent = cupos + ". " + (n.length === 0 ? "Nadie anotado todavía." : "Anotados: " + n.join(", ") + ".");
     } else {
-      var out = document.createElement("button");
-      out.type = "button";
-      out.className = "rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold text-[#3F4A44] transition hover:border-red-300 hover:text-red-600";
-      out.textContent = "Salirme";
-      out.addEventListener("click", function () {
-        out.disabled = true;
-        fetch(base + "/api/partidos/" + encodeURIComponent(p.id) + "/anotarse", { method: "DELETE", credentials: "include" })
-          .then(function (res) {
-            if (res.status === 401) { window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos"); return null; }
-            if (!res.ok) throw new Error("No pudiste salirte del partido");
-            return res.json().catch(function () { return {}; });
-          })
-          .then(function (body) {
-            if (!body) return;
-            datos.meAnote = datos.meAnote.filter(function (x) { return x.id !== p.id; });
-            pintar();
-          })
-          .catch(function (e) { out.disabled = false; showError(e && e.message ? e.message : "No pudiste salirte"); });
-      });
-      actions.appendChild(out);
+      meta.textContent = cupos + ".";
     }
-    card.appendChild(actions);
-    return card;
+    var acciones = document.createElement("div");
+    acciones.className = "mt-3";
+    if (modo === "organizo") {
+      acciones.append(accion("Cancelar partido", function (btn) {
+        if (!window.confirm("¿Cancelar \"" + (p.titulo || "este partido") + "\"? Los anotados verán que ya no va.")) return;
+        quitar(p, base + "/api/partidos/" + encodeURIComponent(p.id), "organizo", "No se pudo cancelar el partido")(btn);
+      }));
+    } else {
+      acciones.append(accion("Salirme del partido", quitar(p, base + "/api/partidos/" + encodeURIComponent(p.id) + "/anotarse", "meAnote", "No pudiste salirte del partido")));
+    }
+    li.append(title, sub, meta, acciones);
+    return li;
   }
 
   function pintar() {
-    pintarTabs();
+    tabO.setAttribute("aria-selected", tab === "organizo" ? "true" : "false");
+    tabA.setAttribute("aria-selected", tab === "anotado" ? "true" : "false");
     var arr = tab === "organizo" ? datos.organizo : datos.meAnote;
-    lista.innerHTML = "";
-    arr.forEach(function (p) { lista.appendChild(tarjeta(p, tab)); });
-    vacioO.classList.toggle("hidden", !(tab === "organizo" && arr.length === 0));
-    vacioA.classList.toggle("hidden", !(tab === "anotado" && arr.length === 0));
+    lista.replaceChildren.apply(lista, arr.map(function (p) { return fila(p, tab); }));
+    vacioO.hidden = !(tab === "organizo" && arr.length === 0);
+    vacioA.hidden = !(tab === "anotado" && arr.length === 0);
   }
 
   tabO.addEventListener("click", function () { tab = "organizo"; showError(""); pintar(); });
@@ -172,10 +136,7 @@ const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:50
 
   fetch(base + "/api/partidos/mios", { credentials: "include" })
     .then(function (res) {
-      if (res.status === 401) {
-        window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos");
-        return null;
-      }
+      if (res.status === 401) { aLogin(); return null; }
       if (!res.ok) throw new Error("No pudimos cargar tus partidos");
       return res.json().catch(function () { return null; });
     })
@@ -188,9 +149,7 @@ const apiUrl = (import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:50
       pintar();
     })
     .catch(function (e) {
-      lista.innerHTML = "";
-      vacioO.classList.add("hidden");
-      vacioA.classList.add("hidden");
+      lista.replaceChildren();
       showError(e && e.message ? e.message : "No pudimos cargar tus partidos");
     });
 })();

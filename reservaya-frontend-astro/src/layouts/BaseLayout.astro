@@ -1,16 +1,14 @@
 ---
-// Layout: BaseLayout
+// Layout de la landing (spec 20): cabecera y pie claros, tipografías propias y SEO.
+import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-
+import { EMAIL, INSTAGRAM } from "../lib/contacto";
 import "../styles/tailwind.css";
-import "../styles/global.css";
-import "../styles/motion.css";
 
 interface Props {
   title?: string;
   description?: string;
   image?: string;
-  announcement?: string | null;
   robots?: string;
   /** false en páginas con datos sensibles en la URL (p. ej. /reset-password): no carga GA. */
   analytics?: boolean;
@@ -18,11 +16,10 @@ interface Props {
 
 const {
   title = "ReservaYa",
-  description = "Reserva tu cancha deportiva de forma rápida y sencilla",
+  description = "Canchas deportivas libres en Arequipa: elige hora y reserva.",
   image = "/og-default.png",
-  announcement = "⚽ Crea tu carné de jugador estilo FIFA y compártelo con tus causas",
   robots = "index, follow",
-  analytics = true
+  analytics = true,
 } = Astro.props;
 
 const siteURL = Astro.site?.toString() || "https://reservaya.com";
@@ -30,193 +27,61 @@ const canonicalURL = new URL(Astro.url.pathname, siteURL);
 const ogImageURL = new URL(image, siteURL);
 const gaId = import.meta.env.PUBLIC_GA_ID;
 const inboxEndpoint = import.meta.env.PUBLIC_INBOXMEJIKAI_ENDPOINT;
-const apiUrl = import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000";
-const appUrl = import.meta.env.PUBLIC_RESERVAYA_APP_URL || "http://localhost:3000";
 const structuredData = [
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "ReservaYa",
-    alternateName: ["Reserva Ya", "reservaya"],
     url: siteURL,
     logo: `${siteURL}/favicon.svg`,
-    sameAs: ["https://www.instagram.com/reservaya.pe"],
-    contactPoint: {
-      "@type": "ContactPoint",
-      email: "hola@reservaya.pe",
-      contactType: "customer service",
-      areaServed: "PE",
-      availableLanguage: "Spanish"
-    }
+    sameAs: [INSTAGRAM],
+    contactPoint: { "@type": "ContactPoint", email: EMAIL, contactType: "customer service", areaServed: "PE", availableLanguage: "Spanish" },
   },
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "ReservaYa",
-    url: siteURL
-  },
+  { "@context": "https://schema.org", "@type": "WebSite", name: "ReservaYa", url: siteURL },
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "ReservaYa",
     url: siteURL,
-    description: "Marketplace para reservar canchas deportivas en Arequipa. Encuentra canchas de fútbol, vóley y pádel en Cayma, Cerro Colorado, Yanahuara, Paucarpata y más distritos.",
+    description: "Reserva de canchas deportivas en Arequipa: fútbol, vóley, básquet, pádel y tenis en los distritos de la ciudad.",
     applicationCategory: "SportsApplication",
     operatingSystem: "Web",
-    offers: { "@type": "Offer", "priceCurrency": "PEN", "price": "45" },
-    areaServed: { "@type": "Country", name: "Perú", addressCountry: "PE" }
+    areaServed: { "@type": "City", name: "Arequipa", addressCountry: "PE" },
   },
-  {
-    "@context": "https://schema.org",
-    "@type": "SportsActivityLocation",
-    name: "Canchas deportivas en el Perú — ReservaYa",
-    description: "Reserva canchas deportivas (fútbol, vóley, pádel y más) en todo el Perú al instante. Complejos deportivos verificados.",
-    url: new URL("/canchas", siteURL).toString(),
-    address: { "@type": "PostalAddress", addressCountry: "PE" },
-    sport: ["Fútbol", "Vóley", "Pádel"]
-  }
-];
-const currentPath = Astro.url.pathname;
-const navItems = [
-  { href: "/canchas", label: "Buscar canchas", tone: "white" },
-  { href: "/completar-cuadro", label: "Partidos", tone: "white", icon: "◔" },
-  { href: "/sortear", label: "Armar equipos", tone: "green", icon: "⨯" },
-  { href: "/torneos", label: "Torneos", tone: "yellow", icon: "♛" },
-  { href: "/duenos", label: "Dueños", tone: "green" },
 ];
 ---
 
-<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<!doctype html>
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light" />
-
-
   <title>{title}</title>
-  <meta name="title" content={title} />
   <meta name="description" content={description} />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="robots" content={robots} />
   <link rel="canonical" href={canonicalURL} />
   <link rel="sitemap" href="/sitemap.xml" />
-  <link rel="alternate" hreflang="es" href={canonicalURL} />
-
-
-  <meta name="robots" content={robots} />
-  <meta name="keywords" content="ReservaYa, reservaya, canchas deportivas arequipa, reservar cancha arequipa, canchas de futbol arequipa, canchas de voley, canchas de padel, alquiler de canchas cayma, complejos deportivos cerro colorado, canchas yanahuara paucarpata" />
-  <meta name="author" content="ReservaYa" />
-  <meta name="theme-color" content="#000000" />
-
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  {["barlow-400", "barlow-500", "barlow-600", "barlow-condensed-600", "barlow-condensed-700"].map((f) => (
+    <link rel="preload" href={`/fonts/${f}.woff2`} as="font" type="font/woff2" crossorigin />
+  ))}
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:image" content={ogImageURL} />
-  <meta property="og:image:alt" content={title} />
   <meta property="og:site_name" content="ReservaYa" />
   <meta property="og:locale" content="es_PE" />
-  <meta property="og:locale" content="es_ES" />
-
-
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content={canonicalURL} />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImageURL} />
-  <meta name="twitter:image:alt" content={title} />
-  <meta name="twitter:site" content="@reservaya" />
 
-  
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  />
-  <style is:global>
-    /* Carrusel de anuncios: slides apilados, fundido suave al rotar. */
-    /* El color va explícito: la regla base `span` de global.css los
-       pintaría de gris si solo heredaran. */
-    #announcement-bar .ann-text {
-      color: #fff;
-    }
-    .ann-slide {
-      grid-area: 1 / 1;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-      pointer-events: none;
-    }
-    .ann-slide.ann-on {
-      opacity: 1;
-      transform: none;
-      pointer-events: auto;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .ann-slide { transition: none; }
-    }
-
-    #desktop-auth-actions,
-    #desktop-user-actions {
-      display: none;
-    }
-
-    #mobile-auth-actions {
-      display: block;
-    }
-
-    #mobile-user-actions {
-      display: none;
-    }
-
-    #desktop-auth-actions[data-authenticated="true"],
-    #desktop-user-actions[data-authenticated="true"] {
-      display: none;
-    }
-
-    #mobile-auth-actions[data-authenticated="true"] {
-      display: none;
-    }
-
-    #mobile-user-actions[data-authenticated="true"] {
-      display: block;
-    }
-
-    @media (min-width: 768px) {
-      #desktop-auth-actions {
-        display: flex;
-      }
-
-      #desktop-user-actions[data-authenticated="true"] {
-        display: flex;
-      }
-
-      #mobile-auth-actions,
-      #mobile-user-actions {
-        display: none !important;
-      }
-    }
-  </style>
-
-  
   <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-  <script
-    is:inline
-    type="application/ld+json"
-    set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: title,
-      description,
-      url: canonicalURL.toString()
-    })}
-  />
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
   <script>
     if (location.protocol === "http:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
       location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
@@ -234,560 +99,16 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
   <slot name="head" />
 </head>
 
-<body
-  class="min-h-screen bg-[#F5F5F3] text-[#101613] antialiased transition-colors duration-300"
-  data-inbox-endpoint={inboxEndpoint || undefined}
->
-  <a href="#main-content" class="skip-link">Saltar al contenido</a>
-  
-  <div class="sticky top-0 z-50">
-    
-    {announcement && (
-      <div
-        id="announcement-bar"
-        class="sticky top-0 z-50 w-full flex items-center justify-center px-2 md:px-0 min-h-[40px]"
-        style="will-change:transform; background: linear-gradient(90deg, #04140A, #14532D 55%, #04140A);"
-        role="status"
-        aria-live="polite"
-      >
-        <div class="relative flex items-center w-full max-w-full py-1.5">
-          <div class="absolute left-2 md:left-6 flex items-center gap-1.5" role="tablist" aria-label="Anuncios">
-            {[0, 1, 2, 3].map((i) => (
-              <button type="button" role="tab" data-ann-dot={i} aria-label={`Ver anuncio ${i + 1}`} class={`ann-dot h-1.5 rounded-full transition-all ${i === 0 ? "w-4 bg-[#4ADE80]" : "w-1.5 bg-white/30 hover:bg-white/60"}`}></button>
-            ))}
-          </div>
-          <div class="mx-auto grid w-full max-w-full px-14 text-center md:px-20">
-            <span class="ann-slide ann-on flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="false">
-              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00D2FF" d="M4 3.5v17l9.5-8.5z"/><path fill="#FFE000" d="M4 3.5l9.5 8.5 3-2.7z"/><path fill="#FF3A44" d="M4 20.5l9.5-8.5 3 2.7z"/><path fill="#00F076" d="M16.5 9.3l3-2.7-3-2.7zM16.5 14.7l3 2.7-3 2.7z"/></svg>
-              <span class="ann-text">ReservaYa ya está en Google Play — Descarga la app gratis</span>
-              <span class="shrink-0 rounded-full border border-[#4ADE80]/50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#4ADE80]">Nuevo</span>
-            </span>
-            <span class="ann-slide flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="true">
-              <span class="shrink-0 font-bold text-[#4ADE80]" aria-hidden="true">⨯</span>
-              <span class="ann-text">Arma equipos parejos — ¿nadie quiere elegir? Sortéalos gratis</span>
-            </span>
-            <span class="ann-slide flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="true">
-              <span class="shrink-0 font-bold text-[#4ADE80]" aria-hidden="true">✦</span>
-              <span class="ann-text">Crea tu carné de jugador estilo FIFA y compártelo con tus causas</span>
-            </span>
-            <span class="ann-slide flex items-center justify-center gap-2 text-[13px] font-medium tracking-tight text-white select-none md:text-sm" aria-hidden="true">
-              <svg class="h-4 w-4 shrink-0 text-[#4ADE80]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg>
-              <span class="ann-text">Ayúdanos a crecer — Síguenos en Instagram</span>
-              <a href="https://www.instagram.com/reservaya.pe" target="_blank" rel="noopener" class="shrink-0 rounded-full border border-[#4ADE80]/50 px-2.5 py-0.5 text-[11px] font-bold text-[#4ADE80] transition hover:bg-[#4ADE80]/10">@reservaya.pe</a>
-            </span>
-          </div>
-          <button
-            id="announcement-close"
-            aria-label="Cerrar anuncio"
-            class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full w-7 h-7 text-white/80 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white"
-            style="background:transparent"
-          >
-            <span class="sr-only">Cerrar anuncio</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-        </div>
-      </div>
-    )}
-
-    
-    <header class="sticky top-0 z-40 bg-[#060A08]">
-      <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8" aria-label="Navegacion principal">
-        <a href="/" class="flex select-none items-center text-[22px] font-extrabold tracking-tight text-white">
-          Reserva<span class="text-[#22C55E]">Ya</span>
-        </a>
-
-        <ul class="hidden items-center gap-6 text-sm font-medium lg:flex">
-          {navItems.map((item) => {
-            const isActive = currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href));
-            const tone =
-              item.tone === "green" ? "text-[#22C55E] hover:text-[#4ADE80]" :
-              item.tone === "yellow" ? "text-[#EAB308] hover:text-[#FACC15]" :
-              "text-white/90 hover:text-white";
-            return (
-              <li>
-                <a href={item.href} data-astro-prefetch="viewport" aria-current={isActive ? "page" : undefined} class={`flex items-center gap-1.5 transition-colors ${tone} ${isActive ? "font-bold" : ""}`}>
-                  {item.icon && <span aria-hidden="true">{item.icon}</span>}{item.label}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-
-        <div class="flex items-center gap-2 md:gap-3">
-          <div id="desktop-auth-actions" class="auth-actions hidden items-center gap-5 md:flex">
-            <a href="/login" data-astro-prefetch="viewport" class="text-sm font-medium text-white/90 transition hover:text-white">
-              Iniciar sesión
-            </a>
-            <a href="/register" data-astro-prefetch="viewport" class="inline-flex items-center rounded-lg bg-[#22C55E] px-4 py-2 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]">
-              Registrarse
-            </a>
-          </div>
-          <div id="desktop-user-actions" class="auth-user relative items-center">
-            <button id="desktop-user-button" type="button" class="flex items-center gap-2 rounded-full py-1 pr-1 pl-1 text-sm text-white" aria-label="Abrir menú de cuenta" aria-expanded="false">
-              <span id="desktop-user-initials" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#22C55E] text-sm font-bold text-[#060C08]">U</span>
-              <span id="desktop-user-name" class="hidden max-w-28 truncate xl:block">Mi cuenta</span>
-              <span class="text-white/60">⌄</span>
-            </button>
-            <div id="desktop-user-menu" class="absolute right-0 top-11 hidden w-64 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
-              <div class="border-b border-gray-100 px-4 py-3">
-                <p id="desktop-user-fullname" class="truncate text-sm font-bold text-gray-900">Usuario de prueba</p>
-                <p id="desktop-user-email" class="truncate text-xs text-gray-500">usuario@ejemplo.com</p>
-              </div>
-              <div class="p-2 text-sm">
-                <a href="/jugador/perfil" data-astro-prefetch="viewport" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-700 hover:bg-gray-50">◔ Mi perfil y carné</a>
-                <a href="/jugador/perfil" data-astro-prefetch="viewport" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-700 hover:bg-gray-50">▤ Mis reservas</a>
-                <a href={`${appUrl}/dashboard`} class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-gray-700 hover:bg-gray-50">▦ Mi panel</a>
-              </div>
-              <div class="border-t border-gray-100 p-2">
-                <button id="desktop-logout" type="button" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">⏻ Salir</button>
-              </div>
-            </div>
-          </div>
-          <button
-            id="menu-toggle"
-            class="rounded-lg p-2 text-white hover:bg-white/10 lg:hidden"
-            aria-label="Abrir menu"
-            aria-controls="mobile-menu"
-            aria-expanded="false"
-          >
-            ☰
-          </button>
-        </div>
-      </nav>
-
-      <div id="mobile-menu" class="hidden border-t border-white/10 px-4 py-6 lg:hidden" aria-hidden="true">
-        <ul class="flex flex-col gap-5 text-[15px] font-medium text-white">
-          {navItems.map((item) => (
-            <li><a href={item.href}>{item.label}</a></li>
-          ))}
-          <li id="mobile-auth-actions" class="auth-actions border-t border-white/10 pt-4">
-            <a href="/login" class="block font-medium text-white">Iniciar sesión</a>
-            <a href="/register" class="mt-3 inline-block w-full rounded-lg bg-[#22C55E] px-4 py-2.5 text-center text-sm font-bold text-[#060C08]">Registrarse</a>
-          </li>
-          <li id="mobile-user-actions" class="auth-user hidden border-t border-white/10 pt-4">
-            <a href="/jugador/perfil" id="mobile-user-name" class="block font-semibold text-white"></a>
-            <button id="mobile-logout" type="button" class="mt-3 block font-semibold text-red-400">Salir</button>
-          </li>
-        </ul>
-      </div>
-    </header>
-  </div>
-
-  
-  
-  
-
-  <main id="main-content" tabindex="-1" class="max-w-[1680px] mx-auto px-4 md:px-16">
+<body class="flex min-h-screen flex-col" data-inbox-endpoint={inboxEndpoint || undefined}>
+  <a href="#contenido" class="skip-link">Saltar al contenido</a>
+  <Header />
+  <main id="contenido" tabindex="-1" class="flex-1 focus:outline-none">
     <slot />
   </main>
-
-
   <Footer />
 
   <script>
-    import '../scripts/theme.ts';
+    import "../scripts/bandeja.ts";
   </script>
-  <script>
-    import '../scripts/menu.ts';
-  </script>
-  <script>
-    import '../scripts/reveal.ts';
-  </script>
-  <script>
-    import '../scripts/motion.ts';
-  </script>
-  <script is:inline>
-    // Carrusel de anuncios: rota solo cada 5s; los puntitos saltan a cada mensaje.
-    (function () {
-      var bar = document.getElementById("announcement-bar");
-      if (!bar) return;
-      var slides = Array.prototype.slice.call(bar.querySelectorAll(".ann-slide"));
-      var dots = Array.prototype.slice.call(bar.querySelectorAll(".ann-dot"));
-      if (!slides.length) return;
-      var KEY = "announcement-hidden:rotativo-v1";
-      try {
-        var raw = localStorage.getItem(KEY);
-        if (raw) {
-          var saved = JSON.parse(raw);
-          if (Date.now() - saved.t < 7 * 24 * 60 * 60 * 1000) { bar.remove(); return; }
-          localStorage.removeItem(KEY);
-        }
-      } catch (e) {}
-      var i = 0;
-      var timer = null;
-      function show(n) {
-        i = (n + slides.length) % slides.length;
-        slides.forEach(function (s, k) {
-          var on = k === i;
-          s.classList.toggle("ann-on", on);
-          s.setAttribute("aria-hidden", on ? "false" : "true");
-        });
-        dots.forEach(function (d, k) {
-          var on = k === i;
-          d.className = "ann-dot h-1.5 rounded-full transition-all " + (on ? "w-4 bg-[#4ADE80]" : "w-1.5 bg-white/30 hover:bg-white/60");
-          d.setAttribute("aria-selected", on ? "true" : "false");
-        });
-      }
-      dots.forEach(function (d, k) {
-        d.addEventListener("click", function () { show(k); });
-      });
-      var close = document.getElementById("announcement-close");
-      if (close) close.addEventListener("click", function () {
-        try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now() })); } catch (e) {}
-        if (timer) clearInterval(timer);
-        bar.remove();
-      });
-      show(0);
-      timer = setInterval(function () { if (!document.hidden) show(i + 1); }, 5000);
-    })();
-  </script>
-  <script is:inline>
-    // Motor reveal en línea (respaldo garantizado, JS plano).
-    (function () {
-      document.documentElement.classList.add('js');
-      function delayOf(el) {
-        var ms = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
-        if (isNaN(ms)) return 0;
-        return Math.max(0, Math.min(480, ms));
-      }
-      function show(el, obs) {
-        el.style.setProperty('--reveal-delay', delayOf(el) + 'ms');
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            el.classList.add('reveal-visible');
-            if (obs) obs.unobserve(el);
-          });
-        });
-      }
-      function init() {
-        var els = Array.prototype.slice.call(document.querySelectorAll('.reveal:not(.reveal-visible)'));
-        if (!els.length) return;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          els.forEach(function (el) { el.classList.add('reveal-visible'); });
-          return;
-        }
-        if (!('IntersectionObserver' in window)) {
-          els.forEach(function (el) { show(el, null); });
-          return;
-        }
-        var obs = new IntersectionObserver(function (entries) {
-          entries.forEach(function (en) {
-            if (!en.isIntersecting) return;
-            show(en.target, obs);
-            obs.unobserve(en.target);
-          });
-        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-        els.forEach(function (el) { obs.observe(el); });
-        window.setTimeout(function () {
-          document.querySelectorAll('.reveal:not(.reveal-visible)').forEach(function (el) { show(el, obs); });
-        }, 4000);
-      }
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-      else init();
-
-      // Reveal por palabras ligado al scroll (JS plano, garantizado).
-      (function scrollWords() {
-        var els = Array.prototype.slice.call(document.querySelectorAll('[data-scroll-words]'));
-        if (!els.length) return;
-        els.forEach(function (el) {
-          if (el.classList.contains('sw-on')) return;
-          el.classList.add('scroll-words', 'sw-on');
-          var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-          var nodes = [];
-          while (walker.nextNode()) {
-            var n = walker.currentNode;
-            if (n.textContent && n.textContent.trim().length > 0) nodes.push(n);
-          }
-          nodes.forEach(function (node) {
-            var frag = document.createDocumentFragment();
-            node.textContent.split(/(\s+)/).forEach(function (part) {
-              if (!part) return;
-              if (/^\s+$/.test(part)) frag.appendChild(document.createTextNode(' '));
-              else {
-                var s = document.createElement('span');
-                s.className = 'w';
-                s.textContent = part;
-                frag.appendChild(s);
-              }
-            });
-            node.parentNode.replaceChild(frag, node);
-          });
-        });
-        var reduceSw = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var tickingSw = false;
-        function paintSw() {
-          tickingSw = false;
-          var vh = window.innerHeight;
-          els.forEach(function (el) {
-            var r = el.getBoundingClientRect();
-            if (r.bottom < 0 || r.top > vh) return;
-            if (reduceSw) {
-              el.classList.add('done');
-              return;
-            }
-            var p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (vh * 0.7)));
-            var words = el.querySelectorAll(':scope .w');
-            var n = words.length;
-            for (var i = 0; i < n; i++) {
-              var local = Math.max(0.14, Math.min(1, p * (n + 2) - i * 0.9));
-              words[i].style.opacity = local.toFixed(2);
-            }
-            if (p >= 1) el.classList.add('done');
-            else el.classList.remove('done');
-          });
-        }
-        function requestSw() {
-          if (!tickingSw) { tickingSw = true; requestAnimationFrame(paintSw); }
-        }
-        window.addEventListener('scroll', requestSw, { passive: true });
-        window.addEventListener('resize', requestSw);
-        paintSw();
-      })();
-
-      // Entrada de letras en titulares (todas las páginas, JS plano).
-      // Divide cada `main h1` en spans .ch con retardo escalonado y los
-      // muestra al entrar en viewport. Se salta degradados con bg-clip-text
-      // y contadores data-count para no romper su pintado.
-      (function letterEntrance() {
-        var heads = Array.prototype.slice.call(document.querySelectorAll('main h1'));
-        if (!heads.length) return;
-        function skipNode(node) {
-          var el = node.parentElement;
-          while (el && el !== document.body) {
-            if (el.classList && (el.classList.contains('bg-clip-text') || el.hasAttribute('data-count'))) return true;
-            el = el.parentElement;
-          }
-          return false;
-        }
-        heads.forEach(function (el) {
-          if (el.classList.contains('letters')) return;
-          el.classList.add('letters');
-          var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-          var nodes = [];
-          while (walker.nextNode()) {
-            var n = walker.currentNode;
-            if (n.textContent && n.textContent.length && !skipNode(n)) nodes.push(n);
-          }
-          var idx = 0;
-          nodes.forEach(function (node) {
-            var frag = document.createDocumentFragment();
-            node.textContent.split('').forEach(function (part) {
-              if (part === ' ' || part === '\n' || part === '\t' || part === '\r') {
-                frag.appendChild(document.createTextNode(' '));
-              } else {
-                var s = document.createElement('span');
-                s.className = 'ch';
-                s.style.setProperty('--i', String(idx++));
-                s.textContent = part;
-                frag.appendChild(s);
-              }
-            });
-            if (node.parentNode) node.parentNode.replaceChild(frag, node);
-          });
-        });
-        function showLetters(el, obs) {
-          var ms = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
-          if (!isNaN(ms)) el.style.setProperty('--reveal-delay', Math.max(0, Math.min(480, ms)) + 'ms');
-          el.classList.add('letters-visible');
-          if (obs) obs.unobserve(el);
-        }
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
-          heads.forEach(function (el) { showLetters(el, null); });
-          return;
-        }
-        var obsL = new IntersectionObserver(function (entries) {
-          entries.forEach(function (en) {
-            if (!en.isIntersecting) return;
-            showLetters(en.target, obsL);
-          });
-        }, { threshold: 0.2 });
-        heads.forEach(function (el) { obsL.observe(el); });
-        window.setTimeout(function () {
-          document.querySelectorAll('main h1.letters:not(.letters-visible)').forEach(function (el) { showLetters(el, obsL); });
-        }, 4000);
-      })();
-    })();
-  </script>
-  <script is:inline define:vars={{ apiUrl }}>
-    const authApiUrl = apiUrl.replace(/\/$/, "");
-    const desktopAuthActions = document.getElementById("desktop-auth-actions");
-    const desktopUserActions = document.getElementById("desktop-user-actions");
-    const mobileAuthActions = document.getElementById("mobile-auth-actions");
-    const mobileUserActions = document.getElementById("mobile-user-actions");
-    const initials = document.getElementById("desktop-user-initials");
-    const desktopUserName = document.getElementById("desktop-user-name");
-    const desktopUserFull = document.getElementById("desktop-user-fullname");
-    const desktopUserEmail = document.getElementById("desktop-user-email");
-    const mobileUserName = document.getElementById("mobile-user-name");
-    const desktopUserMenu = document.getElementById("desktop-user-menu");
-    const desktopUserButton = document.getElementById("desktop-user-button");
-
-    const setAuthenticatedUser = (user) => {
-      const name = user?.nombre?.trim() || "Mi cuenta";
-      const short = name.length > 18 ? name.slice(0, 18) + "…" : name;
-      const letters = name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
-      desktopAuthActions?.setAttribute("data-authenticated", "true");
-      desktopUserActions?.setAttribute("data-authenticated", "true");
-      mobileAuthActions?.setAttribute("data-authenticated", "true");
-      mobileUserActions?.setAttribute("data-authenticated", "true");
-      mobileUserActions?.classList.remove("hidden");
-      if (initials) initials.textContent = letters || "CG";
-      if (desktopUserName) desktopUserName.textContent = short;
-      if (desktopUserFull) desktopUserFull.textContent = name;
-      if (desktopUserEmail) desktopUserEmail.textContent = user?.email || "";
-      if (mobileUserName) mobileUserName.textContent = name;
-    };
-
-    const setLoggedOut = () => {
-      desktopAuthActions?.removeAttribute("data-authenticated");
-      desktopUserActions?.removeAttribute("data-authenticated");
-      mobileAuthActions?.removeAttribute("data-authenticated");
-      mobileUserActions?.removeAttribute("data-authenticated");
-      mobileUserActions?.classList.add("hidden");
-    };
-
-    fetch(`${authApiUrl}/api/auth/me`, { credentials: "include" })
-      .then((response) => response.ok ? response.json() : null)
-      .then((body) => body?.usuario ? setAuthenticatedUser(body.usuario) : setLoggedOut())
-      .catch(() => setLoggedOut());
-
-    desktopUserButton?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const open = desktopUserMenu?.classList.toggle("hidden") === false;
-      desktopUserButton.setAttribute("aria-expanded", String(open));
-    });
-
-    document.addEventListener("click", () => {
-      desktopUserMenu?.classList.add("hidden");
-    });
-
-    const logout = async () => {
-      const response = await fetch(`${authApiUrl}/api/auth/logout`, { method: "POST", credentials: "include" });
-      if (!response.ok) throw new Error("No se pudo cerrar la sesión");
-      setLoggedOut();
-      desktopUserMenu?.classList.add("hidden");
-    };
-
-    document.getElementById("desktop-logout")?.addEventListener("click", () => {
-      logout().catch(() => {});
-    });
-    document.getElementById("mobile-logout")?.addEventListener("click", () => {
-      logout().catch(() => {});
-    });
-  </script>
-
-  <script is:inline>
-    const getHashTarget = (hash) => {
-      if (!hash || hash === "#") return null;
-      return document.getElementById(decodeURIComponent(hash.slice(1)));
-    };
-
-    const animateScrollTo = (top) => {
-      const scrollContainer = document.scrollingElement || document.documentElement;
-      const start = scrollContainer.scrollTop;
-      const distance = top - start;
-      const duration = Math.min(1000, Math.max(500, Math.abs(distance) * 0.6));
-      const startedAt = Date.now();
-
-      const tick = () => {
-        const progress = Math.min(1, (Date.now() - startedAt) / duration);
-        const eased = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-        const nextTop = start + distance * eased;
-        scrollContainer.scrollTop = nextTop;
-        window.scrollTo(0, nextTop);
-        if (progress < 1) window.setTimeout(tick, 16);
-      };
-
-      tick();
-    };
-
-    const smoothScrollToHash = (hash, updateUrl = true) => {
-      const target = getHashTarget(hash);
-      if (!target) return false;
-
-      const targetRect = target.getBoundingClientRect();
-      const alignedTop =
-        (document.scrollingElement || document.documentElement).scrollTop +
-        targetRect.top -
-        112;
-      const scrollContainer = document.scrollingElement || document.documentElement;
-      const maxTop = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-      const finalTop = Math.max(0, Math.min(alignedTop, maxTop));
-
-      window.setTimeout(() => animateScrollTo(finalTop), 0);
-
-      if (updateUrl) history.replaceState(null, "", hash);
-      return true;
-    };
-
-    document.addEventListener("click", (event) => {
-      const link = event.target instanceof Element
-        ? event.target.closest("a[href]")
-        : null;
-      if (!link) return;
-
-      const url = new URL(link.href, window.location.href);
-      if (!url.hash || url.hash === "#") return;
-
-      const isSamePage =
-        url.origin === window.location.origin &&
-        url.pathname === window.location.pathname;
-
-      if (isSamePage && smoothScrollToHash(url.hash)) {
-        event.preventDefault();
-      } else if (url.origin === window.location.origin) {
-        sessionStorage.setItem("smoothNavigationTarget", url.hash);
-      }
-    }, true);
-
-    const pendingHash = sessionStorage.getItem("smoothNavigationTarget");
-    if (pendingHash) {
-      sessionStorage.removeItem("smoothNavigationTarget");
-      window.addEventListener("DOMContentLoaded", () => {
-        requestAnimationFrame(() => smoothScrollToHash(pendingHash));
-      }, { once: true });
-    }
-
-    if (window.location.hash) {
-      window.addEventListener("DOMContentLoaded", () => {
-        requestAnimationFrame(() => smoothScrollToHash(window.location.hash, false));
-      }, { once: true });
-    }
-  </script>
-  <script>
-    const inboxEndpoint = document.body.dataset.inboxEndpoint || "";
-    if (inboxEndpoint) {
-      const forms = document.querySelectorAll<HTMLFormElement>("[data-inbox='inboxMejikai']");
-      forms.forEach((form) => {
-        form.addEventListener("submit", async (event) => {
-          event.preventDefault();
-          const submitBtn = form.querySelector("[data-submit]");
-          const status = form.querySelector("[data-status]");
-          if (submitBtn) submitBtn.setAttribute("disabled", "true");
-          if (status) status.textContent = "Enviando...";
-          const payload = Object.fromEntries(new FormData(form).entries());
-          payload.page = location.pathname;
-          try {
-            const res = await fetch(inboxEndpoint, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error("Request failed");
-            if (status) status.textContent = "Mensaje enviado. Te responderemos pronto.";
-            form.reset();
-          } catch {
-            if (status) status.textContent = "No se pudo enviar. Intenta de nuevo.";
-          } finally {
-            if (submitBtn) submitBtn.removeAttribute("disabled");
-          }
-        });
-      });
-    }
-  </script>
-
 </body>
-
 </html>
