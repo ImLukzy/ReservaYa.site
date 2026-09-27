@@ -9,13 +9,55 @@
   --accent-warn: #eab308;
   --sidebar: #060c08;
   --border-soft: #e7e5e4;
+
+  /* «Tablero de cancha» (spec 20/21). Neutros iguales a la landing; el acento del
+     panel es #22C55E con texto grafito (8.66:1), nunca texto blanco (spec 14). */
+  --sillar: #f3f4f1;        /* fondo de página */
+  --piedra: #e7e9e4;        /* hover y estados neutros; pizarra encima 4.9 */
+  --tiza: #ffffff;          /* superficies */
+  --cal: #d6dbd3;           /* líneas de estructura, nunca texto */
+  --borde: #8a948e;         /* borde de controles, ≥ 3:1 */
+  --basalto: #1f2a24;       /* texto principal; 13.4 sobre sillar */
+  --pizarra: #5a6660;       /* texto secundario; 5.43 sobre sillar */
+  --grafito: #060c08;       /* sidebar y texto sobre césped */
+  --niebla: #a9b3ad;        /* texto secundario sobre grafito; 9.2 */
+  --cesped: #22c55e;        /* acento; grafito encima 8.66 */
+  --cesped-hover: #16a34a;  /* grafito encima 5.98 */
+  --cesped-hondo: #116a3c;  /* texto verde; 6.0 sobre sillar */
+  --cesped-suave: #e3f1e8;  /* fondo de «libre»; cesped-hondo encima 5.7 */
+  --sol: #f0b429;           /* avisos sobre grafito; 10.6 */
+  --error: #b42318;         /* 6.57 sobre tiza */
+  --error-hondo: #912018;   /* hover de peligro */
+  --error-suave: #fdecea;   /* error encima 5.75 */
+  --velo: rgb(31 42 36 / 0.5); /* fondo tras un diálogo */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-sillar: var(--sillar);
+  --color-piedra: var(--piedra);
+  --color-tiza: var(--tiza);
+  --color-cal: var(--cal);
+  --color-borde: var(--borde);
+  --color-basalto: var(--basalto);
+  --color-pizarra: var(--pizarra);
+  --color-grafito: var(--grafito);
+  --color-niebla: var(--niebla);
+  --color-cesped: var(--cesped);
+  --color-cesped-hover: var(--cesped-hover);
+  --color-cesped-hondo: var(--cesped-hondo);
+  --color-cesped-suave: var(--cesped-suave);
+  --color-sol: var(--sol);
+  --color-error: var(--error);
+  --color-error-hondo: var(--error-hondo);
+  --color-error-suave: var(--error-suave);
+  --color-velo: var(--velo);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Barlow las carga app/(dashboard)/layout.tsx con next/font (font-display: swap). */
+  --font-cuerpo: var(--ff-barlow), Arial, sans-serif;
+  --font-display: var(--ff-barlow-condensed), var(--ff-barlow), Arial, sans-serif;
 }
 
 body {

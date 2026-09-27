@@ -17,17 +17,20 @@ export function ErrorPanel({
   }, [error]);
 
   return (
-    <div role="alert" className="mx-auto flex max-w-md flex-col items-center p-8 text-center sm:p-12">
-      <AlertTriangle className="mb-4 h-12 w-12 text-red-400" strokeWidth={1.5} aria-hidden="true" />
-      <h2 className="text-lg font-bold text-[#101613]">No pudimos cargar esta sección</h2>
-      <p className="mt-1 text-sm text-[#64748B]">
+    <div
+      role="alert"
+      className="mx-auto flex max-w-md flex-col items-center rounded-xl border border-cal bg-tiza p-8 text-center sm:p-12"
+    >
+      <AlertTriangle className="mb-4 h-12 w-12 text-error" strokeWidth={1.5} aria-hidden="true" />
+      <h2 className="font-display text-xl font-bold text-basalto">No pudimos cargar esta sección</h2>
+      <p className="mt-1 text-sm text-pizarra">
         El servidor no respondió como esperábamos. Si persiste, puede que la API esté caída.
       </p>
-      {error.digest && <p className="mt-2 font-mono text-xs text-[#94A3B8]">Ref: {error.digest}</p>}
+      {error.digest && <p className="mt-2 font-mono text-xs text-pizarra">Ref: {error.digest}</p>}
       <button
         type="button"
         onClick={reintentar}
-        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
+        className="mt-6 inline-flex items-center gap-2 rounded-md bg-cesped px-5 py-2.5 text-sm font-semibold text-grafito transition-colors hover:bg-cesped-hover"
       >
         <RotateCw className="h-4 w-4" aria-hidden="true" /> Reintentar
       </button>

@@ -5,9 +5,10 @@ interface CardProps {
   className?: string
 }
 
+// Superficie del tablero: tiza con línea de cal, sin sombras ni degradados.
 export function Card({ children, className }: CardProps) {
   return (
-    <div className={cn('bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#E7E5E4] p-6', className)}>
+    <div className={cn('bg-tiza rounded-xl border border-cal p-6', className)}>
       {children}
     </div>
   )
@@ -25,20 +26,20 @@ export function StatCard({
   color?: 'green' | 'blue' | 'yellow' | 'red'
 }) {
   const colors = {
-    green: 'bg-[#DCFCE7] text-[#15803D]',
+    green: 'bg-cesped-suave text-cesped-hondo',
     blue: 'bg-[#DBEAFE] text-[#1D4ED8]',
     yellow: 'bg-[#FEF9C3] text-[#A16207]',
-    red: 'bg-[#FFE4E6] text-[#BE123C]',
+    red: 'bg-error-suave text-error',
   }
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card>
       <div className="flex items-center gap-4">
-        <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center text-2xl', colors[color])}>
+        <div className={cn('w-12 h-12 shrink-0 rounded-md flex items-center justify-center text-2xl', colors[color])}>
           {icon}
         </div>
-        <div>
-          <p className="text-sm text-[#64748B]">{label}</p>
-          <p className="text-2xl font-bold text-[#0F172A]">{value}</p>
+        <div className="min-w-0">
+          <p className="text-sm text-pizarra">{label}</p>
+          <p className="font-display text-3xl font-bold tabular-nums text-basalto">{value}</p>
         </div>
       </div>
     </Card>

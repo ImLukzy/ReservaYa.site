@@ -8,14 +8,15 @@
 ## 1. Objetivo
 
 **Problema:**
-La interfaz del panel operativo (`reservaya-nextjs-api/app/(dashboard)`) y sus componentes B2B mantienen la estética anterior al sistema de diseño unificado establecido en la Spec 20:
-1. **Disonancia visual y tokens huérfanos:** Coexisten colores hex arbitrarios (`#252b40`, `#0b130e`, `#15803D`, `#22C55E`, `#071c10`, `#465170`), fuentes no alineadas (Nunito / variables del sistema frente a Barlow / Barlow Condensed de la landing) y bordes no unificados.
-2. **Rasgos genéricos y datos ficticios:** La pantalla de perfil del jugador (`app/(dashboard)/dashboard/perfil/page.tsx:49-58`) exhibe estadísticas inventadas tipo RPG («Velocidad 82», «Tiro 76», «Defensa 68», «Resistencia 85», «Armador»), banners con degradados oscuros y etiquetas en mayúsculas forzadas (`uppercase tracking-[0.2em]`).
-3. **Riesgo de CLS (Cumulative Layout Shift):** Componentes como `DashboardWidgets`, `CronogramaView`, `AvisoCarga` y la carga diferida de imágenes de canchas/avatares carecen de dimensiones explícitas o contenedores reservados, provocando saltos de página durante la carga de datos del backend.
-4. **Dispersión en componentes B2B:** Más de 20 paneles operativos (`ReservasPanel`, `CajaPanel`, `TorneosPanel`, etc.) aplican estilos de tarjetas y tablas de manera heterogénea, sin el patrón de líneas de cal y señalética deportiva.
+La interfaz del panel operativo (`reservaya-nextjs-api/app/(dashboard)`) y sus componentes B2B arrastran deuda estética previa al sistema de diseño unificado establecido en la Spec 20:
+1. **Disonancia visual y tokens huérfanos:** Coexisten colores hex arbitrarios (`#252b40`, `#0b130e`, `#15803D`, `#22C55E`, `#071c10`, `#465170`), fuentes no unificadas (Nunito / variables de sistema frente a Barlow / Barlow Condensed de la landing) y bordes heterogéneos sin base de tokens.
+2. **Gamificación y datos ficticios fuera de lugar:** La pantalla de perfil del jugador (`app/(dashboard)/dashboard/perfil/page.tsx`) incluía mecánicas de gamificación y atributos inventados tipo RPG («Velocidad 82», «Tiro 76», «Defensa 68», «Resistencia 85», insignia ficticia «Armador»), banners oscuros con degradados decorativos y etiquetas en mayúsculas forzadas (`uppercase tracking-[0.2em]`). Esto desvirtúa la herramienta, que es una plataforma operativa de gestión y reservas deportivas reales en Arequipa.
+3. **Riesgo de CLS (Cumulative Layout Shift):** Componentes como `DashboardWidgets`, `CronogramaView`, `AvisoCarga` y la carga diferida de imágenes de canchas o avatares carecen de dimensiones explícitas o contenedores reservados, provocando saltos visuales durante la carga asíncrona de datos desde el backend.
+4. **Dispersión en componentes B2B:** Más de 20 paneles operativos (`ReservasPanel`, `CajaPanel`, `TorneosPanel`, etc.) aplican estilos de tarjetas y tablas de manera heterogénea, sin el patrón unificado de líneas de cal y señalética deportiva.
 
 **Resultado esperado:**
-El panel operativo en Next.js adopta de forma íntegra el sistema de diseño «Tablero de cancha» (tokens compartidos, tipografías Barlow y Barlow Condensed, líneas de cal estructurales, botones y badges con contraste WCAG AA) en su shell (`Sidebar`, `TopBar`), sus componentes base UI y las vistas operativas de los cuatro roles (`ADMIN`, `SUPERADMIN`, `TECNICO`, `USUARIO`), eliminando datos ficticios y asegurando CLS ≤ 0.05, **sin alterar contratos de API existentes, sin migraciones de base de datos y sin integrar pasarelas de pago externas**.
+El panel operativo en Next.js adopta de forma íntegra el sistema de diseño «Tablero de cancha» (variables CSS nativas en Tailwind, tipografías Barlow y Barlow Condensed, líneas de cal estructurales, botones y badges con contraste WCAG AA) en su shell (`Sidebar`, `TopBar`), sus componentes base UI y las vistas operativas de los cuatro roles (`ADMIN`, `SUPERADMIN`, `TECNICO`, `USUARIO`).
+Se erradica por completo la gamificación ficticia, reemplazándola por métricas operativas verídicas del jugador, y se asegura un CLS ≤ 0.05 en todas las pantallas principales, **sin alterar contratos de API existentes, sin migraciones de base de datos y sin integrar pasarelas de pago externas**.
 
 ---
 
@@ -23,13 +24,14 @@ El panel operativo en Next.js adopta de forma íntegra el sistema de diseño «T
 
 - **Pasarelas de pago externas:** No se implementan integraciones con Stripe, Mercado Pago, PayPal, Niubiz ni Culqi externo. La gestión de pagos en caja y reservas se mantiene 100% operativa a través de los métodos locales ya existentes (`EFECTIVO`, `YAPE`, `TRANSFERENCIA`, `TARJETA` presencial en caja) y el modelo local `CajaSesion`/`MovimientoCaja`.
 - **Abonos y membresías externas:** Los pases y suscripciones se gestionan de forma local mediante el modelo Prisma `Suscripcion` y endpoints `/api/suscripciones`, sin facturación recurrente bancaria externa.
+- **Gamificación y mecánicas de juego:** Quedan permanentemente excluidas barras de experiencia, niveles de usuario, atributos ficticios tipo videojuego y medallas inventadas. La plataforma es una herramienta de utilidad operativa.
 - **Migraciones de base de datos:** Prohibido crear, alterar o aplicar migraciones en EF Core o Prisma (`REGLA INNEGOCIABLE: CERO MIGRACIONES`). El esquema actual de PostgreSQL en Neon es la única fuente de verdad.
 - **Modificación de contratos de API en backend .NET:** Se consumen exactamente las firmas de endpoint existentes de `ReservaFacil.Api`. Cualquier cambio o necesidad no cubierta debe registrarse como `BLOQUEO-API`.
 - **Unificación de sesión/dominio con Astro:** La arquitectura desacoplada se preserva conforme a la decisión de la Spec 22 (landing estática en Astro y panel autenticado en Next.js se mantienen separados).
 
-**Decisiones de producto (resueltas por el humano, 2026-09-27):**
-1. **Retiro definitivo de estadísticas RPG:** ✅ Aprobado. Se eliminan los atributos ficticios («Velocidad», «Tiro», «Defensa», «Resistencia», «Armador») de `/dashboard/perfil` y se reemplazan por métricas reales del jugador. Nota de implementación: los ejemplos que dio el humano («canchas activas», «horas de mayor afluencia») son métricas de dueño/admin y no aplican a esta vista de jugador — se usaron en su lugar las métricas de jugador ya disponibles en la página (total de reservas, confirmadas, completadas), consistentes con la tarjeta "Resumen de reservas" de la misma vista.
-2. **Estrategia de tokens en Next.js:** ✅ Aprobado. Tailwind CSS con variables CSS nativas (`:root` / `dark:`) ya configuradas en el proyecto — sin librerías de estilos ni CSS-in-JS externo adicional.
+**Decisiones de producto cerradas (Aprobadas por el humano, 2026-09-27):**
+1. **D1 — Retiro definitivo de gamificación y estadísticas RPG:** ✅ Aprobado y ejecutado parcialmente (commit `67a51ab`). Se eliminan los atributos ficticios («Velocidad», «Tiro», «Defensa», «Resistencia», «Armador») de `/dashboard/perfil` y se reemplazan por métricas reales del jugador (reservas totales, confirmadas, completadas), consistentes con los datos que ya entrega el backend.
+2. **D2 — Estrategia de tokens en Next.js:** ✅ Aprobado. Se utiliza Tailwind CSS con variables CSS nativas (`:root` / `dark:`) ya configuradas en el proyecto — sin añadir librerías externas de estilos ni motores de CSS-in-JS.
 
 ---
 
@@ -67,14 +69,14 @@ El panel operativo en Next.js adopta de forma íntegra el sistema de diseño «T
 | `/admin/ayuda` | `OnboardingChecklist.tsx` | `GET /api/complejos`, `GET /api/canchas?propias=true`, `GET /api/horarios` (Spec 09 verificado) |
 
 ### 3.3 Rutas del Dashboard de Usuario (`USUARIO` - Jugador)
-| Ruta | Componentes asociados | Endpoints consumidos |
-|---|---|---|
-| `/dashboard` | `DashboardWidgets.tsx` | `GET /api/reportes/dashboard`, `GET /api/reservas` |
-| `/dashboard/canchas` | `CanchaCard.tsx`, `ReservaForm.tsx` | `GET /api/canchas/disponibles`, `GET /api/canchas/opciones`, `GET /api/canchas/{id}/cotizar`, `POST /api/reservas` |
-| `/dashboard/reservas` | `CalificarBtn.tsx`, `CancelarReservaBtn.tsx`, `Countdown.tsx` | `GET /api/reservas`, `PATCH /api/reservas/{id}`, `POST /api/resenas` |
-| `/dashboard/perfil` | Formulario perfil, carné digital | `GET /api/auth/me`, `GET /api/reservas` (reemplazo de RPG stats por datos reales) |
-| `/dashboard/mi-partido` | Panel grupos y partidos | `GET /api/partidos`, `GET /api/partidos/mios` |
-| `/dashboard/carne` | Carnet visual de jugador | `GET /api/auth/me` con QR verificable |
+| Ruta | Componentes asociados | Endpoints consumidos | Estado actual |
+|---|---|---|---|
+| `/dashboard` | `DashboardWidgets.tsx` | `GET /api/reportes/dashboard`, `GET /api/reservas` | Pendiente de rediseño |
+| `/dashboard/perfil` | Formulario perfil, carné digital | `GET /api/auth/me`, `GET /api/reservas` | 🟡 **Fase 2 parcial (67a51ab):** stats RPG eliminadas; diseño visual pendiente |
+| `/dashboard/reservas` | `CalificarBtn.tsx`, `CancelarReservaBtn.tsx`, `Countdown.tsx` | `GET /api/reservas`, `PATCH /api/reservas/{id}`, `POST /api/resenas` | Pendiente de rediseño |
+| `/dashboard/canchas` | `CanchaCard.tsx`, `ReservaForm.tsx` | `GET /api/canchas/disponibles`, `GET /api/canchas/opciones`, `GET /api/canchas/{id}/cotizar`, `POST /api/reservas` | Pendiente de rediseño |
+| `/dashboard/mi-partido` | Panel grupos y partidos | `GET /api/partidos`, `GET /api/partidos/mios` | Pendiente de rediseño |
+| `/dashboard/carne` | Carnet visual de jugador | `GET /api/auth/me` con QR verificable | Pendiente de rediseño |
 
 ### 3.4 Rutas de Plataforma (`TECNICO`)
 | Ruta | Componentes asociados | Endpoints consumidos |
@@ -102,23 +104,23 @@ El panel operativo en Next.js adopta de forma íntegra el sistema de diseño «T
 
 ### 4.1 Concepto: «Tablero de cancha» en la Operación Diaria
 1. **Líneas de cal estructurales:** Los paneles y tablas operativas se delimitan mediante bordes continuos y limpios (`border border-cal` o `divide-y divide-cal`), emulando las marcas reglamentarias de una cancha de juego.
-2. **Tipografía dual:**
+2. **Tipografía dual alineada:**
    - **Barlow Condensed:** Uso en encabezados de sección, números de canchas, horas en cronogramas, precios monetarios en soles (`tabular-nums`) y badges de estado.
    - **Barlow:** Uso en todo el cuerpo de texto, inputs de formularios, labels y mensajes de ayuda.
 3. **Contraste WCAG AA estricto:**
-   - Botón de acento / acción primaria: fondo césped (`#22C55E`) con texto grafito profundo (`#060C08`), garantizando una relación de contraste de **8.66:1** (superior al umbral AA de 4.5:1).
+   - Botón de acento / acción primaria: fondo césped (`#22C55E`) con texto grafito profundo (`#060C08`), garantizando una relación de contraste de **8.66:1** (muy superior al umbral AA de 4.5:1).
    - Fondos oscuros del panel: uso de `.on-dark` o tokens específicos donde los textos alcancen ≥ 9:1 frente a superficies de pizarra/grafito.
    - Prohibido el texto blanco sobre fondos verde claro o lima.
-4. **Erradicación de rasgos genéricos:**
-   - Cero estadísticas tipo videojuego o RPG.
-   - Cero degradados decorativos estilo web3 (`bg-gradient-to-br from-[#0b130e]...`).
-   - Cero etiquetas innecesarias en `uppercase tracking-[0.2em]`.
+4. **Erradicación total de la gamificación y rasgos genéricos:**
+   - **Cero gamificación:** Prohibidas barras de nivel, puntos ficticios, títulos o estilos de juego inventados («Armador», «Goleador»), atributos RPG («Velocidad», «Tiro»).
+   - **Cero adornos web3:** Eliminados los degradados artificiales (`bg-gradient-to-br from-[#0b130e]...`) y `backdrop-blur` innecesarios.
+   - **Cero etiquetas forzadas:** Supresión de mayúsculas tracking abusivas (`uppercase tracking-[0.2em]`).
 
 ### 4.2 Prevención de CLS (Cumulative Layout Shift)
 Para garantizar que la navegación y carga de datos no generen saltos visuales molestos:
 1. **Reserva de dimensiones en medios:**
-   - Las fotos de canchas en tarjetas y formularios deben especificar `aspect-ratio: 16/9` (o clase `aspect-video`) con contenedor contenedor de fondo neutro (`bg-cal/20`).
-   - Los avatares de usuario y logos de complejos deben tener dimensiones fijas explícitas (`h-10 w-10`, `h-14 w-14`) antes de resolver la imagen.
+   - Las fotos de canchas en tarjetas y formularios deben especificar `aspect-ratio: 16/9` (o clase `aspect-video`) con contenedor de fondo neutro reservado (`bg-cal/20`).
+   - Los avatares de usuario y logos de complejos deben tener dimensiones fijas explícitas (`h-10 w-10`, `h-14 w-14`, `h-16 w-16`) antes de resolver la imagen.
 2. **Skeletons con altura fija:**
    - En vistas de carga (`CronogramaView`, `ReservasPanel`, `CajaPanel`), los estados de carga deben pintar skeletons que ocupen el alto exacto de las filas o tarjetas reales (`filasEsqueleto`).
    - La tabla de cronograma de agenda debe renderizar su grilla horaria de 08:00 a 21:00 con celdas de altura fija (`h-12` o `h-14`) independientemente de si hay datos cargados.
@@ -177,21 +179,67 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
 | A3 | Tests unitarios y de contrato | `npm --prefix reservaya-nextjs-api test` | 100% pasando |
 | A4 | Build Next.js | `npm --prefix reservaya-nextjs-api run build` | 0 errores |
 | A5 | Astro build & check intactos | `npm --prefix reservaya-frontend-astro run build` | 0 regresiones |
-| A6 | Erradicación de datos RPG ficticios | Inspección de `dashboard/perfil/page.tsx` | Cero referencias a Velocidad, Tiro, Defensa, Resistencia o Armador ficticio |
+| A6 | Erradicación de gamificación y datos RPG | Inspección de `dashboard/perfil/page.tsx` | Cero referencias a Velocidad, Tiro, Defensa, Resistencia o Armador ficticio (✅ Verificado en commit `67a51ab`) |
 | A7 | Contraste WCAG AA | Inspección de CTAs primarios y elementos `.on-dark` | Ratio ≥ 4.5:1 (texto regular) y ≥ 8.6:1 en botones verdes `#22C55E` con texto `#060C08` |
 | A8 | Prevención de CLS | Auditoría visual de layouts y dimensionamiento de imágenes | CLS ≤ 0.05 en rutas principales |
 
 ---
 
-## 7. Checklist de implementación (Fases)
+## 7. Checklist de implementación (Fases de ejecución)
 
-- [x] **Fase 0: Aprobación del borrador** — Aprobada por el humano el 2026-09-27.
-- [ ] **Fase 1: Shell y componentes base UI** (`tokens.css`, `Button`, `Card`, `Badge`, `Sidebar`, `TopBar`).
-- [~] **Fase 2: Perfil y rutas de usuario** — iniciada: eliminadas las stats RPG de `/dashboard/perfil` (criterio A6), reemplazadas por métricas reales de jugador. Pendiente: `/dashboard/reservas`, `/dashboard/canchas`.
-- [ ] **Fase 3: Rutas operativas críticas de Admin** (`/admin/agenda`, `/admin/reservas`, `/admin/caja`, `/admin/horarios`, `/admin/canchas`).
-- [ ] **Fase 4: Rutas complementarias de Admin** (`/admin/clientes`, `/admin/equipo`, `/admin/torneos`, `/admin/precios-especiales`, `/admin/abonos`, `/admin/metas`).
-- [ ] **Fase 5: Rutas de Plataforma Técnico** (`/tecnico/centros`, `/tecnico/usuarios`, `/tecnico/suscripciones`).
-- [ ] **Fase 6: Gates de calidad y verificación** (`typecheck`, `lint`, `test`, `build`, auditoría de contraste y CLS).
+- [x] **Fase 0: Aprobación de la spec y decisiones de producto**
+  - [x] Aprobación humana de alcance sin pasarelas de pago externas (2026-09-27).
+  - [x] Resolución de decisiones D1 (gamificación fuera) y D2 (tokens nativos Tailwind CSS).
+  - [x] Promoción del archivo a `docs/specs/21-operativa.md`.
+
+- [x] **Fase 1: Shell y componentes base UI**
+  - [x] Consolidar tokens semánticos en variables CSS nativas (`:root` + `@theme inline`; sin `dark:`: el panel no tiene modo oscuro y los paneles B2B sin migrar usan colores fijos).
+  - [x] Adaptar `components/ui/Button.tsx` (variante primaria `#22C55E` con texto `#060C08`).
+  - [x] Adaptar `components/ui/Card.tsx`, `Badge.tsx`, `Modal.tsx`, `EmptyState.tsx`, `AvisoCarga.tsx` (+ `ErrorPanel.tsx`, `WhatsAppFloat.tsx`). `Modal` conserva superficie oscura (sus formularios hijos dependen de ella); `AvisoCarga` se pinta en SSR, sin CLS.
+  - [x] Rediseñar `components/layout/Sidebar.tsx` y `TopBar.tsx` con señalética deportiva y líneas de cal.
+  - [x] Actualizar `app/(dashboard)/layout.tsx` (Barlow/Barlow Condensed vía `next/font`). `error.tsx` sin cambios: su estilo vive en `ErrorPanel`.
+
+- [ ] **Fase 2: Perfil y rutas de usuario (En curso)**
+  - [x] **Subfase 2.1:** Retiro de estadísticas RPG ficticias de `/dashboard/perfil/page.tsx` y reemplazo por métricas reales (commit `67a51ab`).
+  - [ ] **Subfase 2.2:** Rediseño visual de `/dashboard/perfil` (líneas de cal, avatar fijo anti-CLS).
+  - [ ] **Subfase 2.3:** Rediseño visual de `/dashboard/reservas` (`CalificarBtn`, `CancelarReservaBtn`, `Countdown`).
+  - [ ] **Subfase 2.4:** Rediseño visual de `/dashboard/canchas` (`CanchaCard`, `ReservaForm`).
+  - [ ] **Subfase 2.5:** Rediseño visual de `/dashboard/mi-partido` y `/dashboard/carne`.
+
+- [ ] **Fase 3: Rutas operativas críticas de Admin**
+  - [ ] `/admin/agenda` y `CronogramaView.tsx` (grilla 08:00–21:00 con celdas de altura fija anti-CLS).
+  - [ ] `/admin/reservas` y `ReservasPanel.tsx` (gestión de reservas con líneas de cal y estados semánticos).
+  - [ ] `/admin/caja` y `CajaPanel.tsx` (sesión activa, movimientos y balance de caja).
+  - [ ] `/admin/horarios` y `HorariosPanel.tsx` (gestión operativa Lun–Dom).
+  - [ ] `/admin/canchas` y `GestionCanchasPanel.tsx` (tarjetas con `aspect-ratio: 16/9`).
+
+- [ ] **Fase 4: Rutas complementarias de Admin**
+  - [ ] `/admin/clientes` y `ClientesPanel.tsx` (historial deportivo y sanciones).
+  - [ ] `/admin/equipo` y `EquipoPanel.tsx` (personal ADMIN por complejo).
+  - [ ] `/admin/torneos` y `TorneosPanel.tsx` (administración operativa de torneos).
+  - [ ] `/admin/precios-especiales` y `PreciosEspecialesPanel.tsx`.
+  - [ ] `/admin/descuentos` y `DescuentosPanel.tsx`.
+  - [ ] `/admin/abonos` y `AbonosPanel.tsx` / `SuscripcionesPanel.tsx`.
+  - [ ] `/admin/metas` y `MetasPanel.tsx`.
+  - [ ] `/admin/validar-codigo` y `ValidarCodigo.tsx`.
+  - [ ] `/admin/configuracion` y `ConfigPanel.tsx`.
+  - [ ] `/admin/reportes` y `ReportesPanel.tsx` / `DashboardWidgets.tsx`.
+  - [ ] `/admin/ayuda` y `OnboardingChecklist.tsx` (preservando lógica verificada en Spec 09).
+
+- [ ] **Fase 5: Rutas de Plataforma Técnico**
+  - [ ] `/tecnico` (resumen global de plataforma).
+  - [ ] `/tecnico/centros` (gestión y publicación de complejos).
+  - [ ] `/tecnico/usuarios` (activación y roles).
+  - [ ] `/tecnico/suscripciones` (auditoría global).
+
+- [ ] **Fase 6: Gates de calidad y verificación final**
+  - [ ] `npm --prefix reservaya-nextjs-api run typecheck` (0 errores).
+  - [ ] `npm --prefix reservaya-nextjs-api run lint` (0 errores).
+  - [ ] `npm --prefix reservaya-nextjs-api test` (100% passing).
+  - [ ] `npm --prefix reservaya-nextjs-api run build` (0 errores).
+  - [ ] `npm --prefix reservaya-frontend-astro run build` (22 páginas OK sin regresiones).
+  - [ ] Auditoría de accesibilidad WCAG AA en controles y estados de foco.
+  - [ ] Verificación de métricas CLS ≤ 0.05.
 
 ---
 
@@ -199,6 +247,9 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
 
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
-| 2026-09-27 | Redacción de borrador | 📝 Borrador completo | Archivo creado en `docs/specs/drafts/21-operativa.md` |
-| 2026-09-27 | Aprobación del humano | ✅ Aprobada | Decisiones de alcance y de las 2 preguntas de producto resueltas |
-| 2026-09-27 | A6 (parcial) | 🟡 Fase 2 en curso | RPG stats retiradas de `dashboard/perfil/page.tsx`, reemplazadas por reservas/confirmadas/completadas reales |
+| 2026-09-27 | Redacción de borrador | 📝 Borrador completo | Creado en `docs/specs/drafts/21-operativa.md` |
+| 2026-09-27 | Aprobación humana | ✅ Aprobada | Decisiones D1 y D2 resueltas; promovida a `docs/specs/21-operativa.md` |
+| 2026-09-27 | Criterio A6 (parcial) | ✅ Cumplido en perfil | Commit `67a51ab`: eliminadas stats RPG de `dashboard/perfil/page.tsx` y reemplazadas por reservas/confirmadas/completadas |
+| 2026-09-27 | Redacción formal y seguimiento de fases | 📝 Prosa técnica prolija | Actualización formal de fases 1–6 y lineamientos anti-CLS documentados por Auditor-Gemini |
+| 2026-09-27 | Fase 1 — A1–A5 | ✅ PASS | JIM-QA (intento 1/3): typecheck 0 err; lint 0 err (3 warnings previos); test 39/39; build Next OK; `db:check` 19 tablas 82/82; build Astro 22 págs |
+| 2026-09-27 | Fase 1 — A7 (contraste) | ✅ Por diseño | Primario `#22C55E`/`#060C08` 8.66:1 (hover `#16A34A` 5.98:1); títulos de grupo del sidebar de `#475569` (2.6:1) a `niebla` `#a9b3ad` (9.2:1) sobre `#060C08`; WhatsApp icono grafito 9.9:1 |
