@@ -1,4 +1,4 @@
-import type { Cancha, CanchaInput, EstadoReserva, Rol, UsuarioSesion } from './api-types'
+import { ApiError, type Cancha, type CanchaInput, type EstadoReserva, type Rol, type UsuarioSesion } from './api-types'
 import { apiRequest as request } from './http'
 
 export const login = (email: string, password: string) =>
@@ -25,3 +25,27 @@ export const updateUsuario = (id: string, input: { activo?: boolean; rol?: Rol }
   request(`/api/usuarios/${id}`, { method: 'PATCH', body: JSON.stringify(input) })
 export const crearResena = (complejoId: string, puntuacion: number, comentario?: string) =>
   request('/api/resenas', { method: 'POST', body: JSON.stringify({ complejoId, puntuacion, comentario }) })
+
+export const updatePerfil = (input: {
+  telefono?: string
+  username?: string
+  fechaNacimiento?: string
+}) =>
+  request<{ ok: boolean; usuario: UsuarioSesion }>('/api/usuarios/me', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  })
+
+export async function subirFotoPerfil(file: File): Promise<{ ok: boolean; fotoUrl: string }> {
+  const fd = new FormData()
+  fd.append('archivo', file)
+  const res = await fetch('/api/usuarios/me/foto', {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  })
+  const body = await res.json().catch(() => null)
+  if (!res.ok) throw new ApiError(res.status, body?.error ?? 'No se pudo subir la foto')
+  return body
+}
+

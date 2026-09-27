@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getSession } from '@/lib/session'
 import * as api from '@/lib/api'
 import { Card } from '@/components/ui/Card'
+import { PerfilForm } from '@/components/features/PerfilForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,74 +13,107 @@ export default async function PerfilPage() {
   const reservas = await api.getReservas()
   const confirmadas = reservas.filter((reserva) => reserva.estado === 'CONFIRMADA').length
   const completadas = reservas.filter((reserva) => reserva.estado === 'COMPLETADA').length
-  const pendientes = reservas.filter((reserva) => reserva.estado === 'PENDIENTE').length
-  const iniciales = session.nombre.split(/\s+/).map((parte) => parte[0]).join('').slice(0, 2).toUpperCase()
+  const iniciales = session.nombre
+    .split(/\s+/)
+    .map((parte) => parte[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 
   return (
     <div className="mx-auto max-w-5xl">
-      <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Mi perfil</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-100">Tu perfil. Tu juego.</h1>
-        <p className="mt-2 text-slate-400">Consulta tu carné digital y tu historial deportivo en ReservaYa.</p>
+      <div className="mb-8 border-b border-cal pb-4">
+        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Mi perfil</p>
+        <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-basalto">Tu perfil. Tu juego.</h1>
+        <p className="mt-1 text-sm text-pizarra">Consulta tu carné digital, edita tus datos y revisa tu historial deportivo en ReservaYa.</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
-        <Card className="overflow-hidden p-0">
-          <div className="bg-gradient-to-br from-[#0b130e] to-[#15803D] p-6 text-white">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-200">Carné digital</p>
-            <div className="mt-8 flex items-center gap-4">
-              {session.fotoUrl ? (
-                <img src={session.fotoUrl} alt="Foto de perfil" className="h-16 w-16 rounded-full object-cover" />
-              ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#22C55E] text-xl font-black text-[#071c10]">{iniciales}</div>
-              )}
-              <div>
-                <h2 className="text-xl font-black">{session.nombre}</h2>
-                <p className="text-sm text-white/70">{session.email}</p>
-              </div>
-            </div>
-            <div className="mt-8 flex items-center justify-between border-t border-white/15 pt-4 text-sm">
-              <span>Jugador ReservaYa</span>
-              <span className="font-bold text-emerald-200">#{session.id.slice(0, 8).toUpperCase()}</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-3 p-6">
-            {[
-              ['Reservas', String(reservas.length)],
-              ['Confirmadas', String(confirmadas)],
-              ['Completadas', String(completadas)],
-            ].map(([label, value]) => (
-              <div key={label} className="rounded-xl bg-[#252b40] p-3">
-                <p className="text-xs text-slate-400">{label}</p>
-                <p className="mt-1 text-xl font-black tabular-nums text-slate-100">{value}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-
+        {/* Columna Izquierda: Carné digital e historial */}
         <div className="space-y-6">
-          <Card>
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-slate-100">Resumen de reservas</h2>
-                <p className="mt-1 text-sm text-slate-400">Tu actividad en la plataforma.</p>
+          <Card className="overflow-hidden p-0 border-cal bg-tiza">
+            {/* Cabecera del carné en superficie sobria */}
+            <div className="bg-basalto p-6 text-tiza">
+              <div className="flex items-center justify-between">
+                <span className="font-display text-xs font-bold uppercase tracking-wider text-niebla">Carné de jugador</span>
+                <span className="font-display text-xs font-bold tabular-nums text-cesped">
+                  #{session.id.slice(0, 8).toUpperCase()}
+                </span>
               </div>
-              <Link href="/dashboard/reservas" className="text-sm font-semibold text-emerald-300 hover:text-emerald-200">Ver historial →</Link>
+
+              <div className="mt-6 flex items-center gap-4">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-cal/30 bg-piedra">
+                  {session.fotoUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={session.fotoUrl}
+                      alt="Foto de perfil"
+                      width={64}
+                      height={64}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-cesped-suave font-display text-xl font-bold text-cesped-hondo">
+                      {iniciales}
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <h2 className="truncate font-display text-xl font-bold text-tiza">{session.nombre}</h2>
+                  <p className="truncate text-xs text-niebla">{session.email}</p>
+                  {session.username && (
+                    <p className="mt-0.5 text-xs font-semibold text-cesped">@{session.username}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between border-t border-cal/20 pt-4 text-xs">
+                <span className="text-niebla">Rol en plataforma</span>
+                <span className="font-semibold text-tiza">Jugador ReservaYa</span>
+              </div>
             </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl bg-emerald-500/10 p-4"><p className="text-sm text-slate-400">Confirmadas</p><p className="mt-1 text-2xl font-black text-emerald-300">{confirmadas}</p></div>
-              <div className="rounded-xl bg-blue-500/10 p-4"><p className="text-sm text-slate-400">Completadas</p><p className="mt-1 text-2xl font-black text-blue-300">{completadas}</p></div>
-              <div className="rounded-xl bg-amber-500/10 p-4"><p className="text-sm text-slate-400">Pendientes</p><p className="mt-1 text-2xl font-black text-amber-300">{pendientes}</p></div>
+
+            {/* Métricas operativas reales (sin datos RPG) */}
+            <div className="grid grid-cols-3 divide-x divide-cal border-t border-cal bg-tiza p-4 text-center">
+              <div>
+                <p className="text-[11px] font-semibold text-pizarra uppercase">Reservas</p>
+                <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{reservas.length}</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-pizarra uppercase">Confirmadas</p>
+                <p className="mt-1 font-display text-2xl font-bold tabular-nums text-cesped-hondo">{confirmadas}</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-pizarra uppercase">Completadas</p>
+                <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{completadas}</p>
+              </div>
             </div>
           </Card>
-          <Card>
-            <h2 className="text-xl font-bold text-slate-100">Sigue jugando</h2>
-            <p className="mt-2 text-slate-400">Encuentra una cancha disponible o arma tu próximo partido.</p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/dashboard/canchas" className="rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-[#071c10] transition hover:bg-emerald-300">Buscar canchas</Link>
-              <Link href="/dashboard/mi-partido" className="rounded-lg border border-[#465170] px-4 py-2 font-semibold text-slate-200 transition hover:bg-[#293149]">Mi partido</Link>
+
+          {/* Accesos rápidos operativos */}
+          <Card className="border-cal bg-tiza">
+            <h3 className="font-display text-lg font-bold text-basalto">Sigue jugando</h3>
+            <p className="mt-1 text-sm text-pizarra">Encuentra una cancha disponible o revisa tus reservas en curso.</p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href="/dashboard/canchas"
+                className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 text-sm font-semibold text-grafito transition hover:bg-cesped-hover"
+              >
+                Buscar canchas
+              </Link>
+              <Link
+                href="/dashboard/reservas"
+                className="inline-flex items-center justify-center rounded-md border border-borde bg-tiza px-4 py-2 text-sm font-semibold text-basalto transition hover:bg-piedra"
+              >
+                Ver reservas
+              </Link>
             </div>
           </Card>
+        </div>
+
+        {/* Columna Derecha: Formulario de edición de perfil */}
+        <div>
+          <PerfilForm usuario={session} />
         </div>
       </div>
     </div>
