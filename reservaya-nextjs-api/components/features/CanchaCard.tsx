@@ -52,64 +52,85 @@ export function CanchaCard({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
-        {/* Header */}
-        <div className="bg-gradient-to-br from-[#0A3D22] via-[#14532D] to-[#060A08] text-center">
+      <div className="flex flex-col overflow-hidden rounded-xl border border-cal bg-tiza transition hover:border-borde">
+        {/* Contenedor de imagen reservado anti-CLS */}
+        <div className="relative aspect-video w-full overflow-hidden border-b border-cal bg-piedra">
           {cancha.imagen ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={cancha.imagen} alt={cancha.nombre} className="h-44 w-full object-cover" />
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={cancha.imagen} alt={cancha.nombre} className="h-full w-full object-cover" />
           ) : (
-            <div className="p-6 text-6xl">{tipoEmoji[cancha.tipo] ?? '🏟️'}</div>
+            <div className="flex h-full w-full items-center justify-center font-display text-5xl text-pizarra">
+              {tipoEmoji[cancha.tipo] ?? '🏟️'}
+            </div>
           )}
         </div>
 
-        {/* Content */}
-        <div className="p-5">
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-gray-900">{cancha.nombre}</h3>
+        {/* Contenido de la tarjeta */}
+        <div className="flex flex-1 flex-col p-5">
+          <div className="mb-2 flex items-start justify-between gap-2">
+            <h3 className="font-display text-lg font-bold text-basalto leading-tight">{cancha.nombre}</h3>
             <Badge variant={tipoBadge[cancha.tipo] ?? 'gray'}>{cancha.tipo}</Badge>
           </div>
+
           {cancha.complejo && (
-            <p className="text-xs font-semibold text-gray-500 mb-1">
+            <p className="mb-1 text-xs font-semibold text-pizarra">
               📍 {cancha.complejo.nombre}
               {cancha.complejo.distrito ? ` · ${cancha.complejo.distrito}` : ''}
               {cancha.complejo.ciudad ? `, ${cancha.complejo.ciudad}` : ''}
             </p>
           )}
+
           {cancha.dueno && (
-            <p className="text-xs text-gray-400 mb-1">Por {cancha.dueno.nombre}</p>
+            <p className="mb-1 text-xs text-pizarra">Por {cancha.dueno.nombre}</p>
           )}
+
           {cancha.descripcion && (
-            <p className="text-gray-500 text-sm mb-4">{cancha.descripcion}</p>
+            <p className="mb-4 text-xs text-pizarra line-clamp-2">{cancha.descripcion}</p>
           )}
-          <div className="flex flex-wrap gap-1.5 mb-4">
+
+          <div className="mb-4 flex flex-wrap gap-1.5">
             {cancha.techada && (
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">Techada</span>
+              <span className="rounded-md border border-cal bg-piedra px-2 py-0.5 text-[11px] font-semibold text-basalto">
+                Techada
+              </span>
             )}
             {cancha.superficie && (
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{cancha.superficie}</span>
+              <span className="rounded-md border border-cal bg-piedra px-2 py-0.5 text-[11px] font-semibold text-basalto">
+                {cancha.superficie}
+              </span>
             )}
           </div>
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm text-gray-500">
-              👥 <span className="font-medium">{cancha.capacidad}</span> personas
+
+          <div className="mt-auto mb-4 flex items-center justify-between border-t border-cal pt-3">
+            <div className="text-xs text-pizarra font-display tabular-nums">
+              👥 <span className="font-semibold text-basalto">{cancha.capacidad}</span> jugadores
             </div>
-            <div className="text-lg font-bold text-[#15803D]">
+            <div className="font-display tabular-nums text-lg font-bold text-cesped-hondo">
               S/ {totalEstimado ?? cancha.precioPorHora}
-              <span className="text-sm font-normal text-gray-400">{totalEstimado ? ' total' : '/hora'}</span>
+              <span className="text-xs font-normal text-pizarra font-sans">
+                {totalEstimado ? ' total' : '/hora'}
+              </span>
             </div>
           </div>
+
           {reglaPrecio && (
-            <p className="mb-3 rounded-lg bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-semibold text-amber-700">
+            <p className="mb-3 rounded-md border border-cesped/30 bg-cesped-suave px-2.5 py-1 text-xs font-semibold text-cesped-hondo">
               🌙 Tarifa aplicada: {reglaPrecio}
             </p>
           )}
+
           {!disponible && (
-            <p className="mb-3 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-500">
+            <p className="mb-3 rounded-md border border-cal bg-piedra px-2.5 py-1 text-xs font-semibold text-pizarra">
               {motivo ?? 'No disponible en ese horario'}
             </p>
           )}
-          <Button className="w-full" disabled={!disponible} onClick={() => setOpen(true)}>
+
+          <Button
+            variant="primary"
+            className="w-full"
+            disabled={!disponible}
+            onClick={() => setOpen(true)}
+          >
             Reservar ahora
           </Button>
         </div>

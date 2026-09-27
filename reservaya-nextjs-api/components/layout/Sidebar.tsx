@@ -213,67 +213,65 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
         type="button"
         aria-label="Abrir menú"
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-40 rounded-lg bg-[#060C08] p-2 text-white shadow-lg lg:hidden"
+        className="fixed left-4 top-4 z-40 rounded-md bg-grafito p-2 text-tiza shadow-lg lg:hidden"
       >
-        <Menu size={ICON.size} strokeWidth={ICON.strokeWidth} />
+        <Menu size={ICON.size} strokeWidth={ICON.strokeWidth} aria-hidden="true" />
       </button>
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/45 lg:hidden"
+          className="fixed inset-0 z-40 bg-velo lg:hidden"
           onClick={() => setOpen(false)}
           aria-hidden
         />
       )}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[260px] flex-shrink-0 flex-col bg-[#060C08] transition-transform duration-200 lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-[260px] flex-shrink-0 flex-col bg-grafito transition-transform duration-200 lg:static lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Cabecera */}
-        <div className="flex items-center gap-2 p-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#22C55E] text-xl shadow-lg shadow-black/30">
+        <div className="flex h-[88px] shrink-0 items-center gap-2 border-b border-white/10 px-6">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-cesped text-xl" aria-hidden="true">
             🏟️
           </div>
           <div className="min-w-0">
-            <p className="truncate text-[15px] font-bold text-white">
-              Reserva<span className="text-[#22C55E]">Ya</span>
+            <p className="truncate font-display text-xl font-bold leading-none text-tiza">
+              Reserva<span className="text-cesped">Ya</span>
             </p>
-            <p className="text-xs text-[#94A3B8]">{rolLabel[rol]}</p>
+            <p className="mt-1 text-xs text-niebla">{rolLabel[rol]}</p>
           </div>
-          <span className="ml-1 rounded-md bg-[#22C55E]/15 px-1.5 py-0.5 text-[10px] font-bold text-[#4ADE80]">
+          <span className="ml-1 rounded-md bg-cesped/15 px-1.5 py-0.5 font-display text-xs font-semibold text-cesped">
             Panel
           </span>
           <button
             type="button"
             aria-label="Cerrar menú"
             onClick={() => setOpen(false)}
-            className="ml-auto rounded-lg p-2 text-[#94A3B8] hover:text-white lg:hidden"
+            className="ml-auto rounded-md p-2 text-niebla hover:text-tiza lg:hidden"
           >
-            <X size={18} strokeWidth={2} />
+            <X size={18} strokeWidth={2} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Nav agrupada */}
-        <nav className="flex-1 overflow-y-auto pb-4">
+        {/* Nav agrupada: cada grupo separado por una línea de cal */}
+        <nav className="flex-1 overflow-y-auto py-2">
           <Link
             href={publicAppUrl}
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-6 py-2.5 text-[14px] font-medium text-[#94A3B8] transition-colors hover:text-white"
+            className="mx-3 flex items-center gap-3 border-l-[3px] border-transparent px-3 py-2.5 text-sm font-medium text-niebla transition-colors hover:text-tiza"
           >
-            <House size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" />
+            <House size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" aria-hidden="true" />
             Página principal
           </Link>
           {groups.map((group, gi) => (
-            <div key={`${group.label || 'g'}-${gi}`}>
-              {group.label ? (
-                <p className="mb-3 mt-6 px-6 text-[11px] font-bold uppercase tracking-[0.1em] text-[#475569]">
+            <div key={`${group.label || 'g'}-${gi}`} className="mt-3 border-t border-white/10 pt-3">
+              {group.label && (
+                <p className="mb-2 px-6 font-display text-sm font-semibold uppercase tracking-wide text-niebla">
                   {group.label}
                 </p>
-              ) : (
-                <div className="mt-4" aria-hidden />
               )}
-              <ul className="space-y-1 px-3">
+              <ul className="space-y-0.5 px-3">
                 {group.items.map(({ href, label, icon: Icon, beta }) => {
                   const active = pathname === href;
                   const isTorneos = href === '/admin/torneos';
@@ -284,18 +282,18 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
                         onClick={() => setOpen(false)}
                         aria-current={active ? 'page' : undefined}
                         className={cn(
-                          'flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-bold transition-colors',
+                          'flex items-center gap-3 rounded-r-md border-l-[3px] px-3 py-2.5 text-sm transition-colors',
                           active
-                            ? 'bg-[#22C55E]/20 text-[#4ADE80]'
+                            ? 'border-cesped bg-white/[0.06] font-semibold text-tiza'
                             : isTorneos
-                              ? 'text-[#EAB308] hover:bg-white/5 hover:text-[#FACC15]'
-                              : 'font-medium text-[#94A3B8] hover:bg-white/5 hover:text-white'
+                              ? 'border-transparent font-medium text-sol hover:bg-white/5'
+                              : 'border-transparent font-medium text-niebla hover:bg-white/5 hover:text-tiza'
                         )}
                       >
-                        <Icon size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" />
+                        <Icon size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" aria-hidden="true" />
                         <span className="truncate">{label}</span>
                         {beta && (
-                          <span className="ml-auto rounded bg-[#EAB308]/20 px-1.5 py-0.5 text-[10px] font-bold text-[#EAB308]">
+                          <span className="ml-auto rounded-md bg-sol/20 px-1.5 py-0.5 font-display text-xs font-semibold text-sol">
                             BETA
                           </span>
                         )}
@@ -311,24 +309,25 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
         {/* Usuario */}
         <div className="border-t border-white/10 p-4">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-bold text-[#060C08]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cesped font-display text-base font-bold text-grafito">
               {initial}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">{nombre}</p>
-              <p className="truncate text-xs text-[#94A3B8]">{email}</p>
+              <p className="truncate text-sm font-medium text-tiza">{nombre}</p>
+              <p className="truncate text-xs text-niebla">{email}</p>
             </div>
           </div>
           <a
             href={publicAppUrl}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#94A3B8] transition-colors hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-niebla transition-colors hover:bg-white/5 hover:text-tiza"
           >
-            <House size={16} strokeWidth={2} />
+            <House size={16} strokeWidth={2} aria-hidden="true" />
             Ir a la app
           </a>
           <button
+            type="button"
             onClick={logout}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#94A3B8] transition-colors hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-niebla transition-colors hover:bg-white/5 hover:text-tiza"
           >
             <LogOut size={16} strokeWidth={2} />
             Cerrar sesión

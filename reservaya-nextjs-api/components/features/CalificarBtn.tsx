@@ -33,7 +33,7 @@ export function CalificarBtn({ complejoId, complejoNombre }: { complejoId: strin
         {listo ? '★ Calificada' : '★ Calificar'}
       </Button>
       <Modal open={open} onClose={() => setOpen(false)} title={`Califica ${complejoNombre}`}>
-        <p className="text-sm text-gray-500">¿Cómo estuvo tu experiencia? Solo puedes calificar locales donde ya jugaste.</p>
+        <p className="text-sm text-slate-300">¿Cómo estuvo tu experiencia? Solo puedes calificar locales donde ya jugaste.</p>
         <div className="mt-4 flex gap-1" role="radiogroup" aria-label="Puntuación">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
@@ -43,13 +43,13 @@ export function CalificarBtn({ complejoId, complejoNombre }: { complejoId: strin
               aria-checked={puntos === n}
               aria-label={`${n} estrella${n > 1 ? 's' : ''}`}
               onClick={() => setPuntos(n)}
-              className={`text-3xl transition ${n <= puntos ? 'text-amber-400' : 'text-gray-200 hover:text-amber-200'}`}
+              className={`text-3xl transition ${n <= puntos ? 'text-sol' : 'text-slate-500 hover:text-sol'}`}
             >
               ★
             </button>
           ))}
         </div>
-        <label className="mt-4 block text-sm font-medium text-gray-700">
+        <label className="mt-4 block text-[13px] font-bold text-slate-300">
           Comentario (opcional)
           <textarea
             value={comentario}
@@ -57,13 +57,25 @@ export function CalificarBtn({ complejoId, complejoNombre }: { complejoId: strin
             maxLength={500}
             rows={3}
             placeholder="Cuenta cómo te fue..."
-            className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none"
+            className="mt-1.5 w-full rounded-xl border border-[#303850] bg-[#151b2e] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25 resize-none"
           />
         </label>
-        {error && <p role="alert" className="mt-3 text-sm font-semibold text-red-600">{error}</p>}
-        <div className="mt-4 flex gap-2">
-          <Button variant="secondary" size="sm" onClick={() => setOpen(false)}>Cancelar</Button>
-          <Button size="sm" loading={loading} onClick={guardar}>Guardar calificación</Button>
+        {error && (
+          <p role="alert" className="mt-3 rounded-lg border border-error/40 bg-error/15 px-3 py-2 text-sm font-semibold text-red-200">
+            {error}
+          </p>
+        )}
+        <div className="mt-5 flex justify-end gap-2.5">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="rounded-xl border border-[#303850] bg-[#151b2e] px-4 py-2 text-xs font-bold text-slate-200 hover:bg-[#20263a] transition"
+          >
+            Cancelar
+          </button>
+          <Button size="sm" variant="primary" loading={loading} onClick={guardar}>
+            Guardar calificación
+          </Button>
         </div>
       </Modal>
     </div>
