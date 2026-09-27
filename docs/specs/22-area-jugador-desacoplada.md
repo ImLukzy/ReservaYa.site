@@ -113,7 +113,7 @@ const destino = `${APP}/dashboard/perfil`;
 - [x] Reporte de auditoría de contratos publicado (`docs/audits/22-contratos-api-area-jugador.md`).
 - [x] Decisión humana de `/jugador/perfil` cerrada y plasmada en la spec (redirección a `${APP}/dashboard/perfil`).
 - [x] Spec 22 lista para promover a `docs/specs/` tras visto bueno final.
-- [ ] Implementar redirección en `src/pages/jugador/perfil.astro` (tras aprobación formal).
+- [x] Implementar redirección en `src/pages/jugador/perfil.astro` (commit local `2861c00`).
 
 ---
 
@@ -123,4 +123,22 @@ const destino = `${APP}/dashboard/perfil`;
 |---|---|---|---|
 | 2026-09-27 | Pruebas de contrato | ✅ 39/39 PASS | `lib/contratos-jugador.test.mjs` pasando en `npm test` |
 | 2026-09-27 | Redacción de borrador | 📝 Borrador completo | Archivo en `docs/specs/drafts/22-area-jugador-desacoplada.md` |
-| 2026-09-27 | Cierre de decisiones ILK-3 | ✅ Decisiones cerradas | Decisión ASK ME de Lukas plasmada en la spec; lista para promover |
+| 2026-09-27 | Cierre de decisiones ILK-3 | ✅ Decisiones cerradas | Decisión ASK ME de Lukas plasmada en la spec; promovida a `docs/specs/` |
+| 2026-09-27 | Redirección `/jugador/perfil` | ✅ PASS (Commit `2861c00`) | `src/pages/jugador/perfil.astro` redirige a `${APP}/dashboard/perfil`. Gates JIM-QA (1/3): `astro check` 0 errores, Astro build 22 páginas OK, Next.js typecheck y tests 39/39 passing |
+
+---
+
+## 8. Hallazgos post-implementación y análisis de riesgos (Bloqueo de fusión)
+
+- **Hallazgo (Dwight-Explora, 2026-09-27 22:15 UTC):**
+  La pantalla retirada en Astro (`src/pages/jugador/perfil.astro`) contaba con funcionalidad activa para editar número de teléfono, cambiar nombre de usuario (username con límite anual), fecha de nacimiento (por única vez) y subida de avatar/foto (`PATCH /api/usuarios/me` y `POST /api/usuarios/me/foto`).
+- **Regresión detectada:**
+  La pantalla de destino en Next.js (`reservaya-nextjs-api/app/(dashboard)/dashboard/perfil/page.tsx`), tras el retiro de datos RPG en commit `67a51ab`, es actualmente de **solo lectura**. Muestra las métricas operativas reales (reservas totales, completadas y confirmadas), pero no incluye formularios ni botones de acción para editar datos personales o subir fotos (`api-client.ts` carece de métodos cliente para dichas mutaciones).
+- **Riesgo:**
+  Pérdida temporal de la capacidad del jugador para actualizar sus datos de contacto y avatar.
+- **Acción mitigadora y estado:**
+  La rama `feature/22-unificar-jugador` queda en estado **bloqueada para fusión** (`blocked` en kanban `ILK-3`) hasta que Lukas apruebe la vía de resolución en la tarjeta ASK ME:
+  1. *Opción 1 (Recomendada):* Incorporar los formularios de edición en `/dashboard/perfil/page.tsx` dentro de la Fase 2 de Spec 21 (`feature/21-panel-operativo`), fusionando `feature/22` únicamente tras restablecer la paridad funcional.
+  2. *Opción 2:* Revertir temporalmente la redirección en Astro y conservar la vista cliente.
+  3. *Opción 3:* Aceptar la degradación funcional a solo lectura de forma permanente.
+
