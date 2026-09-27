@@ -12,6 +12,12 @@ const HORAS = Array.from({ length: 14 }, (_, i) => {
   return { value: hora * 60, label: `${String(hora).padStart(2, '0')}:00` }
 })
 
+// Estilos de formulario adaptados a la superficie oscura del Modal (bg-[#20263a]).
+const flabel = 'block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5'
+const finput =
+  'w-full rounded-xl border border-[#303850] bg-[#151b2e] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25'
+const fselect = `${finput} sel-dark [color-scheme:dark] [&>option]:bg-[#151b2e] [&>option]:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed`
+
 export function ReservaForm({
   cancha,
   onSuccess,
@@ -93,9 +99,9 @@ export function ReservaForm({
     setLoading(true)
     try {
       await createReserva({ ...form, canchaId: cancha.id })
-    } catch (error) {
+    } catch (err) {
       setLoading(false)
-      setError(error instanceof Error ? error.message : 'No se pudo crear la reserva')
+      setError(err instanceof Error ? err.message : 'No se pudo crear la reserva')
       return
     }
     setLoading(false)
@@ -106,25 +112,29 @@ export function ReservaForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Fecha *</label>
-          <input
-            type="date"
-            required
-            min={new Date().toISOString().split('T')[0]}
-            value={form.fecha}
-            onChange={(e) => setForm({ ...form, fecha: e.target.value })}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm [color-scheme:dark]"
-          />
+        <label className={flabel}>
+          Fecha *
+        </label>
+        <input
+          type="date"
+          required
+          min={new Date().toISOString().split('T')[0]}
+          value={form.fecha}
+          onChange={(e) => setForm({ ...form, fecha: e.target.value })}
+          className={finput}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Hora inicio *</label>
+          <label className={flabel}>
+            Hora inicio *
+          </label>
           <select
             required
             value={form.horaInicio}
             onChange={(e) => setForm({ ...form, horaInicio: Number(e.target.value), horaFin: 0 })}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm [color-scheme:dark] [&>option]:bg-[#151b2e] [&>option]:text-slate-100 sel-dark"
+            className={fselect}
           >
             <option value="">Seleccionar</option>
             {HORAS.slice(0, -1).map((h) => (
@@ -133,13 +143,15 @@ export function ReservaForm({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Hora fin *</label>
+          <label className={flabel}>
+            Hora fin *
+          </label>
           <select
             required
             value={form.horaFin}
             disabled={!form.horaInicio}
             onChange={(e) => setForm({ ...form, horaFin: Number(e.target.value) })}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm disabled:bg-gray-50 [color-scheme:dark] [&>option]:bg-[#151b2e] [&>option]:text-slate-100 sel-dark"
+            className={fselect}
           >
             <option value="">Seleccionar</option>
             {horasDisponiblesFin.map((h) => (
@@ -150,34 +162,40 @@ export function ReservaForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Notas (opcional)</label>
+        <label className={flabel}>
+          Notas (opcional)
+        </label>
         <textarea
           rows={2}
           value={form.notas}
           onChange={(e) => setForm({ ...form, notas: e.target.value })}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm resize-none"
-          placeholder="Alguna indicación especial..."
+          className={`${finput} resize-none`}
+          placeholder="Alguna indicación especial para el complejo..."
         />
       </div>
 
       {(cotizado ?? (calcularTotal() > 0 ? { total: String(calcularTotal()), regla: null } : null)) && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+        <div className="rounded-xl border border-cesped/30 bg-[#162720] p-4 text-slate-100">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-emerald-300">Total estimado:</span>
-            <span className="font-bold text-emerald-300 text-lg">
+            <span className="text-sm font-semibold text-emerald-300">Total estimado:</span>
+            <span className="font-display text-2xl font-bold tabular-nums text-cesped">
               S/ {(cotizado ?? { total: String(calcularTotal()) }).total}
               {cotizando ? '…' : ''}
             </span>
           </div>
           {cotizado?.regla && (
-            <p className="mt-1 text-xs font-semibold text-amber-700">🌙 Tarifa aplicada: {cotizado.regla}</p>
+            <p className="mt-1 text-xs font-semibold text-emerald-400">🌙 Tarifa aplicada: {cotizado.regla}</p>
           )}
         </div>
       )}
 
-      {error && <p className="text-rose-300 text-sm">{error}</p>}
+      {error && (
+        <p role="alert" className="rounded-xl border border-error/40 bg-error/15 px-3.5 py-2.5 text-sm font-semibold text-red-200">
+          {error}
+        </p>
+      )}
 
-      <Button type="submit" loading={loading} className="w-full" size="lg">
+      <Button type="submit" loading={loading} variant="primary" className="w-full text-base font-bold" size="lg">
         Confirmar Reserva
       </Button>
     </form>

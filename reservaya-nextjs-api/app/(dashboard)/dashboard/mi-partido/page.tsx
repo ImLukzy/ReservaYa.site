@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import * as api from '@/lib/api'
 import { Countdown } from '@/components/features/Countdown'
-import { formatFecha, formatHora } from '@/lib/utils'
-import { codigoMostrado, fechaFinReservaEnMs } from '@/lib/utils'
+import { formatFecha, formatHora, codigoMostrado, fechaFinReservaEnMs } from '@/lib/utils'
+import { CheckCircle2, Clock, MapPin, Mail, FileCheck, ShieldCheck } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,55 +16,140 @@ export default async function MiPartidoPage() {
   const fechaFin = new Date(fechaFinReservaEnMs(reserva.fecha, reserva.horaFin)).toISOString()
 
   return (
-    <div className="max-w-4xl">
-      <div className="mb-8">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#15803D]">Tu reserva confirmada</p>
-        <h1 className="text-3xl font-bold text-gray-900">Mi partido</h1>
-        <p className="mt-1 text-gray-500">Todo listo para que disfrutes tu cancha.</p>
+    <div className="max-w-4xl space-y-8">
+      <div>
+        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">
+          Tu reserva confirmada
+        </p>
+        <h1 className="font-display text-3xl font-extrabold text-basalto tracking-tight">
+          Mi partido
+        </h1>
+        <p className="mt-1 text-sm text-pizarra">
+          Detalles operativos y código de acceso para presentar al llegar al complejo deportivo.
+        </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-        <section className="rounded-3xl border border-[#22C55E]/30 bg-gradient-to-br from-[#0A3D22] to-[#060A08] p-6 text-white shadow-xl shadow-black/25">
-          <p className="text-sm text-[#DCFCE7]">Reserva asegurada</p>
-          <h2 className="mt-2 text-2xl font-bold">{reserva.cancha.nombre}</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div><p className="text-xs uppercase text-white/60">Fecha</p><p className="mt-1 font-semibold">{formatFecha(reserva.fecha)}</p></div>
-            <div><p className="text-xs uppercase text-white/60">Horario</p><p className="mt-1 font-semibold">{formatHora(reserva.horaInicio)} - {formatHora(reserva.horaFin)}</p></div>
+        <section className="rounded-2xl border border-cal bg-tiza p-6 shadow-sm">
+          <div className="border-b border-cal pb-4">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-cesped/30 bg-cesped-suave px-2.5 py-1 text-xs font-bold text-cesped-hondo">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Reserva asegurada
+            </span>
+            <h2 className="mt-3 font-display text-2xl font-black text-basalto tracking-tight">
+              {reserva.cancha.nombre}
+            </h2>
+            {reserva.cancha.complejo && (
+              <p className="mt-1 flex items-center gap-1.5 text-xs text-pizarra">
+                <MapPin className="h-3.5 w-3.5 text-pizarra" />
+                {reserva.cancha.complejo.nombre} &bull; {reserva.cancha.complejo.distrito}
+              </p>
+            )}
           </div>
-          <div className="mt-6 rounded-2xl bg-white/10 p-4">
-            <p className="text-sm text-[#DCFCE7]">Tiempo restante de tu reserva</p>
-            <p className="mt-1 text-2xl font-bold"><Countdown target={fechaFin} /></p>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-cal">
+            <div className="pt-2 sm:pt-0">
+              <p className="text-xs font-semibold uppercase text-pizarra">Fecha</p>
+              <p className="mt-1 font-display font-bold text-basalto tabular-nums text-lg">
+                {formatFecha(reserva.fecha)}
+              </p>
+            </div>
+            <div className="pt-2 sm:pt-0 sm:pl-4">
+              <p className="text-xs font-semibold uppercase text-pizarra">Horario</p>
+              <p className="mt-1 font-display font-bold text-basalto tabular-nums text-lg">
+                {formatHora(reserva.horaInicio)} - {formatHora(reserva.horaFin)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-xl border border-cal bg-piedra p-4">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-cesped-hondo" />
+              <p className="text-xs font-bold text-basalto uppercase tracking-wide">
+                Tiempo restante de tu reserva
+              </p>
+            </div>
+            <div className="mt-2 font-display text-2xl font-black text-cesped-hondo tabular-nums">
+              <Countdown target={fechaFin} />
+            </div>
           </div>
         </section>
 
-        <aside className="rounded-3xl border border-gray-200/70 bg-white p-6 shadow-sm">
-          <p className="text-sm font-semibold text-gray-900">Código de reserva</p>
-          <div className="mt-4 rounded-2xl border-2 border-dashed border-[#22C55E]/50 bg-[#DCFCE7] p-5 text-center">
-            <p className="text-3xl font-black tracking-[0.2em] text-[#15803D]">{codigoMostrado(reserva)}</p>
-            <p className="mt-2 text-xs text-[#15803D]">Muéstralo al llegar</p>
+        <aside className="space-y-4">
+          <div className="rounded-2xl border-2 border-dashed border-borde bg-tiza p-6 text-center shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">
+              Código de reserva
+            </p>
+            <div className="my-4 rounded-xl border border-cal bg-cesped-suave/40 py-4 px-2">
+              <p className="font-display text-3xl font-black tracking-widest text-cesped-hondo tabular-nums">
+                {codigoMostrado(reserva)}
+              </p>
+            </div>
+            <p className="text-xs text-pizarra flex items-center justify-center gap-1.5">
+              Muéstralo al llegar al complejo
+            </p>
           </div>
-          <a
-            href={`mailto:?subject=Consulta reserva ${codigoMostrado(reserva)}&body=Consulta sobre mi reserva en ${reserva.cancha.nombre}`}
-            className="mt-5 block rounded-xl bg-[#060A08] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#0A1A11]"
-          >
-            Contactar al administrador
-          </a>
+
+          <div className="rounded-2xl border border-cal bg-tiza p-4 shadow-sm space-y-2">
+            <a
+              href={`mailto:?subject=Consulta reserva ${codigoMostrado(reserva)}&body=Consulta sobre mi reserva en ${reserva.cancha.nombre}`}
+              className="flex items-center justify-center gap-2 w-full rounded-xl border border-cal bg-piedra px-4 py-2.5 text-center text-xs font-bold text-basalto transition hover:border-borde hover:bg-tiza"
+            >
+              <Mail className="h-4 w-4 text-pizarra" />
+              Contactar al administrador
+            </a>
+            <Link
+              href="/dashboard/reservas"
+              className="flex items-center justify-center gap-2 w-full rounded-xl bg-cesped px-4 py-2.5 text-center text-xs font-bold text-grafito transition hover:bg-cesped-hover shadow-sm"
+            >
+              Ver todas mis reservas
+            </Link>
+          </div>
         </aside>
       </div>
 
-      <section className="mt-6 rounded-3xl border border-gray-200/70 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900">Antes de llegar</h2>
-        <div className="mt-4 grid gap-3 text-sm text-gray-600 sm:grid-cols-3">
-          <p>⏱️ Llega 10 minutos antes.</p>
-          <p>📱 Ten tu código a la mano.</p>
-          <p>💬 Si tienes dudas, contacta al administrador.</p>
+      <section className="rounded-2xl border border-cal bg-tiza p-6 shadow-sm">
+        <h2 className="font-display text-lg font-bold text-basalto tracking-tight">
+          Antes de llegar
+        </h2>
+        <div className="mt-4 grid gap-4 text-sm text-pizarra sm:grid-cols-3">
+          <div className="rounded-xl border border-cal bg-piedra/60 p-3.5">
+            <p className="font-bold text-basalto flex items-center gap-2">
+              <Clock className="h-4 w-4 text-cesped-hondo" />
+              Puntualidad
+            </p>
+            <p className="mt-1 text-xs text-pizarra">
+              Llega 10 minutos antes para registrarte.
+            </p>
+          </div>
+          <div className="rounded-xl border border-cal bg-piedra/60 p-3.5">
+            <p className="font-bold text-basalto flex items-center gap-2">
+              <FileCheck className="h-4 w-4 text-cesped-hondo" />
+              Acceso
+            </p>
+            <p className="mt-1 text-xs text-pizarra">
+              Ten tu código a la mano en recepción o portería.
+            </p>
+          </div>
+          <div className="rounded-xl border border-cal bg-piedra/60 p-3.5">
+            <p className="font-bold text-basalto flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-cesped-hondo" />
+              Soporte
+            </p>
+            <p className="mt-1 text-xs text-pizarra">
+              Si tienes dudas o imprevistos, contacta al administrador.
+            </p>
+          </div>
         </div>
-        <details className="mt-5 rounded-xl bg-gray-50 p-4">
-          <summary className="cursor-pointer font-semibold text-gray-700">Preguntas frecuentes</summary>
-          <div className="mt-3 space-y-2 text-sm text-gray-600">
-            <p><strong>¿Puedo cambiar el horario?</strong> Solicítalo al administrador antes del partido.</p>
-            <p><strong>¿Qué pasa si llego tarde?</strong> El horario termina a la hora reservada.</p>
-            <p><strong>¿Cómo cancelo?</strong> Ve a Mis Reservas mientras siga pendiente.</p>
+
+        <details className="mt-5 rounded-xl border border-cal bg-piedra/40 p-4 transition-all">
+          <summary className="cursor-pointer font-display text-sm font-bold text-basalto select-none">
+            Preguntas frecuentes
+          </summary>
+          <div className="mt-3 space-y-2 border-t border-cal pt-3 text-xs text-pizarra">
+            <p><strong className="text-basalto">¿Puedo cambiar el horario?</strong> Solicítalo al administrador antes del partido.</p>
+            <p><strong className="text-basalto">¿Qué pasa si llego tarde?</strong> El horario termina a la hora reservada.</p>
+            <p><strong className="text-basalto">¿Cómo cancelo?</strong> Ve a <Link href="/dashboard/reservas" className="underline font-bold text-cesped-hondo">Mis Reservas</Link> mientras siga pendiente.</p>
           </div>
         </details>
       </section>

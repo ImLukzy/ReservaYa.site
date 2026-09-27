@@ -27,7 +27,7 @@ export function CancelarReservaBtn({ id }: { id: string }) {
   return (
     <div className="flex flex-col items-end gap-1">
       <Button variant="danger" size="sm" loading={loading} onClick={cancelar}>Cancelar</Button>
-      {error && <span className="text-xs text-red-600">{error}</span>}
+      {error && <span role="alert" className="text-xs font-semibold text-error">{error}</span>}
     </div>
   )
 }

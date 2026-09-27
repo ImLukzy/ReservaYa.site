@@ -72,11 +72,11 @@ Se erradica por completo la gamificación ficticia, reemplazándola por métrica
 | Ruta | Componentes asociados | Endpoints consumidos | Estado actual |
 |---|---|---|---|
 | `/dashboard` | `DashboardWidgets.tsx` | `GET /api/reportes/dashboard`, `GET /api/reservas` | Pendiente de rediseño |
-| `/dashboard/perfil` | Formulario perfil, carné digital | `GET /api/auth/me`, `GET /api/reservas` | 🟡 **Fase 2 parcial (67a51ab):** stats RPG eliminadas; diseño visual pendiente |
-| `/dashboard/reservas` | `CalificarBtn.tsx`, `CancelarReservaBtn.tsx`, `Countdown.tsx` | `GET /api/reservas`, `PATCH /api/reservas/{id}`, `POST /api/resenas` | Pendiente de rediseño |
-| `/dashboard/canchas` | `CanchaCard.tsx`, `ReservaForm.tsx` | `GET /api/canchas/disponibles`, `GET /api/canchas/opciones`, `GET /api/canchas/{id}/cotizar`, `POST /api/reservas` | Pendiente de rediseño |
-| `/dashboard/mi-partido` | Panel grupos y partidos | `GET /api/partidos`, `GET /api/partidos/mios` | Pendiente de rediseño |
-| `/dashboard/carne` | Carnet visual de jugador | `GET /api/auth/me` con QR verificable | Pendiente de rediseño |
+| `/dashboard/perfil` | Formulario perfil, carné digital | `GET /api/auth/me`, `GET /api/reservas` | ✅ Fase 2: rediseño + edición de perfil (`PerfilForm`: teléfono, usuario, fecha de nacimiento, foto) |
+| `/dashboard/reservas` | `CalificarBtn.tsx`, `CancelarReservaBtn.tsx`, `Countdown.tsx` | `GET /api/reservas`, `PATCH /api/reservas/{id}`, `POST /api/resenas` | ✅ Fase 2 |
+| `/dashboard/canchas` | `CanchaCard.tsx`, `ReservaForm.tsx` | `GET /api/canchas/disponibles`, `GET /api/canchas/opciones`, `GET /api/canchas/{id}/cotizar`, `POST /api/reservas` | ✅ Fase 2 |
+| `/dashboard/mi-partido` | Reserva confirmada activa, cuenta regresiva y código | `GET /api/reservas` | ✅ Fase 2 (los partidos comunitarios van en la adenda 22b) |
+| `/dashboard/carne` | Carnet visual de jugador | `GET /api/auth/me` (sin QR) | ✅ Fase 2 |
 
 ### 3.4 Rutas de Plataforma (`TECNICO`)
 | Ruta | Componentes asociados | Endpoints consumidos |
@@ -199,12 +199,12 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
   - [x] Rediseñar `components/layout/Sidebar.tsx` y `TopBar.tsx` con señalética deportiva y líneas de cal.
   - [x] Actualizar `app/(dashboard)/layout.tsx` (Barlow/Barlow Condensed vía `next/font`). `error.tsx` sin cambios: su estilo vive en `ErrorPanel`.
 
-- [ ] **Fase 2: Perfil y rutas de usuario (En curso)**
+- [x] **Fase 2: Perfil y rutas de usuario**
   - [x] **Subfase 2.1:** Retiro de estadísticas RPG ficticias de `/dashboard/perfil/page.tsx` y reemplazo por métricas reales (commit `67a51ab`).
-  - [ ] **Subfase 2.2:** Rediseño visual de `/dashboard/perfil` (líneas de cal, avatar fijo anti-CLS).
-  - [ ] **Subfase 2.3:** Rediseño visual de `/dashboard/reservas` (`CalificarBtn`, `CancelarReservaBtn`, `Countdown`).
-  - [ ] **Subfase 2.4:** Rediseño visual de `/dashboard/canchas` (`CanchaCard`, `ReservaForm`).
-  - [ ] **Subfase 2.5:** Rediseño visual de `/dashboard/mi-partido` y `/dashboard/carne`.
+  - [x] **Subfase 2.2:** Rediseño visual de `/dashboard/perfil` (líneas de cal, avatar fijo anti-CLS).
+  - [x] **Subfase 2.3:** Rediseño visual de `/dashboard/reservas` (`CalificarBtn`, `CancelarReservaBtn`, `Countdown`).
+  - [x] **Subfase 2.4:** Rediseño visual de `/dashboard/canchas` (`CanchaCard`, `ReservaForm`).
+  - [x] **Subfase 2.5:** Rediseño visual de `/dashboard/mi-partido` y `/dashboard/carne`.
 
 - [ ] **Fase 3: Rutas operativas críticas de Admin**
   - [ ] `/admin/agenda` y `CronogramaView.tsx` (grilla 08:00–21:00 con celdas de altura fija anti-CLS).
@@ -253,3 +253,5 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
 | 2026-09-27 | Redacción formal y seguimiento de fases | 📝 Prosa técnica prolija | Actualización formal de fases 1–6 y lineamientos anti-CLS documentados por Auditor-Gemini |
 | 2026-09-27 | Fase 1 — A1–A5 | ✅ PASS | JIM-QA (intento 1/3): typecheck 0 err; lint 0 err (3 warnings previos); test 39/39; build Next OK; `db:check` 19 tablas 82/82; build Astro 22 págs |
 | 2026-09-27 | Fase 1 — A7 (contraste) | ✅ Por diseño | Primario `#22C55E`/`#060C08` 8.66:1 (hover `#16A34A` 5.98:1); títulos de grupo del sidebar de `#475569` (2.6:1) a `niebla` `#a9b3ad` (9.2:1) sobre `#060C08`; WhatsApp icono grafito 9.9:1 |
+| 2026-09-27 | Fase 2 — A1–A4 | ✅ PASS | JIM-QA (intento 1/3): typecheck 0 err; lint 0 err (2 warnings); test 39/39; build Next OK. Sin tokens inexistentes (`grep asfalto|cal-fuerte` vacío) |
+| 2026-09-27 | Fase 2 — contraste | ✅ Revisado por god | Formularios dentro del Modal oscuro (`ReservaForm`, `CalificarBtn`) con el patrón `flabel/finput/fselect`; texto secundario `pizarra` sólido (sin opacidad) en carné y mi-partido; carné sin QR ni datos de nacimiento/rol |
