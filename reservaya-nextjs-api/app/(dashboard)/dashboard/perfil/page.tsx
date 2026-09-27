@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { getSession } from '@/lib/session'
 import * as api from '@/lib/api'
 import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,22 +43,17 @@ export default async function PerfilPage() {
               <span className="font-bold text-emerald-200">#{session.id.slice(0, 8).toUpperCase()}</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 p-6">
+          <div className="grid grid-cols-3 gap-3 p-6">
             {[
-              ['Velocidad', '82'],
-              ['Tiro', '76'],
-              ['Defensa', '68'],
-              ['Resistencia', '85'],
+              ['Reservas', String(reservas.length)],
+              ['Confirmadas', String(confirmadas)],
+              ['Completadas', String(completadas)],
             ].map(([label, value]) => (
               <div key={label} className="rounded-xl bg-[#252b40] p-3">
                 <p className="text-xs text-slate-400">{label}</p>
-                <p className="mt-1 text-xl font-black text-slate-100">{value}</p>
+                <p className="mt-1 text-xl font-black tabular-nums text-slate-100">{value}</p>
               </div>
             ))}
-          </div>
-          <div className="px-6 pb-6">
-            <p className="text-xs uppercase tracking-wider text-slate-400">Estilo de juego</p>
-            <Badge variant="green">Armador</Badge>
           </div>
         </Card>
 

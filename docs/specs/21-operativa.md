@@ -1,6 +1,6 @@
 # Especificación: 21 - Rediseño operativo del panel («Tablero de cancha»)
 
-> **Estado:** 📝 Borrador (requiere aprobación del orquestador/humano antes de iniciar implementación).  
+> **Estado:** ✅ Aprobada (2026-09-27) — implementación en curso, fase por fase, en `feature/21-panel-operativo`.  
 > **Alcance:** Gestión operativa en frontend y backend (Next.js panel + UI + endpoints B2B consumidos), **sin pasarelas de pago externas**.
 
 ---
@@ -27,9 +27,9 @@ El panel operativo en Next.js adopta de forma íntegra el sistema de diseño «T
 - **Modificación de contratos de API en backend .NET:** Se consumen exactamente las firmas de endpoint existentes de `ReservaFacil.Api`. Cualquier cambio o necesidad no cubierta debe registrarse como `BLOQUEO-API`.
 - **Unificación de sesión/dominio con Astro:** La arquitectura desacoplada se preserva conforme a la decisión de la Spec 22 (landing estática en Astro y panel autenticado en Next.js se mantienen separados).
 
-**Decisiones de producto que requieren aprobación antes de pasar a «Aprobada»:**
-1. **Retiro definitivo de estadísticas RPG:** Confirmar la eliminación de los atributos ficticios («Velocidad», «Tiro», etc.) en `/dashboard/perfil`, reemplazándolos por métricas operativas reales del usuario (reservas confirmadas, asistencias, torneos jugados o historial limpio de sanciones).
-2. **Estrategia de tokens en Next.js:** Decidir si `tokens.css` se sincroniza mediante copia en `reservaya-nextjs-api/styles/tokens.css` o si se consume vía Tailwind v4 `@theme` importando la misma definición de variables que Astro.
+**Decisiones de producto (resueltas por el humano, 2026-09-27):**
+1. **Retiro definitivo de estadísticas RPG:** ✅ Aprobado. Se eliminan los atributos ficticios («Velocidad», «Tiro», «Defensa», «Resistencia», «Armador») de `/dashboard/perfil` y se reemplazan por métricas reales del jugador. Nota de implementación: los ejemplos que dio el humano («canchas activas», «horas de mayor afluencia») son métricas de dueño/admin y no aplican a esta vista de jugador — se usaron en su lugar las métricas de jugador ya disponibles en la página (total de reservas, confirmadas, completadas), consistentes con la tarjeta "Resumen de reservas" de la misma vista.
+2. **Estrategia de tokens en Next.js:** ✅ Aprobado. Tailwind CSS con variables CSS nativas (`:root` / `dark:`) ya configuradas en el proyecto — sin librerías de estilos ni CSS-in-JS externo adicional.
 
 ---
 
@@ -185,9 +185,9 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
 
 ## 7. Checklist de implementación (Fases)
 
-- [ ] **Fase 0: Aprobación del borrador** (esperando revisión de god/humano).
+- [x] **Fase 0: Aprobación del borrador** — Aprobada por el humano el 2026-09-27.
 - [ ] **Fase 1: Shell y componentes base UI** (`tokens.css`, `Button`, `Card`, `Badge`, `Sidebar`, `TopBar`).
-- [ ] **Fase 2: Perfil y rutas de usuario** (`/dashboard/perfil`, `/dashboard/reservas`, `/dashboard/canchas`, eliminación de RPG stats).
+- [~] **Fase 2: Perfil y rutas de usuario** — iniciada: eliminadas las stats RPG de `/dashboard/perfil` (criterio A6), reemplazadas por métricas reales de jugador. Pendiente: `/dashboard/reservas`, `/dashboard/canchas`.
 - [ ] **Fase 3: Rutas operativas críticas de Admin** (`/admin/agenda`, `/admin/reservas`, `/admin/caja`, `/admin/horarios`, `/admin/canchas`).
 - [ ] **Fase 4: Rutas complementarias de Admin** (`/admin/clientes`, `/admin/equipo`, `/admin/torneos`, `/admin/precios-especiales`, `/admin/abonos`, `/admin/metas`).
 - [ ] **Fase 5: Rutas de Plataforma Técnico** (`/tecnico/centros`, `/tecnico/usuarios`, `/tecnico/suscripciones`).
@@ -200,3 +200,5 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
 | 2026-09-27 | Redacción de borrador | 📝 Borrador completo | Archivo creado en `docs/specs/drafts/21-operativa.md` |
+| 2026-09-27 | Aprobación del humano | ✅ Aprobada | Decisiones de alcance y de las 2 preguntas de producto resueltas |
+| 2026-09-27 | A6 (parcial) | 🟡 Fase 2 en curso | RPG stats retiradas de `dashboard/perfil/page.tsx`, reemplazadas por reservas/confirmadas/completadas reales |
