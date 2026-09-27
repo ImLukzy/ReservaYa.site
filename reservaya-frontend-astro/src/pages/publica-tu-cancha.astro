@@ -1,16 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { BOTON } from "../lib/estilos";
 ---
 
-<BaseLayout
-  title="Publica tu cancha | ReservaYa"
-  description="Publica tu complejo gratis y empieza a recibir reservas hoy."
-  robots="noindex, follow"
->
+<BaseLayout title="Publica tu cancha | ReservaYa" description="Publica tu complejo y recibe reservas." robots="noindex, follow">
   <meta http-equiv="refresh" content="0; url=/duenos" slot="head" />
-  <section class="mx-auto max-w-xl px-4 py-20 text-center">
-    <p class="text-sm text-[#5B6660]">Te llevamos a la página de dueños…</p>
-    <a href="/duenos" class="mt-4 inline-block rounded-xl bg-[#22C55E] px-6 py-3 font-bold text-[#060C08]">Ir a Dueños →</a>
+  <section class="mx-auto max-w-texto px-4 py-16 text-center">
+    <p class="text-pizarra">Te llevamos a la página de dueños.</p>
+    <a href="/duenos" class={`${BOTON.primario} mt-4`}>Ir a la página de dueños</a>
   </section>
 </BaseLayout>
 

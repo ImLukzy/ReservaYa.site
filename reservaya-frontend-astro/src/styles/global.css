@@ -1,402 +1,111 @@
-html {
-  scroll-behavior: smooth;
-  scrollbar-width: auto;
-  scrollbar-color: #22c55e #060c08;
-}
-
-body {
-  scroll-behavior: smooth;
-  animation: page-enter 0.35s ease-out both;
-}
-
-/* Scrollbar (WebKit): valores efectivos que antes salían de dos bloques duplicados. */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #060A08;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-::-webkit-scrollbar-thumb {
-  min-height: 48px;
-  border: 2px solid #060A08;
-  border-radius: 8px;
-  background: #1d2b1f;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #22C55E;
-}
-
-::-webkit-scrollbar-corner {
-  background: #060c08;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* =========================================================
-   ROOT & COLOR SYSTEM
-========================================================= */
-
-:root {
-  color-scheme: light;
-
-  /* ---------- LIGHT MODE · ReservaYa ---------- */
-  --bg-main: #F5F5F3;
-  --bg-muted: #EDEEEC;
-  --bg-card: #FFFFFF;
-  --bg-hero: #060C08;
-
-  --text-main: #101613;
-  --text-muted: #5B6660;
-  --text-soft: #8A938D;
-  --text-secondary: #5B6660;
-
-  --border-main: #E7E5E4;
-  --border-card: var(--border-main);
-  --ring-card-focus: var(--accent-main);
-
-  --input-bg: #FFFFFF;
-  --input-text: #101613;
-  --input-placeholder: #A8B0AA;
-
-  /* Verde referencia: botón #22C55E, hover #16A34A, neón texto #4ADE80 */
-  --accent-primary: #22C55E;
-  --accent-secondary: #060C08;
-  --accent-main: #22C55E;
-  --accent-hover: #16A34A;
-  --accent-neon: #4ADE80;
-  --accent-soft: #DCFCE7;
-  --accent-contrast: #060C08;
-  --accent-warn: #EAB308;
-  --sidebar: #060C08;
-  --announce-from: #0A2E1F;
-  --announce-to: #14532D;
-}
-
-/* ReservaYa es solo modo claro: las secciones oscuras usan colores explícitos;
-   si un contenedor oscuro tiene textos sin clase de color, lleva `on-dark`. */
-
- /* =========================================================
-   BASE
-========================================================= */
-
-body {
-  background-color: var(--bg-main) !important;
-  color: var(--text-main) !important;
-  overflow-x: hidden;
-  font-feature-settings: "liga", "kern";
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  transition:
-    background-color 0.35s ease,
-    color 0.35s ease;
-  font-family: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
-}
-
-main [id] {
-  scroll-margin-top: 7rem;
-}
-
-/* Secciones legacy: solo modo claro. */
-
-/* ReservaYa: sin overrides legacy. El verde vive en Tailwind (#22C55E/#060A08). */
-
-/* =========================================================
-   TYPOGRAPHY — en @layer base para que los utilitarios ganen
-   ========================================================= */
+/* Base del sistema «Tablero de cancha» (spec 20). Sin valores de color:
+   todo sale de var(--color-*) definidos en tokens.css. */
 
 @layer base {
+  html {
+    color-scheme: light;
+    background: var(--color-sillar);
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.5;
+    color: var(--color-basalto);
+    background: var(--color-sillar);
+    -webkit-font-smoothing: antialiased;
+  }
+
   h1,
   h2,
-  h3,
-  h4,
-  h5 {
-    font-family: "Outfit", "Manrope", "Segoe UI", sans-serif;
-    letter-spacing: -0.025em;
-    color: var(--text-main);
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.05;
+    text-wrap: balance;
   }
 
-  p {
-    line-height: 1.65;
-    color: var(--text-muted);
+  p,
+  li {
+    text-wrap: pretty;
   }
 
-  span,
-  li,
-  em {
-    color: var(--text-soft);
+  a {
+    text-underline-offset: 3px;
   }
 
-  strong {
-    color: var(--text-main);
+  :focus-visible {
+    outline: 2px solid var(--color-cesped);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-cesped-suave);
+    color: var(--color-basalto);
+  }
+
+  ::placeholder {
+    color: var(--color-pizarra);
+    opacity: 1;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  dialog::backdrop {
+    background: var(--color-velo);
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 60;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-control);
+    background: var(--color-basalto);
+    color: var(--color-tiza);
     font-weight: 600;
   }
 
-  /* Títulos: span/em/strong internos heredan el color del heading. */
-  :is(h1, h2, h3, h4, h5, h6) :is(span, em, strong) {
-    color: inherit;
+  .skip-link:focus {
+    top: 1rem;
   }
 
-  /* Controles: iconos y fragmentos de etiqueta heredan el color del enlace o botón. */
-  :is(a, button) :is(span, em, strong) {
-    color: inherit;
+  /* Texto legal y de ayuda en Markdown. */
+  .prosa h1 {
+    font-size: var(--text-3xl);
+    margin-bottom: 1rem;
   }
-
-  /* Superficie oscura: estos textos heredan el color que declara el
-     contenedor (text-white, text-white/60…) en vez de la paleta clara. */
-  .on-dark :is(h1, h2, h3, h4, h5, p, span, li, em, strong) {
-    color: inherit;
+  .prosa h2 {
+    font-size: var(--text-xl);
+    margin: 2rem 0 0.5rem;
   }
-}
-
-/* =========================================================
-   LINKS
-========================================================= */
-
-@layer base {
-  a {
-    color: inherit;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-    transition:
-      color 0.2s ease,
-      opacity 0.2s ease;
+  .prosa p,
+  .prosa ul {
+    margin-top: 0.75rem;
+    color: var(--color-basalto);
   }
-
-  a:hover {
-    opacity: 0.85;
+  .prosa ul {
+    padding-left: 1.25rem;
+    list-style: disc;
   }
-}
-
-/* =========================================================
-   SECTIONS & CARDS
-========================================================= */
-
-img {
-  background: #e5e7eb;
-  color: #64748b;
-  object-fit: cover;
-  min-height: 40px;
-  min-width: 40px;
-  display: block;
-}
-
-@layer base {
-  article,
-  .card {
-    background-color: var(--bg-card);
-    color: var(--text-main);
-    border: 1px solid var(--border-main);
-    border-radius: 1rem;
+  .prosa a {
+    color: var(--color-cesped-hondo);
+    text-decoration: underline;
   }
-
-  article p {
-    color: var(--text-muted);
+  .prosa em {
+    color: var(--color-pizarra);
   }
-}
-
-/* =========================================================
-   FORMS & INPUTS
-========================================================= */
-
-@layer base {
-  input,
-  textarea,
-  select {
-    background-color: var(--input-bg);
-    color: var(--input-text);
-    border: 1px solid var(--border-main);
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-
-    transition:
-      border-color 0.25s ease,
-      box-shadow 0.25s ease,
-      background-color 0.25s ease;
-  }
-
-  input::placeholder,
-  textarea::placeholder {
-    color: var(--input-placeholder);
-  }
-
-  input:focus,
-  textarea:focus,
-  select:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--accent-primary) 25%, transparent);
-  }
-}
-
-/* =========================================================
-   BUTTONS & CTA
-========================================================= */
-
-button,
-a[class*="border"] {
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease,
-    transform 0.15s ease;
-}
-
-/* Los hovers los define cada componente con utilitarios. */
-
-button:active,
-a[class*="border"]:active {
-  transform: translateY(0);
-}
-
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-/* Reveal on scroll: el estado oculto solo aplica con JS activo (html.js),
-   así nada queda invisible si el script falla. El stagger se controla
-   con --reveal-delay o data-reveal-delay. */
-.reveal {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  animation: reveal-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
-}
-
-.scroll-reveal-visible {
-  animation: reveal-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
-}
-
-@keyframes page-enter {
-  from {
-    opacity: 0.01;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes reveal-in {
-  from {
-    opacity: 0.25;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
-
-:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 3px;
-}
-
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 16px;
-  z-index: 60;
-  background: #ffffff;
-  color: #111827;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 20px -12px rgba(15, 23, 42, 0.25);
-  transition: top 0.2s ease;
-}
-
-.skip-link:focus {
-  top: 12px;
-}
-
-/* =========================================================
-   UTILITIES
-========================================================= */
-
-/* =========================================================
-   RESERVAYA · PREMIUM POLISH
-========================================================= */
-
-::selection {
-  background: #22C55E;
-  color: #060C08;
-}
-
-/* Hero: ken burns continuo (efecto video) + transiciones suaves */
-.hero-bg {
-  transition: opacity 1.4s ease, transform 7s ease;
-  transform: scale(1.02);
-}
-.hero-bg.is-active {
-  animation: kenburns 22s ease-in-out infinite alternate;
-}
-@keyframes kenburns {
-  from { transform: scale(1.02) translate(0, 0); }
-  to { transform: scale(1.13) translate(-1.5%, 1%); }
-}
-
-.hero-progress {
-  transform-origin: left;
-  animation: heroProgress 6s linear forwards;
-}
-@keyframes heroProgress {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
-.text-glow-green {
-  text-shadow: 0 0 45px rgba(74, 222, 128, 0.55), 0 2px 18px rgba(0, 0, 0, 0.55);
-}
-.text-shadow-hero {
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65), 0 1px 4px rgba(0, 0, 0, 0.8);
-}
-
-.scroll-hint-dot {
-  animation: scrollHint 2.2s ease-in-out infinite;
-}
-@keyframes scrollHint {
-  0% { transform: translateY(-100%); }
-  55% { transform: translateY(100%); }
-  100% { transform: translateY(100%); }
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-slide-up {
-  animation: slide-up 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

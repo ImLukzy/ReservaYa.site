@@ -36,3 +36,10 @@ Thumbs.db
 !.vscode/extensions.json
 *.pem
 npm-debug.log*
+
+# Infraestructura del piso de agentes (Munder Difflin) — no es código de producto
+.claude/
+.idea/
+hive/
+roster.json
+roster-backups/

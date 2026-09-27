@@ -185,7 +185,7 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | P1-12 Deps/scripts | ✅ | Ya estaba; se añadió `npm test` (`node --test`, 13 tests) |
 | P2-13 CI | ✅ | Lint 17 errores → 0; CI con `test` + `build` (spec 06). Necesita el secreto `DATABASE_URL` para el job `db-check` |
 | P2-14 Docs Astro | ✅ | Sin duplicados y al día, 302 → 129 líneas (spec 07) |
-| Extra: onboarding `/admin/ayuda` | 🟡 | Progreso real con `complejos`/`canchas`/`horarios` + `totalCanchas` corregido en 3 vistas; falta verlo con cuenta de dueño (spec 09) |
+| Extra: onboarding `/admin/ayuda` | ✅ | Progreso real con `complejos`/`canchas`/`horarios` + `totalCanchas` corregido en 3 vistas; verificado con simulación A6 (34/34 tests, docs/audits/09-onboarding-simulacion-a6.md) (spec 09) |
 | Extra: headings sobre fondos oscuros | ✅ | `.on-dark` + herencia en headings (`global.css`), 12 contenedores; 13 títulos pasan de 1.52–3.40:1 a AA (≥ 9:1; «S/ 112», texto grande, ≥ 3.3:1) (26/26 Playwright) (spec 10) |
 | Extra: hero premium (`/`) | ✅ | Fondos locales AVIF/WebP (1918 KB → 65 KB en móvil), sin parpadeo gris, control único pausable (WCAG 2.2.2/2.5.8), copy Arequipa; 27/27 Playwright (spec 11) |
 | Extra: glifos en enlaces y botones | ✅ | Regla global `:is(a, button) :is(span, em, strong)` + avatar de `/duenos`; 214/214 spans heredan el color del control, 0 cambios fuera de controles, ningún contraste empeora (spec 12) |
@@ -196,12 +196,14 @@ Detalle y evidencia de cada ítem en `docs/specs/NN-*.md` §7.
 | Extra: scroll de la rueda con retardo | ✅ | Se elimina `smooth-wheel.ts` (secuestraba `wheel` con un LERP de 0.075 y chocaba con `scroll-behavior: smooth`). Latencia de 450-1017 ms → 13-30 ms; p95 de frame 10 ms, 0 long tasks (spec 17) |
 | Rediseño 1/5: retirar la IA y lo redundante | ✅ | IA del panel, `B2BModulePage`, modales inalcanzables y blog de plantilla eliminados; −26.5 MB de imágenes; 34 clases CSS muertas (24 en la landing y 10 en el panel) (spec 18) |
 | Rediseño 2/5: botones y conexiones | ✅ | Módulo Torneos alineado con la API (alta, estados, inscripción, partido y resultado); perfil y suscripción reales; WhatsApp oculto sin número; sin campanas ni botones mudos. Contrato 0/0 · 201 botones (200 con efecto + 1 descarga) · 144 enlaces OK (spec 19) |
-| Rediseño 3/5: sistema de diseño + landing | ⏳ | «Tablero de cancha»: tokens, Barlow, tablero real de canchas libres, sin datos inventados (spec 20) |
-| Rediseño 4/5: panel | ⏳ | Spec 21, tras la 20 |
-| Rediseño 5/5: unificar el área del jugador | ⏳ | Spec 22, con decisión aparte (landing pública; lo que requiere sesión, en el panel) |
+| Rediseño 3/5: sistema de diseño + landing | ✅ | «Tablero de cancha» en las 22 páginas de la landing: tokens (paleta de Tailwind desactivada), Barlow + Barlow Condensed propias, 7 componentes base, portada con el tablero de canchas libres de la API y `/canchas` con filtros en la URL. 0 rasgos genéricos y 0 datos inventados; 1 693 textos AA; 375 px sin scroll y CLS ≤ 0.017; home 693 → 172 KB (spec 20) |
+| Rediseño 4/5: panel | 📝 Borrador | Gestión operativa frontend/backend sin pasarelas externas. Borrador completo con directivas UI/UX, prevención CLS y matriz de contratos API (docs/specs/drafts/21-operativa.md) (spec 21) |
+| Rediseño 5/5: área del jugador (desacoplada) | 📝 Borrador | Decisión humana: mantener arquitectura desacoplada existente. Contratos API auditados (docs/audits/22-contratos-api-area-jugador.md), OpenAPI 3.1 formal (docs/contracts/openapi-area-jugador.yaml) y 39/39 tests de contrato pasando (docs/specs/drafts/22-area-jugador-desacoplada.md) (spec 22) |
 
 ⛔ **BLOQUEO-API**
 - ~~`POST /api/auth/forgot-password` no existe~~ → resuelto en la spec 15 (rama `agents/backend-password-reset`).
 - ~~`register.astro`: el selector de género no se envía~~ → resuelto en la spec 16 (opción A: el campo se retira; no queda ningún bloqueo abierto).
+- **#3 (spec 20) Torneos sin lista pública:** `GET /api/torneos` exige `ADMIN,SUPERADMIN,TECNICO` (`TorneosController.cs:16`); anónimo → 401. `/torneos` muestra un estado vacío honesto en vez de torneos inventados. Falta un `GET /api/torneos/publicos` (solo `INSCRIPCIONES_ABIERTAS`/`EN_CURSO` de complejos visibles).
+- **#4 (spec 20) Disponibilidad sin horario del complejo:** `GET /api/canchas/disponibles?fecha&horaInicio&horaFin` solo descuenta reservas `CONFIRMADA`; no aplica `HorarioOperativo` (`HorariosController.ValidarSlotAsync` solo se usa al crear la reserva, y `GET /api/horarios` exige sesión). El tablero limita las horas a 08:00–21:00 (las del panel), pero una cancha cerrada ese día puede verse «libre» hasta que la reserva la rechaza con «Fuera de horario».
 
 `db:check` (2026-09-25): OK · 19 tablas · 82/82 nombres · 198 columnas · 0 migraciones pendientes.

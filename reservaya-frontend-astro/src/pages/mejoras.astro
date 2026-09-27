@@ -1,136 +1,104 @@
 ---
+// Sugerencias: se envían a la bandeja (PUBLIC_INBOXMEJIKAI_ENDPOINT). Sin bandeja o si
+// falla, se ofrece el correo con el texto listo; nunca se da por enviada una idea que no salió.
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Field from "../components/ui/Field.astro";
+import Button from "../components/ui/Button.astro";
+import { EMAIL } from "../lib/contacto";
+import { AVISO } from "../lib/estilos";
 ---
 
-<BaseLayout
-  title="Ayúdanos a mejorar | ReservaYa"
-  description="¿Qué idea, mejora o funcionalidad te gustaría ver? Leemos todo. Tu voz construye la app que usamos todos."
-  announcement="✦ Ayúdanos a crecer — Comparte tu idea y construye ReservaYa"
->
-  <section class="relative left-1/2 w-screen -translate-x-1/2 bg-[#F5F5F3] px-4 py-10 md:px-8 md:py-14">
-    <div class="mx-auto max-w-2xl">
-      <a href="/canchas" class="inline-flex items-center gap-2 text-sm font-semibold text-[#8A938D] transition hover:text-[#15803D]">← Volver</a>
+<BaseLayout title="Envía una sugerencia | ReservaYa" description="¿Qué mejorarías de ReservaYa? Cuéntanos tu idea.">
+  <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
+    <h1 class="text-3xl lg:text-4xl">Envía una sugerencia</h1>
+    <p class="mt-3 text-lg text-pizarra">¿Qué te falta o qué mejorarías? Leemos cada mensaje.</p>
 
-      <div class="mt-6">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-[#DCFCE7] px-3.5 py-1.5 text-xs font-bold text-[#15803D]">✦ Comunidad</span>
-        <h1 class="reveal mt-4 text-3xl font-black tracking-tight text-[#101613] md:text-5xl">Ayúdanos a mejorar Reserva<span class="text-[#16A34A]">Ya</span></h1>
-        <p class="mt-3 leading-relaxed text-[#5B6660]">¿Qué idea, mejora o funcionalidad te gustaría ver? Leemos <strong class="text-[#101613]">todo</strong>. Tu voz construye la app que usamos todos.</p>
+    <form id="idea-form" class="mt-8 space-y-4 rounded-surface border border-cal bg-tiza p-5 sm:p-6" novalidate>
+      <p class="text-sm text-pizarra">Envías como <strong id="idea-user" class="font-semibold text-basalto">invitado</strong>.</p>
+      <Field id="idea-distrito" name="distrito" etiqueta="Distrito (opcional)" maxlength="80" placeholder="Cayma" />
+      <Field id="idea-text" name="idea" etiqueta="Tu idea" multilinea filas={6} maxlength="1000" placeholder="Cuéntanos qué te gustaría ver en ReservaYa." nota="Mínimo 10 caracteres." />
+      <p class="text-right text-sm text-pizarra"><span id="idea-count" class="tabular-nums">0</span> de 1000</p>
+      <p id="idea-status" hidden role="alert" class={AVISO.error}></p>
+      <a id="idea-mail" hidden class="inline-flex min-h-11 items-center font-semibold text-cesped-hondo underline" href={`mailto:${EMAIL}`}>Enviarla por correo</a>
+      <Button type="submit" id="idea-submit" disabled class="w-full">Enviar sugerencia</Button>
+    </form>
+
+    <div id="success-card" hidden role="status" class="mt-8 rounded-surface border border-cal bg-tiza p-6 text-center">
+      <p class="font-display text-2xl font-semibold">Recibimos tu idea</p>
+      <p class="mx-auto mt-2 max-w-sm text-pizarra">Gracias por ayudarnos a mejorar ReservaYa.</p>
+      <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+        <Button id="otra-idea" variante="secundario">Enviar otra idea</Button>
+        <Button href="/canchas">Buscar canchas</Button>
       </div>
-
-      <div id="form-card" class="mt-8 rounded-3xl border border-[#E7E5E4] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-8">
-        <form id="idea-form" data-inbox="inboxMejikai" novalidate>
-          <div class="flex items-center gap-2 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] px-4 py-3 text-sm">
-            <span aria-hidden="true" class="text-[#16A34A]">◔</span>
-            <p class="text-[#3F4A44]">Enviando como <strong id="idea-user" class="text-[#15803D]">cargando…</strong></p>
-          </div>
-
-          <label for="idea-distrito" class="mt-6 flex items-center gap-1.5 text-sm font-bold text-[#101613]">
-            <span aria-hidden="true" class="text-[#8A938D]">⌖</span> Distrito <span class="font-normal text-[#8A938D]">(opcional)</span>
-          </label>
-           <input id="idea-distrito" name="distrito" type="text" placeholder="Cayma, Yanahuara, Paucarpata..." maxlength="80"
-            class="mt-2 w-full rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25" />
-
-          <label for="idea-text" class="mt-5 flex items-center gap-1.5 text-sm font-bold text-[#101613]">
-            <span aria-hidden="true" class="text-[#EAB308]">◈</span> Tu idea o mejora
-          </label>
-          <textarea id="idea-text" name="idea" rows="6" maxlength="1000" placeholder="Cuéntanos qué te gustaría mejorar, qué te falta o qué idea tienes para ReservaYa..."
-            class="mt-2 w-full resize-y rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm text-[#101613] placeholder:text-[#A8B0AA] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25"></textarea>
-          <p class="mt-1.5 text-right text-xs text-[#8A938D]"><span id="idea-count">0</span>/1000</p>
-
-          <button id="idea-submit" type="submit" disabled
-            class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#EDEEEC] px-6 py-3.5 text-sm font-bold text-[#8A938D] transition enabled:bg-[#22C55E] enabled:text-[#060C08] enabled:hover:bg-[#16A34A] disabled:cursor-not-allowed">
-            <span aria-hidden="true">➤</span> Enviar mi idea
-          </button>
-          <p data-status role="status" class="mt-3 text-center text-sm font-semibold text-[#5B6660]"></p>
-        </form>
-      </div>
-
-      <div id="success-card" class="mt-8 hidden rounded-3xl border border-[#BBF7D0] bg-white p-10 text-center shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#DCFCE7] text-3xl text-[#16A34A]">✓</div>
-        <h2 class="mt-5 text-2xl font-black text-[#101613]">¡Idea recibida!</h2>
-        <p class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-[#5B6660]">Gracias por construir ReservaYa con nosotros. Revisamos cada propuesta y las más votadas llegan al roadmap.</p>
-        <div class="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
-          <button id="otra-idea" type="button" class="rounded-xl border border-[#E7E5E4] px-5 py-2.5 text-sm font-bold text-[#3F4A44] transition hover:border-[#22C55E]">Enviar otra idea</button>
-          <a href="/canchas" class="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]">Volver a canchas →</a>
-        </div>
-      </div>
-
-      <p class="mt-6 text-center text-xs text-[#8A938D]">Llevas <strong id="idea-total" class="text-[#15803D]">0</strong> ideas compartidas desde este dispositivo.</p>
     </div>
   </section>
 </BaseLayout>
 
 <script>
-  const userEl = document.getElementById("idea-user");
-  const area = document.getElementById("idea-text") as HTMLTextAreaElement | null;
-  const count = document.getElementById("idea-count");
-  const submit = document.getElementById("idea-submit") as HTMLButtonElement | null;
-  const form = document.getElementById("idea-form") as HTMLFormElement | null;
-  const status = form?.querySelector("[data-status]");
-  const formCard = document.getElementById("form-card");
-  const successCard = document.getElementById("success-card");
-  const totalEl = document.getElementById("idea-total");
-  const KEY = "reservaya-ideas";
+  import { API } from "../lib/entorno";
+  import { EMAIL } from "../lib/contacto";
 
-  const getIdeas = () => {
-    try { return JSON.parse(localStorage.getItem(KEY) ?? "[]"); } catch { return []; }
-  };
-  const paintTotal = () => { if (totalEl) totalEl.textContent = String(getIdeas().length); };
-  paintTotal();
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
+  const userEl = $("idea-user");
+  const area = $<HTMLTextAreaElement>("idea-text");
+  const count = $("idea-count");
+  const submit = $<HTMLButtonElement>("idea-submit");
+  const form = $<HTMLFormElement>("idea-form");
+  const status = $("idea-status");
+  const mail = $<HTMLAnchorElement>("idea-mail");
+  const exito = $("success-card");
 
-  // Nombre del usuario logueado (igual que el header)
-  fetch(`${import.meta.env.PUBLIC_RESERVAYA_API_URL || "http://localhost:5000"}/api/auth/me`, { credentials: "include" })
+  fetch(`${API}/api/auth/me`, { credentials: "include" })
     .then((r) => (r.ok ? r.json() : null))
-    .then((b) => { if (userEl) userEl.textContent = b?.usuario?.nombre?.trim() || "Invitado"; })
-    .catch(() => { if (userEl) userEl.textContent = "Invitado"; });
+    .then((b: { usuario?: { nombre?: string } } | null) => { if (userEl && b?.usuario?.nombre) userEl.textContent = b.usuario.nombre.trim(); })
+    .catch(() => {});
 
-  const validate = () => {
-    const len = area?.value.trim().length ?? 0;
+  const validar = () => {
     if (count) count.textContent = String(area?.value.length ?? 0);
-    if (submit) submit.disabled = len < 10;
+    if (submit) submit.disabled = (area?.value.trim().length ?? 0) < 10;
   };
-  area?.addEventListener("input", validate);
-  validate();
+  area?.addEventListener("input", validar);
+  validar();
 
-  document.getElementById("otra-idea")?.addEventListener("click", () => {
-    form?.reset(); validate();
-    if (status) status.textContent = "";
-    successCard?.classList.add("hidden");
-    formCard?.classList.remove("hidden");
+  $("otra-idea")?.addEventListener("click", () => {
+    form?.reset();
+    validar();
+    if (exito) exito.hidden = true;
+    if (form) form.hidden = false;
     area?.focus();
   });
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!area || area.value.trim().length < 10) return;
-    const distrito = (document.getElementById("idea-distrito") as HTMLInputElement | null)?.value.trim() ?? "";
-    if (submit) submit.disabled = true;
-    if (status) { status.textContent = "Enviando..."; status.className = "mt-3 text-center text-sm font-semibold text-[#5B6660]"; }
-    const payload = {
-      nombre: userEl?.textContent ?? "Invitado",
-      distrito,
-      idea: area.value.trim(),
-      page: location.pathname,
-      fecha: new Date().toISOString(),
-    };
-    // 1) Intento al inbox global (si está configurado en el layout)
+    const distrito = $<HTMLInputElement>("idea-distrito")?.value.trim() ?? "";
+    const payload = { nombre: userEl?.textContent ?? "invitado", distrito, idea: area.value.trim(), page: location.pathname, fecha: new Date().toISOString() };
     const endpoint = document.body.dataset.inboxEndpoint ?? "";
-    let sent = false;
+    if (submit) submit.disabled = true;
+    if (status) status.hidden = true;
+    let enviada = false;
     if (endpoint) {
       try {
         const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        sent = res.ok;
-      } catch { sent = false; }
+        enviada = res.ok;
+      } catch {
+        enviada = false;
+      }
     }
-    // 2) Respaldo local para que nada se pierda
-    try {
-      const ideas = getIdeas();
-      ideas.push({ ...payload, remoto: sent });
-      localStorage.setItem(KEY, JSON.stringify(ideas));
-    } catch { /* almacenamiento no disponible */ }
-    paintTotal();
-    formCard?.classList.add("hidden");
-    successCard?.classList.remove("hidden");
-    successCard?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (submit) submit.disabled = false;
+    if (enviada) {
+      if (form) form.hidden = true;
+      if (exito) exito.hidden = false;
+      return;
+    }
+    if (status) {
+      status.textContent = `No pudimos enviarla desde aquí. Mándala a ${EMAIL} con el botón de abajo.`;
+      status.hidden = false;
+    }
+    if (mail) {
+      const cuerpo = `${payload.idea}${distrito ? `\n\nDistrito: ${distrito}` : ""}`;
+      mail.href = `mailto:${EMAIL}?subject=${encodeURIComponent("Sugerencia para ReservaYa")}&body=${encodeURIComponent(cuerpo)}`;
+      mail.hidden = false;
+    }
   });
 </script>

@@ -1,0 +1,73 @@
+---
+// Cabecera clara: marca, navegación y cuenta. La sesión la resuelve scripts/sesion.ts.
+import Marca from "./Marca.astro";
+import Icon from "./ui/Icon.astro";
+import { BOTON } from "../lib/estilos";
+import { APP } from "../lib/entorno";
+
+const actual = Astro.url.pathname.replace(/\/$/, "") || "/";
+const nav = [
+  { href: "/canchas", etiqueta: "Canchas" },
+  { href: "/completar-cuadro", etiqueta: "Partidos" },
+  { href: "/torneos", etiqueta: "Torneos" },
+  { href: "/duenos", etiqueta: "Dueños" },
+];
+const activo = (href: string) => actual === href || actual.startsWith(`${href}/`);
+const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-basalto hover:bg-piedra";
+---
+
+<header class="sticky top-0 z-40 border-b border-cal bg-tiza">
+  <nav class="mx-auto flex h-16 max-w-page items-center justify-between gap-4 px-4 md:px-6" aria-label="Principal">
+    <Marca />
+
+    <ul class="hidden items-center gap-1 md:flex">
+      {nav.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            aria-current={activo(item.href) ? "page" : undefined}
+            class="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 font-medium text-pizarra hover:text-basalto aria-[current=page]:border-cesped aria-[current=page]:text-basalto"
+          >{item.etiqueta}</a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <a href="/login" data-solo="invitado" class={`${BOTON.secundario} px-4`}>Entrar</a>
+
+      <div data-solo="usuario" hidden class="relative">
+        <button id="cuenta-boton" type="button" class="flex min-h-11 items-center gap-2 rounded-control px-2 hover:bg-piedra" aria-haspopup="true" aria-expanded="false" aria-controls="cuenta-menu">
+          <span data-iniciales class="flex h-8 w-8 items-center justify-center rounded-full bg-basalto text-sm font-semibold text-tiza"></span>
+          <span data-nombre-corto class="hidden max-w-32 truncate font-medium lg:block"></span>
+          <Icon nombre="abajo" class="h-4 w-4 text-pizarra" />
+        </button>
+        <div id="cuenta-menu" hidden class="absolute right-0 top-12 w-64 rounded-surface border border-cal bg-tiza p-2 shadow-pop">
+          <div class="border-b border-cal px-3 pb-2">
+            <p data-nombre class="truncate font-semibold"></p>
+            <p data-correo class="truncate text-sm text-pizarra"></p>
+          </div>
+          <a href="/jugador/perfil" class={`${enlaceMenu} mt-2`}><Icon nombre="usuario" class="h-4 w-4 text-pizarra" />Mi perfil</a>
+          <a href={`${APP}/dashboard/reservas`} class={enlaceMenu}><Icon nombre="reloj" class="h-4 w-4 text-pizarra" />Mis reservas</a>
+          <a href={`${APP}/dashboard`} class={enlaceMenu}><Icon nombre="lugar" class="h-4 w-4 text-pizarra" />Mi panel</a>
+          <button type="button" data-salir class={`${enlaceMenu} w-full border-t border-cal text-left`}><Icon nombre="salir" class="h-4 w-4 text-pizarra" />Salir</button>
+        </div>
+      </div>
+
+      <button id="menu-boton" type="button" class="flex h-11 w-11 items-center justify-center rounded-control hover:bg-piedra md:hidden" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil">
+        <Icon nombre="menu" class="h-6 w-6" />
+      </button>
+    </div>
+  </nav>
+
+  <div id="menu-movil" hidden class="border-t border-cal px-4 pb-4 md:hidden">
+    <ul class="py-2">
+      {nav.map((item) => (
+        <li><a href={item.href} aria-current={activo(item.href) ? "page" : undefined} class="flex min-h-12 items-center border-b border-cal font-medium aria-[current=page]:text-cesped-hondo">{item.etiqueta}</a></li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<script>
+  import "../scripts/sesion.ts";
+</script>

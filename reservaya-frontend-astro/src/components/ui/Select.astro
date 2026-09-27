@@ -1,0 +1,32 @@
+---
+// Selector nativo con etiqueta (visible u oculta) y flecha SVG.
+import Icon from "./Icon.astro";
+import { CAMPO, ETIQUETA } from "../../lib/estilos";
+
+interface Opcion {
+  valor: string;
+  etiqueta: string;
+}
+
+interface Props {
+  id: string;
+  etiqueta: string;
+  opciones: readonly Opcion[];
+  valor?: string;
+  etiquetaOculta?: boolean;
+  class?: string;
+  [atributo: string]: unknown;
+}
+
+const { id, etiqueta, opciones, valor = "", etiquetaOculta = false, class: extra = "", ...resto } = Astro.props;
+---
+
+<div class={extra}>
+  <label for={id} class={etiquetaOculta ? "sr-only" : ETIQUETA}>{etiqueta}</label>
+  <div class="relative">
+    <select id={id} class={`${CAMPO} h-11 appearance-none pr-10`} {...resto}>
+      {opciones.map((o) => <option value={o.valor} selected={o.valor === valor}>{o.etiqueta}</option>)}
+    </select>
+    <Icon nombre="abajo" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pizarra" />
+  </div>
+</div>

@@ -1,0 +1,21 @@
+---
+// Botón o enlace con aspecto de botón. 44 px de alto mínimo.
+import { BOTON } from "../../lib/estilos";
+
+interface Props {
+  href?: string;
+  variante?: keyof typeof BOTON;
+  type?: "button" | "submit";
+  class?: string;
+  [atributo: string]: unknown;
+}
+
+const { href, variante = "primario", type = "button", class: extra = "", ...resto } = Astro.props;
+const clase = `${BOTON[variante]} ${extra}`.trim();
+---
+
+{href ? (
+  <a href={href} class={clase} {...resto}><slot /></a>
+) : (
+  <button type={type} class={clase} {...resto}><slot /></button>
+)}

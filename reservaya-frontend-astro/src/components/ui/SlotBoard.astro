@@ -1,0 +1,45 @@
+---
+// Tablero «Libres hoy»: pestañas por hora y filas separadas por líneas de cal.
+// El script pinta los datos reales; aquí va la estructura con alto fijo (CLS 0).
+import { BOTON } from "../../lib/estilos";
+---
+
+<section id="tablero" aria-labelledby="tablero-titulo" class="overflow-hidden rounded-surface border border-cal bg-tiza">
+  <div class="flex flex-wrap items-end justify-between gap-x-4 border-b border-cal px-4 pt-3 sm:px-6">
+    <h2 id="tablero-titulo" data-titulo class="pb-3 text-2xl">Libres hoy</h2>
+    <div role="tablist" aria-label="Hora de inicio" class="-mb-px flex">
+      {[0, 1, 2].map((i) => (
+        <button
+          type="button"
+          role="tab"
+          data-hora=""
+          aria-selected={i === 0 ? "true" : "false"}
+          aria-controls="tablero-panel"
+          tabindex={i === 0 ? 0 : -1}
+          class="h-12 w-20 border-b-2 border-transparent font-display text-lg font-semibold tabular-nums text-pizarra transition-colors hover:text-basalto aria-selected:border-cesped aria-selected:text-basalto"
+        >--:--</button>
+      ))}
+    </div>
+  </div>
+
+  <div id="tablero-panel" data-panel role="tabpanel" aria-labelledby="tablero-titulo" class="h-[30rem] overflow-hidden sm:h-80">
+    <ul aria-hidden="true">
+      {[0, 1, 2].map(() => (
+        <li class="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:px-6">
+          <span class="esqueleto h-6 w-12"></span>
+          <span class="esqueleto h-5 w-3/4"></span>
+          <span class="esqueleto h-9 w-20 justify-self-end"></span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <p data-estado class="sr-only" aria-live="polite"></p>
+
+  <div class="border-t border-cal px-4 sm:px-6">
+    <a data-todas href="/canchas" class={BOTON.texto}>Buscar otro día u hora</a>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/tablero.ts";
+</script>
