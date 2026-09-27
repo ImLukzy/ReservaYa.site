@@ -1,4 +1,4 @@
-﻿export type Rol = 'USUARIO' | 'ADMIN' | 'SUPERADMIN' | 'TECNICO'
+export type Rol = 'USUARIO' | 'ADMIN' | 'SUPERADMIN' | 'TECNICO'
 export type NivelSancion = 'ADVERTENCIA' | 'BLOQUEO'
 export type EstadoReserva = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'COMPLETADA'
 export type TipoCancha = 'FUTBOL' | 'FUTBOL5' | 'FUTBOL7' | 'PADEL' | 'TENIS' | 'BASQUET' | 'VOLLEYBALL' | 'LOZA'
@@ -168,6 +168,7 @@ export interface UsuarioSesion {
   username?: string | null
   telefono?: string | null
   fotoUrl?: string | null
+  proximoCambioUsername?: string | null
 }
 
 export interface DashboardUsuario {

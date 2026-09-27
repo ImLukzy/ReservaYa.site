@@ -23,5 +23,10 @@ export function Countdown({ target }: { target: string }) {
   const hours = Math.floor((totalMinutes % 1440) / 60)
   const minutes = totalMinutes % 60
 
-  return <span>{remaining === 0 ? 'Finalizado' : days > 0 ? `${days}d ${hours}h` : `${hours}h ${minutes}m`}</span>
+  return (
+    <span className="font-display tabular-nums">
+      {remaining === 0 ? 'Finalizado' : days > 0 ? `${days}d ${hours}h` : `${hours}h ${minutes}m`}
+    </span>
+  )
 }
+
