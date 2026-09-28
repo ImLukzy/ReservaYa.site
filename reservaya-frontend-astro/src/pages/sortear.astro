@@ -19,37 +19,37 @@ const preguntas = [
     <h1 class="text-3xl lg:text-4xl">Arma los equipos</h1>
     <p class="mt-3 text-lg text-pizarra">Agrega a los que van a jugar y reparte los equipos al azar, sin discusiones.</p>
 
-    <div class="mt-8 rounded-surface border border-cal bg-tiza p-5">
+    <div class="card-tactil mt-8 p-5 sm:p-6">
       <label for="add-input" class={ETIQUETA}>Agrega jugadores</label>
       <div id="search-wrap" class="relative">
         <Icon nombre="buscar" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-pizarra" />
         <input id="add-input" placeholder="@usuario o nombre" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="suggest" aria-autocomplete="list" class={`${CAMPO} h-11 pl-10`} />
-        <div id="suggest" role="listbox" aria-label="Usuarios encontrados" hidden class="absolute inset-x-0 z-20 mt-2 max-h-64 overflow-y-auto rounded-surface border border-cal bg-tiza shadow-pop"></div>
+        <div id="suggest" role="listbox" aria-label="Usuarios encontrados" hidden class="absolute inset-x-0 z-20 mt-2 max-h-64 overflow-y-auto card-tactil p-2 shadow-[4px_4px_0_0_#1f2a24]"></div>
       </div>
       <div id="draft-row" hidden class="mt-3">
         <label for="draft-input" class={ETIQUETA}>Invitados sin cuenta</label>
         <div class="flex gap-2">
           <input id="draft-input" placeholder="Juan, Pedro, Luis" autocomplete="off" class={`${CAMPO} h-11 flex-1`} />
           <Button id="draft-add" class="shrink-0">Agregar</Button>
-          <button id="draft-close" type="button" aria-label="Descartar invitados" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-control text-pizarra hover:bg-piedra"><Icon nombre="cerrar" /></button>
+          <button id="draft-close" type="button" aria-label="Descartar invitados" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-pizarra hover:bg-piedra"><Icon nombre="cerrar" /></button>
         </div>
         <p class="mt-1.5 text-sm text-pizarra">Separa varios con comas y se agregan todos.</p>
       </div>
       <Button id="add-guest" variante="secundario" class="mt-3 w-full"><Icon nombre="mas" class="h-4 w-4" />Agregar invitado sin cuenta</Button>
     </div>
 
-    <div class="mt-4 rounded-surface border border-cal bg-tiza p-5">
-      <h2 class="font-sans text-base font-semibold">Jugadores <span id="jcount" class="font-display tabular-nums text-pizarra">(0)</span></h2>
+    <div class="card-tactil mt-4 p-5 sm:p-6">
+      <h2 class="font-sans text-base font-bold text-basalto">Jugadores <span id="jcount" class="font-display font-extrabold tabular-nums text-pizarra">(0)</span></h2>
       <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
       <p id="jempty" class="py-6 text-center text-pizarra">Todavía no hay jugadores.</p>
     </div>
 
-    <div class="mt-4 flex flex-col gap-4 rounded-surface border border-cal bg-tiza p-5 sm:flex-row sm:items-end sm:justify-between">
+    <div class="card-tactil mt-4 flex flex-col gap-4 p-5 sm:flex-row sm:items-end sm:justify-between sm:p-6">
       <fieldset>
         <legend class={ETIQUETA}>¿Cuántos equipos?</legend>
         <div id="tnums" class="flex gap-2">
           {[2, 3, 4].map((n) => (
-            <button type="button" data-n={n} aria-pressed={n === 2 ? "true" : "false"} class="tnum h-11 w-12 rounded-control border border-borde bg-tiza font-display text-lg font-semibold tabular-nums aria-pressed:border-basalto aria-pressed:bg-basalto aria-pressed:text-tiza">{n}</button>
+            <button type="button" data-n={n} aria-pressed={n === 2 ? "true" : "false"} class="tnum h-11 w-12 rounded-full border-2 border-basalto bg-tiza font-display text-lg font-extrabold tabular-nums aria-pressed:bg-basalto aria-pressed:text-tiza cursor-pointer">{n}</button>
           ))}
         </div>
       </fieldset>
@@ -287,7 +287,7 @@ const preguntas = [
     for (var i = 0; i < nEquipos; i++) {
       (function (i) {
         var ms = sh.filter(function (_, j) { return j % nEquipos === i; });
-        var d = nodo("div", "fila-entra rounded-surface border border-cal bg-tiza p-5");
+        var d = nodo("div", "fila-entra card-tactil p-5 shadow-[4px_4px_0_0_#1f2a24]");
         d.style.animationDelay = i * 60 + "ms";
         var head = nodo("div", "flex items-center justify-between");
         var copyBtn = nodo("button", claseTexto + " text-sm", "Copiar");

@@ -5,12 +5,14 @@ import Button from "../components/ui/Button.astro";
 
 <BaseLayout title="Página no encontrada | ReservaYa" robots="noindex, follow">
   <section class="mx-auto max-w-texto px-4 py-16 md:px-6 lg:py-24">
-    <p class="font-display text-4xl font-bold tabular-nums text-pizarra">404</p>
-    <h1 class="mt-2 text-3xl lg:text-4xl">No encontramos esta página</h1>
-    <p class="mt-3 text-lg text-pizarra">Puede que el enlace esté mal escrito o que la página ya no exista.</p>
-    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-      <Button href="/canchas">Buscar canchas</Button>
-      <Button href="/" variante="secundario">Ir al inicio</Button>
+    <div class="card-dashed p-8 text-center sm:p-12">
+      <p class="font-display text-5xl font-extrabold tabular-nums tracking-tight text-pizarra">404</p>
+      <h1 class="mt-3 text-3xl font-bold lg:text-4xl">No encontramos esta página</h1>
+      <p class="mx-auto mt-3 max-w-md text-lg text-pizarra">Puede que el enlace esté mal escrito o que la página ya no exista.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button href="/canchas">Buscar canchas</Button>
+        <Button href="/" variante="secundario">Ir al inicio</Button>
+      </div>
     </div>
   </section>
 </BaseLayout>

@@ -15,18 +15,23 @@ const pasos = [
 <BaseLayout title="Cómo reservar | ReservaYa" description="Guía para reservar una cancha en ReservaYa, paso a paso.">
   <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
     <h1 class="text-3xl lg:text-4xl">Cómo reservar una cancha</h1>
-    <ol class="mt-8 border-t border-cal">
+    <ol class="mt-8 border-t-2 border-basalto">
       {pasos.map(([t, d], i) => (
-        <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-cal py-5">
-          <span class="font-display text-2xl font-bold tabular-nums">{i + 1}</span>
+        <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b-2 border-basalto/15 py-5">
+          <span class="font-display text-2xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">{i + 1}</span>
           <div>
-            <h2 class="text-xl">{t}</h2>
+            <h2 class="text-xl font-bold">{t}</h2>
             <p class="mt-1 text-pizarra">{d}</p>
           </div>
         </li>
       ))}
     </ol>
-    <p class="mt-8 text-pizarra">¿Algo no funciona? Escríbenos a <a href={`mailto:${EMAIL}`} class="font-semibold text-cesped-hondo underline">{EMAIL}</a>.</p>
-    <Button href="/canchas" class="mt-6">Buscar canchas</Button>
+    <div class="card-tactil mt-8 flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="font-bold text-basalto">¿Tienes dudas adicionales o necesitas ayuda?</p>
+        <p class="mt-0.5 text-sm text-pizarra">Escríbenos directamente a <a href={`mailto:${EMAIL}`} class="font-bold text-cesped-hondo underline">{EMAIL}</a>.</p>
+      </div>
+      <Button href="/canchas" class="shrink-0">Buscar canchas</Button>
+    </div>
   </section>
 </BaseLayout>
