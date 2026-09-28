@@ -5,10 +5,8 @@ import { etiquetaHora, franjasProximas } from "../lib/horario";
 import { avisoTablero, filaCancha, filasEsqueleto, precioDe, urlReservar, type ItemDisponible } from "./filas";
 
 const MAX_FILAS = 5;
-const raiz = document.getElementById("tablero");
-if (raiz) iniciar(raiz);
 
-function iniciar(raiz: HTMLElement) {
+export function iniciarTablero(raiz: HTMLElement) {
   const titulo = raiz.querySelector<HTMLElement>("[data-titulo]");
   const panel = raiz.querySelector<HTMLElement>("[data-panel]");
   const todas = raiz.querySelector<HTMLAnchorElement>("[data-todas]");

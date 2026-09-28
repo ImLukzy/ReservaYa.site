@@ -1,5 +1,10 @@
 ---
 // Tarjeta centrada de las páginas de cuenta (entrar, registro y contraseña).
+// En xl+ (1280px) va acompañada del tablero real reducido (AuthTablero); antes de eso es
+// solo la tarjeta. Probado en vivo: a lg (1024px) la columna del tablero mide ~512px y el
+// panel de 6 columnas del tablero se recorta igual (necesita ~432px fijos + espacio para
+// texto); desde xl da ~640px y se lee bien (igual que ya se verificó a 1440px).
+import AuthTablero from "./AuthTablero.astro";
 interface Props {
   titulo: string;
   texto?: string;
@@ -8,12 +13,15 @@ interface Props {
 const { titulo, texto, idTitulo } = Astro.props;
 ---
 
-<section class="mx-auto w-full max-w-md px-4 py-10 lg:py-16">
-  <div class="rounded-surface border border-cal bg-tiza p-6 sm:p-8">
-    <slot name="arriba" />
-    <h1 id={idTitulo} class="text-2xl lg:text-3xl">{titulo}</h1>
-    {texto && <p class="mt-2 text-pizarra">{texto}</p>}
-    <div class="mt-6"><slot /></div>
-  </div>
-  <div class="mt-5 text-center"><slot name="pie" /></div>
-</section>
+<div class="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 xl:grid-cols-[minmax(0,28rem)_1fr] xl:items-stretch lg:py-16">
+  <section class="mx-auto w-full max-w-md xl:mx-0 xl:max-w-none">
+    <div class="rounded-surface border border-cal bg-tiza p-6 sm:p-8">
+      <slot name="arriba" />
+      <h1 id={idTitulo} class="text-2xl lg:text-3xl">{titulo}</h1>
+      {texto && <p class="mt-2 text-pizarra">{texto}</p>}
+      <div class="mt-6"><slot /></div>
+    </div>
+    <div class="mt-5 text-center"><slot name="pie" /></div>
+  </section>
+  <AuthTablero />
+</div>

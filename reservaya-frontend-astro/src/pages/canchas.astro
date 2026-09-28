@@ -42,13 +42,13 @@ const orden = [
       <Select id="f-orden" etiqueta="Ordenar por" opciones={orden} class="flex items-center gap-2 [&_label]:mb-0" />
     </div>
     <div class="overflow-hidden rounded-surface border border-cal bg-tiza">
-      <div class="hidden h-11 grid-cols-[4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] items-center gap-x-4 border-b border-cal px-6 font-display font-semibold text-pizarra sm:grid" aria-hidden="true">
-        <span>Hora</span><span>Complejo y cancha</span><span>Deporte y distrito</span><span class="text-right">Precio</span><span></span>
+      <div class="hidden h-11 grid-cols-[4rem_4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] items-center gap-x-4 border-b border-cal px-6 font-display font-semibold text-pizarra sm:grid" aria-hidden="true">
+        <span></span><span>Hora</span><span>Complejo y cancha</span><span>Deporte y distrito</span><span class="text-right">Precio</span><span></span>
       </div>
       <ul id="resultados" aria-live="polite" aria-busy="true">
         {[0, 1, 2, 3].map(() => (
-          <li class="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:px-6" aria-hidden="true">
-            <span class="esqueleto h-6 w-12"></span><span class="esqueleto h-5 w-3/4"></span><span class="esqueleto h-9 w-20 justify-self-end"></span>
+          <li class="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6" aria-hidden="true">
+            <span class="esqueleto hidden h-9 w-16 rounded-control sm:block"></span><span class="esqueleto h-6 w-12"></span><span class="esqueleto h-5 w-3/4"></span><span class="esqueleto h-9 w-20 justify-self-end"></span>
           </li>
         ))}
       </ul>

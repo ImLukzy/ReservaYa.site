@@ -1,6 +1,7 @@
 // Filas del tablero (home y /canchas). Solo DOM API: los datos de la API
 // nunca pasan por innerHTML.
 import { BOTON } from "../lib/estilos";
+import { API } from "../lib/entorno";
 import { etiquetaTipo } from "../lib/arequipa";
 import { etiquetaHora, soles } from "../lib/horario";
 
@@ -9,6 +10,7 @@ export interface CanchaApi {
   nombre: string;
   tipo: string;
   precioPorHora: string;
+  imagen: string | null;
   complejoId: string | null;
   complejo: { id: string; nombre: string; distrito: string; ciudad: string } | null;
 }
@@ -35,6 +37,43 @@ export function precioDe(item: ItemDisponible): number {
   return Number(item.totalEstimado ?? item.cancha.precioPorHora) || 0;
 }
 
+const CLASE_MINIATURA = "relative h-9 w-16 shrink-0 overflow-hidden rounded-control border border-cal";
+
+/** Croquis de cancha (perímetro, línea media, círculo central) sin SVG ni imagen: firma visual compartida cuando no hay foto o la foto no carga. */
+function croquisCancha(claseUbicacion = ""): HTMLDivElement {
+  const caja = el("div", `${CLASE_MINIATURA} bg-cesped-suave ${claseUbicacion}`.trim());
+  caja.setAttribute("aria-hidden", "true");
+  caja.append(
+    el("span", "absolute inset-1 rounded-sm border border-cesped/40"),
+    el("span", "absolute inset-y-1 left-1/2 w-px -translate-x-1/2 bg-cesped/40"),
+    el("span", "absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cesped/40"),
+  );
+  return caja;
+}
+
+/** Miniatura 16:9 de tamaño reservado: foto real solo si viene de /uploads/, si no el croquis.
+ *  claseUbicacion se reaplica en el croquis de reemplazo para que el error de carga no pierda
+ *  la posición de grid que le dio filaCancha. */
+function miniaturaCancha(cancha: CanchaApi, claseUbicacion = ""): HTMLElement {
+  if (!cancha.imagen?.startsWith("/uploads/")) return croquisCancha(claseUbicacion);
+  const caja = el("div", `${CLASE_MINIATURA} bg-piedra ${claseUbicacion}`.trim());
+  const img = document.createElement("img");
+  img.src = new URL(cancha.imagen, API).toString();
+  img.alt = ""; // el nombre ya está en la fila
+  img.width = 64;
+  img.height = 36;
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.className = "h-full w-full object-cover";
+  img.addEventListener("error", () => caja.replaceWith(croquisCancha(claseUbicacion)), { once: true });
+  caja.append(img);
+  return caja;
+}
+
+function miniaturaEsqueleto(): HTMLDivElement {
+  return el("div", `esqueleto ${CLASE_MINIATURA} border-transparent hidden sm:block`);
+}
+
 interface OpcionesFila {
   hora: number;
   reservarHref: string;
@@ -51,11 +90,12 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
 
   const li = el(
     "li",
-    "fila-entra grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_auto] grid-rows-2 items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] sm:grid-rows-1 sm:gap-x-4 sm:px-6",
+    "fila-entra grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_auto] grid-rows-2 items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] sm:grid-rows-1 sm:gap-x-4 sm:px-6",
   );
-  li.append(el("span", "col-start-1 row-span-2 row-start-1 self-start pt-1 font-display text-xl font-semibold tabular-nums sm:row-span-1 sm:self-center sm:pt-0", hora));
+  li.append(miniaturaCancha(cancha, "hidden sm:col-start-1 sm:row-start-1 sm:block sm:self-center"));
+  li.append(el("span", "col-start-1 row-span-2 row-start-1 self-start pt-1 font-display text-xl font-semibold tabular-nums sm:col-start-2 sm:row-span-1 sm:self-center sm:pt-0", hora));
 
-  const nombre = el("div", "col-start-2 row-start-1 min-w-0 self-end sm:self-center");
+  const nombre = el("div", "col-start-2 row-start-1 min-w-0 self-end sm:col-start-3 sm:self-center");
   const titulo = el("p", "flex items-center gap-2 font-semibold");
   titulo.append(el("span", "truncate", lugar));
   if (op.valoracion && op.valoracion.total > 0) {
@@ -77,14 +117,14 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
   li.append(nombre);
 
   li.append(el("p", "col-start-2 row-start-2 line-clamp-2 self-start text-sm leading-tight text-pizarra sm:hidden", `${cancha.nombre}, ${tipo.toLowerCase()} en ${distrito}`));
-  const detalle = el("div", "hidden min-w-0 text-sm sm:col-start-3 sm:row-start-1 sm:block");
+  const detalle = el("div", "hidden min-w-0 text-sm sm:col-start-4 sm:row-start-1 sm:block");
   const dist = el("p", "truncate text-pizarra", distrito);
   dist.title = distrito;
   detalle.append(el("p", "truncate", tipo), dist);
   li.append(detalle);
-  li.append(el("span", "col-start-3 row-start-1 self-end text-right font-display text-lg font-semibold tabular-nums sm:col-start-4 sm:self-center", soles(precioDe(item))));
+  li.append(el("span", "col-start-3 row-start-1 self-end text-right font-display text-lg font-semibold tabular-nums sm:col-start-5 sm:self-center", soles(precioDe(item))));
 
-  const reservar = el("a", `${BOTON.primario} col-start-3 row-start-2 self-start px-4 sm:col-start-5 sm:row-start-1 sm:self-center sm:justify-self-end`, "Reservar");
+  const reservar = el("a", `${BOTON.primario} col-start-3 row-start-2 self-start px-4 sm:col-start-6 sm:row-start-1 sm:self-center sm:justify-self-end`, "Reservar");
   reservar.href = op.reservarHref;
   reservar.setAttribute("aria-label", `Reservar ${cancha.nombre} en ${lugar} a las ${hora}`);
   li.append(reservar);
@@ -93,9 +133,9 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
 
 export function filasEsqueleto(n: number): HTMLLIElement[] {
   return Array.from({ length: n }, () => {
-    const li = el("li", "grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:px-6");
+    const li = el("li", "grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6");
     li.setAttribute("aria-hidden", "true");
-    li.append(el("span", "esqueleto h-6 w-12"), el("span", "esqueleto h-5 w-3/4"), el("span", "esqueleto h-9 w-20 justify-self-end"));
+    li.append(miniaturaEsqueleto(), el("span", "esqueleto h-6 w-12"), el("span", "esqueleto h-5 w-3/4"), el("span", "esqueleto h-9 w-20 justify-self-end"));
     return li;
   });
 }
