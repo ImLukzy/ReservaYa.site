@@ -53,6 +53,10 @@
   --color-cal: #d6dbd3;           /* líneas de estructura, nunca texto */
   --color-borde: #8a948e;         /* borde de campos, ≥ 3:1 */
   --color-sol: #f0b429;           /* un solo uso: valoraciones; basalto encima 7.96 */
+  --color-sol-suave: #fef9c3;     /* fondo suave estado pendiente */
+  --color-alerta: #f97316;        /* acento de bloqueo y advertencia */
+  --color-alerta-suave: #ffedd5;  /* fondo suave de bloqueo */
+  --color-alerta-hondo: #c2410c;  /* texto y hover sobre alerta-suave */
   --color-error: #b42318;         /* 6.57 sobre tiza */
   --color-error-suave: #fdecea;   /* error encima 5.75 */
   --color-velo: rgb(31 42 36 / 0.5); /* fondo tras un diálogo */
@@ -88,9 +92,89 @@
 
   --shadow-*: initial;
   --shadow-pop: 0 12px 32px -12px rgb(31 42 36 / 0.35);
+  --shadow-dura-sm: 2px 2px 0 0 #1f2a24;
+  --shadow-dura: 4px 4px 0 0 #1f2a24;
+  --shadow-dura-lg: 6px 6px 0 0 #1f2a24;
 
   --container-page: 70rem;
   --container-texto: 42rem;
 
   --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer components {
+  .card-tactil {
+    background-color: var(--color-tiza);
+    border: 2px solid var(--color-basalto);
+    box-shadow: 4px 4px 0 0 var(--color-basalto);
+    border-radius: 1rem;
+  }
+  .card-dashed {
+    background-color: var(--color-tiza);
+    border: 2px dashed var(--color-basalto);
+    border-radius: 1rem;
+  }
+  .btn-tactil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    border: 2px solid var(--color-basalto);
+    box-shadow: 3px 3px 0 0 var(--color-basalto);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .btn-tactil:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 0 var(--color-basalto);
+  }
+  .btn-tactil:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 var(--color-basalto);
+  }
+  .searchbar-tactil {
+    display: flex;
+    height: 3rem;
+    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-basalto);
+    background-color: var(--color-tiza);
+    padding-left: 1rem;
+    padding-right: 0.375rem;
+    box-shadow: 3px 3px 0 0 var(--color-basalto);
+  }
+  .searchbar-tactil:focus-within {
+    box-shadow: 4px 4px 0 0 var(--color-cesped);
+  }
+  .chip-tactil {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 2px solid var(--color-basalto);
+    background-color: var(--color-tiza);
+    padding: 0.375rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-basalto);
+    transition: background-color 0.15s ease;
+  }
+  .chip-tactil:hover {
+    background-color: var(--color-piedra);
+  }
+  .chip-tactil.active,
+  .chip-tactil[aria-selected="true"] {
+    background-color: var(--color-basalto);
+    color: var(--color-tiza);
+  }
+}
+
+/* Balance tipográfico nativo */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+p, li, dd {
+  text-wrap: pretty;
 }

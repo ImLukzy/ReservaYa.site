@@ -6,19 +6,18 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean
 }
 
-// Primario: césped (#17804a) con texto tiza (4.96:1; hover 6.3:1). Spec 26: cesped unificado
-// con Astro es más oscuro que el anterior #22c55e, grafito ya no pasa AA (3.98:1).
+// Botón táctil / mecánico Universo Agustino: píldora con borde 2px basalto y sombra dura
 const variants = {
-  primary: 'bg-cesped hover:bg-cesped-hover active:bg-cesped-hover text-tiza',
-  secondary: 'bg-tiza hover:bg-piedra active:bg-piedra text-basalto border border-borde',
-  danger: 'bg-error hover:bg-error-hondo active:bg-error-hondo text-tiza',
-  ghost: 'hover:bg-piedra active:bg-piedra text-pizarra hover:text-basalto',
+  primary: 'btn-tactil bg-cesped hover:bg-cesped-hover active:bg-cesped-hover text-tiza',
+  secondary: 'btn-tactil bg-tiza hover:bg-piedra active:bg-piedra text-basalto',
+  danger: 'btn-tactil bg-error hover:bg-error-hondo active:bg-error-hondo text-tiza',
+  ghost: 'inline-flex items-center justify-center gap-2 font-bold rounded-full transition-colors duration-150 hover:bg-piedra active:bg-piedra text-pizarra hover:text-basalto',
 }
 
 const sizes = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-sm',
-  lg: 'px-6 py-3 text-base',
+  sm: 'h-9 px-3.5 text-xs',
+  md: 'min-h-11 px-5 text-sm',
+  lg: 'h-12 px-6 text-base',
 }
 
 export function Button({
@@ -35,7 +34,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none',
         variants[variant],
         sizes[size],
         className

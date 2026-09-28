@@ -37,8 +37,8 @@ export function Modal({ open, onClose, title, children, className, tono = 'oscur
 
   const superficie =
     tono === 'claro'
-      ? 'border-cal bg-tiza text-basalto'
-      : 'border-[#303850] bg-[#20263a] text-slate-100'
+      ? 'border-2 border-basalto bg-tiza text-basalto shadow-[6px_6px_0_0_#1f2a24]'
+      : 'border-2 border-basalto bg-[#20263a] text-slate-100 shadow-[6px_6px_0_0_#1f2a24]'
   const tituloCls = tono === 'claro' ? 'text-basalto' : 'text-slate-100'
   const cerrarCls = tono === 'claro' ? 'hover:bg-piedra' : 'hover:bg-[#2b334d]'
   const iconoCls = tono === 'claro' ? 'text-pizarra' : 'text-slate-400'
@@ -50,7 +50,7 @@ export function Modal({ open, onClose, title, children, className, tono = 'oscur
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={cn('relative z-10 w-full max-w-lg max-h-[90dvh] overflow-y-auto [scrollbar-gutter:stable] rounded-xl border p-4 shadow-2xl sm:p-6', superficie, className)}
+        className={cn('relative z-10 w-full max-w-lg max-h-[90dvh] overflow-y-auto [scrollbar-gutter:stable] rounded-2xl p-4 sm:p-6', superficie, className)}
       >
         <div className="mb-6 flex items-center justify-between gap-4">
           <h2 id={titleId} className={cn('font-display text-xl font-semibold', tituloCls)}>{title}</h2>
