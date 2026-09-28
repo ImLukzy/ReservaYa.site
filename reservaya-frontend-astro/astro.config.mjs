@@ -7,6 +7,10 @@ import astroIcon from "astro-icon";
 export default defineConfig({
   site: "https://reservaya.com",
   output: "static",
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   integrations: [astroIcon()],
   vite: {
     plugins: [tailwindcss()],

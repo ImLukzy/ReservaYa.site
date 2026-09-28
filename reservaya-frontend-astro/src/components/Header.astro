@@ -25,6 +25,7 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
         <li>
           <a
             href={item.href}
+            data-astro-prefetch
             aria-current={activo(item.href) ? "page" : undefined}
             class="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 font-semibold text-pizarra hover:text-basalto aria-[current=page]:border-cesped aria-[current=page]:text-basalto"
           >{item.etiqueta}</a>
@@ -33,7 +34,7 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
     </ul>
 
     <div class="flex items-center gap-2">
-      <a href="/login" data-solo="invitado" class={`${BOTON.secundario} px-5 text-xs`}>Entrar</a>
+      <a href="/login" data-astro-prefetch data-solo="invitado" class={`${BOTON.secundario} px-5 text-xs`}>Entrar</a>
 
       <div data-solo="usuario" hidden class="relative">
         <button id="cuenta-boton" type="button" class="flex min-h-11 items-center gap-2 rounded-full border border-basalto px-2.5 hover:bg-piedra cursor-pointer" aria-haspopup="true" aria-expanded="false" aria-controls="cuenta-menu">
