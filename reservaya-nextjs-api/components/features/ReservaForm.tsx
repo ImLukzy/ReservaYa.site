@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Moon } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { createReserva } from '@/lib/api-client'
 import type { Cancha } from '@/lib/api'
@@ -12,11 +13,11 @@ const HORAS = Array.from({ length: 14 }, (_, i) => {
   return { value: hora * 60, label: `${String(hora).padStart(2, '0')}:00` }
 })
 
-// Estilos de formulario adaptados a la superficie oscura del Modal (bg-[#20263a]).
-const flabel = 'block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5'
+// Estilos de formulario para la superficie clara del Modal (tono="claro", spec 24).
+const flabel = 'block text-xs font-semibold text-pizarra mb-1.5'
 const finput =
-  'w-full rounded-xl border border-[#303850] bg-[#151b2e] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25'
-const fselect = `${finput} sel-dark [color-scheme:dark] [&>option]:bg-[#151b2e] [&>option]:text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed`
+  'w-full rounded-xl border border-cal bg-tiza px-4 py-2.5 text-sm text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25'
+const fselect = `${finput} disabled:opacity-50 disabled:cursor-not-allowed`
 
 export function ReservaForm({
   cancha,
@@ -175,22 +176,25 @@ export function ReservaForm({
       </div>
 
       {(cotizado ?? (calcularTotal() > 0 ? { total: String(calcularTotal()), regla: null } : null)) && (
-        <div className="rounded-xl border border-cesped/30 bg-[#162720] p-4 text-slate-100">
+        <div className="rounded-xl border border-cesped/30 bg-cesped-suave p-4 text-cesped-hondo">
           <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-emerald-300">Total estimado:</span>
-            <span className="font-display text-2xl font-bold tabular-nums text-cesped">
+            <span className="text-sm font-semibold">Total estimado:</span>
+            <span className="font-display text-2xl font-bold tabular-nums">
               S/ {(cotizado ?? { total: String(calcularTotal()) }).total}
               {cotizando ? '…' : ''}
             </span>
           </div>
           {cotizado?.regla && (
-            <p className="mt-1 text-xs font-semibold text-emerald-400">🌙 Tarifa aplicada: {cotizado.regla}</p>
+            <p className="mt-1 flex items-center gap-1 text-xs font-semibold">
+              <Moon className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
+              Tarifa aplicada: {cotizado.regla}
+            </p>
           )}
         </div>
       )}
 
       {error && (
-        <p role="alert" className="rounded-xl border border-error/40 bg-error/15 px-3.5 py-2.5 text-sm font-semibold text-red-200">
+        <p role="alert" className="rounded-xl border border-error/30 bg-error-suave px-3.5 py-2.5 text-sm font-semibold text-error">
           {error}
         </p>
       )}

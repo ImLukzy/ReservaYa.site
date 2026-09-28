@@ -22,7 +22,7 @@ export default async function MisPartidosPage({ searchParams }: PageProps) {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="border-b border-cal pb-4">
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">
+        <p className="font-display text-xs font-bold text-cesped-hondo">
           Comunidad y pichangas
         </p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-basalto">

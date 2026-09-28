@@ -22,7 +22,7 @@ export function StatCard({
 }: {
   label: string
   value: string | number
-  icon: string
+  icon: React.ReactNode
   color?: 'green' | 'blue' | 'yellow' | 'red'
 }) {
   const colors = {
@@ -34,7 +34,7 @@ export function StatCard({
   return (
     <Card>
       <div className="flex items-center gap-4">
-        <div className={cn('w-12 h-12 shrink-0 rounded-md flex items-center justify-center text-2xl', colors[color])}>
+        <div className={cn('w-12 h-12 shrink-0 rounded-md flex items-center justify-center', colors[color])}>
           {icon}
         </div>
         <div className="min-w-0">

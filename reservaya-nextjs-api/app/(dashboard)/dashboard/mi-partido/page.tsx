@@ -18,7 +18,7 @@ export default async function MiPartidoPage() {
   return (
     <div className="max-w-4xl space-y-8">
       <div>
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">
+        <p className="font-display text-xs font-bold text-cesped-hondo">
           Tu reserva confirmada
         </p>
         <h1 className="font-display text-3xl font-extrabold text-basalto tracking-tight">
@@ -65,7 +65,7 @@ export default async function MiPartidoPage() {
           <div className="mt-6 rounded-xl border border-cal bg-piedra p-4">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-cesped-hondo" />
-              <p className="text-xs font-bold text-basalto uppercase tracking-wide">
+              <p className="text-xs font-bold text-basalto">
                 Tiempo restante de tu reserva
               </p>
             </div>
@@ -77,7 +77,7 @@ export default async function MiPartidoPage() {
 
         <aside className="space-y-4">
           <div className="rounded-2xl border-2 border-dashed border-borde bg-tiza p-6 text-center shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">
+            <p className="text-xs font-bold text-pizarra">
               Código de reserva
             </p>
             <div className="my-4 rounded-xl border border-cal bg-cesped-suave/40 py-4 px-2">

@@ -273,9 +273,10 @@ export function PartidosJugadorPanel({
         open={!!partidoModal}
         onClose={cerrarModal}
         title={tipoModal === 'cancelar' ? 'Cancelar partido' : 'Salirme del partido'}
+        tono="claro"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-300">
+          <p className="text-sm text-pizarra">
             {tipoModal === 'cancelar'
               ? `¿Estás seguro de cancelar «${partidoModal?.titulo || 'este partido'}»? Los jugadores anotados verán que ya no va y el partido quedará cancelado en la comunidad.`
               : `¿Deseas retirarte de «${partidoModal?.titulo || 'este partido'}»? Tu cupo quedará libre para que otro jugador se anote.`}
@@ -284,7 +285,7 @@ export function PartidosJugadorPanel({
           {errorModal && (
             <div
               role="alert"
-              className="rounded-lg border border-red-500/30 bg-red-950/40 p-3 text-xs font-semibold text-red-300"
+              className="rounded-lg border border-error/30 bg-error-suave p-3 text-xs font-semibold text-error"
             >
               {errorModal}
             </div>
