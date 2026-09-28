@@ -207,7 +207,7 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
   - [x] **Subfase 2.5:** Rediseño visual de `/dashboard/mi-partido` y `/dashboard/carne`.
 
 - [ ] **Fase 3: Rutas operativas críticas de Admin**
-  - [ ] `/admin/agenda` y `CronogramaView.tsx` (grilla 08:00–21:00 con celdas de altura fija anti-CLS).
+  - [x] `/admin/agenda` y `CronogramaView.tsx` (grilla 00–23 con scroll inicial a 08:00, celdas de altura fija anti-CLS).
   - [ ] `/admin/reservas` y `ReservasPanel.tsx` (gestión de reservas con líneas de cal y estados semánticos).
   - [ ] `/admin/caja` y `CajaPanel.tsx` (sesión activa, movimientos y balance de caja).
   - [ ] `/admin/horarios` y `HorariosPanel.tsx` (gestión operativa Lun–Dom).
@@ -255,3 +255,4 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
 | 2026-09-27 | Fase 1 — A7 (contraste) | ✅ Por diseño | Primario `#22C55E`/`#060C08` 8.66:1 (hover `#16A34A` 5.98:1); títulos de grupo del sidebar de `#475569` (2.6:1) a `niebla` `#a9b3ad` (9.2:1) sobre `#060C08`; WhatsApp icono grafito 9.9:1 |
 | 2026-09-27 | Fase 2 — A1–A4 | ✅ PASS | JIM-QA (intento 1/3): typecheck 0 err; lint 0 err (2 warnings); test 39/39; build Next OK. Sin tokens inexistentes (`grep asfalto|cal-fuerte` vacío) |
 | 2026-09-27 | Fase 2 — contraste | ✅ Revisado por god | Formularios dentro del Modal oscuro (`ReservaForm`, `CalificarBtn`) con el patrón `flabel/finput/fselect`; texto secundario `pizarra` sólido (sin opacidad) en carné y mi-partido; carné sin QR ni datos de nacimiento/rol |
+| 2026-09-28 | Fase 3.1 — A1–A5 | ✅ PASS | JIM-QA: typecheck 0 err; lint 0 err (2 warnings previas); test 40/40; build Next OK; build Astro 17 págs OK; 0 tokens faltantes en CronogramaView |
