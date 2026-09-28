@@ -13,27 +13,27 @@ const columnas = [
 const enlace = "inline-flex min-h-11 items-center text-pizarra hover:text-basalto hover:underline";
 ---
 
-<footer class="border-t border-cal bg-tiza">
+<footer class="border-t-2 border-basalto bg-tiza">
   <div class="mx-auto grid max-w-page gap-10 px-4 py-12 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:px-6">
     <div>
       <Marca />
       <p class="mt-2 max-w-xs text-pizarra">Reservas de canchas deportivas en Arequipa.</p>
-      <ul class="mt-4">
-        <li><a href={`mailto:${EMAIL}`} class={`${enlace} gap-2`}><Icon nombre="correo" class="h-4 w-4" />{EMAIL}</a></li>
-        <li><a href={whatsappUrl()} target="_blank" rel="noopener" class={`${enlace} gap-2`}><Icon nombre="mensaje" class="h-4 w-4" />WhatsApp {WHATSAPP_VISIBLE}</a></li>
-        <li><a href={INSTAGRAM} target="_blank" rel="noopener" class={`${enlace} gap-2`}><Icon nombre="instagram" class="h-4 w-4" />Instagram</a></li>
+      <ul class="mt-4 space-y-1">
+        <li><a href={`mailto:${EMAIL}`} class={`${enlace} gap-2 font-medium`}><Icon nombre="correo" class="h-4 w-4" />{EMAIL}</a></li>
+        <li class="pt-1"><a href={whatsappUrl()} target="_blank" rel="noopener" class="btn-tactil bg-cesped-suave px-4 py-2 text-xs font-bold text-cesped-hondo hover:bg-cesped hover:text-tiza"><Icon nombre="mensaje" class="h-4 w-4" />WhatsApp {WHATSAPP_VISIBLE}</a></li>
+        <li><a href={INSTAGRAM} target="_blank" rel="noopener" class={`${enlace} gap-2 font-medium`}><Icon nombre="instagram" class="h-4 w-4" />Instagram</a></li>
       </ul>
     </div>
     {columnas.map((c) => (
       <nav aria-label={c.titulo}>
-        <h2 class="font-sans text-base font-semibold">{c.titulo}</h2>
+        <h2 class="font-sans text-base font-bold text-basalto">{c.titulo}</h2>
         <ul class="mt-2">
           {c.enlaces.map(([href, texto]) => <li><a href={href} class={enlace}>{texto}</a></li>)}
         </ul>
       </nav>
     ))}
   </div>
-  <div class="border-t border-cal">
-    <p class="mx-auto max-w-page px-4 py-5 text-sm text-pizarra md:px-6">© {new Date().getFullYear()} ReservaYa. Hecho en Arequipa, Perú.</p>
+  <div class="border-t-2 border-basalto/15 bg-piedra/30">
+    <p class="mx-auto max-w-page px-4 py-5 text-sm font-medium text-pizarra md:px-6">© {new Date().getFullYear()} ReservaYa. Hecho en Arequipa, Perú.</p>
   </div>
 </footer>

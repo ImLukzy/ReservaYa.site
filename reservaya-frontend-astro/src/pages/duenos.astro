@@ -44,26 +44,26 @@ const preguntas = [
         <Button href={whatsappUrl("Hola, quiero publicar mis canchas en ReservaYa")} variante="secundario" target="_blank" rel="noopener">Escribir por WhatsApp</Button>
       </div>
     </div>
-    <div class="rounded-surface border border-cal bg-tiza p-6">
-      <h2 class="text-xl">Cómo empiezas</h2>
+    <div class="card-tactil p-6 sm:p-8">
+      <h2 class="text-xl font-bold">Cómo empiezas</h2>
       <ol class="mt-4 space-y-4">
         {pasos.map((p, i) => (
           <li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-2">
-            <span class="font-display text-xl font-bold tabular-nums">{i + 1}</span>
-            <span>{p}</span>
+            <span class="font-display text-xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">{i + 1}</span>
+            <span class="font-medium text-basalto">{p}</span>
           </li>
         ))}
       </ol>
     </div>
   </section>
 
-  <section aria-labelledby="panel-titulo" class="border-y border-cal bg-tiza">
+  <section aria-labelledby="panel-titulo" class="border-y-2 border-basalto bg-tiza">
     <div class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
-      <h2 id="panel-titulo" class="text-2xl lg:text-3xl">Qué haces desde el panel</h2>
+      <h2 id="panel-titulo" class="text-2xl font-bold lg:text-3xl">Qué haces desde el panel</h2>
       <dl class="mt-6 border-t border-cal">
         {modulos.map((m) => (
           <div id={m.id} class="grid gap-1 border-b border-cal py-4 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-6">
-            <dt class="font-display text-xl font-semibold">{m.titulo}</dt>
+            <dt class="font-display text-xl font-bold text-basalto">{m.titulo}</dt>
             <dd class="max-w-2xl text-pizarra">{m.texto}</dd>
           </div>
         ))}
@@ -73,7 +73,7 @@ const preguntas = [
 
   <Planes />
 
-  <section aria-labelledby="preguntas-titulo" class="border-t border-cal bg-tiza">
+  <section aria-labelledby="preguntas-titulo" class="border-t-2 border-basalto bg-tiza">
     <div class="mx-auto max-w-texto px-4 py-12 md:px-6 lg:py-16">
       <h2 id="preguntas-titulo" class="text-2xl lg:text-3xl">Preguntas de dueños</h2>
       <div class="mt-6 border-t border-cal">

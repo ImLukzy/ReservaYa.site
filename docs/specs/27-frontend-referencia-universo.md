@@ -63,6 +63,24 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 | `reservaya-frontend-astro/src/pages/torneos.astro` | Modificar | Tarjetas de torneos públicos con sombra dura 4px y botón estandarizado | L3 |
 | `reservaya-frontend-astro/src/components/Header.astro` | Modificar | Botones píldora y enlaces con microinteracción táctil | L3 |
 | `reservaya-frontend-astro/src/components/AuthCard.astro` | Modificar | Tarjeta de formulario de acceso con borde 2px y sombra dura 4px | L3 |
+| `reservaya-frontend-astro/src/pages/duenos.astro` | Modificar | Propuesta de valor B2B y cálculo de ingresos con `.card-tactil` | L5 |
+| `reservaya-frontend-astro/src/components/Planes.astro` | Modificar | Planes de suscripción con borde 2px y `.panel-tactil` | L5 |
+| `reservaya-frontend-astro/src/pages/completar-cuadro.astro` | Modificar | Convocatorias comunitarias con tarjetas táctiles y chips | L5 |
+| `reservaya-frontend-astro/src/pages/sortear.astro` | Modificar | Pizarra táctica interactiva para sorteo de equipos | L5 |
+| `reservaya-frontend-astro/src/pages/ayuda.astro` | Modificar | Centro de ayuda y FAQ con acordeones de borde 2px | L5 |
+| `reservaya-frontend-astro/src/components/Footer.astro` | Modificar | Pie de página con banda `noche`, enlaces limpios y botón táctil | L5 |
+| `reservaya-frontend-astro/src/pages/404.astro` | Modificar | Estado de error no encontrado con `.card-dashed` | L5 |
+| `reservaya-frontend-astro/src/pages/500.astro` | Modificar | Estado de error de servidor con `.card-dashed` | L5 |
+| `reservaya-nextjs-api/app/(dashboard)/dashboard/perfil/page.tsx` | Modificar | Perfil del jugador con avatar táctil y botón mecánico | L6 |
+| `reservaya-nextjs-api/components/features/PerfilForm.tsx` | Modificar | Formulario de perfil con inputs táctiles 2px y feedback de click | L6 |
+| `reservaya-nextjs-api/app/(dashboard)/dashboard/mi-partido/page.tsx` | Modificar | Próxima reserva con proporción física y croquis táctil | L6 |
+| `reservaya-nextjs-api/components/layout/TopBar.tsx` | Modificar | Barra superior con buscador táctil y badge de rol nítido | L6 |
+| `reservaya-nextjs-api/components/features/ReservaForm.tsx` | Modificar | Formulario modal de cotización y reserva con campos táctiles | L6 |
+| `reservaya-nextjs-api/app/(auth)/login/page.tsx` | Modificar | Unificación de `.auth-card` con estándar táctil (sin blur) | L6 |
+| `reservaya-nextjs-api/app/(auth)/register/page.tsx` | Modificar | Registro con `.card-tactil` y campos consistentes | L6 |
+| `reservaya-nextjs-api/components/ui/ErrorPanel.tsx` | Modificar | Panel de error con `.card-dashed` y botón de reintento | L6 |
+| `reservaya-nextjs-api/components/ui/AvisoCarga.tsx` | Modificar | Estado de carga con caja táctil anti-CLS | L6 |
+| `reservaya-nextjs-api/components/ui/WhatsAppFloat.tsx` | Modificar | Botón flotante con elevación y pulsación mecánica | L6 |
 
 ---
 
@@ -164,6 +182,29 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
   - Verificación de contraste de accesibilidad WCAG AA en botones y etiquetas.
   - Capturas responsive en 375px y 1440px para archivo de evidencias.
 
+### Lote 5: Páginas interactivas, herramientas y pie de página en Astro
+- **Objetivo:** Extender la elevación visual táctil a las herramientas públicas, la propuesta para dueños y las páginas secundarias de Astro.
+- **Acciones específicas:**
+  - `src/pages/duenos.astro`: sección B2B pública con tarjetas de propuesta de valor en `.card-tactil`, cálculo de ingresos con números `tabular-nums` y CTA en formato píldora mecánica.
+  - `src/components/Planes.astro`: tarjetas de planes para complejos con borde 2px basalto, sombra dura 6px (`.panel-tactil`) y badge de plan recomendado con `.chip-tactil`.
+  - `src/pages/completar-cuadro.astro`: convocatorias comunitarias con tarjetas táctiles, chips de posición y botón mecánico "Anotarme" / "Ver partido".
+  - `src/pages/sortear.astro`: generador interactivo de equipos con estética de "pizarra táctica" (cajas de equipo `.card-tactil`, botón de sorteo mecánico con depresión `active:translate(2px,2px)`).
+  - `src/pages/ayuda.astro`: centro de ayuda con acordeones de borde 2px basalto y caja de soporte enmarcada.
+  - `src/components/Footer.astro`: pie de página con banda `noche`, enlaces limpios con hover sobrio y botón WhatsApp táctil.
+  - `src/pages/404.astro` y `src/pages/500.astro`: estados de error con `.card-dashed` y botón píldora de regreso al inicio.
+- **Gates del Lote 5 (con JIM-QA):** `npx astro check` (0 errores, 0 warnings), `npm run build` Astro (17+ páginas), scroll horizontal 0px a 375px.
+
+### Lote 6: Perfil del Jugador, Formularios, Modales, Auth y Shell en Next.js
+- **Objetivo:** Completar la elevación del área privada del jugador y componentes de formulario en Next.js.
+- **Acciones específicas:**
+  - `app/(dashboard)/dashboard/perfil/page.tsx` y `components/features/PerfilForm.tsx`: edición de datos del jugador con inputs táctiles 2px, avatar enmarcado con borde basalto y botón de confirmación con click mecánico.
+  - `app/(dashboard)/dashboard/mi-partido/page.tsx`: tarjeta destacada de próxima reserva con proporción táctica, croquis de cancha, contador numérico y acciones accesibles.
+  - `components/layout/TopBar.tsx`: barra superior con buscador táctil píldora, menú de usuario con borde 2px basalto y sombra dura 4px.
+  - `components/features/ReservaForm.tsx`: formulario modal de cotización y reserva con campos táctiles consistentes.
+  - `app/(auth)/login/page.tsx` y `app/(auth)/register/page.tsx`: unificación de `.auth-card` con el estándar `.card-tactil` (borde 2px basalto, sombra dura) eliminando degradados borrosos.
+  - `components/ui/ErrorPanel.tsx`, `components/ui/AvisoCarga.tsx`, `components/ui/WhatsAppFloat.tsx`: soporte táctil y feedback consistente.
+- **Gates del Lote 6 (con JIM-QA):** Typecheck Next.js, Lint Next.js, Tests 100% PASS (≥ 40 tests), Build Next.js OK, scroll horizontal 0px a 375px.
+
 ---
 
 ## 6. Criterios de aceptación
@@ -189,6 +230,8 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 - [x] **L2:** Implementación en el Área del Jugador Next.js (`dashboard`, `canchas`, `partidos`, `carne`, `reservas`, `CanchaCard`, `PartidosJugadorPanel`).
 - [x] **L3:** Implementación en la Landing Astro (`index.astro`, `canchas.astro`, `torneos.astro`, `Header.astro`, `AuthCard.astro`).
 - [x] **L4:** Gates finales integrales (A1–A10) anotados por JIM-QA y revisión visual.
+- [x] **L5:** Páginas interactivas y secundarias de Astro (`duenos`, `Planes`, `completar-cuadro`, `sortear`, `ayuda`, `Footer`, `404`, `500`).
+- [ ] **L6:** Perfil del Jugador, Formularios, Auth y Shell en Next.js (`perfil`, `PerfilForm`, `mi-partido`, `TopBar`, `ReservaForm`, `login`, `register`, componentes de soporte).
 
 ---
 
@@ -201,3 +244,5 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 | 2026-09-28 | Lote 2 (A1–A4, A7) | ✅ PASS | JIM-QA: typecheck 0 err, lint 0 err (2 warnings), test 40/40, build Next OK, build Astro 17 págs OK, scroll horizontal 0px |
 | 2026-09-28 | Lote 3 (A5–A7) | ✅ PASS | JIM-QA: astro check 0 err, astro build 17 págs OK, test 40/40, scroll horizontal 0px |
 | 2026-09-28 | Lote 4 (A1–A10) | ✅ PASS | JIM-QA: verificación integral final 100% verde (A1–A10 cumplidos, 0 regresiones) |
+| 2026-09-28 | Lote 5 (A5–A7) | ✅ PASS | JIM-QA: astro check 0 err, astro build 17 págs OK, test 40/40, scroll horizontal 0px |
+| 2026-09-28 | Lote 6 (A1–A4, A7) | ⏳ En cola | Oscar-code → JIM-QA |
