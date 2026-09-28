@@ -479,20 +479,72 @@ paths:
 
   /api/partidos/mios:
     get:
-      summary: Listar partidos creados o en los que participa el jugador
+      summary: Listar partidos creados o en los que participa el jugador (Spec 22b)
       responses:
         '200':
-          description: Partidos del usuario
+          description: Partidos del usuario agrupados por organizados y suscritos
           content:
             application/json:
               schema:
                 type: object
-                required: [partidos]
+                required: [organizo, meAnote]
                 properties:
-                  partidos:
+                  organizo:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Partido'
+                      $ref: '#/components/schemas/PartidoJugador'
+                  meAnote:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PartidoJugador'
+
+  /api/partidos/{id}:
+    delete:
+      summary: Cancelar partido comunitario (solo organizador)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partido cancelado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+        '401':
+          description: No autenticado
+        '403':
+          description: No autorizado (solo el organizador puede cancelar)
+
+  /api/partidos/{id}/anotarse:
+    delete:
+      summary: Salirse de un partido comunitario (liberar cupo)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Salida confirmada y cupo liberado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+        '401':
+          description: No autenticado
 
 components:
   schemas:
@@ -642,6 +694,66 @@ components:
           type: integer
         cuposDisponibles:
           type: integer
+
+    PartidoJugador:
+      type: object
+      required: [id, titulo, formato, nivel, cuposTotales, cuposLibres, distrito, cancha, precio, fecha, anotado, inscritos]
+      properties:
+        id:
+          type: string
+        titulo:
+          type: string
+        descripcion:
+          type: string
+          nullable: true
+        formato:
+          type: string
+        nivel:
+          type: string
+        cuposTotales:
+          type: integer
+        cuposLibres:
+          type: integer
+        distrito:
+          type: string
+        cancha:
+          type: string
+        superficie:
+          type: string
+          nullable: true
+        precio:
+          type: number
+        fecha:
+          type: string
+        desde:
+          type: string
+        hasta:
+          type: string
+        cuando:
+          type: string
+        fechaCorta:
+          type: string
+        horaCorta:
+          type: string
+        fotoUrl:
+          type: string
+          nullable: true
+        anotado:
+          type: boolean
+        inscritos:
+          type: array
+          items:
+            type: string
+        organizador:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            nombre:
+              type: string
+        creadoEn:
+          type: string
 
     ErrorRespuesta:
       type: object

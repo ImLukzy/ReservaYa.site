@@ -228,6 +228,37 @@ export interface ReporteGlobal {
   ultimasReservas: Reserva[]
 }
 
+// GET /api/partidos/mios — PartidosController.PartidoShape (camelCase)
+export interface PartidoJugador {
+  id: string
+  titulo: string
+  descripcion: string | null
+  formato: string
+  nivel: string
+  cuposTotales: number
+  cuposLibres: number
+  distrito: string
+  cancha: string
+  superficie: string | null
+  precio: number
+  fecha: string
+  desde: string
+  hasta: string
+  cuando: string
+  fechaCorta: string
+  horaCorta: string
+  fotoUrl: string | null
+  anotado: boolean
+  inscritos: string[]
+  organizador: { id: string; nombre: string } | null
+  creadoEn: string
+}
+
+export interface MisPartidos {
+  organizo: PartidoJugador[]
+  meAnote: PartidoJugador[]
+}
+
 export class ApiError extends Error {
   status: number
 
