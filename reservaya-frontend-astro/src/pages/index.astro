@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SlotBoard from "../components/ui/SlotBoard.astro";
 import Select from "../components/ui/Select.astro";
 import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
 import { DISTRITOS, TIPOS } from "../lib/arequipa";
 import { BOTON } from "../lib/estilos";
 
@@ -21,27 +22,42 @@ const extras = [
   { href: "/sortear", titulo: "Arma equipos parejos", texto: "Escribe los nombres y reparte los equipos al azar, sin discusiones.", accion: "Armar equipos" },
   { href: "/torneos", titulo: "Torneos en complejos", texto: "Los complejos organizan sus torneos con inscripciones, partidos y resultados.", accion: "Ver torneos" },
 ];
+
+const preguntas = [
+  ["¿Necesito pagar en la página?", "No. Reservas el horario y pagas en el complejo, con el método que uses siempre."],
+  ["¿Qué pasa si mi reserva queda pendiente?", "No bloquea el horario hasta que el complejo la confirma."],
+  ["¿Cómo entro a jugar?", "Con la reserva confirmada ves tu código en Mi partido y lo muestras al llegar a la cancha."],
+  ["¿En qué distritos hay canchas?", "En los 29 distritos de Arequipa: eliges el tuyo y ves las canchas libres cerca de ti."],
+  ["¿Necesito crear una cuenta?", "Sí, con tu nombre, correo, fecha de nacimiento y una contraseña."],
+];
 ---
 
 <BaseLayout
   title="ReservaYa | Canchas libres en Arequipa"
   description="Mira qué canchas de fútbol, vóley, básquet, pádel y tenis están libres hoy en Arequipa y resérvalas en un minuto."
 >
-  <section class="mx-auto grid max-w-page gap-8 px-4 pb-12 pt-8 md:px-6 lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-12 lg:pb-16 lg:pt-12">
-    <div>
-      <h1 class="text-3xl lg:text-4xl">Canchas libres en Arequipa</h1>
-      <p class="mt-3 max-w-md text-lg text-pizarra">Elige la hora, mira el precio y reserva en un minuto.</p>
+  <section class="relative overflow-hidden bg-noche">
+    <div class="mx-auto grid max-w-page gap-8 px-4 pb-14 pt-8 md:px-6 lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-12 lg:pb-20 lg:pt-12">
+      <div>
+        <h1 class="text-3xl text-tiza lg:text-4xl">Canchas libres en Arequipa</h1>
+        <p class="mt-3 max-w-md text-lg text-tiza/75">Elige la hora, mira el precio y reserva en un minuto.</p>
 
-      <form action="/canchas" method="get" class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-1" role="search" aria-label="Buscar canchas">
-        <Select id="buscar-distrito" name="distrito" etiqueta="Distrito" etiquetaOculta opciones={distritos} />
-        <Select id="buscar-tipo" name="tipo" etiqueta="Deporte" etiquetaOculta opciones={tipos} />
-        <Select id="buscar-dia" name="fecha" etiqueta="Día" etiquetaOculta opciones={dias} />
-        <input id="buscar-hora" type="hidden" name="hora" value="" />
-        <Button type="submit" class="lg:mt-1">Buscar canchas</Button>
-      </form>
+        <form action="/canchas" method="get" class="mt-6 grid grid-cols-2 gap-3 rounded-surface border border-cal bg-tiza p-4 lg:grid-cols-1 lg:p-5" role="search" aria-label="Buscar canchas">
+          <Select id="buscar-distrito" name="distrito" etiqueta="Distrito" etiquetaOculta opciones={distritos} />
+          <Select id="buscar-tipo" name="tipo" etiqueta="Deporte" etiquetaOculta opciones={tipos} />
+          <Select id="buscar-dia" name="fecha" etiqueta="Día" etiquetaOculta opciones={dias} />
+          <input id="buscar-hora" type="hidden" name="hora" value="" />
+          <Button type="submit" class="lg:mt-1">Buscar canchas</Button>
+        </form>
+      </div>
+
+      <SlotBoard />
     </div>
-
-    <SlotBoard />
+    <div
+      class="h-3 w-full border-t border-cal"
+      style="background-image: repeating-linear-gradient(45deg, var(--color-cesped) 0 14px, var(--color-cesped-hondo) 14px 28px);"
+      aria-hidden="true"
+    ></div>
   </section>
 
   <section id="como-funciona" aria-labelledby="como-titulo" class="border-y border-cal bg-tiza">
@@ -59,6 +75,42 @@ const extras = [
     </div>
   </section>
 
+  <section aria-labelledby="deportes-titulo" class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
+    <h2 id="deportes-titulo" class="text-2xl lg:text-3xl">Todos los deportes</h2>
+    <p class="mt-2 max-w-xl text-pizarra">Busca cancha por el deporte que juegas.</p>
+    <ul class="mt-6 flex flex-wrap gap-3">
+      {TIPOS.map((t) => (
+        <li>
+          <a
+            href={`/canchas?tipo=${t.valor}`}
+            class="inline-flex min-h-11 items-center gap-2 rounded-control border border-borde bg-tiza px-4 font-semibold text-basalto hover:bg-piedra"
+          >
+            {t.etiqueta}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section aria-labelledby="distritos-titulo" class="border-y border-cal bg-cielo">
+    <div class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
+      <h2 id="distritos-titulo" class="text-2xl lg:text-3xl">Cobertura en los 29 distritos de Arequipa</h2>
+      <p class="mt-2 max-w-xl text-pizarra">Elige tu distrito y mira las canchas libres cerca de ti.</p>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {DISTRITOS.map((d) => (
+          <li>
+            <a
+              href={`/canchas?distrito=${encodeURIComponent(d)}`}
+              class="inline-flex min-h-11 items-center rounded-control border border-cal bg-tiza px-3 text-sm font-medium text-basalto hover:bg-piedra"
+            >
+              {d}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   <section aria-labelledby="extras-titulo" class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
     <h2 id="extras-titulo" class="text-2xl lg:text-3xl">Para el resto del partido</h2>
     <ul class="mt-6 border-t border-cal">
@@ -72,11 +124,28 @@ const extras = [
     </ul>
   </section>
 
-  <section aria-labelledby="duenos-titulo" class="border-t border-cal bg-tiza">
+  <section aria-labelledby="preguntas-titulo" class="border-t border-cal bg-tiza">
+    <div class="mx-auto max-w-texto px-4 py-12 md:px-6 lg:py-16">
+      <h2 id="preguntas-titulo" class="text-2xl lg:text-3xl">Preguntas frecuentes</h2>
+      <div class="mt-6 border-t border-cal">
+        {preguntas.map(([p, r]) => (
+          <details class="group border-b border-cal">
+            <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 font-semibold [&::-webkit-details-marker]:hidden">
+              {p}
+              <Icon nombre="mas" class="h-5 w-5 shrink-0 text-pizarra transition-transform group-open:rotate-45" />
+            </summary>
+            <p class="pb-4 text-pizarra">{r}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="duenos-titulo" class="border-t border-cal bg-cielo">
     <div class="mx-auto flex max-w-page flex-col gap-6 px-4 py-12 md:flex-row md:items-center md:justify-between md:px-6">
       <div>
         <h2 id="duenos-titulo" class="text-2xl lg:text-3xl">¿Tienes canchas en Arequipa?</h2>
-        <p class="mt-2 max-w-xl text-pizarra">Publica tus horarios y recibe reservas sin contestar llamadas. Las confirmas desde tu panel.</p>
+        <p class="mt-2 max-w-xl text-pizarra">Publica tus horarios y recibe reservas sin contestar llamadas. Agenda, precios y caja en un solo panel; las confirmas cuando quieras.</p>
       </div>
       <Button href="/duenos" class="shrink-0">Publicar mis canchas</Button>
     </div>
