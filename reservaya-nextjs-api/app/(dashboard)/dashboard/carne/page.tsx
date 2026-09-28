@@ -21,19 +21,19 @@ export default async function CarnePage() {
         </p>
       </div>
 
-      {/* Carné con proporción de tarjeta física CR80 (D2, spec 24); ≤360px cae a alto libre. Sin sombras decorativas. */}
-      <div className="mx-auto aspect-[1.586] w-full max-w-[420px] overflow-hidden rounded-2xl border-2 border-cal bg-tiza max-[360px]:aspect-auto">
-        <div className="h-1 w-full bg-cesped" aria-hidden="true" />
+      {/* Carné con proporción de tarjeta física CR80 táctil con borde 2px basalto y sombra dura 6px */}
+      <div className="mx-auto aspect-[1.586] w-full max-w-[420px] overflow-hidden rounded-2xl border-2 border-basalto bg-tiza shadow-[6px_6px_0_0_#1f2a24] max-[360px]:aspect-auto">
+        <div className="h-2 w-full border-b-2 border-basalto bg-cesped" aria-hidden="true" />
         <div className="flex h-full flex-col justify-between p-5 sm:p-6">
           {/* Cabecera: marca y estado */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-cesped font-display text-xs font-black text-tiza">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border-2 border-basalto bg-cesped font-display text-xs font-black text-tiza">
                 RY
               </div>
               <p className="font-display text-xs font-black text-basalto">ReservaYa</p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full border border-cesped/30 bg-cesped-suave px-2 py-0.5 text-[11px] font-bold text-cesped-hondo">
+            <span className="inline-flex items-center gap-1 rounded-full border-2 border-basalto bg-cesped-suave px-2.5 py-0.5 text-[11px] font-bold text-cesped-hondo">
               <ShieldCheck className="h-3 w-3" aria-hidden="true" />
               Activo
             </span>
@@ -41,7 +41,7 @@ export default async function CarnePage() {
 
           {/* Identidad del jugador */}
           <div className="flex items-center gap-4">
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-cal bg-piedra sm:h-16 sm:w-16">
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-basalto bg-piedra sm:h-16 sm:w-16">
               {session.fotoUrl ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
@@ -75,7 +75,7 @@ export default async function CarnePage() {
           </div>
 
           {/* Pie: rol y teléfono si existe */}
-          <div className="flex items-center justify-between border-t border-cal pt-2 text-xs text-pizarra">
+          <div className="flex items-center justify-between border-t-2 border-basalto/15 pt-2 text-xs text-pizarra">
             <span className="font-display font-bold text-basalto">Jugador</span>
             {session.telefono && (
               <span className="flex items-center gap-1 font-display tabular-nums">
@@ -88,7 +88,7 @@ export default async function CarnePage() {
       </div>
 
       {/* Acciones de gestión de perfil */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-cal bg-tiza p-5">
+      <div className="card-tactil flex flex-col sm:flex-row items-center justify-between gap-4 p-5">
         <div>
           <h3 className="font-display text-sm font-bold text-basalto">
             ¿Necesitas actualizar tus datos o foto?
@@ -99,7 +99,7 @@ export default async function CarnePage() {
         </div>
         <Link
           href="/dashboard/perfil"
-          className="inline-flex items-center gap-1.5 rounded-xl border border-cal bg-piedra px-4 py-2.5 text-xs font-bold text-basalto transition hover:border-borde hover:bg-tiza shrink-0"
+          className="btn-tactil shrink-0 bg-tiza px-5 py-2.5 text-xs font-bold text-basalto hover:bg-piedra"
         >
           Editar perfil
           <ArrowUpRight className="h-3.5 w-3.5" />
