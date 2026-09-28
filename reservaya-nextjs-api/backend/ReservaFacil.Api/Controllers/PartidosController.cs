@@ -111,25 +111,15 @@ public class PartidosController : ControllerBase
         var uid = User.IdOrEmpty();
         var hoy = DateTime.Today;
 
-        var organizo = await _db.PartidosAbiertos.AsNoTracking()
+        var partidos = await _db.PartidosAbiertos.AsNoTracking()
             .Include(p => p.Organizador)
             .Include(p => p.Anotaciones)
-            .Where(p => p.OrganizadorId == uid && p.Fecha >= hoy)
+            .Where(p => p.Fecha >= hoy && (p.OrganizadorId == uid || p.Anotaciones.Any(a => a.UsuarioId == uid)))
             .OrderBy(p => p.Fecha).ThenBy(p => p.DesdeMin)
             .ToListAsync();
 
-        var meAnoteIds = await _db.AnotacionesPartido.AsNoTracking()
-            .Where(a => a.UsuarioId == uid)
-            .Select(a => a.PartidoId)
-            .ToListAsync();
-        var meAnote = meAnoteIds.Count == 0
-            ? new List<PartidoAbierto>()
-            : await _db.PartidosAbiertos.AsNoTracking()
-                .Include(p => p.Organizador)
-                .Include(p => p.Anotaciones)
-                .Where(p => meAnoteIds.Contains(p.Id) && p.Fecha >= hoy)
-                .OrderBy(p => p.Fecha).ThenBy(p => p.DesdeMin)
-                .ToListAsync();
+        var organizo = partidos.Where(p => p.OrganizadorId == uid).ToList();
+        var meAnote = partidos.Where(p => p.Anotaciones.Any(a => a.UsuarioId == uid)).ToList();
 
         var idsInscritos = organizo
             .SelectMany(p => p.Anotaciones.Select(a => a.UsuarioId))

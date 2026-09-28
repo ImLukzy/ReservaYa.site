@@ -18,16 +18,26 @@ internal static class ComplejoAccess
         return user.RolOr() == Rol.TECNICO;
     }
 
-    public static async Task<List<string>?> IdsAsync(AppDbContext db, ClaimsPrincipal user)
+    public static IQueryable<string>? IdsQuery(AppDbContext db, ClaimsPrincipal user)
     {
         if (EsPlataforma(user))
             return null;
         var mine = user.IdOrEmpty();
-        var propios = await db.Complejos.AsNoTracking()
-            .Where(c => c.DuenoId == mine).Select(c => c.Id).ToListAsync();
-        var miembro = await db.ComplejoMiembros.AsNoTracking()
-            .Where(m => m.UsuarioId == mine && m.Activo).Select(m => m.ComplejoId).ToListAsync();
-        return propios.Concat(miembro).Distinct().ToList();
+        return db.Complejos.AsNoTracking()
+            .Where(c => c.DuenoId == mine)
+            .Select(c => c.Id)
+            .Concat(
+                db.ComplejoMiembros.AsNoTracking()
+                    .Where(m => m.UsuarioId == mine && m.Activo)
+                    .Select(m => m.ComplejoId)
+            )
+            .Distinct();
+    }
+
+    public static async Task<List<string>?> IdsAsync(AppDbContext db, ClaimsPrincipal user)
+    {
+        var query = IdsQuery(db, user);
+        return query is null ? null : await query.ToListAsync();
     }
 
     public static async Task<bool> TieneAccesoAsync(AppDbContext db, ClaimsPrincipal user, string complejoId)
@@ -93,14 +103,17 @@ internal static class ComplejoAccess
         return null;
     }
 
-    // Vitrina pública: complejos publicados CON suscripción activa vigente.
-    public static async Task<HashSet<string>> IdsVisiblesAsync(AppDbContext db)
+    // Vitrina pública: complejos publicados CON suscripción activa vigente (IQueryable para subconsultas).
+    public static IQueryable<string> IdsVisiblesQuery(AppDbContext db)
     {
         var hoy = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Unspecified);
-        return await db.Suscripciones.AsNoTracking()
+        return db.Suscripciones.AsNoTracking()
             .Where(s => s.Estado == EstadoSuscripcion.ACTIVA && s.FechaFin >= hoy)
             .Join(db.Complejos.AsNoTracking().Where(c => c.Publicado),
-                s => s.ComplejoId, c => c.Id, (s, c) => s.ComplejoId)
-            .ToHashSetAsync();
+                s => s.ComplejoId, c => c.Id, (s, c) => s.ComplejoId);
     }
+
+    // Vitrina pública: complejos publicados CON suscripción activa vigente.
+    public static async Task<HashSet<string>> IdsVisiblesAsync(AppDbContext db) =>
+        await IdsVisiblesQuery(db).ToHashSetAsync();
 }

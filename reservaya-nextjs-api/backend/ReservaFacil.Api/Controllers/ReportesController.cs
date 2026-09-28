@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using ReservaFacil.Api.Data;
 using ReservaFacil.Api.Dtos;
 using ReservaFacil.Api.Models;
@@ -13,10 +14,12 @@ namespace ReservaFacil.Api.Controllers;
 public class ReportesController : ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly IMemoryCache _cache;
 
-    public ReportesController(AppDbContext db)
+    public ReportesController(AppDbContext db, IMemoryCache cache)
     {
         _db = db;
+        _cache = cache;
     }
 
     [HttpGet("dashboard")]
@@ -116,16 +119,34 @@ public class ReportesController : ControllerBase
         return Ok(new { report });
     }
 
+    private async Task<int> GetCanchasActivasCachedAsync()
+    {
+        const string cacheKey = "reportes:canchas_activas_count";
+        if (!_cache.TryGetValue(cacheKey, out int count))
+        {
+            count = await _db.Canchas.AsNoTracking().CountAsync(c => c.Activa);
+            _cache.Set(cacheKey, count, TimeSpan.FromSeconds(60));
+        }
+        return count;
+    }
+
     private async Task<DashboardUsuarioDto> DashboardUsuarioAsync()
     {
         var userId = User.IdOrEmpty();
 
-        var reservas = await _db.Reservas.AsNoTracking()
-            .CountAsync(r => r.UsuarioId == userId);
-        var confirmadas = await _db.Reservas.AsNoTracking()
-            .CountAsync(r => r.UsuarioId == userId && r.Estado == EstadoReserva.CONFIRMADA);
-        var canchasActivas = await _db.Canchas.AsNoTracking()
-            .CountAsync(c => c.Activa);
+        var stats = await _db.Reservas.AsNoTracking()
+            .Where(r => r.UsuarioId == userId)
+            .GroupBy(_ => 1)
+            .Select(g => new
+            {
+                Total = g.Count(),
+                Confirmadas = g.Count(r => r.Estado == EstadoReserva.CONFIRMADA)
+            })
+            .FirstOrDefaultAsync();
+
+        var reservas = stats?.Total ?? 0;
+        var confirmadas = stats?.Confirmadas ?? 0;
+        var canchasActivas = await GetCanchasActivasCachedAsync();
         var ultimas = await _db.Reservas.AsNoTracking()
             .Include(r => r.Cancha)
             .Where(r => r.UsuarioId == userId)
@@ -150,24 +171,33 @@ public class ReportesController : ControllerBase
         var reservasQ = _db.Reservas.AsNoTracking().AsQueryable();
         if (ids is not null)
         {
-            var canchaIds = await _db.Canchas.AsNoTracking()
+            var canchaIdsQuery = _db.Canchas.AsNoTracking()
                 .Where(c => c.ComplejoId != null && ids.Contains(c.ComplejoId!))
-                .Select(c => c.Id).ToListAsync();
+                .Select(c => c.Id);
             reservasQ = reservasQ.Where(r =>
                 (r.ComplejoId != null && ids.Contains(r.ComplejoId!)) ||
-                (r.ComplejoId == null && canchaIds.Contains(r.CanchaId)));
+                (r.ComplejoId == null && canchaIdsQuery.Contains(r.CanchaId)));
         }
 
-        var total = await reservasQ.CountAsync();
-        var pendientes = await reservasQ
-            .CountAsync(r => r.Estado == EstadoReserva.PENDIENTE);
+        var stats = await reservasQ
+            .GroupBy(_ => 1)
+            .Select(g => new
+            {
+                Total = g.Count(),
+                Pendientes = g.Count(r => r.Estado == EstadoReserva.PENDIENTE),
+                Ingresos = g.Sum(r => r.Estado == EstadoReserva.CONFIRMADA ? r.Total : 0m)
+            })
+            .FirstOrDefaultAsync();
+
+        var total = stats?.Total ?? 0;
+        var pendientes = stats?.Pendientes ?? 0;
+        var ingresos = stats?.Ingresos ?? 0m;
+
         var canchasActivas = ids is null
-            ? await _db.Canchas.AsNoTracking().CountAsync(c => c.Activa)
+            ? await GetCanchasActivasCachedAsync()
             : await _db.Canchas.AsNoTracking()
                 .CountAsync(c => c.Activa && c.ComplejoId != null && ids.Contains(c.ComplejoId!));
-        var ingresos = await reservasQ
-            .Where(r => r.Estado == EstadoReserva.CONFIRMADA)
-            .SumAsync(r => (decimal?)r.Total) ?? 0m;
+
         var ultimas = await reservasQ
             .Include(r => r.Cancha)
             .Include(r => r.Usuario)
