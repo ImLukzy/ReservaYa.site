@@ -10,12 +10,21 @@ import { CalendarX2 } from 'lucide-react'
 import { DismissibleNotice } from '@/components/features/DismissibleNotice'
 import { estadoLabel } from '@/components/features/etiquetasJugador'
 import { proximaDe } from '@/components/features/proximaReserva'
+import { crearCarga } from '@/lib/carga'
+import { AvisoCarga } from '@/components/ui/AvisoCarga'
 export const dynamic = 'force-dynamic'
 const estadoBadge: Record<string, 'green' | 'yellow' | 'red' | 'blue' | 'gray'> = {
   CONFIRMADA: 'green',
   PENDIENTE: 'yellow',
   CANCELADA: 'red',
   COMPLETADA: 'blue',
+}
+
+const dashboardVacio: DashboardUsuario = {
+  reservas: 0,
+  reservasConfirmadas: 0,
+  canchasActivas: 0,
+  ultimasReservas: [],
 }
 
 function fechaLarga(fechaIso: string): string {
@@ -25,10 +34,11 @@ function fechaLarga(fechaIso: string): string {
 }
 
 export default async function DashboardPage() {
-  const session = await getSession()
-  const [dashboard, todasLasReservas] = await Promise.all([
-    api.getDashboard() as Promise<DashboardUsuario>,
-    api.getReservas(),
+  const carga = crearCarga()
+  const [session, dashboard, todasLasReservas] = await Promise.all([
+    getSession(),
+    carga.de(api.getDashboard() as Promise<DashboardUsuario>, dashboardVacio, 'el resumen del panel'),
+    carga.de(api.getReservas(), [], 'las reservas'),
   ])
   const reservas = dashboard.ultimasReservas
   const totalReservas = dashboard.reservas
@@ -49,6 +59,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
+      <AvisoCarga errores={carga.errores} />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-cal pb-4">
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-basalto">Hola, {session!.nombre}</h1>
