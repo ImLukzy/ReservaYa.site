@@ -82,9 +82,9 @@ export function CanchaCard({
 
   return (
     <>
-      <div className="flex flex-col overflow-hidden rounded-xl border border-cal bg-tiza transition hover:border-borde">
+      <div className="card-tactil flex flex-col overflow-hidden transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1f2a24]">
         {/* Contenedor de imagen reservado anti-CLS */}
-        <div className="relative aspect-video w-full overflow-hidden border-b border-cal bg-piedra">
+        <div className="relative aspect-video w-full overflow-hidden border-b-2 border-basalto bg-piedra">
           {cancha.imagen ? <ImagenCancha src={cancha.imagen} alt={cancha.nombre} /> : <CroquisCancha />}
         </div>
 
@@ -114,18 +114,18 @@ export function CanchaCard({
 
           <div className="mb-4 flex flex-wrap gap-1.5">
             {cancha.techada && (
-              <span className="rounded-md border border-cal bg-piedra px-2 py-0.5 text-[11px] font-semibold text-basalto">
+              <span className="rounded-full border border-basalto bg-piedra px-2.5 py-0.5 text-[11px] font-bold text-basalto">
                 Techada
               </span>
             )}
             {cancha.superficie && (
-              <span className="rounded-md border border-cal bg-piedra px-2 py-0.5 text-[11px] font-semibold text-basalto">
+              <span className="rounded-full border border-basalto bg-piedra px-2.5 py-0.5 text-[11px] font-bold text-basalto">
                 {cancha.superficie}
               </span>
             )}
           </div>
 
-          <div className="mt-auto mb-4 flex items-center justify-between border-t border-cal pt-3">
+          <div className="mt-auto mb-4 flex items-center justify-between border-t-2 border-basalto/15 pt-3">
             <div className="flex items-center gap-1 text-xs text-pizarra font-display tabular-nums">
               <Users className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
               <span className="font-semibold text-basalto">{cancha.capacidad}</span> jugadores

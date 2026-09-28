@@ -56,7 +56,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/dashboard/canchas"
-          className="shrink-0 rounded-md bg-cesped px-4 py-2.5 font-display text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
+          className="btn-tactil shrink-0 bg-cesped px-5 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover"
         >
           Reservar cancha
         </Link>
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
               </div>
               <Link
                 href="/dashboard/mi-partido"
-                className="mt-5 inline-block rounded-md border border-cal bg-tiza px-4 py-2 font-display text-sm font-semibold text-basalto transition hover:border-borde hover:bg-piedra"
+                className="btn-tactil mt-5 bg-tiza px-5 py-2 font-display text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Ver detalle
               </Link>
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
               title="No tienes una próxima reserva"
               description="Busca una cancha disponible y asegura tu horario de juego."
               action={
-                <Link href="/dashboard/canchas" className="text-sm font-semibold text-cesped-hondo hover:underline">
+                <Link href="/dashboard/canchas" className="btn-tactil mt-3 bg-cesped px-5 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover">
                   Buscar cancha
                 </Link>
               }
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
           <Card className="p-0">
             <div className="flex items-center justify-between border-b border-cal p-6">
               <h2 className="font-display font-semibold text-basalto">Últimas reservas</h2>
-              <Link href="/dashboard/reservas" className="text-xs font-semibold text-cesped-hondo hover:underline">
+              <Link href="/dashboard/reservas" className="text-xs font-bold text-cesped-hondo hover:underline">
                 Ver todas
               </Link>
             </div>
@@ -153,18 +153,18 @@ export default async function DashboardPage() {
         </div>
 
         {/* Métricas del jugador */}
-        <div className="flex divide-x divide-cal rounded-xl border border-cal bg-tiza lg:flex-col lg:divide-x-0 lg:divide-y">
-          <div className="flex-1 p-4 lg:flex-none">
-            <p className="text-xs text-pizarra">Total reservas</p>
-            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{totalReservas}</p>
+        <div className="card-tactil flex divide-x-2 divide-basalto overflow-hidden p-0 lg:flex-col lg:divide-x-0 lg:divide-y-2">
+          <div className="flex-1 p-5 lg:flex-none">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">Total reservas</p>
+            <p className="mt-1 font-display text-3xl font-extrabold tabular-nums tracking-tight text-basalto">{totalReservas}</p>
           </div>
-          <div className="flex-1 p-4 lg:flex-none">
-            <p className="text-xs text-pizarra">Confirmadas</p>
-            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{confirmadas}</p>
+          <div className="flex-1 p-5 lg:flex-none">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">Confirmadas</p>
+            <p className="mt-1 font-display text-3xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">{confirmadas}</p>
           </div>
-          <div className="flex-1 p-4 lg:flex-none">
-            <p className="text-xs text-pizarra">Pendientes</p>
-            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{pendientes}</p>
+          <div className="flex-1 p-5 lg:flex-none">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">Pendientes</p>
+            <p className="mt-1 font-display text-3xl font-extrabold tabular-nums tracking-tight text-sol-hondo">{pendientes}</p>
           </div>
         </div>
       </div>

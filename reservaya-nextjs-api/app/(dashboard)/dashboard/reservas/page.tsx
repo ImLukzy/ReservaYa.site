@@ -34,18 +34,18 @@ export default async function MisReservasPage() {
       </div>
 
       {reservas.length > 0 && (
-        <div className="mb-6 grid grid-cols-2 rounded-xl border border-cal bg-tiza sm:grid-cols-3 sm:divide-x sm:divide-cal">
-          <div className="p-4">
-            <p className="text-xs text-pizarra">Reservas totales</p>
-            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{reservas.length}</p>
+        <div className="card-tactil mb-6 grid grid-cols-2 divide-y-2 divide-basalto p-0 overflow-hidden sm:grid-cols-3 sm:divide-y-0 sm:divide-x-2 sm:divide-basalto">
+          <div className="p-5">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">Reservas totales</p>
+            <p className="mt-1 font-display text-3xl font-extrabold tabular-nums tracking-tight text-basalto">{reservas.length}</p>
           </div>
-          <div className="border-l border-cal p-4 sm:border-l-0">
-            <p className="text-xs text-pizarra">Total pagado</p>
-            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">S/ {totalPagado.toFixed(2)}</p>
+          <div className="border-l-2 border-basalto p-5 sm:border-l-0">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">Total pagado</p>
+            <p className="mt-1 font-display text-3xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">S/ {totalPagado.toFixed(2)}</p>
           </div>
-          <div className="col-span-2 border-t border-cal p-4 sm:col-span-1 sm:border-t-0">
-            <p className="text-xs text-pizarra">Próxima reserva</p>
-            <p className="mt-1 font-display text-lg font-bold tabular-nums text-basalto">
+          <div className="col-span-2 p-5 sm:col-span-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-pizarra">Próxima reserva</p>
+            <p className="mt-1 font-display text-base font-bold tabular-nums text-basalto">
               {proxima ? `${formatFecha(proxima.fecha)} · ${formatHora(proxima.horaInicio)}` : 'Sin próxima'}
             </p>
           </div>
@@ -60,7 +60,7 @@ export default async function MisReservasPage() {
           action={
             <Link
               href="/dashboard/canchas"
-              className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 font-display text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
+              className="btn-tactil mt-3 bg-cesped px-5 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover"
             >
               Buscar canchas
             </Link>
@@ -68,8 +68,8 @@ export default async function MisReservasPage() {
         />
       ) : (
         <>
-          {/* <640px: filas de 2 líneas. Desde sm: tabla completa. */}
-          <div className="divide-y divide-cal rounded-xl border border-cal bg-tiza sm:hidden">
+          {/* <640px: filas de 2 líneas táctiles. Desde sm: tabla completa. */}
+          <div className="card-tactil divide-y-2 divide-basalto/15 p-0 overflow-hidden sm:hidden">
             {reservas.map((r) => (
               <div key={r.id} className="p-4">
                 <div className="flex items-start justify-between gap-3">
@@ -102,10 +102,10 @@ export default async function MisReservasPage() {
             ))}
           </div>
 
-          <div className="hidden overflow-x-auto rounded-xl border border-cal bg-tiza sm:block">
+          <div className="card-tactil hidden overflow-x-auto p-0 sm:block">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-cal bg-piedra text-left font-display text-xs font-semibold text-pizarra">
+                <tr className="border-b-2 border-basalto bg-piedra text-left font-display text-xs font-bold text-basalto">
                   <th className="px-6 py-3.5">Cancha</th>
                   <th className="px-6 py-3.5">Fecha</th>
                   <th className="px-6 py-3.5">Horario</th>

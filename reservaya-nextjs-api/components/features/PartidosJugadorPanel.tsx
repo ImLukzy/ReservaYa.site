@@ -72,8 +72,8 @@ export function PartidosJugadorPanel({
 
   return (
     <div className="space-y-6">
-      {/* Pestañas de filtro */}
-      <div className="flex border-b border-cal" role="tablist" aria-label="Filtro de mis partidos">
+      {/* Pestañas de filtro píldora táctil */}
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filtro de mis partidos">
         <button
           type="button"
           role="tab"
@@ -82,23 +82,11 @@ export function PartidosJugadorPanel({
           aria-controls="panel-organizo"
           onClick={() => setTab('organizo')}
           className={cn(
-            'flex items-center gap-2 border-b-2 px-5 py-3 font-display text-sm font-bold transition-colors',
-            tab === 'organizo'
-              ? 'border-cesped text-basalto'
-              : 'border-transparent text-pizarra hover:text-basalto'
+            'chip-tactil cursor-pointer',
+            tab === 'organizo' && 'active'
           )}
         >
-          Organizo
-          <span
-            className={cn(
-              'rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums',
-              tab === 'organizo'
-                ? 'bg-cesped-suave text-cesped-hondo'
-                : 'bg-piedra text-pizarra'
-            )}
-          >
-            {organizo.length}
-          </span>
+          Organizo ({organizo.length})
         </button>
         <button
           type="button"
@@ -108,23 +96,11 @@ export function PartidosJugadorPanel({
           aria-controls="panel-me-anote"
           onClick={() => setTab('meAnote')}
           className={cn(
-            'flex items-center gap-2 border-b-2 px-5 py-3 font-display text-sm font-bold transition-colors',
-            tab === 'meAnote'
-              ? 'border-cesped text-basalto'
-              : 'border-transparent text-pizarra hover:text-basalto'
+            'chip-tactil cursor-pointer',
+            tab === 'meAnote' && 'active'
           )}
         >
-          Me anoté
-          <span
-            className={cn(
-              'rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums',
-              tab === 'meAnote'
-                ? 'bg-cesped-suave text-cesped-hondo'
-                : 'bg-piedra text-pizarra'
-            )}
-          >
-            {meAnote.length}
-          </span>
+          Me anoté ({meAnote.length})
         </button>
       </div>
 
@@ -143,7 +119,7 @@ export function PartidosJugadorPanel({
               action={
                 <a
                   href={`${publicAppUrl}/completar-cuadro`}
-                  className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 font-display text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
+                  className="btn-tactil mt-3 bg-cesped px-5 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover"
                 >
                   Publicar un partido
                 </a>
@@ -157,7 +133,7 @@ export function PartidosJugadorPanel({
               action={
                 <a
                   href={`${publicAppUrl}/completar-cuadro`}
-                  className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 font-display text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
+                  className="btn-tactil mt-3 bg-cesped px-5 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover"
                 >
                   Ver partidos abiertos
                 </a>
@@ -174,7 +150,7 @@ export function PartidosJugadorPanel({
               return (
                 <li
                   key={p.id}
-                  className="flex flex-col justify-between rounded-xl border border-cal bg-tiza p-5 shadow-sm transition hover:border-borde"
+                  className="card-tactil flex flex-col justify-between p-5 transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1f2a24]"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
