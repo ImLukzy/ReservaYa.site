@@ -37,9 +37,11 @@ Unificar la paleta cesped entre Astro y Next (hoy `#17804a` vs `#22c55e`), sumar
 - Franja de césped cortado: solo CSS (gradient/repeating-linear-gradient), cero JS, para no tocar spec 17.
 
 ## 6. Checklist
-- [ ] L1: tokens + shell + inputs — gates (typecheck/lint/test/build ambas apps) + grep 0 + 1 ronda de capturas
-- [ ] L2: landing viva — `astro check` + build + 1 ronda de capturas
+- [x] L1: tokens + shell + inputs — gates (typecheck/lint/test/build ambas apps) + grep 0 + 1 ronda de capturas
+- [x] L2: landing viva — `astro check` + build + 1 ronda de capturas
 - [ ] A: revisión visual de Lukas
 
 ## 7. Verificación
-_En progreso._
+**L1** — typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK, astro check 0/0/1 hint preexistente, build Astro 17 páginas OK. Grep `bg-cesped`/`hover:bg-cesped-hover` + `text-grafito`: 0 coincidencias. Capturas 375/1440 de `/dashboard`, `/dashboard/canchas` y `/` (Astro): `scrollHorizontalPx=0` en las 4.
+
+**L2** — `astro check` 0/0/1 hint preexistente, `npm run build` 17 páginas OK. Capturas 375/1440 de `/` tras el cambio: `scrollHorizontalPx=0` en ambas. Secciones nuevas verificadas visualmente: hero en `bg-noche` + franja de césped cortado (CSS puro), «Todos los deportes» (8 chips de `TIPOS`), «Cobertura en los 29 distritos» (banda `bg-cielo`, `DISTRITOS` completo), «Preguntas frecuentes» (5, contenido real derivado de `ayuda.astro`/`duenos.astro`), banda de dueños movida a `bg-cielo`.
