@@ -57,6 +57,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new FlexibleDecimalConverter());
     });
 
+builder.Services.AddMemoryCache();
+
 // Los enums PG se mapean en el data source (ADO) y a nivel EF (UseNpgsql +
 // HasPostgresEnum en AppDbContext). Se probó (2026-09) reducirlo a un solo
 // nivel: sin el mapeo del data source, o sin el lambda de UseNpgsql, la API

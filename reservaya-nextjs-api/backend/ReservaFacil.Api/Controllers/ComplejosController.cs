@@ -65,12 +65,11 @@ public class ComplejosController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> List()
     {
-        // Cada dueño/equipo ve sus complejos; plataforma (TECNICO) ve todo.
-        var alcance = await ComplejoAccess.IdsAsync(_db, User);
+        var idsQuery = ComplejoAccess.IdsQuery(_db, User);
 
         var query = _db.Complejos.AsNoTracking().AsQueryable();
-        if (alcance is not null)
-            query = query.Where(c => alcance.Contains(c.Id));
+        if (idsQuery is not null)
+            query = query.Where(c => idsQuery.Contains(c.Id));
 
         var complejos = await query.OrderBy(c => c.Nombre).ToListAsync();
         var ids = complejos.Select(c => c.Id).ToList();
@@ -262,10 +261,13 @@ public class ComplejosController : ControllerBase
 
         var hoy = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Unspecified);
         var limite = hoy.AddDays(7);
+        var canchaIds = canchaAComplejo.Keys.ToList();
+
         var reservas = await _db.Reservas.AsNoTracking()
             .Where(r => r.Fecha >= hoy && r.Fecha < limite &&
                 r.Estado != EstadoReserva.CANCELADA &&
-                (r.ComplejoId != null && ids.Contains(r.ComplejoId!)))
+                ((r.ComplejoId != null && ids.Contains(r.ComplejoId!)) ||
+                 (r.ComplejoId == null && canchaIds.Contains(r.CanchaId))))
             .Select(r => new { r.ComplejoId, r.CanchaId, r.HoraInicio, r.HoraFin })
             .ToListAsync();
 
@@ -280,23 +282,6 @@ public class ComplejosController : ControllerBase
                 continue;
             countPorComplejo[cid] = countPorComplejo.GetValueOrDefault(cid) + 1;
             horasPorComplejo[cid] = horasPorComplejo.GetValueOrDefault(cid) + (r.HoraFin - r.HoraInicio) / 60.0;
-        }
-
-        // Reservas próximas sin complejoId directo pero con cancha del complejo.
-        var canchaIds = canchaAComplejo.Keys.ToList();
-        if (canchaIds.Count > 0)
-        {
-            var sinComplejo = await _db.Reservas.AsNoTracking()
-                .Where(r => r.ComplejoId == null && r.Fecha >= hoy && r.Fecha < limite &&
-                    r.Estado != EstadoReserva.CANCELADA && canchaIds.Contains(r.CanchaId))
-                .Select(r => new { r.CanchaId, r.HoraInicio, r.HoraFin })
-                .ToListAsync();
-            foreach (var r in sinComplejo)
-            {
-                var cid = canchaAComplejo[r.CanchaId];
-                countPorComplejo[cid] = countPorComplejo.GetValueOrDefault(cid) + 1;
-                horasPorComplejo[cid] = horasPorComplejo.GetValueOrDefault(cid) + (r.HoraFin - r.HoraInicio) / 60.0;
-            }
         }
 
         foreach (var id in ids)

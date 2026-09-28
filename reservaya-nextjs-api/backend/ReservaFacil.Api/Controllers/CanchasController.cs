@@ -271,10 +271,10 @@ public class CanchasController : ControllerBase
             tipoCancha = tc;
         }
 
-        var visibles = await ComplejoAccess.IdsVisiblesAsync(_db);
+        var visiblesQuery = ComplejoAccess.IdsVisiblesQuery(_db);
         var query = _db.Canchas.AsNoTracking()
             .Include(c => c.Complejo!).ThenInclude(c => c.Dueno)
-            .Where(c => c.Activa && (c.ComplejoId == null || visibles.Contains(c.ComplejoId!)))
+            .Where(c => c.Activa && (c.ComplejoId == null || visiblesQuery.Contains(c.ComplejoId!)))
             .AsQueryable();
 
         if (q is not null)
@@ -304,18 +304,14 @@ public class CanchasController : ControllerBase
             query = query.Where(c => c.Tipo == tipoCancha.Value);
 
         var canchasQuery = query.OrderBy(c => c.Nombre);
-        var total = await canchasQuery.CountAsync();
+        var canchas = await canchasQuery.ToListAsync();
+        var total = canchas.Count;
         var limiteAplicado = false;
-        List<Models.Cancha> canchas;
-        if (sinFiltros && slot is null)
+        if (sinFiltros && slot is null && total > 10)
         {
             // Portada del buscador: 10 primeras para no marear.
-            limiteAplicado = total > 10;
-            canchas = await canchasQuery.Take(10).ToListAsync();
-        }
-        else
-        {
-            canchas = await canchasQuery.ToListAsync();
+            limiteAplicado = true;
+            canchas = canchas.Take(10).ToList();
         }
 
         var ocupadas = new HashSet<string>();
@@ -374,14 +370,14 @@ public class CanchasController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Opciones()
     {
-        var visibles = await ComplejoAccess.IdsVisiblesAsync(_db);
+        var visiblesQuery = ComplejoAccess.IdsVisiblesQuery(_db);
         var complejos = await _db.Complejos.AsNoTracking()
             .Include(c => c.Dueno)
-            .Where(c => c.Publicado && visibles.Contains(c.Id))
+            .Where(c => c.Publicado && visiblesQuery.Contains(c.Id))
             .OrderBy(c => c.Nombre)
             .ToListAsync();
         var nombresCanchas = await _db.Canchas.AsNoTracking()
-            .Where(c => c.Activa && (c.ComplejoId == null || visibles.Contains(c.ComplejoId!)))
+            .Where(c => c.Activa && (c.ComplejoId == null || visiblesQuery.Contains(c.ComplejoId!)))
             .OrderBy(c => c.Nombre)
             .Select(c => c.Nombre)
             .ToListAsync();
