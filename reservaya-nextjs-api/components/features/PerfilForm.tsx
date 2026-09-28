@@ -6,6 +6,7 @@ import type { UsuarioSesion } from '@/lib/api-types'
 import { updatePerfil, subirFotoPerfil } from '@/lib/api-client'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/ui/Input'
 
 interface PerfilFormProps {
   usuario: UsuarioSesion
@@ -167,96 +168,59 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
         )}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="perfil-nombre" className="block text-xs font-semibold text-pizarra">
-              Nombre
-            </label>
-            <input
-              id="perfil-nombre"
-              type="text"
-              disabled
-              value={usuario.nombre}
-              className="mt-1.5 w-full rounded-md border border-cal bg-piedra px-3 py-2 text-sm text-pizarra cursor-not-allowed"
-            />
-            <p className="mt-1 text-[11px] text-pizarra">Nombre de la cuenta de acceso.</p>
-          </div>
-
-          <div>
-            <label htmlFor="perfil-email" className="block text-xs font-semibold text-pizarra">
-              Correo electrónico
-            </label>
-            <input
-              id="perfil-email"
-              type="email"
-              disabled
-              value={usuario.email}
-              className="mt-1.5 w-full rounded-md border border-cal bg-piedra px-3 py-2 text-sm text-pizarra cursor-not-allowed"
-            />
-            <p className="mt-1 text-[11px] text-pizarra">Identificador único de sesión.</p>
-          </div>
+          <Input
+            id="perfil-nombre"
+            type="text"
+            disabled
+            value={usuario.nombre}
+            etiqueta="Nombre"
+            nota="Nombre de la cuenta de acceso."
+          />
+          <Input
+            id="perfil-email"
+            type="email"
+            disabled
+            value={usuario.email}
+            etiqueta="Correo electrónico"
+            nota="Identificador único de sesión."
+          />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="perfil-telefono" className="block text-xs font-semibold text-basalto">
-              Teléfono de contacto
-            </label>
-            <input
-              id="perfil-telefono"
-              type="tel"
-              value={telefono}
-              onChange={(e) => setTelefono(e.target.value)}
-              placeholder="Ej. 987654321"
-              className="mt-1.5 w-full rounded-md border border-cal bg-tiza px-3 py-2 text-sm text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-1 focus:ring-cesped"
-            />
-            <p className="mt-1 text-[11px] text-pizarra">Para coordinar avisos de reservas y partidos.</p>
-          </div>
-
-          <div>
-            <label htmlFor="perfil-fecha" className="block text-xs font-semibold text-basalto">
-              Fecha de nacimiento
-            </label>
-            <input
-              id="perfil-fecha"
-              type="date"
-              disabled={fechaNacFija}
-              value={fechaNacimiento}
-              onChange={(e) => setFechaNacimiento(e.target.value)}
-              className={`mt-1.5 w-full rounded-md border border-cal px-3 py-2 text-sm ${
-                fechaNacFija
-                  ? 'bg-piedra text-pizarra cursor-not-allowed'
-                  : 'bg-tiza text-basalto focus:border-cesped focus:outline-none focus:ring-1 focus:ring-cesped'
-              }`}
-            />
-            <p className="mt-1 text-[11px] text-pizarra">
-              {fechaNacFija ? 'No se puede cambiar una vez fijada.' : 'Fíjala una vez: luego no se podrá modificar.'}
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="perfil-username" className="block text-xs font-semibold text-basalto">
-            Nombre de usuario (@username)
-          </label>
-          <input
-            id="perfil-username"
-            type="text"
-            disabled={usernameBloqueado}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="ej. lukzy99"
-            className={`mt-1.5 w-full rounded-md border border-cal px-3 py-2 text-sm ${
-              usernameBloqueado
-                ? 'bg-piedra text-pizarra cursor-not-allowed'
-                : 'bg-tiza text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-1 focus:ring-cesped'
-            }`}
+          <Input
+            id="perfil-telefono"
+            type="tel"
+            value={telefono}
+            onChange={(e) => setTelefono(e.target.value)}
+            placeholder="Ej. 987654321"
+            etiqueta="Teléfono de contacto"
+            nota="Para coordinar avisos de reservas y partidos."
           />
-          <p className="mt-1 text-[11px] text-pizarra">
-            {usernameBloqueado
-              ? `Podrás cambiarlo el ${fechaProximo}. Se puede cambiar una vez al año.`
-              : 'De 3 a 20 caracteres (letras, números, _ . -). Se puede cambiar una vez al año.'}
-          </p>
+          <Input
+            id="perfil-fecha"
+            type="date"
+            disabled={fechaNacFija}
+            value={fechaNacimiento}
+            onChange={(e) => setFechaNacimiento(e.target.value)}
+            etiqueta="Fecha de nacimiento"
+            nota={fechaNacFija ? 'No se puede cambiar una vez fijada.' : 'Fíjala una vez: luego no se podrá modificar.'}
+          />
         </div>
+
+        <Input
+          id="perfil-username"
+          type="text"
+          disabled={usernameBloqueado}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="ej. lukzy99"
+          etiqueta="Nombre de usuario (@username)"
+          nota={
+            usernameBloqueado
+              ? `Podrás cambiarlo el ${fechaProximo}. Se puede cambiar una vez al año.`
+              : 'De 3 a 20 caracteres (letras, números, _ . -). Se puede cambiar una vez al año.'
+          }
+        />
 
         <div className="pt-2">
           <Button type="submit" variant="primary" loading={loading} disabled={loading || subiendoFoto}>

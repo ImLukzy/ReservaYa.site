@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Moon } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { Select } from '@/components/ui/Select'
 import { createReserva } from '@/lib/api-client'
 import type { Cancha } from '@/lib/api'
 
@@ -13,11 +15,11 @@ const HORAS = Array.from({ length: 14 }, (_, i) => {
   return { value: hora * 60, label: `${String(hora).padStart(2, '0')}:00` }
 })
 
-// Estilos de formulario para la superficie clara del Modal (tono="claro", spec 24).
+// Textarea de notas: misma superficie clara del Modal (tono="claro", spec 24); Input/Select
+// compartidos con la landing viven en components/ui (spec 26).
 const flabel = 'block text-xs font-semibold text-pizarra mb-1.5'
 const finput =
   'w-full rounded-xl border border-cal bg-tiza px-4 py-2.5 text-sm text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25'
-const fselect = `${finput} disabled:opacity-50 disabled:cursor-not-allowed`
 
 export function ReservaForm({
   cancha,
@@ -112,54 +114,42 @@ export function ReservaForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className={flabel}>
-          Fecha *
-        </label>
-        <input
-          type="date"
-          required
-          min={new Date().toISOString().split('T')[0]}
-          value={form.fecha}
-          onChange={(e) => setForm({ ...form, fecha: e.target.value })}
-          className={finput}
-        />
-      </div>
+      <Input
+        id="reserva-fecha"
+        type="date"
+        required
+        min={new Date().toISOString().split('T')[0]}
+        value={form.fecha}
+        onChange={(e) => setForm({ ...form, fecha: e.target.value })}
+        etiqueta="Fecha *"
+      />
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className={flabel}>
-            Hora inicio *
-          </label>
-          <select
-            required
-            value={form.horaInicio}
-            onChange={(e) => setForm({ ...form, horaInicio: Number(e.target.value), horaFin: 0 })}
-            className={fselect}
-          >
-            <option value="">Seleccionar</option>
-            {HORAS.slice(0, -1).map((h) => (
-              <option key={h.value} value={h.value}>{h.label}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className={flabel}>
-            Hora fin *
-          </label>
-          <select
-            required
-            value={form.horaFin}
-            disabled={!form.horaInicio}
-            onChange={(e) => setForm({ ...form, horaFin: Number(e.target.value) })}
-            className={fselect}
-          >
-            <option value="">Seleccionar</option>
-            {horasDisponiblesFin.map((h) => (
-              <option key={h.value} value={h.value}>{h.label}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          id="reserva-hora-inicio"
+          required
+          value={form.horaInicio}
+          onChange={(e) => setForm({ ...form, horaInicio: Number(e.target.value), horaFin: 0 })}
+          etiqueta="Hora inicio *"
+        >
+          <option value="">Seleccionar</option>
+          {HORAS.slice(0, -1).map((h) => (
+            <option key={h.value} value={h.value}>{h.label}</option>
+          ))}
+        </Select>
+        <Select
+          id="reserva-hora-fin"
+          required
+          value={form.horaFin}
+          disabled={!form.horaInicio}
+          onChange={(e) => setForm({ ...form, horaFin: Number(e.target.value) })}
+          etiqueta="Hora fin *"
+        >
+          <option value="">Seleccionar</option>
+          {horasDisponiblesFin.map((h) => (
+            <option key={h.value} value={h.value}>{h.label}</option>
+          ))}
+        </Select>
       </div>
 
       <div>

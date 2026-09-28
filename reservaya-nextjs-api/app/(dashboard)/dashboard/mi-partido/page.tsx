@@ -107,7 +107,7 @@ export default async function MiPartidoPage() {
             </a>
             <Link
               href="/dashboard/reservas"
-              className="flex items-center justify-center gap-2 w-full rounded-xl bg-cesped px-4 py-2.5 text-center text-xs font-bold text-grafito transition hover:bg-cesped-hover shadow-sm"
+              className="flex items-center justify-center gap-2 w-full rounded-xl bg-cesped px-4 py-2.5 text-center text-xs font-bold text-tiza transition hover:bg-cesped-hover shadow-sm"
             >
               Ver todas mis reservas
             </Link>

@@ -56,7 +56,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/dashboard/canchas"
-          className="shrink-0 rounded-md bg-cesped px-4 py-2.5 font-display text-sm font-semibold text-grafito transition hover:bg-cesped-hover"
+          className="shrink-0 rounded-md bg-cesped px-4 py-2.5 font-display text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
         >
           Reservar cancha
         </Link>

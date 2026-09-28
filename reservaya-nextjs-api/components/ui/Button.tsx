@@ -6,9 +6,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean
 }
 
-// Primario: césped con texto grafito (8.66:1; hover 5.98:1). Nunca texto blanco sobre verde.
+// Primario: césped (#17804a) con texto tiza (4.96:1; hover 6.3:1). Spec 26: cesped unificado
+// con Astro es más oscuro que el anterior #22c55e, grafito ya no pasa AA (3.98:1).
 const variants = {
-  primary: 'bg-cesped hover:bg-cesped-hover active:bg-cesped-hover text-grafito',
+  primary: 'bg-cesped hover:bg-cesped-hover active:bg-cesped-hover text-tiza',
   secondary: 'bg-tiza hover:bg-piedra active:bg-piedra text-basalto border border-borde',
   danger: 'bg-error hover:bg-error-hondo active:bg-error-hondo text-tiza',
   ghost: 'hover:bg-piedra active:bg-piedra text-pizarra hover:text-basalto',

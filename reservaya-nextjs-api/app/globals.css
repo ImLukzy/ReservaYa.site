@@ -21,15 +21,17 @@
   --pizarra: #5a6660;       /* texto secundario; 5.43 sobre sillar */
   --grafito: #060c08;       /* sidebar y texto sobre césped */
   --niebla: #a9b3ad;        /* texto secundario sobre grafito; 9.2 */
-  --cesped: #22c55e;        /* acento; grafito encima 8.66 */
-  --cesped-hover: #16a34a;  /* grafito encima 5.98 */
+  --cesped: #17804a;        /* acento único, unificado con Astro (spec 26); tiza encima 4.96 */
+  --cesped-hover: #126b3d;  /* tiza encima ~6.3 */
   --cesped-hondo: #116a3c;  /* texto verde; 6.0 sobre sillar */
   --cesped-suave: #e3f1e8;  /* fondo de «libre»; cesped-hondo encima 5.7 */
-  --sol: #f0b429;           /* avisos sobre grafito; 10.6 */
+  --sol: #f0b429;           /* avisos y chips (tarjeta amarilla); basalto encima 7.96 */
   --error: #b42318;         /* 6.57 sobre tiza */
   --error-hondo: #912018;   /* hover de peligro */
   --error-suave: #fdecea;   /* error encima 5.75 */
   --velo: rgb(31 42 36 / 0.5); /* fondo tras un diálogo */
+  --noche: #0b1912;         /* banda oscura y fondo del Sidebar; tiza encima ~19 (spec 26) */
+  --cielo: #e8f1f6;         /* banda clara alterna a sillar; basalto encima ~17 (spec 26) */
 }
 
 @theme inline {
@@ -53,11 +55,23 @@
   --color-error-hondo: var(--error-hondo);
   --color-error-suave: var(--error-suave);
   --color-velo: var(--velo);
+  --color-noche: var(--noche);
+  --color-cielo: var(--cielo);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   /* Barlow las carga app/(dashboard)/layout.tsx con next/font (font-display: swap). */
   --font-cuerpo: var(--ff-barlow), Arial, sans-serif;
   --font-display: var(--ff-barlow-condensed), var(--ff-barlow), Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -164,7 +178,7 @@ a:focus-visible {
 /* Scrollbars sutiles */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: var(--cal) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -173,7 +187,7 @@ a:focus-visible {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--cal);
   border-radius: 999px;
 }
 

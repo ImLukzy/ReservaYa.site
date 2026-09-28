@@ -7,6 +7,8 @@
     background: var(--color-sillar);
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-cal) transparent;
   }
 
   @media (prefers-reduced-motion: no-preference) {

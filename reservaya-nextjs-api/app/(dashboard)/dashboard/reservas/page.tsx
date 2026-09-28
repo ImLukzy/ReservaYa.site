@@ -60,7 +60,7 @@ export default async function MisReservasPage() {
           action={
             <Link
               href="/dashboard/canchas"
-              className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 font-display text-sm font-semibold text-grafito transition hover:bg-cesped-hover"
+              className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 font-display text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
             >
               Buscar canchas
             </Link>

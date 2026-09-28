@@ -28,7 +28,7 @@ export default async function CarnePage() {
           {/* Cabecera: marca y estado */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-cesped font-display text-xs font-black text-grafito">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-cesped font-display text-xs font-black text-tiza">
                 RY
               </div>
               <p className="font-display text-xs font-black text-basalto">ReservaYa</p>
