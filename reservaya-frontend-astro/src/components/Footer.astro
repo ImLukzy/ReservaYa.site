@@ -28,7 +28,7 @@ const enlace = "inline-flex min-h-11 items-center text-pizarra hover:text-basalt
       <nav aria-label={c.titulo}>
         <h2 class="font-sans text-base font-bold text-basalto">{c.titulo}</h2>
         <ul class="mt-2">
-          {c.enlaces.map(([href, texto]) => <li><a href={href} class={enlace}>{texto}</a></li>)}
+          {c.enlaces.map(([href, texto]) => <li><a href={href} data-astro-prefetch={href.startsWith('/') ? "" : undefined} class={enlace}>{texto}</a></li>)}
         </ul>
       </nav>
     ))}

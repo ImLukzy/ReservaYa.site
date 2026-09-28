@@ -10,15 +10,21 @@ import { AvisoCarga } from '@/components/ui/AvisoCarga';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const session = await getSession();
+  const carga = crearCarga();
+
+  const sessionPromise = getSession();
+  const canchasPromise = carga.de(getCanchas(true), [], 'las canchas');
+  const reservasPromise = carga.de(getReservas(), [], 'las reservas');
+  const complejosPromise = carga.de(getComplejos(), [], 'los complejos');
+
+  const session = await sessionPromise;
   if (!session) redirect('/login');
   if (!canAccess('agenda', session.rol)) redirect(fallbackPorRol(session.rol));
 
-  const carga = crearCarga();
   const [canchas, reservas, complejos] = await Promise.all([
-    carga.de(getCanchas(true), [], 'las canchas'),
-    carga.de(getReservas(), [], 'las reservas'),
-    carga.de(getComplejos(), [], 'los complejos'),
+    canchasPromise,
+    reservasPromise,
+    complejosPromise,
   ]);
 
   return (
