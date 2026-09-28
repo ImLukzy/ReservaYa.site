@@ -102,6 +102,15 @@ como `BLOQUEO-API` con endpoint, payload y error exacto.
 
 ## 3. Backlog asignado (en este orden)
 
+### 3.0 Orden propuesto vigente (2026-09-28, planificado por dev-claude mientras el trío descansa)
+1. **Spec 29** (cerrada, lista para Oscar) — 5 lotes de ≤3 archivos: L1 `CronogramaView.tsx` (prioridad) → L2 `AbonosPanel`/`CajaPanel`/`ConfigPanel` → L3 `GestionCanchasPanel`/`loading.tsx` → L4 `Modal`/`Button` (a11y panel) → L5 `Header.astro`/`canchas.astro` (Astro, al final) → L6 verificación integral (JIM-QA).
+2. **Spec 30** (auditoría cerrada, sin lotes de código) — inventario de 47 rutas confirmado sano; 2 `BLOQUEO-API` heredados sin cambio; recomienda V1/V2 (verificación viva por rol y de formularios) para JIM-QA cuando retome.
+3. **Spec 31** (propuesta, pendiente de aprobación de Lukas) — extender el croquis de cancha (ya existente, CSS puro) como firma visual de estados vacíos/error en vez de iconos genéricos; menor riesgo/mayor identidad que alternativas descartadas (charts, ilustraciones importadas).
+
+Detalle completo de cada una en `docs/specs/29-auditoria-diseno.md`, `30-frontend-funcional.md`, `31-croquis-estados-vacios.md`.
+
+---
+
 ### P0 — Seguridad frontend
 1. **Open redirect** en `reservaya-frontend-astro/src/pages/login.astro` (y `register.astro`
    si aplica): el `returnUrl` se usa crudo en `location.href`. Valida allowlist
