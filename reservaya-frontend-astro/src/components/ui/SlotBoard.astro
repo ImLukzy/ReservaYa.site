@@ -25,7 +25,8 @@ import { BOTON } from "../../lib/estilos";
   <div id="tablero-panel" data-panel role="tabpanel" aria-labelledby="tablero-titulo" class="h-[30rem] overflow-hidden sm:h-80">
     <ul aria-hidden="true">
       {[0, 1, 2].map(() => (
-        <li class="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:px-6">
+        <li class="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6">
+          <span class="esqueleto hidden h-9 w-16 rounded-control sm:block"></span>
           <span class="esqueleto h-6 w-12"></span>
           <span class="esqueleto h-5 w-3/4"></span>
           <span class="esqueleto h-9 w-20 justify-self-end"></span>
@@ -41,5 +42,7 @@ import { BOTON } from "../../lib/estilos";
 </section>
 
 <script>
-  import "../../scripts/tablero.ts";
+  import { iniciarTablero } from "../../scripts/tablero.ts";
+  const raiz = document.getElementById("tablero");
+  if (raiz) iniciarTablero(raiz);
 </script>
