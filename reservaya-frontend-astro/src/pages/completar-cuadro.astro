@@ -4,7 +4,7 @@ import Button from "../components/ui/Button.astro";
 import Field from "../components/ui/Field.astro";
 import Select from "../components/ui/Select.astro";
 import Icon from "../components/ui/Icon.astro";
-import { API } from "../lib/entorno";
+import { API, APP } from "../lib/entorno";
 import { AVISO, BOTON, ETIQUETA, INSIGNIA, INSIGNIA_BASE } from "../lib/estilos";
 
 const apiUrl = API;
@@ -25,7 +25,7 @@ const clases = { ok: AVISO.ok, error: AVISO.error, chip, libre: `${INSIGNIA_BASE
       </div>
       <div class="flex gap-3">
         <Button data-open-publish><Icon nombre="mas" class="h-4 w-4" />Publicar partido</Button>
-        <Button href="/mis-partidos" variante="secundario">Mis partidos</Button>
+        <Button href={`${APP}/dashboard/partidos`} variante="secundario">Mis partidos</Button>
       </div>
     </div>
 

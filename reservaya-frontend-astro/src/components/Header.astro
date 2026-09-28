@@ -46,7 +46,7 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
             <p data-nombre class="truncate font-semibold"></p>
             <p data-correo class="truncate text-sm text-pizarra"></p>
           </div>
-          <a href="/jugador/perfil" class={`${enlaceMenu} mt-2`}><Icon nombre="usuario" class="h-4 w-4 text-pizarra" />Mi perfil</a>
+          <a href={`${APP}/dashboard/perfil`} class={`${enlaceMenu} mt-2`}><Icon nombre="usuario" class="h-4 w-4 text-pizarra" />Mi perfil</a>
           <a href={`${APP}/dashboard/reservas`} class={enlaceMenu}><Icon nombre="reloj" class="h-4 w-4 text-pizarra" />Mis reservas</a>
           <a href={`${APP}/dashboard`} class={enlaceMenu}><Icon nombre="lugar" class="h-4 w-4 text-pizarra" />Mi panel</a>
           <button type="button" data-salir class={`${enlaceMenu} w-full border-t border-cal text-left`}><Icon nombre="salir" class="h-4 w-4 text-pizarra" />Salir</button>

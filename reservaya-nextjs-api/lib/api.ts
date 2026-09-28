@@ -18,6 +18,7 @@ import type {
   DashboardAdmin,
   DashboardSuperadmin,
   ReporteGlobal,
+  MisPartidos,
 } from './api-types'
 export type {
   Rol,
@@ -110,6 +111,11 @@ export async function cotizarCancha(
 export async function getReservas(): Promise<Reserva[]> {
   const data = await getJson<{ reservas: Reserva[] }>('/api/reservas')
   return data.reservas
+}
+
+export async function getMisPartidos(): Promise<MisPartidos> {
+  const data = await getJson<MisPartidos>('/api/partidos/mios')
+  return { organizo: data.organizo ?? [], meAnote: data.meAnote ?? [] }
 }
 
 export async function getUsuarios(): Promise<UsuarioResumen[]> {

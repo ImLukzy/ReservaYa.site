@@ -1,156 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import EmptyState from "../components/ui/EmptyState.astro";
-import Button from "../components/ui/Button.astro";
-import { API } from "../lib/entorno";
-import { AVISO, BOTON } from "../lib/estilos";
+import { APP } from "../lib/entorno";
+import { BOTON } from "../lib/estilos";
 
-const apiUrl = API;
-const pestana = "min-h-11 border-b-2 border-transparent px-4 font-semibold text-pizarra hover:text-basalto aria-selected:border-cesped aria-selected:text-basalto";
-const clases = { secundario: BOTON.secundario };
+const destino = `${APP}/dashboard/partidos`;
 ---
 
-<BaseLayout title="Mis partidos | ReservaYa" description="Los partidos que organizas y a los que te anotaste." robots="noindex, follow">
-  <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
-    <a href="/completar-cuadro" class={`${BOTON.texto} text-sm`}>Volver a partidos abiertos</a>
-    <h1 class="mt-2 text-3xl lg:text-4xl">Mis partidos</h1>
-
-    <div class="mt-6 flex border-b border-cal" role="tablist" aria-label="Mis partidos">
-      <button id="tab-organizo" type="button" role="tab" aria-selected="true" class={pestana}>Organizo</button>
-      <button id="tab-anotado" type="button" role="tab" aria-selected="false" class={pestana}>Me anoté</button>
-    </div>
-
-    <ul id="mp-lista" class="mt-4 overflow-hidden rounded-surface border border-cal bg-tiza empty:hidden" aria-live="polite">
-      <li class="h-40 px-5 py-4" aria-hidden="true"><span class="esqueleto block h-5 w-1/2"></span><span class="esqueleto mt-2 block h-4 w-1/3"></span><span class="esqueleto mt-4 block h-4 w-2/5"></span><span class="esqueleto mt-4 block h-11 w-40"></span></li>
-    </ul>
-
-    <EmptyState id="mp-vacio-organizo" oculto class="mt-4" titulo="Todavía no organizas partidos" texto="Publica uno y encuentra con quién jugar.">
-      <Button href="/completar-cuadro?publicar=1">Publicar un partido</Button>
-    </EmptyState>
-    <EmptyState id="mp-vacio-anotado" oculto class="mt-4" titulo="No te anotaste a ningún partido" texto="Mira los partidos abiertos de tu distrito.">
-      <Button href="/completar-cuadro">Ver partidos abiertos</Button>
-    </EmptyState>
-
-    <p id="mp-error" hidden class={`mt-4 ${AVISO.error}`} role="alert"></p>
+<BaseLayout title="Mis partidos | ReservaYa" robots="noindex, follow">
+  <meta http-equiv="refresh" content={`0;url=${destino}`} slot="head" />
+  <section class="mx-auto max-w-texto px-4 py-16 text-center">
+    <h1 class="text-2xl">Te llevamos a tus partidos</h1>
+    <p class="mt-2 text-pizarra">Si no pasa nada en unos segundos, entra desde aquí.</p>
+    <a href={destino} class={`${BOTON.primario} mt-5`}>Ver mis partidos</a>
   </section>
 </BaseLayout>
 
-<script is:inline define:vars={{ apiUrl, clases }}>
-(function () {
-  var base = String(apiUrl);
-  function $(id) { return document.getElementById(id); }
-  var lista = $("mp-lista");
-  var vacioO = $("mp-vacio-organizo");
-  var vacioA = $("mp-vacio-anotado");
-  var errEl = $("mp-error");
-  var tabO = $("tab-organizo");
-  var tabA = $("tab-anotado");
-  if (!lista || !vacioO || !vacioA || !tabO || !tabA) return;
-
-  var datos = { organizo: [], meAnote: [] };
-  var tab = "organizo";
-
-  function showError(msg) {
-    if (!errEl) return;
-    errEl.textContent = msg || "";
-    errEl.hidden = !msg;
-  }
-
-  function resumen(p) {
-    var cuando = p.cuando || [p.fechaCorta, p.horaCorta].filter(Boolean).join(" ") || p.fecha || "";
-    return [cuando, p.distrito, p.nivel].filter(Boolean).join(", ");
-  }
-
-  function aLogin() { window.location.href = "/login?returnUrl=" + encodeURIComponent("/mis-partidos"); }
-
-  function accion(texto, alPulsar) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = clases.secundario;
-    b.textContent = texto;
-    b.addEventListener("click", function () { alPulsar(b); });
-    return b;
-  }
-
-  function quitar(p, url, lista, error) {
-    return function (btn) {
-      btn.disabled = true;
-      fetch(url, { method: "DELETE", credentials: "include" })
-        .then(function (res) {
-          if (res.status === 401) { aLogin(); return null; }
-          if (!res.ok) throw new Error(error);
-          return res.json().catch(function () { return {}; });
-        })
-        .then(function (body) {
-          if (!body) return;
-          datos[lista] = datos[lista].filter(function (x) { return x.id !== p.id; });
-          pintar();
-        })
-        .catch(function (e) { btn.disabled = false; showError(e && e.message ? e.message : error); });
-    };
-  }
-
-  function fila(p, modo) {
-    var li = document.createElement("li");
-    li.className = "border-b border-cal px-5 py-4 last:border-b-0";
-    var title = document.createElement("p");
-    title.className = "font-semibold";
-    title.textContent = p.titulo || "Partido abierto";
-    var sub = document.createElement("p");
-    sub.className = "text-sm text-pizarra";
-    sub.textContent = resumen(p);
-    var meta = document.createElement("p");
-    meta.className = "mt-2 text-sm";
-    var cupos = (p.cuposLibres != null ? p.cuposLibres : "–") + " cupos libres";
-    if (modo === "organizo") {
-      var n = Array.isArray(p.inscritos) ? p.inscritos : [];
-      meta.textContent = cupos + ". " + (n.length === 0 ? "Nadie anotado todavía." : "Anotados: " + n.join(", ") + ".");
-    } else {
-      meta.textContent = cupos + ".";
-    }
-    var acciones = document.createElement("div");
-    acciones.className = "mt-3";
-    if (modo === "organizo") {
-      acciones.append(accion("Cancelar partido", function (btn) {
-        if (!window.confirm("¿Cancelar \"" + (p.titulo || "este partido") + "\"? Los anotados verán que ya no va.")) return;
-        quitar(p, base + "/api/partidos/" + encodeURIComponent(p.id), "organizo", "No se pudo cancelar el partido")(btn);
-      }));
-    } else {
-      acciones.append(accion("Salirme del partido", quitar(p, base + "/api/partidos/" + encodeURIComponent(p.id) + "/anotarse", "meAnote", "No pudiste salirte del partido")));
-    }
-    li.append(title, sub, meta, acciones);
-    return li;
-  }
-
-  function pintar() {
-    tabO.setAttribute("aria-selected", tab === "organizo" ? "true" : "false");
-    tabA.setAttribute("aria-selected", tab === "anotado" ? "true" : "false");
-    var arr = tab === "organizo" ? datos.organizo : datos.meAnote;
-    lista.replaceChildren.apply(lista, arr.map(function (p) { return fila(p, tab); }));
-    vacioO.hidden = !(tab === "organizo" && arr.length === 0);
-    vacioA.hidden = !(tab === "anotado" && arr.length === 0);
-  }
-
-  tabO.addEventListener("click", function () { tab = "organizo"; showError(""); pintar(); });
-  tabA.addEventListener("click", function () { tab = "anotado"; showError(""); pintar(); });
-
-  fetch(base + "/api/partidos/mios", { credentials: "include" })
-    .then(function (res) {
-      if (res.status === 401) { aLogin(); return null; }
-      if (!res.ok) throw new Error("No pudimos cargar tus partidos");
-      return res.json().catch(function () { return null; });
-    })
-    .then(function (body) {
-      if (!body) return;
-      datos.organizo = Array.isArray(body.organizo) ? body.organizo : [];
-      datos.meAnote = Array.isArray(body.meAnote) ? body.meAnote : [];
-      var q = new URLSearchParams(window.location.search).get("tab");
-      if (q === "anotado" || q === "meAnote") tab = "anotado";
-      pintar();
-    })
-    .catch(function (e) {
-      lista.replaceChildren();
-      showError(e && e.message ? e.message : "No pudimos cargar tus partidos");
-    });
-})();
+<script is:inline define:vars={{ destino }}>
+  window.location.replace(destino);
 </script>

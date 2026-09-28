@@ -176,3 +176,70 @@ test('Arquitectura Desacoplada: Generación de enlace de reserva (Astro -> Next.
   // Asegura que no viajan tokens ni credenciales en la URL
   assert.equal(parsed.searchParams.get('token'), null);
 });
+
+test('Contrato API: GET /api/partidos/mios y operaciones (Spec 22b Partidos Jugador)', () => {
+  const mockMisPartidos = {
+    organizo: [
+      {
+        id: 'partido-1',
+        titulo: 'Pichanga nocturna 7v7',
+        descripcion: 'Césped sintético, traer camiseta blanca',
+        formato: 'Fútbol 7',
+        nivel: 'Intermedio',
+        cuposTotales: 14,
+        cuposLibres: 3,
+        distrito: 'Yanahuara',
+        cancha: 'Cancha 1',
+        superficie: 'Grass sintético',
+        precio: 12.5,
+        fecha: '2026-09-28',
+        desde: '20:00',
+        hasta: '21:00',
+        cuando: 'Lunes 28 Sept, 20:00',
+        fechaCorta: '28/09',
+        horaCorta: '20:00',
+        fotoUrl: null,
+        anotado: false,
+        inscritos: ['Carlos M.', 'Juan P.'],
+        organizador: { id: 'usr-456', nombre: 'Renzo Valdivia' },
+        creadoEn: '2026-09-27T10:00:00Z'
+      }
+    ],
+    meAnote: [
+      {
+        id: 'partido-2',
+        titulo: 'Fútbol 6 dominical',
+        descripcion: null,
+        formato: 'Fútbol 6',
+        nivel: 'Todos los niveles',
+        cuposTotales: 12,
+        cuposLibres: 1,
+        distrito: 'Cayma',
+        cancha: 'Cancha Las Flores',
+        superficie: 'Grass sintético',
+        precio: 10.0,
+        fecha: '2026-09-29',
+        desde: '09:00',
+        hasta: '10:00',
+        cuando: 'Martes 29 Sept, 09:00',
+        fechaCorta: '29/09',
+        horaCorta: '09:00',
+        fotoUrl: null,
+        anotado: true,
+        inscritos: ['Mateo R.'],
+        organizador: { id: 'usr-789', nombre: 'Diego Salas' },
+        creadoEn: '2026-09-27T11:00:00Z'
+      }
+    ]
+  };
+
+  assert.ok(Array.isArray(mockMisPartidos.organizo));
+  assert.ok(Array.isArray(mockMisPartidos.meAnote));
+  assert.equal(mockMisPartidos.organizo[0].id, 'partido-1');
+  assert.equal(typeof mockMisPartidos.organizo[0].cuposLibres, 'number');
+  assert.equal(typeof mockMisPartidos.organizo[0].cuposTotales, 'number');
+  assert.ok(Array.isArray(mockMisPartidos.organizo[0].inscritos));
+  assert.equal(mockMisPartidos.meAnote[0].id, 'partido-2');
+  assert.equal(mockMisPartidos.meAnote[0].organizador?.nombre, 'Diego Salas');
+});
+

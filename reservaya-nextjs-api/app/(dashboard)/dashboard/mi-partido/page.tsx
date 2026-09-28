@@ -22,7 +22,7 @@ export default async function MiPartidoPage() {
           Tu reserva confirmada
         </p>
         <h1 className="font-display text-3xl font-extrabold text-basalto tracking-tight">
-          Mi partido
+          Próxima reserva
         </h1>
         <p className="mt-1 text-sm text-pizarra">
           Detalles operativos y código de acceso para presentar al llegar al complejo deportivo.

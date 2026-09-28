@@ -25,6 +25,11 @@ export const updateUsuario = (id: string, input: { activo?: boolean; rol?: Rol }
   request(`/api/usuarios/${id}`, { method: 'PATCH', body: JSON.stringify(input) })
 export const crearResena = (complejoId: string, puntuacion: number, comentario?: string) =>
   request('/api/resenas', { method: 'POST', body: JSON.stringify({ complejoId, puntuacion, comentario }) })
+// Partidos comunitarios (Spec 22b): la API valida organizador/anotación con la cookie de sesión.
+export const cancelarPartido = (id: string) =>
+  request<{ ok: boolean }>(`/api/partidos/${encodeURIComponent(id)}`, { method: 'DELETE' })
+export const salirseDePartido = (id: string) =>
+  request<{ ok: boolean }>(`/api/partidos/${encodeURIComponent(id)}/anotarse`, { method: 'DELETE' })
 
 export const updatePerfil = (input: {
   telefono?: string
