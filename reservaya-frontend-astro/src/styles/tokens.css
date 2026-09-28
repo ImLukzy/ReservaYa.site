@@ -56,6 +56,8 @@
   --color-error: #b42318;         /* 6.57 sobre tiza */
   --color-error-suave: #fdecea;   /* error encima 5.75 */
   --color-velo: rgb(31 42 36 / 0.5); /* fondo tras un diálogo */
+  --color-noche: #0b1912;         /* banda oscura de hero/footer; tiza encima ~19 (spec 26) */
+  --color-cielo: #e8f1f6;         /* banda clara alterna a sillar; basalto encima ~17 (spec 26) */
 
   /* Tipografía: señalética (display) + cuerpo de la misma familia. */
   --font-*: initial;

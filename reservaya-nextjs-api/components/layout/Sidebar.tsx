@@ -215,7 +215,7 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
         type="button"
         aria-label="Abrir menú"
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-40 rounded-md bg-grafito p-2 text-tiza shadow-lg lg:hidden"
+        className="fixed left-4 top-4 z-40 rounded-md bg-noche p-2 text-tiza shadow-lg lg:hidden"
       >
         <Menu size={ICON.size} strokeWidth={ICON.strokeWidth} aria-hidden="true" />
       </button>
@@ -228,15 +228,24 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
       )}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[260px] flex-shrink-0 flex-col bg-grafito transition-transform duration-200 lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-[260px] flex-shrink-0 flex-col bg-noche transition-transform duration-200 lg:static lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Cabecera */}
         <div className="flex h-[88px] shrink-0 items-center gap-2 border-b border-white/10 px-6">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-cesped text-xl" aria-hidden="true">
-            🏟️
-          </div>
+          <svg
+            className="h-7 w-7 shrink-0 text-cesped"
+            viewBox="0 0 28 28"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden="true"
+          >
+            <rect x="3" y="5" width="22" height="18" rx="2" />
+            <path d="M14 5v18" />
+            <circle cx="14" cy="14" r="3.5" />
+          </svg>
           <div className="min-w-0">
             <p className="truncate font-display text-xl font-bold leading-none text-tiza">
               Reserva<span className="text-cesped">Ya</span>
@@ -311,7 +320,7 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
         {/* Usuario */}
         <div className="border-t border-white/10 p-4">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cesped font-display text-base font-bold text-grafito">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cesped font-display text-base font-bold text-tiza">
               {initial}
             </div>
             <div className="min-w-0 flex-1">

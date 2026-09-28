@@ -97,7 +97,7 @@ export default async function PerfilPage() {
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/dashboard/canchas"
-                className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 text-sm font-semibold text-grafito transition hover:bg-cesped-hover"
+                className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
               >
                 Buscar canchas
               </Link>
