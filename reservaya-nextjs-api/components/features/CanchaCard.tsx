@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { ReservaForm } from './ReservaForm'
+import { tipoCanchaLabel } from './etiquetasJugador'
 import type { Cancha } from '@/lib/api'
 
 // Firma visual compartida con la landing (spec 24): croquis de cancha en líneas de
@@ -91,7 +92,7 @@ export function CanchaCard({
         <div className="flex flex-1 flex-col p-5">
           <div className="mb-2 flex items-start justify-between gap-2">
             <h3 className="font-display text-lg font-bold text-basalto leading-tight">{cancha.nombre}</h3>
-            <Badge variant={tipoBadge[cancha.tipo] ?? 'gray'}>{cancha.tipo}</Badge>
+            <Badge variant={tipoBadge[cancha.tipo] ?? 'gray'}>{tipoCanchaLabel[cancha.tipo] ?? cancha.tipo}</Badge>
           </div>
 
           {cancha.complejo && (
