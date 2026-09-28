@@ -6,18 +6,18 @@ interface BadgeProps {
   className?: string
 }
 
-// Estados del tablero; todos ≥ 4.5:1 (verde 5.7, rojo 5.75, gris 4.9).
+// Etiquetas de estado con formato píldora y bordes nítidos de contraste
 const variants = {
-  green: 'bg-cesped-suave text-cesped-hondo',
-  yellow: 'bg-[#FEF9C3] text-[#A16207]',
-  red: 'bg-error-suave text-error',
-  blue: 'bg-[#DBEAFE] text-[#1D4ED8]',
-  gray: 'bg-piedra text-pizarra',
+  green: 'border-cesped/40 bg-cesped-suave text-cesped-hondo',
+  yellow: 'border-sol/40 bg-sol-suave text-sol-hondo',
+  red: 'border-error/40 bg-error-suave text-error',
+  blue: 'border-cielo/40 bg-cielo-suave text-cielo-hondo',
+  gray: 'border-borde bg-piedra text-pizarra',
 }
 
 export function Badge({ children, variant = 'gray', className }: BadgeProps) {
   return (
-    <span className={cn('inline-flex items-center px-2 py-0.5 rounded-md font-display text-sm font-semibold', variants[variant], className)}>
+    <span className={cn('inline-flex items-center rounded-full border px-2.5 py-0.5 font-display text-xs font-bold tabular-nums', variants[variant], className)}>
       {children}
     </span>
   )

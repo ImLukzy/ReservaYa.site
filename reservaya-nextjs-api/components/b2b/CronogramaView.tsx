@@ -96,12 +96,12 @@ async function leerError(res: Response): Promise<string> {
 }
 
 function estiloBloque(r: Reserva): string {
-  if (esBloqueo(r)) return 'border-l-4 border-double border-[#F97316] bg-[#FFEDD5] text-[#9A3412]';
+  if (esBloqueo(r)) return 'border-l-4 border-double border-alerta bg-alerta-suave text-alerta-hondo';
   switch (r.estado) {
     case 'CONFIRMADA':
       return 'border-l-4 border-solid border-cesped bg-cesped-suave text-cesped-hondo';
     case 'PENDIENTE':
-      return 'border-l-4 border-dashed border-[#EAB308] bg-[#FEF9C3] text-[#A16207]';
+      return 'border-l-4 border-dashed border-sol bg-sol-suave text-sol-hondo';
     case 'COMPLETADA':
       return 'border-l-4 border-solid border-borde bg-piedra text-pizarra';
     case 'CANCELADA':
@@ -653,10 +653,10 @@ export function CronogramaView({
             {/* Leyenda accesible: distinguible también sin color */}
             <div className="flex flex-wrap items-center gap-4 border-t border-cal bg-tiza px-4 py-3 text-[11px] font-semibold text-pizarra">
               <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-solid border-cesped bg-cesped-suave" /> [✓] Confirmada</span>
-              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-dashed border-[#EAB308] bg-[#FEF9C3]" /> [⏳] Pendiente</span>
+              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-dashed border-sol bg-sol-suave" /> [⏳] Pendiente</span>
               <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-solid border-borde bg-piedra" /> [✓✓] Completada</span>
               <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-dotted border-error bg-error-suave" /> [✕] Cancelada</span>
-              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-double border-[#F97316] bg-[#FFEDD5]" /> [⛔] Bloqueo</span>
+              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-double border-alerta bg-alerta-suave" /> [⛔] Bloqueo</span>
             </div>
           </div>
     );
@@ -771,10 +771,10 @@ export function CronogramaView({
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-cal bg-tiza px-4 py-3 text-[11px] font-semibold text-pizarra">
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-solid border-cesped bg-cesped-suave" /> [✓] Confirmada</span>
-          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-dashed border-[#EAB308] bg-[#FEF9C3]" /> [⏳] Pendiente</span>
+          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-dashed border-sol bg-sol-suave" /> [⏳] Pendiente</span>
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-solid border-borde bg-piedra" /> [✓✓] Completada</span>
           <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-dotted border-error bg-error-suave" /> [✕] Cancelada</span>
-          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-double border-[#F97316] bg-[#FFEDD5]" /> [⛔] Bloqueo</span>
+          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm border-l-2 border-double border-alerta bg-alerta-suave" /> [⛔] Bloqueo</span>
         </div>
       </div>
     );
@@ -809,7 +809,7 @@ export function CronogramaView({
               </p>
               <p className="font-display text-xl font-black tabular-nums text-basalto">{Number(d.slice(8, 10))}</p>
               <p className="mt-1 font-display text-[11px] font-bold tabular-nums text-cesped-hondo">{nR} reservas</p>
-              <p className="mt-1 font-display text-[11px] font-semibold tabular-nums text-[#C2410C]">{nB} bloqueos</p>
+              <p className="mt-1 font-display text-[11px] font-semibold tabular-nums text-alerta-hondo">{nB} bloqueos</p>
             </button>
           );
         })}
@@ -894,7 +894,7 @@ export function CronogramaView({
           </div>
           <div className="flex-1 space-y-3 overflow-y-auto p-5 text-sm text-pizarra">
             {esBloqueo(detalle) && (
-              <p className="rounded-xl border border-double border-[#F97316] bg-[#FFEDD5] px-3 py-2 font-display text-xs font-bold text-[#C2410C]">
+              <p className="rounded-xl border border-double border-alerta bg-alerta-suave px-3 py-2 font-display text-xs font-bold text-alerta-hondo">
                 ⛔ Horario bloqueado · {(detalle.notas ?? '').replace('[BLOQUEO]', '').trim() || 'Sin motivo'}
               </p>
             )}
@@ -1067,7 +1067,7 @@ export function CronogramaView({
               disabled={guardando}
               className={cn(
                 'flex-1 rounded-xl py-2.5 font-display text-sm font-bold transition-all disabled:opacity-60',
-                modal === 'nueva' ? 'bg-cesped text-tiza hover:bg-cesped-hover' : 'bg-[#F97316] text-white hover:bg-[#EA580C]'
+                modal === 'nueva' ? 'bg-cesped text-tiza hover:bg-cesped-hover' : 'bg-alerta text-tiza hover:bg-alerta-hondo'
               )}
             >
               {guardando ? 'Guardando…' : modal === 'nueva' ? 'Guardar reserva' : 'Bloquear'}
@@ -1108,7 +1108,7 @@ export function CronogramaView({
           <button
             type="button"
             onClick={() => abrirModal('bloqueo')}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-cal bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto transition hover:border-[#F97316] hover:text-[#C2410C] sm:flex-none"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-cal bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto transition hover:border-alerta hover:text-alerta-hondo sm:flex-none"
           >
             <Ban size={16} strokeWidth={2} /> Bloquear horario
           </button>
@@ -1123,7 +1123,7 @@ export function CronogramaView({
         <span className="rounded-full border border-cesped/30 bg-cesped-suave px-3 py-1.5 font-display tabular-nums text-cesped-hondo">
           {nReservasDia} reservas
         </span>
-        <span className="rounded-full border border-[#FDBA74] bg-[#FFEDD5] px-3 py-1.5 font-display tabular-nums text-[#C2410C]">
+        <span className="rounded-full border border-alerta/40 bg-alerta-suave px-3 py-1.5 font-display tabular-nums text-alerta-hondo">
           {nBloqueosDia} bloqueos
         </span>
       </div>

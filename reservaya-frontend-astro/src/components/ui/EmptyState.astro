@@ -12,7 +12,7 @@ interface Props {
 const { titulo, texto, id, oculto = false, class: extra = "" } = Astro.props;
 ---
 
-<div id={id} hidden={oculto} class={`rounded-surface border border-cal bg-tiza px-6 py-10 text-center ${extra}`.trim()}>
+<div id={id} hidden={oculto} class={`card-dashed px-6 py-10 text-center ${extra}`.trim()}>
   <p class="font-display text-xl font-semibold text-basalto">{titulo}</p>
   {texto && <p class="mx-auto mt-2 max-w-md text-pizarra">{texto}</p>}
   <div class="mt-5 flex flex-wrap justify-center gap-3 empty:hidden"><slot /></div>
