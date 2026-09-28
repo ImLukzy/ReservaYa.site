@@ -3,6 +3,7 @@ import * as api from '@/lib/api'
 import { CanchaCard } from '@/components/features/CanchaCard'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { CalendarDays, SearchX } from 'lucide-react'
+import { tipoCanchaLabel } from '@/components/features/etiquetasJugador'
 import type { ResultadoBusqueda } from '@/lib/api'
 
 export const dynamic = 'force-dynamic'
@@ -148,7 +149,7 @@ export default async function CanchasPage({
             <select id="f-tipo" name="tipo" defaultValue={p.tipo ?? ''} className={inputCls}>
               <option value="">Todos los deportes</option>
               {TIPOS.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t}>{tipoCanchaLabel[t] ?? t}</option>
               ))}
             </select>
           </div>

@@ -1,13 +1,15 @@
 import { getSession } from '@/lib/session'
 import * as api from '@/lib/api'
-import type { DashboardUsuario, Reserva } from '@/lib/api'
+import type { DashboardUsuario } from '@/lib/api'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { formatFecha, formatHora, codigoMostrado, fechaFinReservaEnMs } from '@/lib/utils'
+import { formatFecha, formatHora, codigoMostrado } from '@/lib/utils'
 import Link from 'next/link'
 import { CalendarX2 } from 'lucide-react'
 import { DismissibleNotice } from '@/components/features/DismissibleNotice'
+import { estadoLabel } from '@/components/features/etiquetasJugador'
+import { proximaDe } from '@/components/features/proximaReserva'
 export const dynamic = 'force-dynamic'
 const estadoBadge: Record<string, 'green' | 'yellow' | 'red' | 'blue' | 'gray'> = {
   CONFIRMADA: 'green',
@@ -20,14 +22,6 @@ function fechaLarga(fechaIso: string): string {
   const d = new Date(`${fechaIso.slice(0, 10)}T12:00:00`)
   const s = new Intl.DateTimeFormat('es-PE', { weekday: 'long', day: 'numeric', month: 'long' }).format(d)
   return s.charAt(0).toUpperCase() + s.slice(1)
-}
-
-// Fuera del componente: Date.now() aquí no es una llamada impura "en render" (regla react-hooks/purity).
-function proximaDe(reservas: Reserva[]): Reserva | undefined {
-  const ahora = Date.now()
-  return reservas
-    .filter((r) => (r.estado === 'CONFIRMADA' || r.estado === 'PENDIENTE') && fechaFinReservaEnMs(r.fecha, r.horaFin) > ahora)
-    .sort((a, b) => fechaFinReservaEnMs(a.fecha, a.horaInicio) - fechaFinReservaEnMs(b.fecha, b.horaInicio))[0]
 }
 
 export default async function DashboardPage() {
@@ -83,7 +77,7 @@ export default async function DashboardPage() {
                   </p>
                   <p className="mt-1 text-sm text-pizarra">{fechaLarga(proximaReserva.fecha)}</p>
                 </div>
-                <Badge variant={estadoBadge[proximaReserva.estado]}>{proximaReserva.estado}</Badge>
+                <Badge variant={estadoBadge[proximaReserva.estado]}>{estadoLabel[proximaReserva.estado] ?? proximaReserva.estado}</Badge>
               </div>
               <div className="mt-4 border-t border-cal pt-4">
                 <p className="font-display text-lg font-semibold text-basalto">{proximaReserva.cancha.nombre}</p>
@@ -149,7 +143,7 @@ export default async function DashboardPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-display text-sm font-semibold tabular-nums text-basalto">S/ {Number(r.total)}</span>
-                      <Badge variant={estadoBadge[r.estado]}>{r.estado}</Badge>
+                      <Badge variant={estadoBadge[r.estado]}>{estadoLabel[r.estado] ?? r.estado}</Badge>
                     </div>
                   </div>
                 ))}

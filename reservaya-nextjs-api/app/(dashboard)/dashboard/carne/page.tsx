@@ -21,88 +21,74 @@ export default async function CarnePage() {
         </p>
       </div>
 
-      {/* Tarjeta de Carné estilo Ficha Reglamentaria de Juego */}
-      <div className="relative overflow-hidden rounded-3xl border-2 border-cal bg-tiza p-6 sm:p-8 shadow-md">
-        {/* Franja superior de marca y estado */}
-        <div className="flex items-center justify-between border-b border-cal pb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cesped text-grafito font-black font-display text-base shadow-sm">
-              RY
+      {/* Carné con proporción de tarjeta física CR80 (D2, spec 24); ≤360px cae a alto libre. Sin sombras decorativas. */}
+      <div className="mx-auto aspect-[1.586] w-full max-w-[420px] overflow-hidden rounded-2xl border-2 border-cal bg-tiza max-[360px]:aspect-auto">
+        <div className="h-1 w-full bg-cesped" aria-hidden="true" />
+        <div className="flex h-full flex-col justify-between p-5 sm:p-6">
+          {/* Cabecera: marca y estado */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-cesped font-display text-xs font-black text-grafito">
+                RY
+              </div>
+              <p className="font-display text-xs font-black text-basalto">ReservaYa</p>
             </div>
-            <div>
-              <p className="font-display text-sm font-black text-basalto">
-                ReservaYa
-              </p>
-              <p className="text-[10px] font-bold text-pizarra">
-                Credencial
+            <span className="inline-flex items-center gap-1 rounded-full border border-cesped/30 bg-cesped-suave px-2 py-0.5 text-[11px] font-bold text-cesped-hondo">
+              <ShieldCheck className="h-3 w-3" aria-hidden="true" />
+              Activo
+            </span>
+          </div>
+
+          {/* Identidad del jugador */}
+          <div className="flex items-center gap-4">
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-cal bg-piedra sm:h-16 sm:w-16">
+              {session.fotoUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={session.fotoUrl}
+                  alt={session.nombre}
+                  width={64}
+                  height={64}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center font-display text-xl font-bold text-pizarra">
+                  {session.nombre.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <h2 className="truncate font-display text-lg font-black tracking-tight text-basalto sm:text-xl">
+                {session.nombre}
+              </h2>
+              {session.username ? (
+                <p className="truncate text-sm font-bold text-cesped-hondo">@{session.username}</p>
+              ) : (
+                <p className="truncate text-xs italic text-pizarra">Sin nombre de usuario fijado</p>
+              )}
+              <p className="mt-1 flex items-center gap-1 truncate text-xs text-pizarra">
+                <Mail className="h-3 w-3 shrink-0" aria-hidden="true" />
+                <span className="truncate">{session.email}</span>
               </p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-cesped/30 bg-cesped-suave px-3 py-1 text-xs font-bold text-cesped-hondo">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Jugador Activo
-          </span>
-        </div>
 
-        {/* Contenido principal del carné */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Avatar con dimensiones estrictamente reservadas anti-CLS */}
-          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-2 border-cal bg-piedra flex items-center justify-center text-3xl font-bold font-display text-pizarra">
-            {session.fotoUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={session.fotoUrl}
-                alt={session.nombre}
-                width={96}
-                height={96}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span>{session.nombre.charAt(0).toUpperCase()}</span>
-            )}
-          </div>
-
-          <div className="flex-1 text-center sm:text-left space-y-1">
-            <h2 className="font-display text-2xl font-black text-basalto tracking-tight">
-              {session.nombre}
-            </h2>
-            {session.username ? (
-              <p className="text-sm font-bold text-cesped-hondo">
-                @{session.username}
-              </p>
-            ) : (
-              <p className="text-xs text-pizarra italic">
-                Sin nombre de usuario fijado
-              </p>
-            )}
-            <p className="text-xs text-pizarra flex items-center justify-center sm:justify-start gap-1 pt-1">
-              <Mail className="h-3.5 w-3.5 text-pizarra" />
-              {session.email}
-            </p>
+          {/* Pie: rol y teléfono si existe */}
+          <div className="flex items-center justify-between border-t border-cal pt-2 text-xs text-pizarra">
+            <span className="font-display font-bold text-basalto">Jugador</span>
             {session.telefono && (
-              <p className="text-xs text-pizarra flex items-center justify-center sm:justify-start gap-1">
-                <Phone className="h-3.5 w-3.5 text-pizarra" />
-                <span className="font-display tabular-nums">{session.telefono}</span>
-              </p>
+              <span className="flex items-center gap-1 font-display tabular-nums">
+                <Phone className="h-3 w-3 shrink-0" aria-hidden="true" />
+                {session.telefono}
+              </span>
             )}
-          </div>
-        </div>
-
-        {/* Datos del carné */}
-        <div className="mt-6 grid grid-cols-2 gap-3 border-t border-cal pt-4 text-xs">
-          <div className="rounded-xl border border-cal bg-piedra/40 p-2.5">
-            <p className="text-[10px] uppercase font-bold text-pizarra">Tipo</p>
-            <p className="mt-0.5 font-display font-bold text-basalto">Jugador ReservaYa</p>
-          </div>
-          <div className="rounded-xl border border-cal bg-piedra/40 p-2.5">
-            <p className="text-[10px] uppercase font-bold text-pizarra">Estado</p>
-            <p className="mt-0.5 font-display font-bold text-cesped-hondo">Cuenta activa</p>
           </div>
         </div>
       </div>
 
       {/* Acciones de gestión de perfil */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-cal bg-tiza p-5 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-cal bg-tiza p-5">
         <div>
           <h3 className="font-display text-sm font-bold text-basalto">
             ¿Necesitas actualizar tus datos o foto?
