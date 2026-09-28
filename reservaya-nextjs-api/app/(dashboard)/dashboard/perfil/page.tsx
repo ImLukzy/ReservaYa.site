@@ -23,7 +23,7 @@ export default async function PerfilPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-8 border-b border-cal pb-4">
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Mi perfil</p>
+        <p className="font-display text-xs font-bold text-cesped-hondo">Mi perfil</p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-basalto">Tu perfil. Tu juego.</h1>
         <p className="mt-1 text-sm text-pizarra">Consulta tu carné digital, edita tus datos y revisa tu historial deportivo en ReservaYa.</p>
       </div>
@@ -35,7 +35,7 @@ export default async function PerfilPage() {
             {/* Cabecera del carné en superficie sobria */}
             <div className="bg-basalto p-6 text-tiza">
               <div className="flex items-center justify-between">
-                <span className="font-display text-xs font-bold uppercase tracking-wider text-niebla">Carné de jugador</span>
+                <span className="font-display text-xs font-bold text-niebla">Carné de jugador</span>
                 <span className="font-display text-xs font-bold tabular-nums text-cesped">
                   #{session.id.slice(0, 8).toUpperCase()}
                 </span>

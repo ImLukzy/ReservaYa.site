@@ -2,7 +2,7 @@ import Link from 'next/link'
 import * as api from '@/lib/api'
 import { CanchaCard } from '@/components/features/CanchaCard'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { SearchX } from 'lucide-react'
+import { CalendarDays, SearchX } from 'lucide-react'
 import type { ResultadoBusqueda } from '@/lib/api'
 
 export const dynamic = 'force-dynamic'
@@ -68,12 +68,12 @@ export default async function CanchasPage({
   const conHorario = Boolean(p.fecha && p.horaInicio && p.horaFin)
   const inputCls =
     'w-full rounded-md border border-cal bg-tiza px-3 py-2 text-sm text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-1 focus:ring-cesped'
-  const labelCls = 'mb-1.5 block text-xs font-semibold uppercase tracking-wider text-pizarra'
+  const labelCls = 'mb-1.5 block text-xs font-semibold text-pizarra'
 
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-8 border-b border-cal pb-4">
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Vitrina de canchas</p>
+        <p className="font-display text-xs font-bold text-cesped-hondo">Vitrina de canchas</p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-basalto">Buscar canchas</h1>
         <p className="mt-1 text-sm text-pizarra">
           Filtra por local, dueño o lugar y revisa disponibilidad por fecha y hora.
@@ -155,8 +155,9 @@ export default async function CanchasPage({
         </div>
 
         <details className="mt-4 rounded-lg border border-cal bg-piedra/40 px-4 py-3" open={conHorario}>
-          <summary className="cursor-pointer font-display text-sm font-semibold text-basalto">
-            📅 Horario y fecha de juego (opcional, calcula cotización en tiempo real)
+          <summary className="flex cursor-pointer items-center gap-2 font-display text-sm font-semibold text-basalto">
+            <CalendarDays className="h-4 w-4 shrink-0 text-pizarra" strokeWidth={2} aria-hidden="true" />
+            Horario y fecha de juego (opcional, calcula cotización en tiempo real)
           </summary>
           <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
@@ -242,7 +243,7 @@ export default async function CanchasPage({
 
       {!error && resultados.length > 0 && (
         <>
-          <p className="mb-4 font-display tabular-nums text-xs font-semibold uppercase tracking-wider text-pizarra">
+          <p className="mb-4 font-display tabular-nums text-xs font-semibold text-pizarra">
             {resultado.limiteAplicado
               ? `Mostrando ${resultados.length} de ${resultado.total} canchas disponibles: usa los filtros para acotar`
               : `${resultado.total} cancha${resultado.total === 1 ? '' : 's'} encontrada${resultado.total === 1 ? '' : 's'}`}

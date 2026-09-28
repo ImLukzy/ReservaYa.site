@@ -125,6 +125,12 @@
   - [x] `Card.tsx` `StatCard.icon`: `string`→`React.ReactNode` (único consumidor, sin roturas).
   - [x] Gates: typecheck 0, lint 0 err/2 avisos preexistentes, test 40/40, build OK (34 rutas).
   - [x] Capturas 375×812/1440×900 (Playwright, sesión real `usuario@reservafacil.com`) de `/dashboard`, `/dashboard/canchas`, `/dashboard/carne`, `/dashboard/reservas`, `/dashboard/partidos`: 0 scroll horizontal.
+- [x] **E2-rework (god rechazó `/dashboard` por genérico)**
+  - [x] `dashboard/page.tsx` reescrito otra vez: bloque "Tu próxima reserva" con datos reales (`api.getReservas()`, filtro CONFIRMADA/PENDIENTE con `fechaFinReservaEnMs` > ahora, ordenado por hora de inicio); franja de métricas con `divide-x`/`divide-y` (sin baldosas de color); una sola acción "Reservar cancha"; "Últimas reservas" como filas sin icono; grid asimétrico `lg:grid-cols-[2fr_1fr]`.
+  - [x] `Sidebar.tsx`: label `''` en `GROUPS_USUARIO` (sin «Operación» para USUARIO); quitado `uppercase tracking-wide` del label de sección para el resto de roles.
+  - [x] `ReservaForm.tsx` a tokens claros (`border-cal bg-tiza text-basalto`, resumen `bg-cesped-suave text-cesped-hondo`, 🌙→`Moon`); `Modal` de `CanchaCard.tsx` a `tono="claro"`.
+  - [x] Gates: typecheck 0; lint detectó `react-hooks/purity` real (`Date.now()` en el cuerpo del Server Component) → extraída a función de módulo `proximaDe()`, 0 errores tras el fix; test 40/40; build OK.
+  - [x] Capturas 375×812/1440×900 de `/dashboard` y del modal de reserva abierto: 0 scroll horizontal, tono claro correcto. Cuenta de prueba sin próxima reserva (las 2 reservas confirmadas son del 07/09/2026, ya pasado) → se ve el estado vacío, no el bloque con datos.
 - [ ] **E3 — Carné y reservas (L5)**
   - [ ] `dashboard/carne/page.tsx` según D2.
   - [ ] `dashboard/reservas/page.tsx`: franja de resumen.

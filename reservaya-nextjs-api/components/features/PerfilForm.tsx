@@ -168,7 +168,7 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="perfil-nombre" className="block text-xs font-semibold text-pizarra uppercase tracking-wider">
+            <label htmlFor="perfil-nombre" className="block text-xs font-semibold text-pizarra">
               Nombre
             </label>
             <input
@@ -182,7 +182,7 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
           </div>
 
           <div>
-            <label htmlFor="perfil-email" className="block text-xs font-semibold text-pizarra uppercase tracking-wider">
+            <label htmlFor="perfil-email" className="block text-xs font-semibold text-pizarra">
               Correo electrónico
             </label>
             <input
@@ -198,7 +198,7 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="perfil-telefono" className="block text-xs font-semibold text-basalto uppercase tracking-wider">
+            <label htmlFor="perfil-telefono" className="block text-xs font-semibold text-basalto">
               Teléfono de contacto
             </label>
             <input
@@ -213,7 +213,7 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
           </div>
 
           <div>
-            <label htmlFor="perfil-fecha" className="block text-xs font-semibold text-basalto uppercase tracking-wider">
+            <label htmlFor="perfil-fecha" className="block text-xs font-semibold text-basalto">
               Fecha de nacimiento
             </label>
             <input
@@ -235,7 +235,7 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
         </div>
 
         <div>
-          <label htmlFor="perfil-username" className="block text-xs font-semibold text-basalto uppercase tracking-wider">
+          <label htmlFor="perfil-username" className="block text-xs font-semibold text-basalto">
             Nombre de usuario (@username)
           </label>
           <input

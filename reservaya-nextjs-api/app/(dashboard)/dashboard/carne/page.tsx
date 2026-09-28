@@ -10,8 +10,8 @@ export default async function CarnePage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">
-          Credencial Digital
+        <p className="font-display text-xs font-bold text-cesped-hondo">
+          Credencial digital
         </p>
         <h1 className="font-display text-3xl font-extrabold text-basalto tracking-tight">
           Carné de jugador
@@ -30,10 +30,10 @@ export default async function CarnePage() {
               RY
             </div>
             <div>
-              <p className="font-display text-sm font-black tracking-wider text-basalto uppercase">
+              <p className="font-display text-sm font-black text-basalto">
                 ReservaYa
               </p>
-              <p className="text-[10px] uppercase font-bold text-pizarra tracking-wider">
+              <p className="text-[10px] font-bold text-pizarra">
                 Credencial
               </p>
             </div>

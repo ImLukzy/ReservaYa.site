@@ -1,10 +1,12 @@
 import { getSession } from '@/lib/session'
 import * as api from '@/lib/api'
-import type { DashboardUsuario } from '@/lib/api'
-import { StatCard } from '@/components/ui/Card'
+import type { DashboardUsuario, Reserva } from '@/lib/api'
+import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { formatFecha, formatHora } from '@/lib/utils'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { formatFecha, formatHora, codigoMostrado, fechaFinReservaEnMs } from '@/lib/utils'
 import Link from 'next/link'
+import { CalendarX2 } from 'lucide-react'
 import { DismissibleNotice } from '@/components/features/DismissibleNotice'
 export const dynamic = 'force-dynamic'
 const estadoBadge: Record<string, 'green' | 'yellow' | 'red' | 'blue' | 'gray'> = {
@@ -12,6 +14,20 @@ const estadoBadge: Record<string, 'green' | 'yellow' | 'red' | 'blue' | 'gray'> 
   PENDIENTE: 'yellow',
   CANCELADA: 'red',
   COMPLETADA: 'blue',
+}
+
+function fechaLarga(fechaIso: string): string {
+  const d = new Date(`${fechaIso.slice(0, 10)}T12:00:00`)
+  const s = new Intl.DateTimeFormat('es-PE', { weekday: 'long', day: 'numeric', month: 'long' }).format(d)
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+// Fuera del componente: Date.now() aquí no es una llamada impura "en render" (regla react-hooks/purity).
+function proximaDe(reservas: Reserva[]): Reserva | undefined {
+  const ahora = Date.now()
+  return reservas
+    .filter((r) => (r.estado === 'CONFIRMADA' || r.estado === 'PENDIENTE') && fechaFinReservaEnMs(r.fecha, r.horaFin) > ahora)
+    .sort((a, b) => fechaFinReservaEnMs(a.fecha, a.horaInicio) - fechaFinReservaEnMs(b.fecha, b.horaInicio))[0]
 }
 
 export default async function DashboardPage() {
@@ -23,8 +39,7 @@ export default async function DashboardPage() {
   const reservas = dashboard.ultimasReservas
   const totalReservas = dashboard.reservas
   const confirmadas = dashboard.reservasConfirmadas
-  const canchas = dashboard.canchasActivas
-  const ultimaConfirmada = reservas.find((r) => r.estado === 'CONFIRMADA')
+  const pendientes = todasLasReservas.filter((r) => r.estado === 'PENDIENTE').length
   const ultimaNoDisponible = todasLasReservas.find((cancelada) =>
     cancelada.estado === 'CANCELADA' &&
     todasLasReservas.some((confirmada) =>
@@ -36,94 +51,128 @@ export default async function DashboardPage() {
     )
   )
 
+  const proximaReserva = proximaDe(todasLasReservas)
+
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          ¡Hola, {session!.nombre}! 👋
-        </h1>
-        <p className="text-gray-500 mt-1">Aquí está el resumen de tus reservas</p>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <StatCard label="Total Reservas" value={totalReservas} icon="📅" color="blue" />
-        <StatCard label="Confirmadas" value={confirmadas} icon="✅" color="green" />
-        <StatCard label="Canchas disponibles" value={canchas} icon="🏟️" color="yellow" />
-      </div>
-
-      {ultimaConfirmada && (
-        <div className="mb-6 rounded-2xl border border-[#BBF7D0] bg-[#DCFCE7] px-5 py-4 text-[#14532D]">
-          <p className="font-semibold">🎉 ¡Reserva asegurada!</p>
-          <p className="mt-1 text-sm text-[#15803D]">
-            Tu cancha está confirmada. Llega 10 minutos antes y disfruta tu partido.
-          </p>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-cal pb-4">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-basalto">Hola, {session!.nombre}</h1>
+          <p className="mt-1 text-sm text-pizarra">Este es el resumen de tus reservas.</p>
         </div>
-      )}
-      {ultimaNoDisponible && (
-        <DismissibleNotice />
-      )}
-
-      {/* Acciones rápidas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <Link
           href="/dashboard/canchas"
-          className="bg-[#22C55E] hover:bg-[#16A34A] text-[#060C08] rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-green-900/20"
+          className="shrink-0 rounded-md bg-cesped px-4 py-2.5 font-display text-sm font-semibold text-grafito transition hover:bg-cesped-hover"
         >
-          <span className="text-4xl">🏟️</span>
-          <div>
-            <p className="font-semibold text-lg">Ver Canchas</p>
-            <p className="text-[#DCFCE7] text-sm">Explora y reserva canchas disponibles</p>
-          </div>
-        </Link>
-        <Link
-          href="/dashboard/reservas"
-          className="bg-[#060A08] hover:bg-[#0A1A11] text-white rounded-xl p-6 transition flex items-center gap-4 shadow-lg shadow-slate-950/20"
-        >
-          <span className="text-4xl">📋</span>
-          <div>
-            <p className="font-semibold text-lg">Mis Reservas</p>
-            <p className="text-slate-200 text-sm">Administra todas tus reservas</p>
-          </div>
+          Reservar cancha
         </Link>
       </div>
 
-      {/* Últimas reservas */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">Últimas reservas</h2>
-        </div>
-        {reservas.length === 0 ? (
-          <div className="p-12 text-center text-gray-400">
-            <p className="text-4xl mb-3">📭</p>
-            <p className="font-medium">Aún no tienes reservas</p>
-              <Link href="/dashboard/canchas" className="text-[#15803D] hover:text-[#16A34A] text-sm hover:underline mt-1 block">
-              Reserva tu primera cancha →
-            </Link>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-50">
-            {reservas.map((r) => (
-              <div key={r.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center text-xl">
-                    🏟️
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">{r.cancha.nombre}</p>
-                    <p className="text-gray-500 text-xs">
-                      {formatFecha(r.fecha)} • {formatHora(r.horaInicio)} - {formatHora(r.horaFin)}
-                    </p>
-                  </div>
+      {ultimaNoDisponible && <DismissibleNotice />}
+
+      <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
+        <div className="space-y-6">
+          {/* Próxima reserva */}
+          {proximaReserva ? (
+            <Card>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="font-display text-xs font-bold text-cesped-hondo">Tu próxima reserva</p>
+                  <p className="mt-2 font-display text-5xl font-bold tabular-nums text-basalto">
+                    {formatHora(proximaReserva.horaInicio)}
+                  </p>
+                  <p className="mt-1 text-sm text-pizarra">{fechaLarga(proximaReserva.fecha)}</p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-700">S/ {Number(r.total)}</span>
-                  <Badge variant={estadoBadge[r.estado]}>{r.estado}</Badge>
-                </div>
+                <Badge variant={estadoBadge[proximaReserva.estado]}>{proximaReserva.estado}</Badge>
               </div>
-            ))}
+              <div className="mt-4 border-t border-cal pt-4">
+                <p className="font-display text-lg font-semibold text-basalto">{proximaReserva.cancha.nombre}</p>
+                {proximaReserva.cancha.complejo && (
+                  <p className="mt-0.5 text-sm text-pizarra">
+                    {proximaReserva.cancha.complejo.nombre}
+                    {proximaReserva.cancha.complejo.distrito ? ` · ${proximaReserva.cancha.complejo.distrito}` : ''}
+                  </p>
+                )}
+                <p className="mt-2 font-display text-sm font-semibold tracking-wide text-cesped-hondo">
+                  {codigoMostrado(proximaReserva)}
+                </p>
+              </div>
+              <Link
+                href="/dashboard/mi-partido"
+                className="mt-5 inline-block rounded-md border border-cal bg-tiza px-4 py-2 font-display text-sm font-semibold text-basalto transition hover:border-borde hover:bg-piedra"
+              >
+                Ver detalle
+              </Link>
+            </Card>
+          ) : (
+            <EmptyState
+              icon={CalendarX2}
+              title="No tienes una próxima reserva"
+              description="Busca una cancha disponible y asegura tu horario de juego."
+              action={
+                <Link href="/dashboard/canchas" className="text-sm font-semibold text-cesped-hondo hover:underline">
+                  Buscar cancha
+                </Link>
+              }
+            />
+          )}
+
+          {/* Últimas reservas */}
+          <Card className="p-0">
+            <div className="flex items-center justify-between border-b border-cal p-6">
+              <h2 className="font-display font-semibold text-basalto">Últimas reservas</h2>
+              <Link href="/dashboard/reservas" className="text-xs font-semibold text-cesped-hondo hover:underline">
+                Ver todas
+              </Link>
+            </div>
+            {reservas.length === 0 ? (
+              <EmptyState
+                icon={CalendarX2}
+                title="Aún no tienes reservas"
+                description="Explora la vitrina de canchas y reserva tu primer partido."
+              />
+            ) : (
+              <div className="divide-y divide-cal">
+                {reservas.map((r) => (
+                  <div key={r.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-20 shrink-0">
+                        <p className="font-display text-sm font-semibold tabular-nums text-basalto">{formatFecha(r.fecha)}</p>
+                        <p className="font-display text-xs tabular-nums text-pizarra">
+                          {formatHora(r.horaInicio)}-{formatHora(r.horaFin)}
+                        </p>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-basalto">{r.cancha.nombre}</p>
+                        {r.cancha.complejo && <p className="truncate text-xs text-pizarra">{r.cancha.complejo.nombre}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-display text-sm font-semibold tabular-nums text-basalto">S/ {Number(r.total)}</span>
+                      <Badge variant={estadoBadge[r.estado]}>{r.estado}</Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* Métricas del jugador */}
+        <div className="flex divide-x divide-cal rounded-xl border border-cal bg-tiza lg:flex-col lg:divide-x-0 lg:divide-y">
+          <div className="flex-1 p-4 lg:flex-none">
+            <p className="text-xs text-pizarra">Total reservas</p>
+            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{totalReservas}</p>
           </div>
-        )}
+          <div className="flex-1 p-4 lg:flex-none">
+            <p className="text-xs text-pizarra">Confirmadas</p>
+            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{confirmadas}</p>
+          </div>
+          <div className="flex-1 p-4 lg:flex-none">
+            <p className="text-xs text-pizarra">Pendientes</p>
+            <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{pendientes}</p>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -22,7 +22,7 @@ export default async function MisReservasPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-8 border-b border-cal pb-4">
-        <p className="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Mis Reservas</p>
+        <p className="font-display text-xs font-bold text-cesped-hondo">Mis reservas</p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-basalto">Historial de reservas</h1>
         <p className="mt-1 text-sm text-pizarra">Historial completo de tus partidos, estado de confirmación y opciones de gestión.</p>
       </div>
@@ -45,7 +45,7 @@ export default async function MisReservasPage() {
         <div className="overflow-x-auto rounded-xl border border-cal bg-tiza">
           <table className="w-full min-w-[680px]">
             <thead>
-              <tr className="border-b border-cal bg-piedra text-left font-display text-xs font-semibold uppercase tracking-wider text-pizarra">
+              <tr className="border-b border-cal bg-piedra text-left font-display text-xs font-semibold text-pizarra">
                 <th className="px-6 py-3.5">Cancha</th>
                 <th className="px-6 py-3.5">Fecha</th>
                 <th className="px-6 py-3.5">Horario</th>
