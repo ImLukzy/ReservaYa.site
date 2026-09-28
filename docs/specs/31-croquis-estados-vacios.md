@@ -1,6 +1,6 @@
 # Especificación: 31 — Croquis de cancha como firma visual de estados vacíos y error
 
-> **Estado:** 📋 Propuesta de `dev-claude` (opcional, criterio propio) — pendiente de aprobación de Lukas antes de ejecutar.
+> **Estado:** ✅ Aprobada por Lukas (ILK-13, 2026-09-28) — en cola después de la Spec 29.
 > **Origen:** `task-20260928-dev-plan-frontend`, punto 3 ("la siguiente mejora de mayor impacto visual no genérica").
 
 ---
