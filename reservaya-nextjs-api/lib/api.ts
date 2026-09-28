@@ -89,7 +89,9 @@ export async function getDisponibles(f: BusquedaCanchas): Promise<ResultadoBusqu
 }
 
 export async function getOpcionesBusqueda(): Promise<OpcionesBusqueda> {
-  const data = await getJson<OpcionesBusqueda>('/api/canchas/opciones')
+  const data = await getJson<OpcionesBusqueda>('/api/canchas/opciones', {
+    next: { revalidate: 60 },
+  })
   return {
     distritos: data.distritos ?? [],
     ciudades: data.ciudades ?? [],

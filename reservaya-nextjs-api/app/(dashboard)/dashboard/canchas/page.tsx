@@ -40,19 +40,17 @@ export default async function CanchasPage({
   searchParams: Promise<Params>
 }) {
   const p = await searchParams
-  const opciones = await api.getOpcionesBusqueda().catch(() => ({
-    distritos: [],
-    ciudades: ['Arequipa'],
-    duenos: [],
-    complejos: [],
-    sugerencias: [],
-  }))
-
-  let resultado: ResultadoBusqueda = { canchas: [], total: 0, limiteAplicado: false }
-  let error: string | null = null
   const buscando = tieneBusqueda(p)
-  try {
-    resultado = await api.getDisponibles({
+
+  const [opciones, resBusqueda] = await Promise.all([
+    api.getOpcionesBusqueda().catch(() => ({
+      distritos: [],
+      ciudades: ['Arequipa'],
+      duenos: [],
+      complejos: [],
+      sugerencias: [],
+    })),
+    api.getDisponibles({
       q: p.q || undefined,
       distrito: p.distrito || undefined,
       ciudad: p.ciudad || undefined,
@@ -62,10 +60,16 @@ export default async function CanchasPage({
       fecha: p.fecha || undefined,
       horaInicio: p.horaInicio ? Number(p.horaInicio) : undefined,
       horaFin: p.horaFin ? Number(p.horaFin) : undefined,
-    })
-  } catch (e) {
-    error = e instanceof Error ? e.message : 'No se pudo buscar'
-  }
+    }).then(
+      (data) => ({ resultado: data, error: null as string | null }),
+      (e) => ({
+        resultado: { canchas: [], total: 0, limiteAplicado: false } as ResultadoBusqueda,
+        error: e instanceof Error ? e.message : 'No se pudo buscar',
+      })
+    ),
+  ])
+
+  const { resultado, error } = resBusqueda
   const resultados = resultado.canchas
 
   const conHorario = Boolean(p.fecha && p.horaInicio && p.horaFin)
