@@ -15,7 +15,7 @@ const { titulo, texto, idTitulo } = Astro.props;
 
 <div class="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 xl:grid-cols-[minmax(0,28rem)_1fr] xl:items-stretch lg:py-16">
   <section class="mx-auto w-full max-w-md xl:mx-0 xl:max-w-none">
-    <div class="rounded-surface border border-cal bg-tiza p-6 sm:p-8">
+    <div class="card-tactil p-6 sm:p-8">
       <slot name="arriba" />
       <h1 id={idTitulo} class="text-2xl lg:text-3xl">{titulo}</h1>
       {texto && <p class="mt-2 text-pizarra">{texto}</p>}
