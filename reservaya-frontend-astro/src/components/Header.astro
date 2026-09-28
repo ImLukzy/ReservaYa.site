@@ -16,7 +16,7 @@ const activo = (href: string) => actual === href || actual.startsWith(`${href}/`
 const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-basalto hover:bg-piedra";
 ---
 
-<header class="sticky top-0 z-40 border-b border-cal bg-tiza">
+<header class="sticky top-0 z-40 border-b-2 border-basalto bg-tiza">
   <nav class="mx-auto flex h-16 max-w-page items-center justify-between gap-4 px-4 md:px-6" aria-label="Principal">
     <Marca />
 
@@ -26,22 +26,22 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
           <a
             href={item.href}
             aria-current={activo(item.href) ? "page" : undefined}
-            class="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 font-medium text-pizarra hover:text-basalto aria-[current=page]:border-cesped aria-[current=page]:text-basalto"
+            class="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 font-semibold text-pizarra hover:text-basalto aria-[current=page]:border-cesped aria-[current=page]:text-basalto"
           >{item.etiqueta}</a>
         </li>
       ))}
     </ul>
 
     <div class="flex items-center gap-2">
-      <a href="/login" data-solo="invitado" class={`${BOTON.secundario} px-4`}>Entrar</a>
+      <a href="/login" data-solo="invitado" class={`${BOTON.secundario} px-5 text-xs`}>Entrar</a>
 
       <div data-solo="usuario" hidden class="relative">
-        <button id="cuenta-boton" type="button" class="flex min-h-11 items-center gap-2 rounded-control px-2 hover:bg-piedra" aria-haspopup="true" aria-expanded="false" aria-controls="cuenta-menu">
-          <span data-iniciales class="flex h-8 w-8 items-center justify-center rounded-full bg-basalto text-sm font-semibold text-tiza"></span>
-          <span data-nombre-corto class="hidden max-w-32 truncate font-medium lg:block"></span>
-          <Icon nombre="abajo" class="h-4 w-4 text-pizarra" />
+        <button id="cuenta-boton" type="button" class="flex min-h-11 items-center gap-2 rounded-full border border-basalto px-2.5 hover:bg-piedra cursor-pointer" aria-haspopup="true" aria-expanded="false" aria-controls="cuenta-menu">
+          <span data-iniciales class="flex h-7 w-7 items-center justify-center rounded-full bg-basalto text-xs font-bold text-tiza"></span>
+          <span data-nombre-corto class="hidden max-w-32 truncate font-bold text-xs lg:block"></span>
+          <Icon nombre="abajo" class="h-3.5 w-3.5 text-pizarra" />
         </button>
-        <div id="cuenta-menu" hidden class="absolute right-0 top-12 w-64 rounded-surface border border-cal bg-tiza p-2 shadow-pop">
+        <div id="cuenta-menu" hidden class="absolute right-0 top-12 w-64 card-tactil p-2 shadow-[4px_4px_0_0_#1f2a24]">
           <div class="border-b border-cal px-3 pb-2">
             <p data-nombre class="truncate font-semibold"></p>
             <p data-correo class="truncate text-sm text-pizarra"></p>

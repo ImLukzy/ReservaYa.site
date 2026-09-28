@@ -187,7 +187,7 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 
 - [x] **L1:** Tokens de sombra dura, `sol-suave`, `alerta(-suave)` y utilidades táctiles (`tokens.css`, `globals.css`) + Limpieza de hex en `CronogramaView.tsx` + Componentes UI base (`Button`, `Card`, `EmptyState`, `Badge`, `Modal` en Next y Astro).
 - [x] **L2:** Implementación en el Área del Jugador Next.js (`dashboard`, `canchas`, `partidos`, `carne`, `reservas`, `CanchaCard`, `PartidosJugadorPanel`).
-- [ ] **L3:** Implementación en la Landing Astro (`index.astro`, `canchas.astro`, `torneos.astro`, `Header.astro`, `AuthCard.astro`).
+- [x] **L3:** Implementación en la Landing Astro (`index.astro`, `canchas.astro`, `torneos.astro`, `Header.astro`, `AuthCard.astro`).
 - [ ] **L4:** Gates finales integrales (A1–A10) anotados por JIM-QA y revisión visual.
 
 ---
@@ -199,3 +199,4 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 | 2026-09-28 | Redacción formal Spec 27 | ✅ Creada | Auditor-Gemini: docs/specs/27-frontend-referencia-universo.md |
 | 2026-09-28 | Lote 1 (A1–A6, A10) | ✅ PASS | JIM-QA: typecheck 0 err, lint 0 err (2 warnings), test 40/40, build Next OK, astro check 0 err, astro build 17 págs OK, 0 hex huérfanos |
 | 2026-09-28 | Lote 2 (A1–A4, A7) | ✅ PASS | JIM-QA: typecheck 0 err, lint 0 err (2 warnings), test 40/40, build Next OK, build Astro 17 págs OK, scroll horizontal 0px |
+| 2026-09-28 | Lote 3 (A5–A7) | ✅ PASS | JIM-QA: astro check 0 err, astro build 17 págs OK, test 40/40, scroll horizontal 0px |
