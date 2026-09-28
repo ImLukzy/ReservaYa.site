@@ -29,7 +29,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           id={id}
           aria-describedby={notaId}
           className={cn(
-            'h-11 w-full rounded-md border border-cal bg-tiza px-3 text-sm text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-1 focus:ring-cesped disabled:cursor-not-allowed disabled:bg-piedra disabled:text-pizarra',
+            'h-11 w-full rounded-md border-2 border-basalto bg-tiza px-3 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:shadow-[2px_2px_0_0_#1f2a24] disabled:cursor-not-allowed disabled:bg-piedra disabled:text-pizarra',
             Icon && 'pl-9',
             claseCampo
           )}

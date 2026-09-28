@@ -38,8 +38,8 @@ export default async function MiPartidoPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-        <section className="rounded-2xl border border-cal bg-tiza p-6 shadow-sm">
-          <div className="border-b border-cal pb-4">
+        <section className="card-tactil p-6">
+          <div className="border-b-2 border-basalto pb-4">
             <Badge variant={estadoBadge[reserva.estado] ?? 'gray'}>
               Reserva {(estadoLabel[reserva.estado] ?? reserva.estado).toLowerCase()}
             </Badge>
@@ -69,7 +69,7 @@ export default async function MiPartidoPage() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-cal bg-piedra p-4">
+          <div className="mt-6 rounded-xl border-2 border-basalto bg-piedra p-4">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-cesped-hondo" />
               <p className="text-xs font-bold text-basalto">
@@ -83,11 +83,11 @@ export default async function MiPartidoPage() {
         </section>
 
         <aside className="space-y-4">
-          <div className="rounded-2xl border-2 border-dashed border-borde bg-tiza p-6 text-center shadow-sm">
+          <div className="card-dashed p-6 text-center">
             <p className="text-xs font-bold text-pizarra">
               Código de reserva
             </p>
-            <div className="my-4 rounded-xl border border-cal bg-cesped-suave/40 py-4 px-2">
+            <div className="my-4 rounded-xl border-2 border-basalto bg-cesped-suave/40 py-4 px-2">
               <p className="font-display text-3xl font-black tracking-widest text-cesped-hondo tabular-nums">
                 {codigoMostrado(reserva)}
               </p>
@@ -97,17 +97,17 @@ export default async function MiPartidoPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-cal bg-tiza p-4 shadow-sm space-y-2">
+          <div className="card-tactil p-4 space-y-2">
             <a
               href={`mailto:?subject=Consulta reserva ${codigoMostrado(reserva)}&body=Consulta sobre mi reserva en ${reserva.cancha.nombre}`}
-              className="flex items-center justify-center gap-2 w-full rounded-xl border border-cal bg-piedra px-4 py-2.5 text-center text-xs font-bold text-basalto transition hover:border-borde hover:bg-tiza"
+              className="btn-tactil w-full bg-piedra py-2.5 text-center text-xs font-bold text-basalto hover:bg-tiza"
             >
               <Mail className="h-4 w-4 text-pizarra" />
               Contactar al administrador
             </a>
             <Link
               href="/dashboard/reservas"
-              className="flex items-center justify-center gap-2 w-full rounded-xl bg-cesped px-4 py-2.5 text-center text-xs font-bold text-tiza transition hover:bg-cesped-hover shadow-sm"
+              className="btn-tactil w-full bg-cesped py-2.5 text-center text-xs font-bold text-tiza hover:bg-cesped-hover"
             >
               Ver todas mis reservas
             </Link>
@@ -115,12 +115,12 @@ export default async function MiPartidoPage() {
         </aside>
       </div>
 
-      <section className="rounded-2xl border border-cal bg-tiza p-6 shadow-sm">
+      <section className="card-tactil p-6">
         <h2 className="font-display text-lg font-bold text-basalto tracking-tight">
           Antes de llegar
         </h2>
         <div className="mt-4 grid gap-4 text-sm text-pizarra sm:grid-cols-3">
-          <div className="rounded-xl border border-cal bg-piedra/60 p-3.5">
+          <div className="rounded-xl border-2 border-basalto bg-piedra/60 p-3.5">
             <p className="font-bold text-basalto flex items-center gap-2">
               <Clock className="h-4 w-4 text-cesped-hondo" />
               Puntualidad
@@ -129,7 +129,7 @@ export default async function MiPartidoPage() {
               Llega 10 minutos antes para registrarte.
             </p>
           </div>
-          <div className="rounded-xl border border-cal bg-piedra/60 p-3.5">
+          <div className="rounded-xl border-2 border-basalto bg-piedra/60 p-3.5">
             <p className="font-bold text-basalto flex items-center gap-2">
               <FileCheck className="h-4 w-4 text-cesped-hondo" />
               Acceso
@@ -138,7 +138,7 @@ export default async function MiPartidoPage() {
               Ten tu código a la mano en recepción o portería.
             </p>
           </div>
-          <div className="rounded-xl border border-cal bg-piedra/60 p-3.5">
+          <div className="rounded-xl border-2 border-basalto bg-piedra/60 p-3.5">
             <p className="font-bold text-basalto flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-cesped-hondo" />
               Soporte
@@ -149,7 +149,7 @@ export default async function MiPartidoPage() {
           </div>
         </div>
 
-        <details className="mt-5 rounded-xl border border-cal bg-piedra/40 p-4 transition-all">
+        <details className="mt-5 rounded-xl border-2 border-basalto bg-piedra/40 p-4 transition-all">
           <summary className="cursor-pointer font-display text-sm font-bold text-basalto select-none">
             Preguntas frecuentes
           </summary>

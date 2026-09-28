@@ -231,7 +231,7 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 - [x] **L3:** Implementación en la Landing Astro (`index.astro`, `canchas.astro`, `torneos.astro`, `Header.astro`, `AuthCard.astro`).
 - [x] **L4:** Gates finales integrales (A1–A10) anotados por JIM-QA y revisión visual.
 - [x] **L5:** Páginas interactivas y secundarias de Astro (`duenos`, `Planes`, `completar-cuadro`, `sortear`, `ayuda`, `Footer`, `404`, `500`).
-- [ ] **L6:** Perfil del Jugador, Formularios, Auth y Shell en Next.js (`perfil`, `PerfilForm`, `mi-partido`, `TopBar`, `ReservaForm`, `login`, `register`, componentes de soporte).
+- [x] **L6:** Perfil del Jugador, Formularios, Auth y Shell en Next.js (`perfil`, `PerfilForm`, `mi-partido`, `TopBar`, `ReservaForm`, `login`, `register`, componentes de soporte) + añadidos de god (compactación de «Libres mañana» en `index.astro` / `filas.ts`, componente `Marca` y eliminación de hex/degradados/emoji en auth).
 
 ---
 
@@ -245,4 +245,4 @@ Unificar y elevar el lenguaje visual de ReservaYa bajo la estética **neo-brutal
 | 2026-09-28 | Lote 3 (A5–A7) | ✅ PASS | JIM-QA: astro check 0 err, astro build 17 págs OK, test 40/40, scroll horizontal 0px |
 | 2026-09-28 | Lote 4 (A1–A10) | ✅ PASS | JIM-QA: verificación integral final 100% verde (A1–A10 cumplidos, 0 regresiones) |
 | 2026-09-28 | Lote 5 (A5–A7) | ✅ PASS | JIM-QA: astro check 0 err, astro build 17 págs OK, test 40/40, scroll horizontal 0px |
-| 2026-09-28 | Lote 6 (A1–A4, A7) | ⏳ En cola | Oscar-code → JIM-QA |
+| 2026-09-28 | Lote 6 + Añadidos L5/L6 | ✅ PASS | JIM-QA: typecheck 0 err, lint 0 err (2 warnings), test 40/40, build Next OK, astro check 0, astro build 17 págs OK, db:check OK |

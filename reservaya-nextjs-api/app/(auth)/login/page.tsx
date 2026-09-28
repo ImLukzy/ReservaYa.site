@@ -8,6 +8,7 @@ import { ApiError } from '@/lib/api-types'
 import { publicAppUrl } from '@/lib/public-app'
 import { fallbackPorRol } from '@/lib/permissions'
 import { returnUrlSeguro } from '@/lib/redirect'
+import { Marca } from '@/components/ui/Marca'
 
 const MSG_BLOQUEO = 'Demasiados intentos. Espera 15 minutos antes de reintentar.'
 
@@ -52,15 +53,14 @@ export default function LoginPage() {
       <div className="auth-card rounded-3xl w-full max-w-md p-8">
         {/* Logo */}
         <div className="text-center mb-8">
-          <a href={publicAppUrl} className="auth-home-link mb-6 flex w-fit items-center gap-2 text-sm font-semibold">
+          <a href={publicAppUrl} className="auth-home-link mb-6 inline-flex w-fit items-center gap-2 text-sm font-semibold">
             <span aria-hidden="true">←</span>
-            ReservaYa
+            Volver a inicio
           </a>
-          <div className="mx-auto inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#22C55E] to-[#14532D] rounded-2xl mb-4 shadow-lg shadow-black/30">
-            <span className="text-3xl">🏟️</span>
+          <div className="mx-auto mb-2 flex justify-center">
+            <Marca href={publicAppUrl} />
           </div>
-          <h1 className="text-2xl font-bold text-[#101613]">ReservaYa</h1>
-          <p className="text-[#5B6660] mt-1">Inicia sesión en tu cuenta</p>
+          <p className="text-sm font-medium text-pizarra mt-2">Inicia sesión en tu cuenta</p>
         </div>
 
         {errorVisible && (
@@ -109,13 +109,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#22C55E] hover:bg-[#16A34A] disabled:bg-[#86EFAC] text-[#060C08] font-semibold py-3 rounded-lg transition duration-200 shadow-lg shadow-green-900/25"
+            className="btn-tactil w-full bg-cesped text-tiza hover:bg-cesped-hover disabled:opacity-50 font-bold py-3 text-base"
           >
             {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-slate-400 mt-6">
+        <p className="text-center text-sm text-pizarra mt-6">
           ¿No tienes cuenta?{' '}
           <Link href="/register" className="auth-link font-medium hover:underline">
             Regístrate aquí

@@ -90,41 +90,41 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
 
   const li = el(
     "li",
-    "fila-entra grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_auto] grid-rows-2 items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] sm:grid-rows-1 sm:gap-x-4 sm:px-6",
+    "fila-entra grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_auto] grid-rows-2 items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[3.5rem_3.5rem_minmax(0,1.3fr)_minmax(0,1fr)_4rem_6rem] sm:grid-rows-1 sm:gap-x-3 sm:px-5",
   );
   li.append(miniaturaCancha(cancha, "hidden sm:col-start-1 sm:row-start-1 sm:block sm:self-center"));
-  li.append(el("span", "col-start-1 row-span-2 row-start-1 self-start pt-1 font-display text-xl font-semibold tabular-nums sm:col-start-2 sm:row-span-1 sm:self-center sm:pt-0", hora));
+  li.append(el("span", "col-start-1 row-span-2 row-start-1 self-start pt-1 font-display text-lg font-bold tabular-nums text-basalto sm:col-start-2 sm:row-span-1 sm:self-center sm:pt-0", hora));
 
   const nombre = el("div", "col-start-2 row-start-1 min-w-0 self-end sm:col-start-3 sm:self-center");
-  const titulo = el("p", "flex items-center gap-2 font-semibold");
+  const titulo = el("p", "flex min-w-0 items-center gap-1.5 font-bold text-sm leading-tight text-basalto");
   titulo.append(el("span", "truncate", lugar));
   if (op.valoracion && op.valoracion.total > 0) {
-    const b = el("button", "inline-flex shrink-0 items-center gap-1 rounded-control text-sm font-medium text-pizarra underline-offset-2 hover:underline");
+    const b = el("button", "inline-flex shrink-0 items-center gap-0.5 rounded-control text-xs font-semibold text-pizarra underline-offset-2 hover:underline");
     b.type = "button";
     b.setAttribute("aria-label", `${op.valoracion.promedio.toFixed(1).replace(".", ",")} de 5, ${op.valoracion.total} opiniones de ${lugar}`);
     const estrella = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     estrella.setAttribute("viewBox", "0 0 24 24");
-    estrella.setAttribute("class", "h-3.5 w-3.5 fill-sol");
+    estrella.setAttribute("class", "h-3 w-3 fill-sol");
     estrella.setAttribute("aria-hidden", "true");
     const trazo = document.createElementNS("http://www.w3.org/2000/svg", "path");
     trazo.setAttribute("d", "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z");
     estrella.append(trazo);
-    b.append(estrella, `${op.valoracion.promedio.toFixed(1).replace(".", ",")} (${op.valoracion.total})`);
+    b.append(estrella, `${op.valoracion.promedio.toFixed(1).replace(".", ",")}`);
     if (op.onValoracion) b.addEventListener("click", op.onValoracion);
     titulo.append(b);
   }
-  nombre.append(titulo, el("p", "hidden truncate text-sm text-pizarra sm:block", cancha.nombre));
+  nombre.append(titulo, el("p", "hidden truncate text-xs leading-tight text-pizarra sm:block", cancha.nombre));
   li.append(nombre);
 
   li.append(el("p", "col-start-2 row-start-2 line-clamp-2 self-start text-sm leading-tight text-pizarra sm:hidden", `${cancha.nombre}, ${tipo.toLowerCase()} en ${distrito}`));
-  const detalle = el("div", "hidden min-w-0 text-sm sm:col-start-4 sm:row-start-1 sm:block");
-  const dist = el("p", "truncate text-pizarra", distrito);
+  const detalle = el("div", "hidden min-w-0 sm:col-start-4 sm:row-start-1 sm:block");
+  const dist = el("p", "truncate text-xs leading-tight text-pizarra", distrito);
   dist.title = distrito;
-  detalle.append(el("p", "truncate", tipo), dist);
+  detalle.append(el("p", "truncate text-sm font-semibold leading-tight text-basalto", tipo), dist);
   li.append(detalle);
-  li.append(el("span", "col-start-3 row-start-1 self-end text-right font-display text-lg font-semibold tabular-nums sm:col-start-5 sm:self-center", soles(precioDe(item))));
+  li.append(el("span", "col-start-3 row-start-1 self-end text-right font-display text-base font-bold tabular-nums text-basalto sm:col-start-5 sm:self-center", soles(precioDe(item))));
 
-  const reservar = el("a", `${BOTON.primario} col-start-3 row-start-2 self-start px-4 sm:col-start-6 sm:row-start-1 sm:self-center sm:justify-self-end`, "Reservar");
+  const reservar = el("a", `${BOTON.primario} col-start-3 row-start-2 self-start px-3 py-1.5 text-xs sm:col-start-6 sm:row-start-1 sm:self-center sm:justify-self-end`, "Reservar");
   reservar.href = op.reservarHref;
   reservar.setAttribute("aria-label", `Reservar ${cancha.nombre} en ${lugar} a las ${hora}`);
   li.append(reservar);
@@ -133,9 +133,9 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
 
 export function filasEsqueleto(n: number): HTMLLIElement[] {
   return Array.from({ length: n }, () => {
-    const li = el("li", "grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6");
+    const li = el("li", "grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[3.5rem_3.5rem_minmax(0,1.3fr)_minmax(0,1fr)_4rem_6rem] sm:gap-x-3 sm:px-5");
     li.setAttribute("aria-hidden", "true");
-    li.append(miniaturaEsqueleto(), el("span", "esqueleto h-6 w-12"), el("span", "esqueleto h-5 w-3/4"), el("span", "esqueleto h-9 w-20 justify-self-end"));
+    li.append(miniaturaEsqueleto(), el("span", "esqueleto h-5 w-10"), el("span", "esqueleto h-5 w-3/4"), el("span", "esqueleto h-4 w-16 hidden sm:block"), el("span", "esqueleto h-5 w-10 text-right"), el("span", "esqueleto h-8 w-16 justify-self-end"));
     return li;
   });
 }

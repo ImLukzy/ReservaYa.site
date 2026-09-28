@@ -119,7 +119,7 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
       </div>
 
       <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center border-b border-cal pb-6">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-cal bg-piedra">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-basalto bg-piedra shadow-[2px_2px_0_0_#1f2a24]">
           {fotoUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={fotoUrl} alt="Foto de perfil" width={64} height={64} className="h-full w-full object-cover" />
@@ -156,13 +156,13 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {mensaje && (
-          <div role="status" className="rounded-md border border-cesped/30 bg-cesped-suave px-3 py-2 text-sm font-semibold text-cesped-hondo">
+          <div role="status" className="rounded-md border-2 border-cesped-hondo bg-cesped-suave px-3 py-2 text-sm font-bold text-cesped-hondo shadow-[2px_2px_0_0_#1f2a24]">
             {mensaje}
           </div>
         )}
 
         {error && (
-          <div role="alert" className="rounded-md border border-error/30 bg-error-suave px-3 py-2 text-sm font-semibold text-error">
+          <div role="alert" className="rounded-md border-2 border-error bg-error-suave px-3 py-2 text-sm font-bold text-error shadow-[2px_2px_0_0_#1f2a24]">
             {error}
           </div>
         )}
