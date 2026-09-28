@@ -19,7 +19,7 @@ export function ErrorPanel({
   return (
     <div
       role="alert"
-      className="mx-auto flex max-w-md flex-col items-center rounded-xl border border-cal bg-tiza p-8 text-center sm:p-12"
+      className="card-tactil mx-auto flex max-w-md flex-col items-center p-8 text-center sm:p-12 shadow-[4px_4px_0_0_#1f2a24]"
     >
       <AlertTriangle className="mb-4 h-12 w-12 text-error" strokeWidth={1.5} aria-hidden="true" />
       <h2 className="font-display text-xl font-bold text-basalto">No pudimos cargar esta sección</h2>
@@ -30,7 +30,7 @@ export function ErrorPanel({
       <button
         type="button"
         onClick={reintentar}
-        className="mt-6 inline-flex items-center gap-2 rounded-md bg-cesped px-5 py-2.5 text-sm font-semibold text-tiza transition-colors hover:bg-cesped-hover"
+        className="btn-tactil mt-6 bg-cesped px-5 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover"
       >
         <RotateCw className="h-4 w-4" aria-hidden="true" /> Reintentar
       </button>

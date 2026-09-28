@@ -19,7 +19,7 @@ const HORAS = Array.from({ length: 14 }, (_, i) => {
 // compartidos con la landing viven en components/ui (spec 26).
 const flabel = 'block text-xs font-semibold text-pizarra mb-1.5'
 const finput =
-  'w-full rounded-xl border border-cal bg-tiza px-4 py-2.5 text-sm text-basalto placeholder:text-niebla focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25'
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-4 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:shadow-[2px_2px_0_0_#1f2a24]'
 
 export function ReservaForm({
   cancha,
@@ -166,7 +166,7 @@ export function ReservaForm({
       </div>
 
       {(cotizado ?? (calcularTotal() > 0 ? { total: String(calcularTotal()), regla: null } : null)) && (
-        <div className="rounded-xl border border-cesped/30 bg-cesped-suave p-4 text-cesped-hondo">
+        <div className="rounded-xl border-2 border-basalto bg-cesped-suave p-4 text-cesped-hondo shadow-[2px_2px_0_0_#1f2a24]">
           <div className="flex justify-between items-center">
             <span className="text-sm font-semibold">Total estimado:</span>
             <span className="font-display text-2xl font-bold tabular-nums">
@@ -184,7 +184,7 @@ export function ReservaForm({
       )}
 
       {error && (
-        <p role="alert" className="rounded-xl border border-error/30 bg-error-suave px-3.5 py-2.5 text-sm font-semibold text-error">
+        <p role="alert" className="rounded-xl border-2 border-error bg-error-suave px-3.5 py-2.5 text-sm font-bold text-error shadow-[2px_2px_0_0_#1f2a24]">
           {error}
         </p>
       )}

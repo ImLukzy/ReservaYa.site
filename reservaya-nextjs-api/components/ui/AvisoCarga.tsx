@@ -8,7 +8,7 @@ export function AvisoCarga({ errores }: { errores: readonly string[] }) {
   return (
     <div
       role="alert"
-      className="mb-4 flex gap-3 rounded-xl border border-error/30 bg-error-suave px-4 py-3 text-sm text-error"
+      className="mb-4 flex gap-3 rounded-xl border-2 border-error bg-error-suave px-4 py-3 text-sm font-semibold text-error shadow-[2px_2px_0_0_#1f2a24]"
     >
       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
       <div className="min-w-0">

@@ -95,59 +95,58 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Auth: verde bosque, no rojo */
+/* Auth: estilo táctil Universo Agustino */
 .auth-shell {
-  background:
-    radial-gradient(circle at 12% 15%, rgba(34, 197, 94, 0.16), transparent 24rem),
-    radial-gradient(circle at 88% 85%, rgba(8, 23, 14, 0.5), transparent 22rem),
-    #060C08;
+  background-color: var(--noche);
 }
 
 .auth-card {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 24px 70px rgba(8, 23, 14, 0.35);
+  background-color: var(--tiza);
+  border: 2px solid var(--basalto);
+  box-shadow: 6px 6px 0 0 var(--basalto);
+  border-radius: 1rem;
 }
 
 .auth-label {
-  color: #334155;
+  color: var(--basalto);
+  font-weight: 600;
 }
 
 .auth-input {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
+  background: var(--tiza);
+  border: 2px solid var(--basalto);
+  color: var(--basalto);
 }
 
 .auth-input::placeholder {
-  color: #94a3b8;
+  color: var(--pizarra);
 }
 
 .auth-input:focus {
-  border-color: #22C55E;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  border-color: var(--cesped);
+  box-shadow: 2px 2px 0 0 var(--cesped);
   outline: none;
 }
 
 .auth-link {
-  color: #008f3b;
+  color: var(--cesped-hondo);
 }
 
 .auth-link:hover {
-  color: #16A34A;
+  color: var(--cesped-hover);
 }
 
 .auth-home-link {
-  color: #008f3b;
+  color: var(--niebla);
 }
 
 .auth-home-link:hover {
-  color: #16A34A;
+  color: var(--tiza);
 }
 
 ::selection {
-  background: #22C55E;
-  color: #071c10;
+  background: var(--cesped-suave);
+  color: var(--basalto);
 }
 
 button,

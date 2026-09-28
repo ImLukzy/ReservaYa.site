@@ -42,7 +42,7 @@ export default async function PerfilPage() {
               </div>
 
               <div className="mt-6 flex items-center gap-4">
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-cal/30 bg-piedra">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-basalto bg-piedra shadow-[2px_2px_0_0_#1f2a24]">
                   {session.fotoUrl ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
@@ -97,13 +97,13 @@ export default async function PerfilPage() {
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/dashboard/canchas"
-                className="inline-flex items-center justify-center rounded-md bg-cesped px-4 py-2 text-sm font-semibold text-tiza transition hover:bg-cesped-hover"
+                className="btn-tactil bg-cesped px-4 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover"
               >
                 Buscar canchas
               </Link>
               <Link
                 href="/dashboard/reservas"
-                className="inline-flex items-center justify-center rounded-md border border-borde bg-tiza px-4 py-2 text-sm font-semibold text-basalto transition hover:bg-piedra"
+                className="btn-tactil bg-tiza px-4 py-2 text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Ver reservas
               </Link>
