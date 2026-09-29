@@ -99,7 +99,17 @@
 }
 
 html {
+  font-size: clamp(100%, 0.75rem + 0.3906vw, 112.5%);
   scroll-behavior: smooth;
+}
+
+.densidad-fija {
+  --spacing: 4px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  font-size: 16px;
 }
 
 @media (prefers-reduced-motion: reduce) {

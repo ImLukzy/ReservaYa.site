@@ -89,7 +89,7 @@ Lotes ≤3 archivos, agrupados por carpeta, en orden mecanismo → densidad → 
 - [x] T2: 13 lotes ≤3 archivos por carpeta, orden mecanismo→técnico (§3).
 - [x] T3: criterios medibles con gates (§5).
 - [x] T4: aprobada por Lukas (ILK-29).
-- [ ] T5: con mapa listo, completar L2 y despachar L1; cada lote verde de Jim lo reviso vs spec y anoto §7.
+- [ ] T5: revisar por tandas verdes de Jim (A=L1–L2, B=L3–L6, C=L7–L10, D=L11–L13): una fila en §7 + inform a god por tanda, ≤8 llamadas por tanda; entre tandas no hacer nada.
 - [ ] T6: verificar criterios y anotar en §7.
 
 ---
@@ -100,4 +100,10 @@ Lotes ≤3 archivos, agrupados por carpeta, en orden mecanismo → densidad → 
 |---|---|---|---|
 | 2026-09-29 | Redacción (T2–T4) | ✅ Lista y aprobada | Cita ILK-29; `clamp(100%, 0.75rem + 0.3906vw, 112.5%)` verificado por cuenta (16 @1024, 18 @1536); densidad ≤1 fila; `mapa-px-panel.md` pendiente para T1/L2. Sin código tocado. |
 | 2026-09-29 | Fix `.densidad-fija` (god) | ✅ Spec actualizada | `font-size` solo no frena el zoom (utilidades v4 son `rem` de `:root`): `.densidad-fija` fija `--spacing` y `--text-*`; caveat `@theme inline` anotado para el lote; A7b medible (`td` 14 px @1536 con raíz 18 px). |
+| 2026-09-29 | Tanda A Revisión vs spec (Angel-Auditor) | ✅ CONFORME | L1 verificada (clamp + `.densidad-fija` exactos) + L2: 8/8 líneas solo clases (3 wraps + 5 textos cabecera a `rem`); `HORA_PX`/`h-580`/`min-w` intactos; 0 lógica. |
 | 2026-09-29 | Criterio de lotes (god + mapa) | ✅ 13 lotes numerados | 82 textos + 19 espaciados fuera de densas; anchos solo cabeceras/tarjetas/forms; `min-w` tablas en px + wrap; `HORA_PX` intacto (override god); orden mecanismo→técnico con conteos §3. god despacha a Oscar. |
+| 2026-09-29 | L1 Gates A1–A5/A7b/A8/A9 (Jim-QA) | ✅ 100% PASS | A1 typecheck 0 err; A2 lint 0 err / 2 warn conocidos; A3 test 40/40 PASS; A4 next build 0 err; A5 raíz clamp(100%, 0.75rem + 0.3906vw, 112.5%) = 16px @1024, ~17.6px @1440, 18px @≥1536; A7b .densidad-fija fija --spacing y --text-* (td con text-sm computa 14px con raíz 18px a 1536px); A8 0 lógica tocada; A9 mecanismo L1 en globals.css según spec. Verificado por jim-qa-mumwavdb. |
+| 2026-09-29 | L2 Gates A1–A4/A7/A8/A9 (Jim-QA) | ✅ 100% PASS | A1 typecheck 0 err; A2 lint 0 err / 2 warn conocidos; A3 test 40/40 PASS; A4 next build 0 err; A7 .densidad-fija envuelve CronogramaView, CajaPanel y AbonosPanel (densidad intacta, 0 dif de filas visibles a 1280); A8 HORA_PX=52, h-580, min-w-560 y lógica 100% intactos; A9 5 textos de cabecera migrados px→rem (Caja 4, Abonos 1). Verificado por jim-qa-mumwavdb. |
+| 2026-09-29 | Tanda A Completa (L1–L2) | ✅ 100% GATES PASS | Mecanismo de escala fluida (.densidad-fija) y primeras 3 vistas densas B2B verificadas en verde. Notificado a god y angel-auditor. |
+
+

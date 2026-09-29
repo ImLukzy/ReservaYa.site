@@ -146,9 +146,9 @@ export function AbonosPanel() {
   }
 
   return (
-    <div>
+    <div className="densidad-fija">
       <TopBar breadcrumb="Finanzas / Abonos" title="Tus abonos" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
+      <p className="mt-3 mb-6 text-[0.875rem] leading-relaxed text-pizarra">
         Aquí ves el dinero de tus reservas pagadas online y cuándo llega a tu cuenta.
       </p>
 
