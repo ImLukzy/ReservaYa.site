@@ -141,15 +141,19 @@ function quitarFiltros() {
   cargar();
 }
 
+let disparadorOpiniones: HTMLElement | null = null;
+
 async function abrirOpiniones(it: ItemDisponible) {
   const dialogo = $<HTMLDialogElement>("opiniones");
   const titulo = $("opiniones-titulo");
   const caja = $<HTMLUListElement>("opiniones-lista");
   const id = it.cancha.complejoId;
   if (!dialogo || !caja || !id) return;
+  disparadorOpiniones = document.activeElement as HTMLElement | null;
   if (titulo) titulo.textContent = `Opiniones de ${it.cancha.complejo?.nombre ?? it.cancha.nombre}`;
   caja.replaceChildren();
   dialogo.showModal();
+  dialogo.querySelector<HTMLButtonElement>("[data-cerrar]")?.focus();
   const datos = await valoracion(id);
   const items = datos?.resenas ?? [];
   if (items.length === 0) {
@@ -193,6 +197,14 @@ const dialogo = $<HTMLDialogElement>("opiniones");
 dialogo?.querySelector("[data-cerrar]")?.addEventListener("click", () => dialogo.close());
 dialogo?.addEventListener("click", (e) => {
   if (e.target === dialogo) dialogo.close();
+});
+dialogo?.addEventListener("close", () => {
+  disparadorOpiniones?.focus();
+});
+dialogo?.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    dialogo.close();
+  }
 });
 
 let espera: number | undefined;
