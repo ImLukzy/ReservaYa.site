@@ -61,17 +61,17 @@ export function ValidarCodigo() {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
       <div
         className={cn(
-          'w-full max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-8 text-center shadow-[0_2px_4px_rgba(0,0,0,0.02)]',
+          'card-tactil w-full max-w-2xl p-8 text-center',
           flash && 'flash-green'
         )}
       >
         {estado === 'ok' ? (
-          <CircleCheck className="mx-auto mb-4 h-16 w-16 text-[#22C55E]" strokeWidth={1.75} />
+          <CircleCheck className="mx-auto mb-4 h-16 w-16 text-cesped" strokeWidth={1.75} />
         ) : (
-          <ScanLine className="mx-auto mb-4 h-16 w-16 text-[#CBD5E1]" strokeWidth={1.25} />
+          <ScanLine className="mx-auto mb-4 h-16 w-16 text-cal" strokeWidth={1.25} />
         )}
-        <h1 className="text-[28px] font-bold tracking-tight text-[#0F172A]">Validar código</h1>
-        <p className="mt-1 text-[14px] leading-relaxed text-[#475569]">
+        <h1 className="text-[28px] font-bold tracking-tight text-basalto">Validar código</h1>
+        <p className="mt-1 text-[14px] leading-relaxed text-pizarra">
           Listo para escanear QR o tipea el código de 6 dígitos
         </p>
         <input
@@ -90,14 +90,14 @@ export function ValidarCodigo() {
           autoComplete="off"
           spellCheck={false}
           aria-label="Código de reserva"
-          className="mt-6 w-full rounded-2xl border-2 border-gray-200 bg-gray-50 p-6 text-center font-mono text-5xl tracking-[0.2em] text-[#0F172A] uppercase transition-all outline-none placeholder:text-[#CBD5E1] focus:border-[#22C55E] focus:bg-white focus:ring-4 focus:ring-[#22C55E]/20"
+          className="mt-6 w-full rounded-2xl border-2 border-basalto bg-tiza p-6 text-center font-mono text-5xl tracking-[0.2em] text-basalto uppercase transition-all outline-none placeholder:text-pizarra focus:border-cesped focus:ring-4 focus:ring-cesped/20"
         />
           {msg && (
             <p
               role={estado === 'ok' ? 'status' : 'alert'}
               className={cn(
                 'mt-4 rounded-lg px-4 py-3 text-sm font-semibold',
-                estado === 'ok' ? 'bg-[#DCFCE7] text-[#008F3B]' : 'bg-red-50 text-red-700'
+                estado === 'ok' ? 'bg-cesped-suave text-cesped-hondo' : 'bg-error-suave text-error'
               )}
             >
               {msg}
@@ -108,7 +108,7 @@ export function ValidarCodigo() {
               role="alert"
               className={cn(
                 'mt-2 rounded-lg px-4 py-3 text-sm font-bold',
-                restriccion.nivel === 'BLOQUEO' ? 'bg-red-600 text-white' : 'bg-amber-100 text-amber-800'
+                restriccion.nivel === 'BLOQUEO' ? 'bg-error text-tiza' : 'bg-sol-suave text-basalto'
               )}
             >
               {restriccion.nivel === 'BLOQUEO' ? '⛔ NO PERMITIR EL INGRESO' : '⚠️ Jugador con advertencia'} ·{' '}

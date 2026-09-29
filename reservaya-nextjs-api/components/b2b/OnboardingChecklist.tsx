@@ -18,11 +18,11 @@ export function OnboardingChecklist({ completados = [] }: { completados?: readon
   return (
     <div>
       <TopBar breadcrumb="Extras / Centro de ayuda" title="Activa tu negocio en 5 pasos" />
-      <div className="mx-auto mt-6 max-w-2xl rounded-xl border border-[#E2E8F0] bg-white p-8 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
-        <p className="mb-6 text-sm font-semibold text-[#475569]">
+      <div className="card-tactil mx-auto mt-6 max-w-2xl p-8">
+        <p className="mb-6 text-sm font-semibold text-pizarra">
           {hechos} de {STEPS.length} pasos completados
         </p>
-        <ol className="relative space-y-8 before:absolute before:top-2 before:bottom-2 before:left-[15px] before:w-px before:bg-[#E2E8F0]">
+        <ol className="relative space-y-8 before:absolute before:top-2 before:bottom-2 before:left-[15px] before:w-px before:bg-cal">
           {STEPS.map((s, i) => {
             const ok = Boolean(completados[i]);
             const current = i === actual;
@@ -32,23 +32,23 @@ export function OnboardingChecklist({ completados = [] }: { completados?: readon
                   className={cn(
                     'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2',
                     ok
-                      ? 'border-[#22C55E] bg-[#22C55E] text-[#060C08]'
-                      : 'border-[#E2E8F0] bg-white text-[#94A3B8]'
+                      ? 'border-cesped bg-cesped text-tiza'
+                      : 'border-cal bg-tiza text-pizarra'
                   )}
                 >
                   {ok ? <Check size={18} strokeWidth={2.5} /> : <span className="text-sm font-bold">{i + 1}</span>}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[14px] font-semibold text-[#0F172A]">{s.t}</p>
-                  <p className="text-[14px] leading-relaxed text-[#475569]">{s.d}</p>
+                  <p className="text-[14px] font-semibold text-basalto">{s.t}</p>
+                  <p className="text-[14px] leading-relaxed text-pizarra">{s.d}</p>
                   {!ok && (
                     <a
                       href={s.href}
                       className={cn(
-                        'mt-2 inline-block rounded-lg px-4 py-2 text-sm font-bold transition-all active:scale-[0.98]',
+                        'btn-tactil mt-2 inline-block px-4 py-2 text-sm font-bold',
                         current
-                          ? 'bg-[#22C55E] text-[#060C08] hover:bg-[#16A34A] hover:shadow-md'
-                          : 'border border-[#E2E8F0] text-[#475569] hover:text-[#0F172A]'
+                          ? 'bg-cesped text-tiza hover:bg-cesped-hover'
+                          : 'border-cal bg-tiza text-pizarra hover:bg-piedra hover:text-basalto'
                       )}
                     >
                       {current ? 'Empezar' : 'Ver guía'}
