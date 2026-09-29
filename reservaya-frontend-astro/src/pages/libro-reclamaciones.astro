@@ -15,10 +15,19 @@ const clases = AVISO;
 
 <BaseLayout title="Libro de reclamaciones | ReservaYa" description="Registra tu queja o reclamo. Respondemos en un plazo máximo de 15 días hábiles." robots="noindex, follow">
   <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
-    <h1 class="text-3xl lg:text-4xl">Libro de reclamaciones</h1>
-    <p class="mt-3 text-pizarra">Registra tu queja o reclamo. Respondemos en un plazo máximo de 15 días hábiles, según el Código de Protección y Defensa del Consumidor (Ley N.º 29571).</p>
+    <div class="flex items-center gap-2">
+      <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Atención al usuario</span>
+      <span class="text-xs text-pizarra">·</span>
+      <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">Canal formal</span>
+    </div>
+    <h1 class="mt-2 font-display text-4xl font-black tracking-tight text-basalto sm:text-5xl">Libro de reclamaciones</h1>
+    <p class="mt-3 max-w-2xl text-base leading-relaxed text-pizarra sm:text-lg">Registra tu queja o reclamo. Respondemos en un plazo máximo de 15 días hábiles, según el Código de Protección y Defensa del Consumidor (Ley N.º 29571).</p>
 
-    <form data-inbox="inboxMejikai" class="mt-8 space-y-4 rounded-surface border border-cal bg-tiza p-5 sm:p-6" novalidate>
+    <form data-inbox="inboxMejikai" class="card-tactil mt-8 space-y-4 bg-tiza p-5 shadow-dura sm:p-7" novalidate>
+      <div class="border-b-2 border-cal pb-3">
+        <p class="font-display text-xl font-black text-basalto">Cuéntanos qué ocurrió</p>
+        <p class="mt-1 text-sm text-pizarra">Completa los datos para preparar el registro.</p>
+      </div>
       <div class="grid gap-4 sm:grid-cols-2">
         <Field id="lr-nombre" name="nombre" etiqueta="Nombre completo" required autocomplete="name" />
         <Field id="lr-email" name="email" type="email" etiqueta="Correo" required autocomplete="email" placeholder="tu@correo.com" />
@@ -28,7 +37,7 @@ const clases = AVISO;
       <Field id="lr-detalle" name="detalle" etiqueta="Qué pasó" multilinea filas={5} required minlength="10" placeholder="Fecha, complejo y lo que ocurrió." />
       <Field id="lr-pedido" name="pedido" etiqueta="Qué pides" multilinea filas={3} required minlength="5" />
       <p data-status hidden role="status"></p>
-      <Button type="submit" data-submit class="w-full">Enviar reclamo</Button>
+      <Button type="submit" data-submit class="w-full shadow-dura-sm">Enviar reclamo</Button>
       <p class="text-center text-sm text-pizarra">También puedes escribir a <a href={`mailto:${EMAIL}`} class="font-semibold text-cesped-hondo underline">{EMAIL}</a>.</p>
     </form>
   </section>
