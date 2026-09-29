@@ -459,7 +459,7 @@ export function DescuentosPanel() {
                       onClick={() => copiar(c)}
                       aria-label={`Copiar ${c.codigo}`}
                       title="Copiar código"
-                      className="rounded-lg p-2 text-pizarra transition-colors hover:bg-piedra hover:text-basalto"
+                      className="btn-tactil inline-flex h-11 w-11 items-center justify-center rounded-lg p-2 text-pizarra transition-colors hover:bg-piedra hover:text-basalto"
                     >
                       {copiadoId === c.id ? <Check size={17} strokeWidth={2} className="text-cesped" /> : <Copy size={17} strokeWidth={1.85} />}
                     </button>
@@ -468,7 +468,7 @@ export function DescuentosPanel() {
                       onClick={() => eliminar(c)}
                       aria-label={`Eliminar ${c.codigo}`}
                       title="Eliminar"
-                      className="rounded-lg p-2 text-pizarra transition-colors hover:bg-error-suave hover:text-error"
+                      className="btn-tactil inline-flex h-11 w-11 items-center justify-center rounded-lg p-2 text-pizarra transition-colors hover:bg-error-suave hover:text-error"
                     >
                       <Trash2 size={17} strokeWidth={1.85} />
                     </button>

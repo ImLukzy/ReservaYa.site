@@ -169,14 +169,14 @@ export function ReportesPanel({
           <Link
             href="/admin/ayuda"
             aria-label="Ayuda"
-            className="btn-tactil flex h-9 items-center gap-1.5 rounded-full border-2 border-basalto bg-tiza px-3 text-sm font-bold text-pizarra transition-colors hover:text-basalto hover:bg-piedra"
+            className="btn-tactil flex h-11 items-center gap-1.5 rounded-full border-2 border-basalto bg-tiza px-3 text-sm font-bold text-pizarra transition-colors hover:text-basalto hover:bg-piedra"
           >
             <CircleHelp size={18} strokeWidth={1.85} /> Ayuda
           </Link>
           <button
             type="button"
             onClick={exportarExcel}
-            className="btn-tactil flex h-9 items-center gap-1.5 rounded-full border-2 border-basalto bg-basalto px-4 text-sm font-bold text-tiza shadow-dura-sm transition-all hover:bg-basalto/90"
+            className="btn-tactil flex h-11 items-center gap-1.5 rounded-full border-2 border-basalto bg-basalto px-4 text-sm font-bold text-tiza shadow-dura-sm transition-all hover:bg-basalto/90"
           >
             <Download size={16} /> Exportar CSV
           </button>
