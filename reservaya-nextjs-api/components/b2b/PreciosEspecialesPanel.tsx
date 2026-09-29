@@ -5,7 +5,6 @@ import { CalendarRange, Trash2 } from 'lucide-react';
 import { TopBar } from '@/components/layout/TopBar';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
-import { btnPrimary, card } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 interface Regla {
@@ -22,8 +21,9 @@ interface Regla {
 }
 
 const inputCls =
-  'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
-const labelCls = 'mb-1 block text-xs font-bold text-[#0F172A]';
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
+const labelCls = 'mb-1 block text-xs font-bold text-basalto';
+const btnPrimary = 'btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover';
 
 function normalizar(raw: Record<string, unknown>, i: number): Regla {
   const num = (v: unknown): number | null => {
@@ -183,14 +183,14 @@ export function PreciosEspecialesPanel() {
   return (
     <div>
       <TopBar breadcrumb="Gestión / Precios especiales" title="Precios por fecha" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-[#475569]">
+      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
         Sube o baja tus tarifas en feriados y fechas clave sin tocar tu precio base.
       </p>
 
       <div className="grid items-start gap-4 lg:grid-cols-[380px_1fr]">
         {/* Nueva regla */}
-        <section className={card} aria-label="Nueva regla de precio">
-          <h2 className="text-base font-black text-[#0F172A]">Nueva regla</h2>
+        <section className="card-tactil p-5" aria-label="Nueva regla de precio">
+          <h2 className="text-base font-black text-basalto">Nueva regla</h2>
 
           <div className="mt-4">
             <label htmlFor="regla-nombre" className={labelCls}>Nombre</label>
@@ -227,15 +227,15 @@ export function PreciosEspecialesPanel() {
               />
             </div>
           </div>
-          <p className="mt-1.5 text-xs text-[#64748B]">Para un solo día deja Hasta vacío.</p>
+          <p className="mt-1.5 text-xs text-pizarra">Para un solo día deja Hasta vacío.</p>
 
-          <div className="mt-4 border-t border-[#E7E5E4] pt-4">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-[#64748B]">PRECIO POR TURNO</p>
+          <div className="mt-4 border-t border-cal pt-4">
+            <p className="text-[11px] font-bold tracking-[0.12em] text-pizarra">PRECIO POR TURNO</p>
             <div className="mt-2.5 space-y-2.5">
               <div>
-                <label htmlFor="precio-dia" className={labelCls}>Día <span className="font-normal text-[#64748B]">(antes de las 17:00)</span></label>
+                <label htmlFor="precio-dia" className={labelCls}>Día <span className="font-normal text-pizarra">(antes de las 17:00)</span></label>
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-[#64748B]">S/</span>
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-pizarra">S/</span>
                   <input
                     id="precio-dia"
                     type="number"
@@ -248,9 +248,9 @@ export function PreciosEspecialesPanel() {
                 </div>
               </div>
               <div>
-                <label htmlFor="precio-tarde" className={labelCls}>Tarde <span className="font-normal text-[#64748B]">(17:00 – 20:00)</span></label>
+                <label htmlFor="precio-tarde" className={labelCls}>Tarde <span className="font-normal text-pizarra">(17:00 – 20:00)</span></label>
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-[#64748B]">S/</span>
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-pizarra">S/</span>
                   <input
                     id="precio-tarde"
                     type="number"
@@ -263,9 +263,9 @@ export function PreciosEspecialesPanel() {
                 </div>
               </div>
               <div>
-                <label htmlFor="precio-noche" className={labelCls}>Noche <span className="font-normal text-[#64748B]">(desde las 20:00)</span></label>
+                <label htmlFor="precio-noche" className={labelCls}>Noche <span className="font-normal text-pizarra">(desde las 20:00)</span></label>
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-[#64748B]">S/</span>
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm font-bold text-pizarra">S/</span>
                   <input
                     id="precio-noche"
                     type="number"
@@ -278,7 +278,7 @@ export function PreciosEspecialesPanel() {
                 </div>
               </div>
             </div>
-            <p className="mt-1.5 text-xs text-[#64748B]">Deja una franja vacía para mantener su precio normal.</p>
+            <p className="mt-1.5 text-xs text-pizarra">Deja una franja vacía para mantener su precio normal.</p>
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -291,7 +291,7 @@ export function PreciosEspecialesPanel() {
                 onChange={(e) => setInicioTarde(e.target.value)}
                 className={inputCls}
               />
-              <p className="mt-1 text-xs text-[#64748B]">05:00pm por defecto</p>
+              <p className="mt-1 text-xs text-pizarra">05:00pm por defecto</p>
             </div>
             <div>
               <label htmlFor="inicio-noche" className={labelCls}>La noche empieza</label>
@@ -302,27 +302,27 @@ export function PreciosEspecialesPanel() {
                 onChange={(e) => setInicioNoche(e.target.value)}
                 className={inputCls}
               />
-              <p className="mt-1 text-xs text-[#64748B]">08:00pm por defecto</p>
+              <p className="mt-1 text-xs text-pizarra">08:00pm por defecto</p>
             </div>
           </div>
 
-          <label className="mt-4 flex cursor-pointer items-center gap-2.5 text-sm text-[#0F172A]">
+          <label className="mt-4 flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
             <input
               type="checkbox"
               checked={repetir}
               onChange={(e) => setRepetir(e.target.checked)}
-              className="h-4 w-4 rounded accent-[#22C55E]"
+              className="h-4 w-4 rounded accent-cesped"
             />
             Repetir cada año
           </label>
 
           {errorForm && (
-            <p role="alert" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">
+            <p role="alert" className="mt-3 rounded-xl border border-error/40 bg-error-suave px-3 py-2 text-sm font-semibold text-error">
               {errorForm}
             </p>
           )}
           {okMsg && (
-            <p role="status" className="mt-3 rounded-xl bg-[#DCFCE7] px-3 py-2 text-sm font-semibold text-[#15803D]">
+            <p role="status" className="mt-3 rounded-xl bg-cesped-suave px-3 py-2 text-sm font-semibold text-cesped-hondo">
               {okMsg}
             </p>
           )}
@@ -332,13 +332,13 @@ export function PreciosEspecialesPanel() {
         </section>
 
         {/* Lista */}
-        <section className={card} aria-label="Tus reglas">
-          <h2 className="text-base font-black text-[#0F172A]">Tus reglas</h2>
+        <section className="card-tactil p-5" aria-label="Tus reglas">
+          <h2 className="text-base font-black text-basalto">Tus reglas</h2>
           {cargando ? (
-            <p className="py-10 text-center text-sm text-[#64748B]">Cargando reglas…</p>
+            <p className="py-10 text-center text-sm text-pizarra">Cargando reglas…</p>
           ) : errorLista && reglas.length === 0 ? (
             <div className="py-6 text-center">
-              <p className="text-sm text-[#64748B]">{errorLista}</p>
+              <p className="text-sm text-pizarra">{errorLista}</p>
               <button type="button" onClick={() => window.location.reload()} className={cn(btnPrimary, 'mt-3')}>
                 Reintentar
               </button>
@@ -357,18 +357,18 @@ export function PreciosEspecialesPanel() {
           ) : (
             <ul className="mt-4 space-y-3">
               {reglas.map((r) => (
-                <li key={r.id} className="rounded-2xl border border-[#E7E5E4] bg-white p-4">
+                <li key={r.id} className="rounded-2xl border border-cal bg-tiza p-4">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-base font-black text-[#0F172A]">{r.nombre}</p>
+                        <p className="text-base font-black text-basalto">{r.nombre}</p>
                         {r.repetirAnual && (
-                          <span className="rounded-full bg-[#DCFCE7] px-2.5 py-0.5 text-[11px] font-bold text-[#15803D]">
+                          <span className="rounded-full bg-cesped-suave px-2.5 py-0.5 text-[11px] font-bold text-cesped-hondo">
                             Cada año
                           </span>
                         )}
                       </div>
-                      <p className="mt-0.5 text-xs text-[#64748B]">
+                      <p className="mt-0.5 text-xs text-pizarra">
                         {formatearFecha(r.desde)}{r.hasta ? ` → ${formatearFecha(r.hasta)}` : ' · solo ese día'}
                       </p>
                     </div>
@@ -377,7 +377,7 @@ export function PreciosEspecialesPanel() {
                       onClick={() => eliminar(r)}
                       aria-label={`Eliminar regla ${r.nombre}`}
                       title="Eliminar"
-                      className="rounded-lg p-2 text-[#CBD5E1] transition-colors hover:bg-red-50 hover:text-red-500"
+                      className="rounded-lg p-2 text-cal transition-colors hover:bg-error-suave hover:text-error"
                     >
                       <Trash2 size={17} strokeWidth={1.85} />
                     </button>
@@ -388,9 +388,9 @@ export function PreciosEspecialesPanel() {
                       { t: `Tarde · hasta ${formatearHora(r.inicioNoche)}`, v: r.precioTarde },
                       { t: `Noche · desde ${formatearHora(r.inicioNoche)}`, v: r.precioNoche },
                     ].map((f) => (
-                      <div key={f.t} className="rounded-xl bg-[#F5F5F3] px-3 py-2 text-center">
-                        <p className="text-[11px] font-semibold text-[#64748B]">{f.t}</p>
-                        <p className="mt-0.5 text-sm font-black text-[#0F172A]">
+                      <div key={f.t} className="rounded-xl bg-piedra px-3 py-2 text-center">
+                        <p className="text-[11px] font-semibold text-pizarra">{f.t}</p>
+                        <p className="mt-0.5 text-sm font-black text-basalto">
                           {f.v != null ? `S/ ${f.v}` : '—'}
                         </p>
                       </div>

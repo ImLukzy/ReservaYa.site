@@ -5,7 +5,6 @@ import { Check, Copy, Percent, Tag, Trash2 } from 'lucide-react';
 import { TopBar } from '@/components/layout/TopBar';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
-import { btnPrimary, card } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 type TipoDescuento = 'PORCENTAJE' | 'MONTO';
@@ -25,8 +24,9 @@ interface Codigo {
 }
 
 const inputCls =
-  'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
-const labelCls = 'mb-1 block text-xs font-bold text-[#0F172A]';
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
+const labelCls = 'mb-1 block text-xs font-bold text-basalto';
+const btnPrimary = 'btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover';
 
 function normalizar(raw: Record<string, unknown>, i: number): Codigo {
   const num = (v: unknown): number | null => {
@@ -204,14 +204,14 @@ export function DescuentosPanel() {
   return (
     <div>
       <TopBar breadcrumb="Gestión / Descuentos" title="Códigos de descuento" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-[#475569]">
+      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
         Crea cupones para atraer más reservas entre semana o en horarios con poca ocupación.
       </p>
 
       <div className="grid items-start gap-4 lg:grid-cols-[380px_1fr]">
         {/* Nuevo código */}
-        <section className={card} aria-label="Nuevo código de descuento">
-          <h2 className="text-base font-black text-[#0F172A]">Nuevo código</h2>
+        <section className="card-tactil p-5" aria-label="Nuevo código de descuento">
+          <h2 className="text-base font-black text-basalto">Nuevo código</h2>
 
           <div className="mt-4">
             <label htmlFor="nuevo-codigo" className={labelCls}>Código</label>
@@ -227,7 +227,7 @@ export function DescuentosPanel() {
 
           <div className="mt-4">
             <span className={labelCls}>Tipo de descuento</span>
-            <div className="grid grid-cols-2 gap-2 rounded-xl bg-[#F5F5F3] p-1" role="group" aria-label="Tipo de descuento">
+            <div className="grid grid-cols-2 gap-2 rounded-xl border-2 border-basalto bg-tiza p-1.5 shadow-dura-sm" role="group" aria-label="Tipo de descuento">
               {(['PORCENTAJE', 'MONTO'] as const).map((t) => (
                 <button
                   key={t}
@@ -235,8 +235,8 @@ export function DescuentosPanel() {
                   onClick={() => setTipo(t)}
                   aria-pressed={tipo === t}
                   className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-bold transition-all',
-                    tipo === t ? 'bg-white text-[#0F172A] shadow-sm ring-1 ring-[#E7E5E4]' : 'text-[#64748B] hover:text-[#0F172A]'
+                    'rounded-lg px-3 py-2 text-sm font-bold transition-colors',
+                    tipo === t ? 'bg-basalto text-tiza shadow-dura-sm' : 'text-pizarra hover:bg-piedra hover:text-basalto'
                   )}
                 >
                   {t === 'PORCENTAJE' ? 'Porcentaje' : 'Monto fijo'}
@@ -262,12 +262,12 @@ export function DescuentosPanel() {
           </div>
 
           <div className="mt-4 space-y-2.5">
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0F172A]">
+            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
               <input
                 type="checkbox"
                 checked={limitarTotal}
                 onChange={(e) => setLimitarTotal(e.target.checked)}
-                className="h-4 w-4 rounded accent-[#22C55E]"
+                className="h-4 w-4 rounded accent-cesped"
               />
               Limitar usos en total
             </label>
@@ -282,12 +282,12 @@ export function DescuentosPanel() {
                 className={inputCls}
               />
             )}
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0F172A]">
+            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
               <input
                 type="checkbox"
                 checked={limitarPersona}
                 onChange={(e) => setLimitarPersona(e.target.checked)}
-                className="h-4 w-4 rounded accent-[#22C55E]"
+                className="h-4 w-4 rounded accent-cesped"
               />
               Limitar usos por persona
             </label>
@@ -302,12 +302,12 @@ export function DescuentosPanel() {
                 className={inputCls}
               />
             )}
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0F172A]">
+            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
               <input
                 type="checkbox"
                 checked={conVencimiento}
                 onChange={(e) => setConVencimiento(e.target.checked)}
-                className="h-4 w-4 rounded accent-[#22C55E]"
+                className="h-4 w-4 rounded accent-cesped"
               />
               Tiene fecha de vencimiento
             </label>
@@ -322,15 +322,15 @@ export function DescuentosPanel() {
             )}
           </div>
 
-          <div className="mt-5 border-t border-[#E7E5E4] pt-4">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-[#64748B]">CONDICIONES</p>
+          <div className="mt-5 border-t border-cal pt-4">
+            <p className="text-[11px] font-bold tracking-[0.12em] text-pizarra">CONDICIONES</p>
             <div className="mt-2.5 space-y-2.5">
-              <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0F172A]">
+              <label className="flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
                 <input
                   type="checkbox"
                   checked={conMinHoras}
                   onChange={(e) => setConMinHoras(e.target.checked)}
-                  className="h-4 w-4 rounded accent-[#22C55E]"
+                  className="h-4 w-4 rounded accent-cesped"
                 />
                 Solo para reservas de X horas o más
               </label>
@@ -345,12 +345,12 @@ export function DescuentosPanel() {
                   className={inputCls}
                 />
               )}
-              <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0F172A]">
+              <label className="flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
                 <input
                   type="checkbox"
                   checked={conMinMonto}
                   onChange={(e) => setConMinMonto(e.target.checked)}
-                  className="h-4 w-4 rounded accent-[#22C55E]"
+                  className="h-4 w-4 rounded accent-cesped"
                 />
                 Solo desde cierto monto
               </label>
@@ -369,12 +369,12 @@ export function DescuentosPanel() {
           </div>
 
           {errorForm && (
-            <p role="alert" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">
+            <p role="alert" className="mt-3 rounded-xl border border-error/40 bg-error-suave px-3 py-2 text-sm font-semibold text-error">
               {errorForm}
             </p>
           )}
           {okMsg && (
-            <p role="status" className="mt-3 rounded-xl bg-[#DCFCE7] px-3 py-2 text-sm font-semibold text-[#15803D]">
+            <p role="status" className="mt-3 rounded-xl bg-cesped-suave px-3 py-2 text-sm font-semibold text-cesped-hondo">
               {okMsg}
             </p>
           )}
@@ -384,13 +384,13 @@ export function DescuentosPanel() {
         </section>
 
         {/* Lista */}
-        <section className={card} aria-label="Tus códigos">
-          <h2 className="text-base font-black text-[#0F172A]">Tus códigos</h2>
+        <section className="card-tactil p-5" aria-label="Tus códigos">
+          <h2 className="text-base font-black text-basalto">Tus códigos</h2>
           {cargando ? (
-            <p className="py-10 text-center text-sm text-[#64748B]">Cargando códigos…</p>
+            <p className="py-10 text-center text-sm text-pizarra">Cargando códigos…</p>
           ) : errorLista && codigos.length === 0 ? (
             <div className="py-6 text-center">
-              <p className="text-sm text-[#64748B]">{errorLista}</p>
+              <p className="text-sm text-pizarra">{errorLista}</p>
               <button type="button" onClick={() => window.location.reload()} className={cn(btnPrimary, 'mt-3')}>
                 Reintentar
               </button>
@@ -411,25 +411,25 @@ export function DescuentosPanel() {
               {codigos.map((c) => (
                 <li
                   key={c.id}
-                  className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#E7E5E4] bg-white p-4"
+                  className="flex flex-wrap items-center gap-3 rounded-2xl border border-cal bg-tiza p-4"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#DCFCE7] text-[#15803D]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cesped/30 bg-cesped-suave text-cesped-hondo">
                     <Percent size={18} strokeWidth={2} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-mono text-base font-black tracking-widest text-[#0F172A]">{c.codigo}</p>
-                      <span className="rounded-full bg-[#F1F0EE] px-2.5 py-0.5 text-[11px] font-bold text-[#475569]">
+                      <p className="font-mono text-base font-black tracking-widest text-basalto">{c.codigo}</p>
+                      <span className="rounded-full bg-piedra px-2.5 py-0.5 text-[11px] font-bold text-basalto">
                         {c.tipo.includes('MONTO') ? 'Monto fijo' : 'Porcentaje'}
                       </span>
                       {!c.activo && (
-                        <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-[11px] font-bold text-red-500">
+                        <span className="rounded-full bg-error-suave px-2.5 py-0.5 text-[11px] font-bold text-error">
                           Pausado
                         </span>
                       )}
                     </div>
-                    <p className="mt-0.5 text-sm font-bold text-[#15803D]">{c.tipo.includes('MONTO') ? `− S/ ${c.valor}` : `− ${c.valor}%`}</p>
-                    <p className="mt-0.5 text-xs text-[#64748B]">
+                    <p className="mt-0.5 text-sm font-bold text-cesped-hondo">{c.tipo.includes('MONTO') ? `− S/ ${c.valor}` : `− ${c.valor}%`}</p>
+                    <p className="mt-0.5 text-xs text-pizarra">
                       {c.usosActuales}{c.usosMax != null ? `/${c.usosMax}` : ''} usos
                       {c.usosPorPersona != null ? ` · máx. ${c.usosPorPersona} por persona` : ''}
                       {c.venceEn ? ` · vence ${c.venceEn.slice(0, 10)}` : ''}
@@ -447,12 +447,12 @@ export function DescuentosPanel() {
                       onClick={() => toggleActivo(c)}
                       className={cn(
                         'relative h-6 w-11 rounded-full transition-colors',
-                        c.activo ? 'bg-[#22C55E]' : 'bg-[#E7E5E4]'
+                        c.activo ? 'bg-cesped' : 'bg-cal'
                       )}
                     >
                       <span
                         className={cn(
-                          'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all',
+                          'absolute top-0.5 h-5 w-5 rounded-full bg-tiza shadow-dura-sm transition-all',
                           c.activo ? 'left-[22px]' : 'left-0.5'
                         )}
                       />
@@ -462,16 +462,16 @@ export function DescuentosPanel() {
                       onClick={() => copiar(c)}
                       aria-label={`Copiar ${c.codigo}`}
                       title="Copiar código"
-                      className="rounded-lg p-2 text-[#64748B] transition-colors hover:bg-gray-50 hover:text-[#0F172A]"
+                      className="rounded-lg p-2 text-pizarra transition-colors hover:bg-piedra hover:text-basalto"
                     >
-                      {copiadoId === c.id ? <Check size={17} strokeWidth={2} className="text-[#22C55E]" /> : <Copy size={17} strokeWidth={1.85} />}
+                      {copiadoId === c.id ? <Check size={17} strokeWidth={2} className="text-cesped" /> : <Copy size={17} strokeWidth={1.85} />}
                     </button>
                     <button
                       type="button"
                       onClick={() => eliminar(c)}
                       aria-label={`Eliminar ${c.codigo}`}
                       title="Eliminar"
-                      className="rounded-lg p-2 text-[#CBD5E1] transition-colors hover:bg-red-50 hover:text-red-500"
+                      className="rounded-lg p-2 text-cal transition-colors hover:bg-error-suave hover:text-error"
                     >
                       <Trash2 size={17} strokeWidth={1.85} />
                     </button>
