@@ -1079,7 +1079,7 @@ export function CronogramaView({
   }
 
   return (
-    <div>
+    <div className="densidad-fija">
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>

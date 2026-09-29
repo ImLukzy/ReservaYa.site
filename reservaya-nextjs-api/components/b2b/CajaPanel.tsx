@@ -381,12 +381,12 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
   }, [movimientos]);
 
   return (
-    <div>
+    <div className="densidad-fija">
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-display text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ CAJA</p>
-          <h1 className="mt-1 font-display text-[28px] font-bold tracking-tight text-basalto">Caja</h1>
+          <p className="font-display text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">▦ CAJA</p>
+          <h1 className="mt-1 font-display text-[1.75rem] font-bold tracking-tight text-basalto">Caja</h1>
           <p className="text-sm text-pizarra">
             Registra las ventas de tu tienda, controla el efectivo y cierra tu turno sin fugas.
           </p>
@@ -403,7 +403,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
           <div className="flex items-center gap-2.5 rounded-2xl border-2 border-basalto bg-cesped-suave px-4 py-2 shadow-dura-sm">
             <Wallet size={20} className="text-cesped-hondo" />
             <div>
-              <p className="font-display text-[10px] font-bold tracking-[0.12em] text-cesped-hondo">VENDIDO HOY</p>
+              <p className="font-display text-[0.625rem] font-bold tracking-[0.12em] text-cesped-hondo">VENDIDO HOY</p>
               <p className="font-display text-lg font-black leading-none tabular-nums text-basalto">{soles(vendidoHoy)}</p>
             </div>
           </div>
@@ -455,7 +455,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
 
                 {canchas.length > 0 && (
                   <div className="card-tactil mt-3 p-4">
-                    <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">ALQUILER DE CANCHA · 1H</p>
+                    <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">ALQUILER DE CANCHA · 1H</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {canchas.map((c) => (
                         <button
