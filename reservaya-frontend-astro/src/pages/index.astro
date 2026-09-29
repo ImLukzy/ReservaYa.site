@@ -60,7 +60,7 @@ const preguntas = [
         <h1 class="text-4xl text-tiza md:text-5xl lg:text-6xl">Canchas libres en Arequipa</h1>
         <p class="mt-3 max-w-md text-lg text-tiza/75">Elige la hora, mira el precio y reserva en un minuto.</p>
 
-        <form action="/canchas" method="get" class="card-tactil mt-6 grid grid-cols-2 gap-3 p-4 shadow-dura lg:grid-cols-1 lg:p-5" role="search" aria-label="Buscar canchas">
+        <form action="/canchas" method="get" class="card-tactil mt-6 grid grid-cols-1 gap-3 p-4 shadow-dura sm:grid-cols-2 lg:grid-cols-1 lg:p-5" role="search" aria-label="Buscar canchas">
           <Select id="buscar-distrito" name="distrito" etiqueta="Distrito" etiquetaOculta opciones={distritos} />
           <Select id="buscar-tipo" name="tipo" etiqueta="Deporte" etiquetaOculta opciones={tipos} />
           <Select id="buscar-dia" name="fecha" etiqueta="Día" etiquetaOculta opciones={dias} />

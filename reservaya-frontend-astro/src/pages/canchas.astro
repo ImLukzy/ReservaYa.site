@@ -48,8 +48,8 @@ const orden = [
     </div>
 
     <div class="card-tactil mt-6 bg-tiza p-4 shadow-dura-sm sm:p-5">
-      <form id="filtros" action="/canchas" method="get" role="search" class="grid grid-cols-2 gap-3 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))]">
-        <Field id="f-q" name="q" type="search" etiqueta="Complejo o cancha" placeholder="Nombre" autocomplete="off" class="col-span-2 lg:col-span-1" />
+      <form id="filtros" action="/canchas" method="get" role="search" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))]">
+        <Field id="f-q" name="q" type="search" etiqueta="Complejo o cancha" placeholder="Nombre" autocomplete="off" class="sm:col-span-2 lg:col-span-1" />
         <Select id="f-distrito" name="distrito" etiqueta="Distrito" opciones={distritos} />
         <Select id="f-tipo" name="tipo" etiqueta="Deporte" opciones={tipos} />
         <Select id="f-fecha" name="fecha" etiqueta="Día" opciones={dias} />
