@@ -345,7 +345,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
           <div className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-5 shadow-dura-lg" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-black text-basalto">Definir mi meta</h3>
-              <button type="button" onClick={() => setModal(false)} aria-label="Cerrar" className="btn-tactil flex h-8 w-8 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra hover:border-cesped hover:text-cesped">
+              <button type="button" onClick={() => setModal(false)} aria-label="Cerrar" className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra hover:border-cesped hover:text-cesped">
                 <X size={16} />
               </button>
             </div>

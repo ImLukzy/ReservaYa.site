@@ -270,7 +270,7 @@ export function TorneosPanel() {
           <a
             href="/admin/ayuda"
             aria-label="Ayuda sobre torneos"
-            className="btn-tactil flex h-9 w-9 items-center justify-center rounded-full border-2 border-basalto bg-tiza text-pizarra transition-colors hover:text-basalto hover:bg-piedra"
+            className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border-2 border-basalto bg-tiza text-pizarra transition-colors hover:text-basalto hover:bg-piedra"
           >
             <CircleHelp size={18} strokeWidth={1.85} />
           </a>
@@ -374,7 +374,7 @@ export function TorneosPanel() {
           <form onSubmit={(e) => void crearTorneo(e)} className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg">
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-xl font-black text-basalto">Crear torneo</h2>
-              <button type="button" onClick={() => setModalCrear(false)} aria-label="Cerrar" className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra">
+              <button type="button" onClick={() => setModalCrear(false)} aria-label="Cerrar" className="btn-tactil h-11 w-11 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra">
                 <X size={18} strokeWidth={2} />
               </button>
             </div>
@@ -408,7 +408,7 @@ export function TorneosPanel() {
                   {ETIQUETA_ESTADO_TORNEO[detalle.estado] ?? detalle.estado}
                 </span>
               </div>
-              <button type="button" onClick={() => setDetalle(null)} aria-label="Cerrar detalle" className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra">
+              <button type="button" onClick={() => setDetalle(null)} aria-label="Cerrar detalle" className="btn-tactil h-11 w-11 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra">
                 <X size={18} strokeWidth={2} />
               </button>
             </div>

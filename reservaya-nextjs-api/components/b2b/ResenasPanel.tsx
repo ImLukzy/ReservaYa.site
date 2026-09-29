@@ -282,7 +282,7 @@ export function ResenasPanel() {
                 type="button"
                 onClick={() => setRespondiendo(null)}
                 aria-label="Cerrar"
-                className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
+                className="btn-tactil h-11 w-11 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={18} strokeWidth={2} />
               </button>
