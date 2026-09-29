@@ -9,7 +9,11 @@ const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout title={`${frontmatter.title} | ReservaYa`} description={frontmatter.description ?? frontmatter.title}>
-  <article class="prosa mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
-    <slot />
-  </article>
+  <section class="mx-auto max-w-texto px-4 py-8 md:px-6 lg:py-12">
+    <div class="card-tactil p-6 md:p-10">
+      <article class="prosa">
+        <slot />
+      </article>
+    </div>
+  </section>
 </BaseLayout>
