@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Banknote, CircleAlert, Clock3, Landmark, Wallet, X } from 'lucide-react';
 import { TopBar } from '@/components/layout/TopBar';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
-import { btnPrimary, card } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 interface Abono {
@@ -25,8 +24,8 @@ interface Cuenta {
 const CUENTA_KEY = 'ry_cuenta';
 
 const inputCls =
-  'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
-const labelCls = 'mb-1 block text-xs font-bold text-[#0F172A]';
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
+const labelCls = 'mb-1 block font-display text-xs font-bold text-basalto';
 
 function soles(n: number): string {
   return `S/ ${n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -142,53 +141,53 @@ export function AbonosPanel() {
   return (
     <div>
       <TopBar breadcrumb="Finanzas / Abonos" title="Tus abonos" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-[#475569]">
+      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
         Aquí ves el dinero de tus reservas pagadas online y cuándo llega a tu cuenta.
       </p>
 
       {/* KPIs */}
       <div className="grid gap-4 md:grid-cols-2">
-        <div className={card}>
+        <div className="card-tactil p-5">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#EA580C]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-alerta/30 bg-alerta-suave text-alerta-hondo">
               <Clock3 size={20} strokeWidth={2} />
             </span>
-            <p className="text-sm font-bold text-[#0F172A]">Por abonarte</p>
+            <p className="font-display text-sm font-bold text-basalto">Por abonarte</p>
           </div>
-          <p className="mt-3 text-3xl font-black text-[#0F172A]">{cargando ? '…' : soles(porAbonar)}</p>
-          <p className="mt-1 text-xs text-[#64748B]">
+          <p className="mt-3 font-display text-3xl font-black tabular-nums text-basalto">{cargando ? '…' : soles(porAbonar)}</p>
+          <p className="mt-1 text-xs text-pizarra">
             {reservasOnline} reserva{reservasOnline === 1 ? '' : 's'} pagada{reservasOnline === 1 ? '' : 's'} online
           </p>
         </div>
-        <div className={card}>
+        <div className="card-tactil p-5">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#DCFCE7] text-[#15803D]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-cesped/30 bg-cesped-suave text-cesped-hondo">
               <Wallet size={20} strokeWidth={2} />
             </span>
-            <p className="text-sm font-bold text-[#0F172A]">Total abonado</p>
+            <p className="font-display text-sm font-bold text-basalto">Total abonado</p>
           </div>
-          <p className="mt-3 text-3xl font-black text-[#0F172A]">{cargando ? '…' : soles(totalAbonado)}</p>
-          <p className="mt-1 text-xs text-[#64748B]">
+          <p className="mt-3 font-display text-3xl font-black tabular-nums text-basalto">{cargando ? '…' : soles(totalAbonado)}</p>
+          <p className="mt-1 text-xs text-pizarra">
             {abonos.length} abono{abonos.length === 1 ? '' : 's'} recibido{abonos.length === 1 ? '' : 's'}
           </p>
         </div>
       </div>
 
       {errorCarga && (
-        <p role="alert" className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+        <p role="alert" className="mt-4 rounded-2xl border border-error/40 bg-error-suave px-4 py-3 text-sm font-semibold text-error">
           {errorCarga}
         </p>
       )}
 
-      {/* Explicativa azul */}
-      <div className="mt-4 rounded-2xl border border-[#BFDBFE] bg-[#EFF6FF] p-5">
+      {/* Explicativa cielo */}
+      <div className="card-tactil mt-4 border-2 border-basalto bg-cielo p-5">
         <div className="flex gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#2563EB]">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-basalto/20 bg-tiza text-basalto">
             <Banknote size={20} strokeWidth={2} />
           </span>
           <div>
-            <p className="font-black text-[#0F172A]">Todavía no hay abonos en camino</p>
-            <p className="mt-1 text-sm leading-relaxed text-[#475569]">
+            <p className="font-display font-black text-basalto">Todavía no hay abonos en camino</p>
+            <p className="mt-1 text-sm leading-relaxed text-pizarra">
               Cuando un jugador pague online, ese dinero se suma a «Por abonarte». Ni bien se procese la
               transferencia lo verás en «Total abonado» y en la tabla de abonos recibidos de más abajo.
             </p>
@@ -197,9 +196,9 @@ export function AbonosPanel() {
       </div>
 
       {/* Verde: cuándo te abonamos */}
-      <div className="mt-4 rounded-2xl border border-[#86EFAC] bg-[#F0FDF4] p-5">
-        <p className="font-black text-[#0F172A]">Cuándo te abonamos</p>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[#475569]">
+      <div className="card-tactil mt-4 border-2 border-basalto bg-cesped-suave p-5">
+        <p className="font-display font-black text-basalto">Cuándo te abonamos</p>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-pizarra">
           <li>Agrupamos tus pagos online y te los transferimos a tu cuenta registrada.</li>
           <li>Verás cada transferencia como una fila en «Abonos recibidos», con fecha, monto y referencia.</li>
           <li>Si algún pago está en revisión, seguirá sumando en «Por abonarte» hasta liberarse.</li>
@@ -208,40 +207,40 @@ export function AbonosPanel() {
 
       {/* Amarilla: falta tu cuenta */}
       {cuenta ? (
-        <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-5">
+        <div className="card-tactil mt-4 p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#DCFCE7] text-[#15803D]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cesped/30 bg-cesped-suave text-cesped-hondo">
                 <Landmark size={20} strokeWidth={2} />
               </span>
               <div>
-                <p className="font-black text-[#0F172A]">Tu cuenta para abonos</p>
-                <p className="mt-0.5 text-sm text-[#475569]">
-                  {cuenta.banco} · {cuenta.titular} · <span className="font-mono font-bold">{cuenta.numero}</span>
+                <p className="font-display font-black text-basalto">Tu cuenta para abonos</p>
+                <p className="mt-0.5 text-sm text-pizarra">
+                  {cuenta.banco} · {cuenta.titular} · <span className="font-mono font-bold text-basalto">{cuenta.numero}</span>
                 </p>
               </div>
             </div>
-            <button type="button" onClick={() => setModal(true)} className="rounded-xl border border-[#E7E5E4] px-4 py-2.5 text-sm font-bold text-[#0F172A] transition-colors hover:border-[#22C55E]">
+            <button type="button" onClick={() => setModal(true)} className="btn-tactil bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto hover:bg-piedra">
               Cambiar cuenta
             </button>
           </div>
         </div>
       ) : (
-        <div className="mt-4 rounded-2xl border border-[#FDE68A] bg-[#FFFBEB] p-5">
+        <div className="card-tactil mt-4 border-2 border-basalto bg-sol-suave p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#D97706]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-basalto/20 bg-tiza text-basalto">
                 <CircleAlert size={20} strokeWidth={2} />
               </span>
               <div>
-                <p className="font-black text-[#0F172A]">Nos falta tu cuenta</p>
-                <p className="mt-0.5 max-w-xl text-sm text-[#475569]">
+                <p className="font-display font-black text-basalto">Nos falta tu cuenta</p>
+                <p className="mt-0.5 max-w-xl text-sm text-pizarra">
                   Para poder abonarte necesitamos tu cuenta bancaria. Agrégala ahora y tus pagos online
                   llegarán sin demoras.
                 </p>
               </div>
             </div>
-            <button type="button" onClick={() => setModal(true)} className={cn(btnPrimary, 'shrink-0')}>
+            <button type="button" onClick={() => setModal(true)} className="btn-tactil shrink-0 bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover">
               Agregar mi cuenta
             </button>
           </div>
@@ -249,19 +248,19 @@ export function AbonosPanel() {
       )}
 
       {/* Tabla */}
-      <div className={cn(card, 'mt-4')}>
-        <h2 className="text-base font-black text-[#0F172A]">Abonos recibidos</h2>
+      <div className="card-tactil mt-4 p-5">
+        <h2 className="font-display text-base font-black text-basalto">Abonos recibidos</h2>
         {cargando ? (
-          <p className="py-8 text-center text-sm text-[#64748B]">Cargando abonos…</p>
+          <p className="py-8 text-center text-sm text-pizarra">Cargando abonos…</p>
         ) : abonos.length === 0 ? (
-          <p className="py-8 text-center text-sm text-[#64748B]">
+          <p className="py-8 text-center text-sm text-pizarra">
             Aún no recibes abonos. Cuando procesemos tu primera transferencia aparecerá aquí.
           </p>
         ) : (
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[560px] text-left text-sm">
               <thead>
-                <tr className="border-b border-[#E7E5E4] text-xs text-[#64748B]">
+                <tr className="border-b border-cal font-display text-xs text-pizarra">
                   <th className="py-2 pr-3 font-bold">Fecha</th>
                   <th className="py-2 pr-3 font-bold">Referencia</th>
                   <th className="py-2 pr-3 font-bold">Método</th>
@@ -269,18 +268,18 @@ export function AbonosPanel() {
                   <th className="py-2 text-right font-bold">Monto</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F1F0EE]">
+              <tbody className="divide-y divide-cal">
                 {abonos.map((a) => (
                   <tr key={a.id}>
-                    <td className="py-2.5 pr-3 text-[#0F172A]">{a.fecha ? a.fecha.slice(0, 10) : '—'}</td>
-                    <td className="py-2.5 pr-3 font-mono text-xs text-[#475569]">{a.referencia}</td>
-                    <td className="py-2.5 pr-3 text-[#475569]">{a.metodo}</td>
+                    <td className="py-2.5 pr-3 text-basalto">{a.fecha ? a.fecha.slice(0, 10) : '—'}</td>
+                    <td className="py-2.5 pr-3 font-mono text-xs text-pizarra">{a.referencia}</td>
+                    <td className="py-2.5 pr-3 text-pizarra">{a.metodo}</td>
                     <td className="py-2.5 pr-3">
-                      <span className="rounded-full bg-[#DCFCE7] px-2.5 py-0.5 text-[11px] font-bold text-[#15803D]">
+                      <span className="rounded-full border border-cesped/30 bg-cesped-suave px-2.5 py-0.5 font-display text-[11px] font-bold text-cesped-hondo">
                         {a.estado}
                       </span>
                     </td>
-                    <td className="py-2.5 text-right font-black text-[#0F172A]">{soles(a.monto)}</td>
+                    <td className="py-2.5 text-right font-display font-black tabular-nums text-basalto">{soles(a.monto)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -292,20 +291,20 @@ export function AbonosPanel() {
       {/* Modal cuenta */}
       {modal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4"
           onClick={() => setModal(false)}
           role="dialog"
           aria-modal="true"
           aria-label="Agregar cuenta bancaria"
         >
-          <div className={cn(card, 'w-full max-w-md')} onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-start justify-between">
-              <h3 className="text-lg font-black text-[#0F172A]">Agregar mi cuenta</h3>
+              <h3 className="font-display text-lg font-black text-basalto">Agregar mi cuenta</h3>
               <button
                 type="button"
                 onClick={() => setModal(false)}
                 aria-label="Cerrar"
-                className="rounded-lg p-1 text-[#64748B] hover:bg-gray-100"
+                className="rounded-lg p-1 text-pizarra hover:bg-piedra hover:text-basalto"
               >
                 <X size={20} strokeWidth={2} />
               </button>
@@ -344,11 +343,11 @@ export function AbonosPanel() {
               </div>
             </div>
             {errorCuenta && (
-              <p role="alert" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">
+              <p role="alert" className="mt-3 rounded-xl bg-error-suave px-3 py-2 text-sm font-semibold text-error">
                 {errorCuenta}
               </p>
             )}
-            <button type="button" onClick={guardarCuenta} disabled={guardando} className={cn(btnPrimary, 'mt-4 w-full py-3 disabled:opacity-50')}>
+            <button type="button" onClick={guardarCuenta} disabled={guardando} className="btn-tactil mt-5 w-full bg-cesped py-3 font-display text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50">
               {guardando ? 'Guardando…' : 'Guardar cuenta'}
             </button>
           </div>

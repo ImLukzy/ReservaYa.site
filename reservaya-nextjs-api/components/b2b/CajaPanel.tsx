@@ -90,23 +90,23 @@ function Modal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={titulo}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-xl"
+        className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-5 shadow-dura-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-black text-[#0F172A]">{titulo}</h3>
+          <h3 className="font-display text-lg font-black text-basalto">{titulo}</h3>
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E7E5E4] text-[#64748B] hover:border-[#22C55E]"
+            className="btn-tactil h-8 w-8 rounded-full border-2 border-basalto text-pizarra hover:text-basalto"
           >
             <X size={16} />
           </button>
@@ -118,12 +118,12 @@ function Modal({
 }
 
 const inputCls =
-  'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
-const labelCls = 'mb-1 block text-xs font-bold text-[#475569]';
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
+const labelCls = 'mb-1 block font-display text-xs font-bold text-basalto';
 const btnPrimary =
-  'rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50';
+  'btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover disabled:cursor-not-allowed disabled:opacity-50';
 const btnGhost =
-  'rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] transition-colors hover:border-[#22C55E]';
+  'btn-tactil border-cal bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto hover:bg-piedra';
 
 interface Linea {
   key: string;
@@ -231,7 +231,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
     const dot = document.createElement('span');
     dot.className = 'fly-dot';
     const size = 22;
-    dot.style.cssText = `width:${size}px;height:${size}px;left:${a.left + a.width / 2 - size / 2}px;top:${a.top + a.height / 2 - size / 2}px;background:#22C55E;`;
+    dot.style.cssText = `width:${size}px;height:${size}px;left:${a.left + a.width / 2 - size / 2}px;top:${a.top + a.height / 2 - size / 2}px;background:var(--cesped);`;
     document.body.appendChild(dot);
     const dx = b.left + b.width / 2 - (a.left + a.width / 2);
     const dy = b.top + 90 - (a.top + a.height / 2);
@@ -376,9 +376,9 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">▦ CAJA</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Caja</h1>
-          <p className="text-sm text-[#64748B]">
+          <p className="font-display text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ CAJA</p>
+          <h1 className="mt-1 font-display text-[28px] font-bold tracking-tight text-basalto">Caja</h1>
+          <p className="text-sm text-pizarra">
             Registra las ventas de tu tienda, controla el efectivo y cierra tu turno sin fugas.
           </p>
         </div>
@@ -387,36 +387,36 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
             href="/admin/ayuda"
             aria-label="Ayuda"
             title="Ayuda"
-            className="flex h-9 items-center gap-1.5 rounded-xl border border-[#E7E5E4] bg-white px-3 text-sm font-bold text-[#64748B] transition-colors hover:border-[#22C55E]"
+            className="btn-tactil h-9 border-cal bg-tiza px-3 text-sm font-bold text-pizarra hover:text-basalto"
           >
             <CircleHelp size={18} strokeWidth={1.85} /> Ayuda
           </Link>
-          <div className="flex items-center gap-2.5 rounded-2xl border border-[#22C55E]/30 bg-[#DCFCE7] px-4 py-2">
-            <Wallet size={20} className="text-[#15803D]" />
+          <div className="flex items-center gap-2.5 rounded-2xl border-2 border-basalto bg-cesped-suave px-4 py-2 shadow-dura-sm">
+            <Wallet size={20} className="text-cesped-hondo" />
             <div>
-              <p className="text-[10px] font-bold tracking-[0.12em] text-[#15803D]">VENDIDO HOY</p>
-              <p className="text-lg font-black leading-none text-[#0F172A]">{soles(vendidoHoy)}</p>
+              <p className="font-display text-[10px] font-bold tracking-[0.12em] text-cesped-hondo">VENDIDO HOY</p>
+              <p className="font-display text-lg font-black leading-none tabular-nums text-basalto">{soles(vendidoHoy)}</p>
             </div>
           </div>
         </div>
       </div>
 
       {error && (
-        <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700">
+        <p className="mt-3 rounded-xl border border-error/40 bg-error-suave px-4 py-2.5 text-sm font-semibold text-error">
           {error}
         </p>
       )}
 
       {/* Tabs */}
-      <div className="mt-4 flex gap-1.5 overflow-x-auto rounded-2xl border border-[#E7E5E4] bg-white p-1.5">
+      <div className="mt-4 flex gap-1.5 overflow-x-auto rounded-2xl border-2 border-basalto bg-tiza p-1.5 shadow-dura-sm">
         {tabs.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
             className={cn(
-              'shrink-0 rounded-xl px-4 py-2 text-sm font-bold transition-all',
-              tab === t.id ? 'bg-[#22C55E] text-[#060C08] shadow' : 'text-[#64748B] hover:bg-[#F5F5F3] hover:text-[#0F172A]'
+              'shrink-0 rounded-xl px-4 py-2 font-display text-sm font-bold transition-all',
+              tab === t.id ? 'bg-basalto text-tiza shadow-dura-sm' : 'text-pizarra hover:bg-piedra hover:text-basalto'
             )}
           >
             {t.label}
@@ -425,7 +425,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
       </div>
 
       {cargando ? (
-        <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-12 text-center text-sm text-[#64748B]">
+        <div className="card-tactil mt-4 p-12 text-center text-sm text-pizarra">
           Cargando caja…
         </div>
       ) : (
@@ -434,19 +434,19 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
             <div className="grid gap-4 lg:grid-cols-3">
               <section className="lg:col-span-2">
                 <div className="relative">
-                  <Search size={18} className="absolute top-1/2 left-3 -translate-y-1/2 text-[#94A3B8]" />
+                  <Search size={18} className="absolute top-1/2 left-3 -translate-y-1/2 text-pizarra" />
                   <input
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Buscar producto…"
                     aria-label="Buscar producto"
-                    className="w-full rounded-xl border border-[#E7E5E4] bg-white py-2.5 pr-3 pl-10 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25"
+                    className="w-full rounded-xl border-2 border-basalto bg-tiza py-2.5 pr-3 pl-10 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
                   />
                 </div>
 
                 {canchas.length > 0 && (
-                  <div className="mt-3 rounded-2xl border border-[#E7E5E4] bg-white p-4">
-                    <p className="text-[11px] font-bold tracking-[0.12em] text-[#64748B]">ALQUILER DE CANCHA · 1H</p>
+                  <div className="card-tactil mt-3 p-4">
+                    <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">ALQUILER DE CANCHA · 1H</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {canchas.map((c) => (
                         <button
@@ -462,7 +462,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                               e
                             )
                           }
-                          className="rounded-xl border border-[#E7E5E4] bg-[#F5F5F3] px-3 py-2 text-left text-xs font-bold text-[#0F172A] transition-all hover:border-[#22C55E] active:scale-[0.98]"
+                          className="btn-tactil bg-piedra px-3 py-2 text-left text-xs font-bold text-basalto hover:bg-cal"
                         >
                           🏟️ {c.nombre} · {soles(num(c.precioPorHora))}
                         </button>
@@ -473,7 +473,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
 
                 <div className="mt-3">
                   {productos.length === 0 ? (
-                    <div className="rounded-2xl border border-[#E7E5E4] bg-white">
+                    <div className="card-tactil">
                       <EmptyState
                         icon={ShoppingCart}
                         title="Aún no tienes productos"
@@ -486,7 +486,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                       />
                     </div>
                   ) : filtrados.length === 0 ? (
-                    <div className="rounded-2xl border border-[#E7E5E4] bg-white">
+                    <div className="card-tactil">
                       <EmptyState
                         icon={Search}
                         title="Sin resultados"
@@ -502,16 +502,16 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                           onClick={(e) =>
                             agregarLinea({ key: `prod-${p.id}`, productoId: p.id, nombre: p.nombre, precio: num(p.precio) }, e)
                           }
-                          className="rounded-2xl border border-[#E7E5E4] bg-white p-3 text-left transition-all hover:border-[#22C55E] hover:shadow-md active:scale-[0.98]"
+                          className="card-tactil p-3 text-left transition hover:bg-piedra/30 active:translate-x-[1px] active:translate-y-[1px]"
                         >
-                          <div className="flex h-16 items-center justify-center rounded-xl bg-[#F5F5F3] text-3xl" aria-hidden>
+                          <div className="flex h-16 items-center justify-center rounded-xl bg-piedra text-3xl" aria-hidden>
                             {p.categoria === 'ALQUILER' ? '🎽' : p.categoria === 'SERVICIO' ? '🛎️' : '🥤'}
                           </div>
-                          <p className="mt-2 truncate text-sm font-bold text-[#0F172A]">{p.nombre}</p>
-                          <p className="text-xs text-[#64748B]">{p.categoria}</p>
-                          <p className="font-black text-[#15803D]">{soles(num(p.precio))}</p>
+                          <p className="mt-2 truncate font-display text-sm font-bold text-basalto">{p.nombre}</p>
+                          <p className="text-xs text-pizarra">{p.categoria}</p>
+                          <p className="font-display font-black tabular-nums text-cesped-hondo">{soles(num(p.precio))}</p>
                           {p.stock !== null && (
-                            <p className={cn('text-[11px] font-semibold', p.stock <= 0 ? 'text-red-600' : 'text-[#64748B]')}>
+                            <p className={cn('text-[11px] font-semibold', p.stock <= 0 ? 'text-error' : 'text-pizarra')}>
                               Stock: {p.stock}
                             </p>
                           )}
@@ -523,28 +523,28 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
               </section>
 
               {/* Ticket */}
-              <aside ref={ticketRef} className="flex flex-col rounded-2xl border border-[#E7E5E4] bg-white p-5">
-                <h2 className="text-lg font-black text-[#0F172A]">Ticket actual</h2>
-                <p className="text-xs text-[#64748B]">{lineas.length} ítem{lineas.length === 1 ? '' : 's'}</p>
+              <aside ref={ticketRef} className="card-tactil flex flex-col p-5">
+                <h2 className="font-display text-lg font-black text-basalto">Ticket actual</h2>
+                <p className="text-xs text-pizarra">{lineas.length} ítem{lineas.length === 1 ? '' : 's'}</p>
                 <div className="mt-3 min-h-[120px] flex-1">
                   {lineas.length === 0 ? (
-                    <p className="py-8 text-center text-sm text-[#64748B]">Toca un producto para agregarlo.</p>
+                    <p className="py-8 text-center text-sm text-pizarra">Toca un producto para agregarlo.</p>
                   ) : (
                     <ul className="space-y-3">
                       {lineas.map((l) => (
                         <li key={l.key} className="flex items-center gap-2">
                           <div className="flex items-center gap-1">
-                            <button type="button" onClick={() => cambiarQty(l.key, -1)} aria-label={`Quitar uno de ${l.nombre}`} className="rounded-lg border border-[#E7E5E4] p-1 text-[#475569] hover:text-[#0F172A]">
+                            <button type="button" onClick={() => cambiarQty(l.key, -1)} aria-label={`Quitar uno de ${l.nombre}`} className="btn-tactil h-6 w-6 rounded-md border-cal p-0.5 text-pizarra hover:text-basalto">
                               <Minus size={14} />
                             </button>
-                            <span className="w-6 text-center text-sm font-bold text-[#0F172A]">{l.qty}</span>
-                            <button type="button" onClick={() => cambiarQty(l.key, 1)} aria-label={`Agregar uno de ${l.nombre}`} className="rounded-lg border border-[#E7E5E4] p-1 text-[#475569] hover:text-[#0F172A]">
+                            <span className="w-6 text-center font-display text-sm font-bold text-basalto">{l.qty}</span>
+                            <button type="button" onClick={() => cambiarQty(l.key, 1)} aria-label={`Agregar uno de ${l.nombre}`} className="btn-tactil h-6 w-6 rounded-md border-cal p-0.5 text-pizarra hover:text-basalto">
                               <Plus size={14} />
                             </button>
                           </div>
-                          <p className="min-w-0 flex-1 truncate text-sm font-semibold text-[#0F172A]">{l.nombre}</p>
-                          <p className="text-sm font-bold text-[#0F172A]">{soles(l.precio * l.qty)}</p>
-                          <button type="button" onClick={() => setLineas((prev) => prev.filter((x) => x.key !== l.key))} aria-label={`Quitar ${l.nombre}`} className="p-1 text-[#CBD5E1] hover:text-red-500">
+                          <p className="min-w-0 flex-1 truncate text-sm font-semibold text-basalto">{l.nombre}</p>
+                          <p className="font-display text-sm font-bold tabular-nums text-basalto">{soles(l.precio * l.qty)}</p>
+                          <button type="button" onClick={() => setLineas((prev) => prev.filter((x) => x.key !== l.key))} aria-label={`Quitar ${l.nombre}`} className="p-1 text-pizarra hover:text-error">
                             <Trash2 size={16} />
                           </button>
                         </li>
@@ -552,7 +552,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                     </ul>
                   )}
                   {ticketMsg && (
-                    <p className="mt-3 rounded-xl bg-[#DCFCE7] px-3 py-2 text-sm font-bold text-[#15803D]">{ticketMsg}</p>
+                    <p className="mt-3 rounded-xl bg-cesped-suave px-3 py-2 text-sm font-bold text-cesped-hondo">{ticketMsg}</p>
                   )}
                 </div>
                 <label className={cn(labelCls, 'mt-3')} htmlFor="metodo-pago">Método de pago</label>
@@ -561,19 +561,19 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
-                <dl className="mt-3 space-y-1 border-t border-[#F1F0EE] pt-3 text-sm">
-                  <div className="flex justify-between text-[#475569]">
+                <dl className="mt-3 space-y-1 border-t border-cal pt-3 text-sm">
+                  <div className="flex justify-between text-pizarra">
                     <dt>Subtotal</dt>
-                    <dd className="font-bold text-[#0F172A]">{soles(subtotal)}</dd>
+                    <dd className="font-display font-bold tabular-nums text-basalto">{soles(subtotal)}</dd>
                   </div>
                   <div className="flex justify-between text-base">
-                    <dt className="font-black text-[#0F172A]">Total</dt>
-                    <dd className="font-black tabular-nums text-[#0F172A]">{soles(totalShown)}</dd>
+                    <dt className="font-display font-black text-basalto">Total</dt>
+                    <dd className="font-display font-black tabular-nums text-basalto">{soles(totalShown)}</dd>
                   </div>
                 </dl>
                 <div className="mt-3 flex gap-2">
                   <button type="button" onClick={() => { setLineas([]); setTicketMsg(null); }} disabled={lineas.length === 0} className={btnGhost}>Limpiar</button>
-                  <button type="button" onClick={cobrar} disabled={lineas.length === 0 || cobrando} className={cn(btnPrimary, 'btn-press btn-shine flex-1 py-3.5 text-base')}>
+                  <button type="button" onClick={cobrar} disabled={lineas.length === 0 || cobrando} className={cn(btnPrimary, 'flex-1 py-3.5 text-base')}>
                     {cobrando ? 'Cobrando…' : `Cobrar ${soles(totalShown)}`}
                   </button>
                 </div>
@@ -592,28 +592,28 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
 
           {tab === 'efectivo' && (
             <div className="grid gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-                <h2 className="text-lg font-black text-[#0F172A]">Estado de caja</h2>
+              <div className="card-tactil p-5">
+                <h2 className="font-display text-lg font-black text-basalto">Estado de caja</h2>
                 {caja ? (
                   <div className="mt-3">
-                    <span className="badge-live rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]">CAJA ABIERTA</span>
+                    <span className="badge-live rounded-full border border-cesped/30 bg-cesped-suave px-3 py-1 font-display text-xs font-bold text-cesped-hondo">CAJA ABIERTA</span>
                     <dl className="mt-4 space-y-2 text-sm">
-                      <div className="flex justify-between"><dt className="text-[#64748B]">Monto inicial</dt><dd className="font-bold text-[#0F172A]">{soles(num(resumen?.montoInicial))}</dd></div>
-                      <div className="flex justify-between"><dt className="text-[#64748B]">Ingresos del turno</dt><dd className="font-bold text-[#15803D]">+{soles(num(resumen?.ingresos))}</dd></div>
-                      <div className="flex justify-between"><dt className="text-[#64748B]">Egresos del turno</dt><dd className="font-bold text-red-600">−{soles(num(resumen?.egresos))}</dd></div>
-                      <div className="flex justify-between border-t border-[#F1F0EE] pt-2 text-base"><dt className="font-black text-[#0F172A]">Efectivo esperado</dt><dd className="font-black text-[#0F172A]">{soles(num(resumen?.esperado))}</dd></div>
-                      <div className="flex justify-between"><dt className="text-[#64748B]">Movimientos</dt><dd className="font-bold text-[#0F172A]">{resumen?.movimientos ?? 0}</dd></div>
+                      <div className="flex justify-between"><dt className="text-pizarra">Monto inicial</dt><dd className="font-display font-bold tabular-nums text-basalto">{soles(num(resumen?.montoInicial))}</dd></div>
+                      <div className="flex justify-between"><dt className="text-pizarra">Ingresos del turno</dt><dd className="font-display font-bold tabular-nums text-cesped-hondo">+{soles(num(resumen?.ingresos))}</dd></div>
+                      <div className="flex justify-between"><dt className="text-pizarra">Egresos del turno</dt><dd className="font-display font-bold tabular-nums text-error">−{soles(num(resumen?.egresos))}</dd></div>
+                      <div className="flex justify-between border-t border-cal pt-2 text-base"><dt className="font-display font-black text-basalto">Efectivo esperado</dt><dd className="font-display font-black tabular-nums text-basalto">{soles(num(resumen?.esperado))}</dd></div>
+                      <div className="flex justify-between"><dt className="text-pizarra">Movimientos</dt><dd className="font-display font-bold tabular-nums text-basalto">{resumen?.movimientos ?? 0}</dd></div>
                     </dl>
                   </div>
                 ) : (
                   <div className="mt-3">
-                    <span className="rounded-full bg-[#F1F0EE] px-3 py-1 text-xs font-bold text-[#64748B]">○ CAJA CERRADA</span>
+                    <span className="rounded-full border border-cal bg-piedra px-3 py-1 font-display text-xs font-bold text-pizarra">○ CAJA CERRADA</span>
                     {cierreInfo ? (
-                      <p className={cn('mt-3 rounded-xl px-3 py-2 text-sm font-bold', cierreInfo.diferencia === 0 ? 'bg-[#DCFCE7] text-[#15803D]' : 'bg-amber-50 text-amber-700')}>
+                      <p className={cn('mt-3 rounded-xl px-3 py-2 text-sm font-bold', cierreInfo.diferencia === 0 ? 'border border-cesped/30 bg-cesped-suave text-cesped-hondo' : 'border border-sol/40 bg-sol-suave text-basalto')}>
                         Turno cerrado · diferencia {soles(cierreInfo.diferencia)}
                       </p>
                     ) : (
-                      <p className="mt-3 text-sm text-[#64748B]">Abre la caja con tu fondo inicial para empezar el turno.</p>
+                      <p className="mt-3 text-sm text-pizarra">Abre la caja con tu fondo inicial para empezar el turno.</p>
                     )}
                     <label className={cn(labelCls, 'mt-4')} htmlFor="monto-inicial">Monto inicial (S/)</label>
                     <input id="monto-inicial" type="number" min="0" step="0.5" value={montoApertura} onChange={(e) => setMontoApertura(e.target.value)} className={inputCls} />
@@ -623,17 +623,17 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                   </div>
                 )}
               </div>
-              <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-                <h2 className="text-lg font-black text-[#0F172A]">Cierre de turno</h2>
+              <div className="card-tactil p-5">
+                <h2 className="font-display text-lg font-black text-basalto">Cierre de turno</h2>
                 {!caja ? (
-                  <p className="mt-3 text-sm text-[#64748B]">No hay una caja abierta. El cierre se habilita al abrir el turno.</p>
+                  <p className="mt-3 text-sm text-pizarra">No hay una caja abierta. El cierre se habilita al abrir el turno.</p>
                 ) : (
                   <div className="mt-3">
-                    <p className="text-sm text-[#64748B]">Cuenta el efectivo del cajón y registra el monto final. Te mostramos la diferencia contra lo esperado.</p>
+                    <p className="text-sm text-pizarra">Cuenta el efectivo del cajón y registra el monto final. Te mostramos la diferencia contra lo esperado.</p>
                     <label className={cn(labelCls, 'mt-4')} htmlFor="monto-final">Monto final contado (S/)</label>
                     <input id="monto-final" type="number" min="0" step="0.5" value={montoCierre} onChange={(e) => setMontoCierre(e.target.value)} placeholder="0.00" className={inputCls} />
                     {montoCierre !== '' && (
-                      <p className="mt-2 text-sm font-bold text-[#0F172A]">
+                      <p className="mt-2 font-display text-sm font-bold tabular-nums text-basalto">
                         Diferencia estimada: {soles((Number(montoCierre) || 0) - num(resumen?.esperado))}
                       </p>
                     )}
@@ -647,9 +647,9 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
           )}
 
           {tab === 'productos' && (
-            <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
+            <div className="card-tactil p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-lg font-black text-[#0F172A]">Productos ({productos.length})</h2>
+                <h2 className="font-display text-lg font-black text-basalto">Productos ({productos.length})</h2>
                 <button type="button" onClick={() => setModalProd({})} className={btnPrimary}>
                   <span className="inline-flex items-center gap-1.5"><Plus size={16} /> Agregar producto</span>
                 </button>
@@ -669,7 +669,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                 <div className="mt-4 overflow-x-auto">
                   <table className="w-full min-w-[560px] text-left text-sm">
                     <thead>
-                      <tr className="border-b border-[#E7E5E4] text-[11px] uppercase tracking-wider text-[#64748B]">
+                      <tr className="border-b border-cal font-display text-[11px] uppercase tracking-wider text-pizarra">
                         <th className="py-2 pr-3">Producto</th>
                         <th className="py-2 pr-3">Categoría</th>
                         <th className="py-2 pr-3">Precio</th>
@@ -677,18 +677,18 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                         <th className="py-2 text-right">Acciones</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#F1F0EE]">
+                    <tbody className="divide-y divide-cal">
                       {productos.map((p) => (
                         <tr key={p.id}>
-                          <td className="py-2.5 pr-3 font-bold text-[#0F172A]">{p.nombre}</td>
-                          <td className="py-2.5 pr-3"><span className="rounded-full bg-[#F5F5F3] px-2.5 py-0.5 text-xs font-bold text-[#475569]">{p.categoria}</span></td>
-                          <td className="py-2.5 pr-3 font-bold text-[#15803D]">{soles(num(p.precio))}</td>
-                          <td className="py-2.5 pr-3 text-[#475569]">{p.stock === null ? '∞' : p.stock}</td>
+                          <td className="py-2.5 pr-3 font-display font-bold text-basalto">{p.nombre}</td>
+                          <td className="py-2.5 pr-3"><span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-xs font-bold text-pizarra">{p.categoria}</span></td>
+                          <td className="py-2.5 pr-3 font-display font-bold tabular-nums text-cesped-hondo">{soles(num(p.precio))}</td>
+                          <td className="py-2.5 pr-3 font-display text-pizarra">{p.stock === null ? '∞' : p.stock}</td>
                           <td className="py-2.5 text-right">
-                            <button type="button" onClick={() => setModalProd({ edit: p })} aria-label={`Editar ${p.nombre}`} className="rounded-lg border border-[#E7E5E4] p-1.5 text-[#475569] hover:border-[#22C55E] hover:text-[#0F172A]">
+                            <button type="button" onClick={() => setModalProd({ edit: p })} aria-label={`Editar ${p.nombre}`} className="btn-tactil p-1.5 text-pizarra hover:text-basalto">
                               <Pencil size={15} />
                             </button>{' '}
-                            <button type="button" onClick={() => borrarProducto(p.id)} aria-label={`Eliminar ${p.nombre}`} className="rounded-lg border border-[#E7E5E4] p-1.5 text-[#CBD5E1] hover:border-red-300 hover:text-red-500">
+                            <button type="button" onClick={() => borrarProducto(p.id)} aria-label={`Eliminar ${p.nombre}`} className="btn-tactil p-1.5 text-pizarra hover:text-error">
                               <Trash2 size={15} />
                             </button>
                           </td>
@@ -703,49 +703,49 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
 
           {tab === 'reporte' && (
             <div className="grid gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-                <h2 className="text-lg font-black text-[#0F172A]">Ingresos por método de pago</h2>
+              <div className="card-tactil p-5">
+                <h2 className="font-display text-lg font-black text-basalto">Ingresos por método de pago</h2>
                 {porMetodo.length === 0 ? (
-                  <p className="mt-3 text-sm text-[#64748B]">Aún no hay ventas hoy. Cobra tu primer ticket en Vender.</p>
+                  <p className="mt-3 text-sm text-pizarra">Aún no hay ventas hoy. Cobra tu primer ticket en Vender.</p>
                 ) : (
                   <ul className="mt-3 space-y-3">
                     {porMetodo.map(([m, total]) => (
                       <li key={m}>
-                        <div className="flex justify-between text-sm"><span className="font-bold text-[#0F172A]">{m}</span><span className="font-black text-[#15803D]">{soles(total)}</span></div>
-                        <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#F1F0EE]">
-                          <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${vendidoHoy > 0 ? Math.round((total / vendidoHoy) * 100) : 0}%` }} />
+                        <div className="flex justify-between text-sm"><span className="font-display font-bold text-basalto">{m}</span><span className="font-display font-black tabular-nums text-cesped-hondo">{soles(total)}</span></div>
+                        <div className="mt-1 h-2 overflow-hidden rounded-full bg-piedra">
+                          <div className="h-full rounded-full bg-cesped" style={{ width: `${vendidoHoy > 0 ? Math.round((total / vendidoHoy) * 100) : 0}%` }} />
                         </div>
                       </li>
                     ))}
                   </ul>
                 )}
-                <h2 className="mt-6 text-lg font-black text-[#0F172A]">Por tipo</h2>
+                <h2 className="mt-6 font-display text-lg font-black text-basalto">Por tipo</h2>
                 {porTipo.length === 0 ? (
-                  <p className="mt-2 text-sm text-[#64748B]">Sin movimientos hoy.</p>
+                  <p className="mt-2 text-sm text-pizarra">Sin movimientos hoy.</p>
                 ) : (
-                  <ul className="mt-2 divide-y divide-[#F1F0EE] text-sm">
+                  <ul className="mt-2 divide-y divide-cal text-sm">
                     {porTipo.map(([t, total]) => (
                       <li key={t} className="flex justify-between py-2">
-                        <span className="font-semibold text-[#475569]">{TIPO_LABEL[t] ?? t}</span>
-                        <span className={cn('font-black', total >= 0 ? 'text-[#15803D]' : 'text-red-600')}>{soles(total)}</span>
+                        <span className="font-semibold text-pizarra">{TIPO_LABEL[t] ?? t}</span>
+                        <span className={cn('font-display font-black tabular-nums', total >= 0 ? 'text-cesped-hondo' : 'text-error')}>{soles(total)}</span>
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
-              <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-                <h2 className="text-lg font-black text-[#0F172A]">Últimos movimientos</h2>
+              <div className="card-tactil p-5">
+                <h2 className="font-display text-lg font-black text-basalto">Últimos movimientos</h2>
                 {movimientos.length === 0 ? (
-                  <p className="mt-3 text-sm text-[#64748B]">Sin movimientos hoy. Todo lo que cobres o registres aparece aquí.</p>
+                  <p className="mt-3 text-sm text-pizarra">Sin movimientos hoy. Todo lo que cobres o registres aparece aquí.</p>
                 ) : (
-                  <ul className="mt-3 divide-y divide-[#F1F0EE]">
+                  <ul className="mt-3 divide-y divide-cal">
                     {movimientos.slice(0, 10).map((m) => (
                       <li key={m.id} className="flex items-center justify-between gap-2 py-2 text-sm">
                         <div className="min-w-0">
-                          <p className="truncate font-semibold text-[#0F172A]">{m.descripcion}</p>
-                          <p className="text-xs text-[#64748B]">{TIPO_LABEL[m.tipo] ?? m.tipo} · {m.metodoPago} · {horaPeru(m.creadoEn)}</p>
+                          <p className="truncate font-semibold text-basalto">{m.descripcion}</p>
+                          <p className="text-xs text-pizarra">{TIPO_LABEL[m.tipo] ?? m.tipo} · {m.metodoPago} · {horaPeru(m.creadoEn)}</p>
                         </div>
-                        <p className={cn('shrink-0 font-black', INGRESO_TIPOS.includes(m.tipo) ? 'text-[#15803D]' : 'text-red-600')}>
+                        <p className={cn('shrink-0 font-display font-black tabular-nums', INGRESO_TIPOS.includes(m.tipo) ? 'text-cesped-hondo' : 'text-error')}>
                           {INGRESO_TIPOS.includes(m.tipo) ? '+' : '−'}{soles(num(m.monto))}
                         </p>
                       </li>
@@ -776,7 +776,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                 </select>
               </div>
             </div>
-            {formError && <p className="mt-3 text-sm font-semibold text-red-600">{formError}</p>}
+            {formError && <p className="mt-3 text-sm font-semibold text-error">{formError}</p>}
             <button type="submit" disabled={guardando} className={cn(btnPrimary, 'mt-4 w-full')}>
               {guardando ? 'Registrando…' : 'Registrar'}
             </button>
@@ -804,7 +804,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
             </div>
             <label className={cn(labelCls, 'mt-3')} htmlFor="prod-stock">Stock (vacío = ilimitado)</label>
             <input id="prod-stock" name="stock" type="number" min="0" step="1" defaultValue={modalProd.edit?.stock ?? ''} placeholder="∞" className={inputCls} />
-            {formError && <p className="mt-3 text-sm font-semibold text-red-600">{formError}</p>}
+            {formError && <p className="mt-3 text-sm font-semibold text-error">{formError}</p>}
             <button type="submit" disabled={guardando} className={cn(btnPrimary, 'mt-4 w-full')}>
               {guardando ? 'Guardando…' : modalProd.edit ? 'Guardar cambios' : 'Agregar producto'}
             </button>
@@ -836,11 +836,11 @@ function MovimientosTab({
   const total = movimientos.reduce((acc, m) => acc + num(m.monto), 0);
 
   return (
-    <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
+    <div className="card-tactil p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-black capitalize text-[#0F172A]">{tab} de hoy</h2>
-          <p className="text-sm text-[#64748B]">{movimientos.length} movimientos · total {soles(total)}</p>
+          <h2 className="font-display text-lg font-black capitalize text-basalto">{tab} de hoy</h2>
+          <p className="text-sm text-pizarra">{movimientos.length} movimientos · total {soles(total)}</p>
         </div>
         <button type="button" onClick={() => onRegistrar(cfg.tipo, cfg.titulo)} className={btnPrimary}>
           <span className="inline-flex items-center gap-1.5"><Plus size={16} /> {cfg.cta}</span>
@@ -862,20 +862,20 @@ function MovimientosTab({
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[560px] text-left text-sm">
             <thead>
-              <tr className="border-b border-[#E7E5E4] text-[11px] uppercase tracking-wider text-[#64748B]">
+              <tr className="border-b border-cal text-[11px] uppercase tracking-wider text-pizarra">
                 <th className="py-2 pr-3">Descripción</th>
                 <th className="py-2 pr-3">Método</th>
                 <th className="py-2 pr-3">Hora</th>
                 <th className="py-2 text-right">Monto</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F0EE]">
+            <tbody className="divide-y divide-cal">
               {movimientos.map((m) => (
                 <tr key={m.id}>
-                  <td className="py-2.5 pr-3 font-semibold text-[#0F172A]">{m.descripcion}</td>
-                  <td className="py-2.5 pr-3"><span className="rounded-full bg-[#F5F5F3] px-2.5 py-0.5 text-xs font-bold text-[#475569]">{m.metodoPago}</span></td>
-                  <td className="py-2.5 pr-3 text-[#64748B]">{horaPeru(m.creadoEn)}</td>
-                  <td className="py-2.5 text-right font-black text-[#0F172A]">{soles(num(m.monto))}</td>
+                  <td className="py-2.5 pr-3 font-semibold text-basalto">{m.descripcion}</td>
+                  <td className="py-2.5 pr-3"><span className="rounded-full bg-piedra px-2.5 py-0.5 text-xs font-bold text-basalto">{m.metodoPago}</span></td>
+                  <td className="py-2.5 pr-3 text-pizarra">{horaPeru(m.creadoEn)}</td>
+                  <td className="py-2.5 text-right font-black text-basalto">{soles(num(m.monto))}</td>
                 </tr>
               ))}
             </tbody>
