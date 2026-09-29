@@ -101,7 +101,7 @@ function estiloBloque(r: Reserva): string {
     case 'CONFIRMADA':
       return 'border-l-4 border-solid border-cesped bg-cesped-suave text-cesped-hondo';
     case 'PENDIENTE':
-      return 'border-l-4 border-dashed border-sol bg-sol-suave text-sol-hondo';
+      return 'border-l-4 border-dashed border-sol bg-sol-suave text-basalto';
     case 'COMPLETADA':
       return 'border-l-4 border-solid border-borde bg-piedra text-pizarra';
     case 'CANCELADA':
@@ -553,7 +553,7 @@ export function CronogramaView({
           action={
             <a
               href="/admin/canchas"
-              className="rounded-xl bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza transition-all hover:bg-cesped-hover hover:shadow-md active:scale-[0.98]"
+              className="btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover"
             >
               Agregar cancha
             </a>
@@ -563,7 +563,7 @@ export function CronogramaView({
     }
 
     return (
-      <div className="mt-3 overflow-hidden rounded-2xl border border-cal bg-tiza shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+      <div className="mt-3 overflow-hidden rounded-2xl border-2 border-basalto bg-tiza shadow-dura">
             {/* Encabezado sticky */}
             <div className="sticky top-0 z-20 flex border-b border-cal bg-piedra font-display text-[11px] font-bold tracking-wider text-pizarra uppercase">
               <div className="w-24 shrink-0 border-r border-cal px-3 py-2 text-right">
@@ -627,7 +627,7 @@ export function CronogramaView({
                         onClick={() => setDetalle(r)}
                         style={{ top, height }}
                         className={cn(
-                          'absolute right-2 left-2 overflow-hidden rounded-xl border-l-4 p-2 text-left shadow-sm transition hover:brightness-95 focus-visible:z-30 focus-visible:ring-2 focus-visible:ring-cesped focus-visible:outline-none',
+                          'absolute right-2 left-2 overflow-hidden rounded-xl border-l-4 p-2 text-left shadow-dura-sm transition hover:brightness-95 focus-visible:z-30 focus-visible:ring-2 focus-visible:ring-cesped focus-visible:outline-none',
                           estiloBloque(r)
                         )}
                       >
@@ -708,7 +708,7 @@ export function CronogramaView({
         {horarioCargando ? (
           <p className="py-8 text-center text-sm text-pizarra">Cargando horario…</p>
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-cal bg-tiza shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+          <div className="overflow-hidden rounded-2xl border-2 border-basalto bg-tiza shadow-dura">
             {horarioDias.map((d) => (
               <div
                 key={d.dia}
@@ -761,7 +761,7 @@ export function CronogramaView({
           type="button"
           onClick={guardarHorarios}
           disabled={horarioGuardando || !horarioComplejoId}
-          className="mt-4 rounded-xl bg-cesped px-6 py-2.5 font-display text-sm font-bold text-tiza transition hover:bg-cesped-hover disabled:opacity-50"
+          className="btn-tactil mt-4 bg-cesped px-6 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
         >
           {horarioGuardando ? 'Guardando…' : 'Guardar horario'}
         </button>
@@ -820,7 +820,7 @@ export function CronogramaView({
   // Vista Mes
   function renderVistaMes() {
     return (
-      <div className="mt-3 overflow-x-auto rounded-2xl border border-cal bg-tiza shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+      <div className="mt-3 overflow-x-auto rounded-2xl border-2 border-basalto bg-tiza shadow-dura">
         <div className="sticky top-0 z-10 grid min-w-[560px] grid-cols-7 border-b border-cal bg-piedra">
           {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => (
             <p key={d} className="py-2 text-center font-display text-[11px] font-bold tracking-wide text-pizarra uppercase">
@@ -880,7 +880,7 @@ export function CronogramaView({
           onClick={() => setDetalle(null)}
           aria-hidden
         />
-        <aside className="fixed top-0 right-0 z-50 flex h-full w-[400px] max-w-[92vw] flex-col border-l border-cal bg-tiza shadow-2xl">
+        <aside className="fixed top-0 right-0 z-50 flex h-full w-[400px] max-w-[92vw] flex-col border-l-2 border-basalto bg-tiza shadow-[-6px_0_0_0_var(--basalto)]">
           <div className="flex items-center justify-between border-b border-cal p-5">
             <h2 className="font-display text-lg font-bold text-basalto">Detalle de reserva</h2>
             <button
@@ -912,7 +912,7 @@ export function CronogramaView({
             <button
               type="button"
               onClick={() => setDetalle(null)}
-              className="flex-1 rounded-xl border border-cal py-2.5 text-sm font-bold text-pizarra transition hover:text-basalto"
+              className="btn-tactil flex-1 border-cal py-2.5 text-sm font-bold text-pizarra hover:text-basalto"
             >
               Cerrar
             </button>
@@ -921,7 +921,7 @@ export function CronogramaView({
                 type="button"
                 disabled={accionando}
                 onClick={() => cambiarEstado(detalle, 'CONFIRMADA')}
-                className="flex-1 rounded-xl bg-cesped py-2.5 font-display text-sm font-bold text-tiza transition-all hover:bg-cesped-hover disabled:opacity-60"
+                className="btn-tactil flex-1 bg-cesped py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-60"
               >
                 {accionando ? 'Guardando…' : 'Confirmar'}
               </button>
@@ -931,7 +931,7 @@ export function CronogramaView({
                 type="button"
                 disabled={accionando}
                 onClick={() => cambiarEstado(detalle, 'CANCELADA')}
-                className="flex-1 rounded-xl border border-error/40 py-2.5 font-display text-sm font-bold text-error transition hover:bg-error-suave disabled:opacity-60"
+                className="btn-tactil flex-1 border-error/40 py-2.5 font-display text-sm font-bold text-error hover:bg-error-suave disabled:opacity-60"
               >
                 Cancelar
               </button>
@@ -954,7 +954,7 @@ export function CronogramaView({
           role="dialog"
           aria-modal="true"
           aria-label={modal === 'nueva' ? 'Nueva reserva' : 'Bloquear horario'}
-          className="w-full max-w-md rounded-2xl border border-cal bg-tiza p-6 shadow-2xl"
+          className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between">
@@ -1057,7 +1057,7 @@ export function CronogramaView({
             <button
               type="button"
               onClick={() => setModal(null)}
-              className="flex-1 rounded-xl border border-cal py-2.5 text-sm font-bold text-pizarra transition hover:text-basalto"
+              className="btn-tactil flex-1 border-cal py-2.5 text-sm font-bold text-pizarra hover:text-basalto"
             >
               Cancelar
             </button>
@@ -1066,8 +1066,8 @@ export function CronogramaView({
               onClick={guardar}
               disabled={guardando}
               className={cn(
-                'flex-1 rounded-xl py-2.5 font-display text-sm font-bold transition-all disabled:opacity-60',
-                modal === 'nueva' ? 'bg-cesped text-tiza hover:bg-cesped-hover' : 'bg-alerta text-tiza hover:bg-alerta-hondo'
+                'btn-tactil flex-1 py-2.5 font-display text-sm font-bold text-tiza disabled:opacity-60',
+                modal === 'nueva' ? 'bg-cesped hover:bg-cesped-hover' : 'bg-alerta hover:bg-alerta-hondo'
               )}
             >
               {guardando ? 'Guardando…' : modal === 'nueva' ? 'Guardar reserva' : 'Bloquear'}
@@ -1101,14 +1101,14 @@ export function CronogramaView({
           <button
             type="button"
             onClick={() => abrirModal('nueva')}
-            className="flex items-center gap-1.5 rounded-xl bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza transition-all hover:bg-cesped-hover hover:shadow-md active:scale-[0.98]"
+            className="btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover"
           >
             <Plus size={18} strokeWidth={2.5} /> Nueva reserva
           </button>
           <button
             type="button"
             onClick={() => abrirModal('bloqueo')}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-cal bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto transition hover:border-alerta hover:text-alerta-hondo sm:flex-none"
+            className="btn-tactil flex-1 bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto hover:border-alerta hover:text-alerta-hondo sm:flex-none"
           >
             <Ban size={16} strokeWidth={2} /> Bloquear horario
           </button>
@@ -1129,7 +1129,7 @@ export function CronogramaView({
       </div>
 
       {/* Filtros */}
-      <div className="mt-3 rounded-2xl border border-cal bg-tiza p-4 shadow-[0_2px_4px_rgba(0,0,0,0.02)] md:p-5">
+      <div className="mt-3 rounded-2xl border-2 border-basalto bg-tiza p-4 shadow-dura md:p-5">
         <p className="font-display text-[11px] font-bold tracking-[0.14em] text-pizarra">FILTROS DEL CALENDARIO</p>
         <div className="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div>
@@ -1219,7 +1219,7 @@ export function CronogramaView({
               >
                 <span
                   className={cn(
-                    'absolute top-0.5 h-4 w-4 rounded-full bg-tiza shadow transition-all',
+                    'absolute top-0.5 h-4 w-4 rounded-full bg-tiza shadow-[1px_1px_0_0_var(--basalto)] transition-all',
                     mostrarBloqueos ? 'left-[18px]' : 'left-0.5'
                   )}
                 />
@@ -1237,14 +1237,14 @@ export function CronogramaView({
             type="button"
             onClick={() => desplazar(-1)}
             aria-label="Anterior"
-            className="rounded-xl border border-cal bg-tiza p-2.5 text-pizarra transition hover:border-cesped hover:text-basalto"
+            className="btn-tactil min-h-[44px] min-w-[44px] p-2.5 text-pizarra hover:text-basalto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-offset-2"
           >
             <ChevronLeft size={18} strokeWidth={2} />
           </button>
           <button
             type="button"
             onClick={() => setFecha(hoyISO)}
-            className="rounded-xl border border-cal bg-tiza px-3.5 py-2 font-display text-sm font-bold text-pizarra transition hover:border-cesped hover:text-basalto"
+            className="btn-tactil min-h-[44px] min-w-[44px] px-3.5 py-2 font-display text-sm font-bold text-pizarra hover:text-basalto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-offset-2"
           >
             Hoy
           </button>
@@ -1252,7 +1252,7 @@ export function CronogramaView({
             type="button"
             onClick={() => desplazar(1)}
             aria-label="Siguiente"
-            className="rounded-xl border border-cal bg-tiza p-2.5 text-pizarra transition hover:border-cesped hover:text-basalto"
+            className="btn-tactil min-h-[44px] min-w-[44px] p-2.5 text-pizarra hover:text-basalto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-offset-2"
           >
             <ChevronRight size={18} strokeWidth={2} />
           </button>
@@ -1260,7 +1260,7 @@ export function CronogramaView({
             {vista === 'mes' ? nombreMes : fechaLarga(fecha)}
           </p>
         </div>
-        <div className="flex overflow-hidden rounded-xl border border-cal bg-tiza" role="tablist" aria-label="Vista">
+        <div className="flex overflow-hidden rounded-xl border-2 border-basalto bg-tiza shadow-dura-sm" role="tablist" aria-label="Vista">
           {(['dia', 'semana', 'mes', 'horarios'] as const).map((v) => (
             <button
               key={v}
@@ -1268,7 +1268,7 @@ export function CronogramaView({
               aria-selected={vista === v}
               onClick={() => cambiarVista(v)}
               className={cn(
-                'px-4 py-2 font-display text-sm font-bold capitalize transition',
+                'min-h-[44px] px-4 py-2 font-display text-sm font-bold capitalize transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-inset',
                 vista === v ? 'bg-basalto text-tiza' : 'text-pizarra hover:text-basalto'
               )}
             >
