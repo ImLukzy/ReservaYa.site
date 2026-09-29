@@ -14,24 +14,30 @@ const pasos = [
 
 <BaseLayout title="Cómo reservar | ReservaYa" description="Guía para reservar una cancha en ReservaYa, paso a paso.">
   <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
-    <h1 class="text-3xl lg:text-4xl">Cómo reservar una cancha</h1>
-    <ol class="mt-8 border-t-2 border-basalto">
+    <div class="flex items-center gap-2">
+      <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Guía rápida</span>
+      <span class="text-xs text-pizarra">·</span>
+      <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">{pasos.length} pasos</span>
+    </div>
+    <h1 class="mt-2 font-display text-4xl font-black tracking-tight text-basalto sm:text-5xl">Cómo reservar una cancha</h1>
+    <p class="mt-3 max-w-xl text-base text-pizarra sm:text-lg">De la búsqueda al partido: sigue esta ruta para reservar con claridad.</p>
+    <ol class="mt-8 grid gap-4">
       {pasos.map(([t, d], i) => (
-        <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b-2 border-basalto/15 py-5">
-          <span class="font-display text-2xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">{i + 1}</span>
+        <li class="card-tactil grid grid-cols-[3rem_minmax(0,1fr)] gap-3 bg-tiza p-5 shadow-dura-sm">
+          <span class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-basalto bg-cesped-suave font-display text-xl font-black tabular-nums text-cesped-hondo">{i + 1}</span>
           <div>
-            <h2 class="text-xl font-bold">{t}</h2>
-            <p class="mt-1 text-pizarra">{d}</p>
+            <h2 class="font-display text-xl font-black text-basalto">{t}</h2>
+            <p class="mt-1 leading-relaxed text-pizarra">{d}</p>
           </div>
         </li>
       ))}
     </ol>
-    <div class="card-tactil mt-8 flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+    <div class="card-tactil mt-8 flex flex-col gap-4 bg-sillar/40 p-6 shadow-dura sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p class="font-bold text-basalto">¿Tienes dudas adicionales o necesitas ayuda?</p>
         <p class="mt-0.5 text-sm text-pizarra">Escríbenos directamente a <a href={`mailto:${EMAIL}`} class="font-bold text-cesped-hondo underline">{EMAIL}</a>.</p>
       </div>
-      <Button href="/canchas" class="shrink-0">Buscar canchas</Button>
+      <Button href="/canchas" class="shrink-0 shadow-dura-sm">Buscar canchas</Button>
     </div>
   </section>
 </BaseLayout>
