@@ -22,9 +22,9 @@
 - Fotografía real o imágenes de stock (regla Spec 32 §2, vigente).
 
 **Decisiones de producto que requieren aprobación (de Lukas, antes de cualquier lote):**
-1. `MOTION 5` en herramientas interactivas: animar el sorteo/resultados (`sortear`, `completar-cuadro`) vs. mantenerlas sobrias con solo transiciones táctiles.
-2. `duenos`: rediseñar `Planes.astro` incluido (verificado uso único en `duenos.astro:74`, sin impacto cruzado) vs. solo la página.
-3. `torneos`: mantener `EmptyState` estático actual vs. destacar torneos reales (sin backend nuevo).
+1. `MOTION 5` en herramientas interactivas: animar el sorteo/resultados (`sortear`, `completar-cuadro`) vs. mantenerlas sobrias con solo transiciones táctiles. **→ Decidido (god, por "diseños locos que agarren" de Lukas): animar, con `prefers-reduced-motion`.**
+2. `duenos`: rediseñar `Planes.astro` incluido (verificado uso único en `duenos.astro:74`, sin impacto cruzado) vs. solo la página. **→ Decidido: incluir `Planes.astro`.**
+3. `torneos`: mantener `EmptyState` estático actual vs. destacar torneos reales (sin backend nuevo). **→ Decidido: destacar torneos reales solo si ya existe un endpoint público; si no, `EmptyState` llamativo y `BLOQUEO-API` anotado.**
 
 ---
 
@@ -96,7 +96,7 @@ Lotes de ≤3 archivos, conjuntos disjuntos: dwight-scout (L1+L2, 403 líneas si
 - [x] T2: lotes ≤3 archivos, disjuntos, repartidos dwight-scout (L1+L2) / Oscar (L3+L4).
 - [x] T3: criterios medibles (§5) con gates de god (0 hex, tokens existentes, build verde).
 - [x] T4: mandar esta spec a auditor-b (auto: la redacta auditor-b por `req-20260929-auditorb-s33`).
-- [ ] T5: avisar a god en 3 líneas y esperar aprobación de Lukas antes de cualquier lote.
+- [x] T5: avisar a god en 3 líneas y esperar aprobación de Lukas antes de cualquier lote.
 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
