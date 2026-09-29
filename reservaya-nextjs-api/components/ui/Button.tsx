@@ -15,9 +15,9 @@ const variants = {
 }
 
 const sizes = {
-  sm: 'min-h-[44px] min-w-[44px] px-3.5 text-xs',
-  md: 'min-h-[44px] min-w-[44px] px-5 text-sm',
-  lg: 'min-h-[48px] min-w-[48px] px-6 text-base',
+  sm: 'min-h-[2.75rem] min-w-[2.75rem] px-3.5 text-xs',
+  md: 'min-h-[2.75rem] min-w-[2.75rem] px-5 text-sm',
+  lg: 'min-h-[3rem] min-w-[3rem] px-6 text-base',
 }
 
 export function Button({

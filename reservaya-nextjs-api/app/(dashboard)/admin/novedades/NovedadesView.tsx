@@ -47,8 +47,8 @@ export function NovedadesView() {
   return (
     <div>
       <div>
-        <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">📰 NOVEDADES</p>
-        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">
+        <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">📰 NOVEDADES</p>
+        <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">
           Lo que va cambiando
         </h1>
         <p className="mt-1 text-sm text-pizarra">
@@ -72,7 +72,7 @@ export function NovedadesView() {
                   <Newspaper size={19} strokeWidth={1.85} className="text-cesped-hondo" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-bold tracking-[0.12em] text-pizarra">{n.fecha}</p>
+                  <p className="text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">{n.fecha}</p>
                   <h2 className="mt-0.5 text-base font-black text-basalto">{n.titulo}</h2>
                   <p className="mt-1 text-sm text-pizarra">{n.resumen}</p>
                 </div>
