@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { BadgeCheck, User } from 'lucide-react';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { inputCls } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 type Tab = 'perfil' | 'suscripcion';
@@ -54,8 +55,6 @@ const TABS: { id: Tab; label: string }[] = [
 // Claves que versiones anteriores guardaban en el navegador (datos personales): se borran.
 const CLAVES_OBSOLETAS = ['ry_perfil', 'ry_cobros'];
 
-const inputCls =
-  'mt-1.5 w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none';
 const soloLecturaCls = 'mt-1.5 w-full rounded-xl border-2 border-cal bg-piedra px-3 py-2.5 font-display text-sm font-semibold text-pizarra';
 
 function texto(v: unknown): string {
@@ -246,7 +245,7 @@ export function ConfigPanel() {
                       onChange={(e) => setPerfil({ ...perfil, telefono: e.target.value })}
                       placeholder="Ej. 999 888 777"
                       inputMode="tel"
-                      className={inputCls}
+                      className={cn(inputCls, 'mt-1.5')}
                     />
                   </label>
                   <label className="font-display text-sm font-bold text-basalto">
@@ -255,7 +254,7 @@ export function ConfigPanel() {
                       value={perfil.username}
                       onChange={(e) => setPerfil({ ...perfil, username: e.target.value })}
                       aria-describedby="nota-usuario"
-                      className={inputCls}
+                      className={cn(inputCls, 'mt-1.5')}
                     />
                     <span id="nota-usuario" className="mt-1 block text-xs font-normal text-pizarra">
                       {perfil.proximoCambioUsername
@@ -316,7 +315,7 @@ export function ConfigPanel() {
                     <select
                       value={solicitud.complejoId}
                       onChange={(e) => setSolicitud((s) => ({ ...s, complejoId: e.target.value }))}
-                      className={inputCls}
+                      className={cn(inputCls, 'mt-1.5')}
                     >
                       {complejos.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -330,7 +329,7 @@ export function ConfigPanel() {
                     <select
                       value={solicitud.plan}
                       onChange={(e) => setSolicitud((s) => ({ ...s, plan: e.target.value }))}
-                      className={inputCls}
+                      className={cn(inputCls, 'mt-1.5')}
                     >
                       {PLANES.map((p) => (
                         <option key={p.id} value={p.id}>

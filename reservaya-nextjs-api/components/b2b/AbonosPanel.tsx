@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Banknote, CircleAlert, Clock3, Landmark, Wallet, X } from 'lucide-react';
 import { TopBar } from '@/components/layout/TopBar';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { inputCls, labelCls } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 interface Abono {
@@ -23,9 +24,6 @@ interface Cuenta {
 
 const CUENTA_KEY = 'ry_cuenta';
 
-const inputCls =
-  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
-const labelCls = 'mb-1 block font-display text-xs font-bold text-basalto';
 
 function soles(n: number): string {
   return `S/ ${n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

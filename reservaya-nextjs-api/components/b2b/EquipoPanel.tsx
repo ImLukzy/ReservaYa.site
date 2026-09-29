@@ -101,6 +101,15 @@ export function EquipoPanel() {
     return () => clearTimeout(t);
   }, [toast, claveTemporal]);
 
+  useEffect(() => {
+    if (!modal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModal(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [modal]);
+
   async function agregar(e: React.FormEvent) {
     e.preventDefault();
     if (!form.email.trim()) {

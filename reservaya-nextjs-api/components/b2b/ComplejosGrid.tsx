@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Building2, ExternalLink, MapPin, Pencil, Phone, Plus, Share2, Copy, Check, X, Trash2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 export interface SuscripcionCard {
@@ -27,12 +28,6 @@ export interface ComplejoCard {
   publicado?: boolean;
   suscripcion?: SuscripcionCard | null
 }
-
-const inputCls =
-  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
-const labelCls = 'mb-1 block text-xs font-bold text-basalto';
-const btnPrimary =
-  'btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:cursor-not-allowed disabled:opacity-50';
 
 // Distritos de la provincia de Arequipa (única ciudad operativa).
 // Debe coincidir con ComplejosController.DistritosArequipa (backend valida).

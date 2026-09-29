@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CircleHelp, Pencil, Plus, Target, Trash2, X } from 'lucide-react';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn, formatFecha } from '@/lib/utils';
 import {
   actualizarMeta,
@@ -51,11 +52,6 @@ function fmtMeta(v: string, tipo: string) {
   return tipo === 'INGRESOS' ? soles(num(v)) : `${num(v)}${tipo === 'OCUPACION' ? '%' : ''}`;
 }
 
-const inputCls =
-  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
-const labelCls = 'mb-1 block text-xs font-bold text-pizarra';
-const btnPrimary =
-  'btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:cursor-not-allowed disabled:opacity-50';
 const btnGhost =
   'btn-tactil rounded-xl border-2 border-basalto bg-tiza px-4 py-2.5 text-sm font-bold text-basalto hover:bg-piedra';
 
@@ -132,6 +128,15 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
   useEffect(() => {
     void cargarMetas();
   }, [cargarMetas]);
+
+  useEffect(() => {
+    if (!modal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModal(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [modal]);
 
   async function guardar(fd: FormData) {
     setGuardando(true);

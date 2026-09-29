@@ -5,6 +5,7 @@ import { CalendarRange, Trash2 } from 'lucide-react';
 import { TopBar } from '@/components/layout/TopBar';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 interface Regla {
@@ -20,10 +21,6 @@ interface Regla {
   repetirAnual: boolean;
 }
 
-const inputCls =
-  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
-const labelCls = 'mb-1 block text-xs font-bold text-basalto';
-const btnPrimary = 'btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover';
 
 function normalizar(raw: Record<string, unknown>, i: number): Regla {
   const num = (v: unknown): number | null => {
@@ -377,7 +374,7 @@ export function PreciosEspecialesPanel() {
                       onClick={() => eliminar(r)}
                       aria-label={`Eliminar regla ${r.nombre}`}
                       title="Eliminar"
-                      className="rounded-lg p-2 text-cal transition-colors hover:bg-error-suave hover:text-error"
+                      className="rounded-lg p-2 text-pizarra transition-colors hover:bg-error-suave hover:text-error"
                     >
                       <Trash2 size={17} strokeWidth={1.85} />
                     </button>
