@@ -90,8 +90,12 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
 
   const li = el(
     "li",
-    "fila-entra grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_auto] grid-rows-2 items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[3.5rem_3.5rem_minmax(0,1.3fr)_minmax(0,1fr)_4rem_6rem] sm:grid-rows-1 sm:gap-x-3 sm:px-5",
+    "group fila-entra relative grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_auto] grid-rows-2 items-center gap-x-3 overflow-hidden border-b border-cal px-4 sm:h-16 sm:grid-cols-[3.5rem_3.5rem_minmax(0,1.3fr)_minmax(0,1fr)_4rem_6rem] sm:grid-rows-1 sm:gap-x-3 sm:px-5",
   );
+  li.dataset.deporte = cancha.tipo;
+  const numero = el("span", "pointer-events-none absolute -right-1 -top-3 z-0 font-display text-6xl font-black tabular-nums opacity-10 [counter-increment:cancha] before:content-[counter(cancha,decimal-leading-zero)] group-data-[deporte=FUTBOL]:text-cesped group-data-[deporte=FUTBOL5]:text-cesped group-data-[deporte=FUTBOL7]:text-cesped group-data-[deporte=VOLLEYBALL]:text-mar group-data-[deporte=BASQUET]:text-miel group-data-[deporte=PADEL]:text-lima group-data-[deporte=TENIS]:text-arcilla group-data-[deporte=LOZA]:text-losa");
+  numero.setAttribute("aria-hidden", "true");
+  li.append(numero);
   li.append(miniaturaCancha(cancha, "hidden sm:col-start-1 sm:row-start-1 sm:block sm:self-center"));
   li.append(el("span", "col-start-1 row-span-2 row-start-1 self-start pt-1 font-display text-lg font-bold tabular-nums text-basalto sm:col-start-2 sm:row-span-1 sm:self-center sm:pt-0", hora));
 
@@ -117,10 +121,10 @@ export function filaCancha(item: ItemDisponible, op: OpcionesFila): HTMLLIElemen
   li.append(nombre);
 
   li.append(el("p", "col-start-2 row-start-2 line-clamp-2 self-start text-sm leading-tight text-pizarra sm:hidden", `${cancha.nombre}, ${tipo.toLowerCase()} en ${distrito}`));
-  const detalle = el("div", "hidden min-w-0 sm:col-start-4 sm:row-start-1 sm:block");
+  const detalle = el("div", "relative z-10 hidden min-w-0 sm:col-start-4 sm:row-start-1 sm:block");
   const dist = el("p", "truncate text-xs leading-tight text-pizarra", distrito);
   dist.title = distrito;
-  detalle.append(el("p", "truncate text-sm font-semibold leading-tight text-basalto", tipo), dist);
+  detalle.append(el("p", "inline-flex truncate rounded-full border border-basalto px-2 py-0.5 text-xs font-bold leading-tight text-basalto group-data-[deporte=FUTBOL]:bg-cesped-suave group-data-[deporte=FUTBOL5]:bg-cesped-suave group-data-[deporte=FUTBOL7]:bg-cesped-suave group-data-[deporte=VOLLEYBALL]:bg-mar-suave group-data-[deporte=BASQUET]:bg-miel-suave group-data-[deporte=PADEL]:bg-lima-suave group-data-[deporte=TENIS]:bg-arcilla-suave group-data-[deporte=LOZA]:bg-losa-suave", tipo), dist);
   li.append(detalle);
   li.append(el("span", "col-start-3 row-start-1 self-end text-right font-display text-base font-bold tabular-nums text-basalto sm:col-start-5 sm:self-center", soles(precioDe(item))));
 

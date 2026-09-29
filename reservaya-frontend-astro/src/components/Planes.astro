@@ -28,7 +28,7 @@ const planes = [
   </p>
   <div class="mt-8 grid gap-6 md:grid-cols-3">
     {planes.map((p) => (
-      <article class={`card-tactil relative flex flex-col p-6 sm:p-7 ${p.principal ? "shadow-dura-lg border-2 border-basalto bg-tiza ring-2 ring-cesped/30" : "shadow-dura bg-tiza"}`}>
+      <article class={`card-tactil relative flex flex-col p-6 sm:p-7 ${p.principal ? "border-4 border-cesped-hondo bg-cesped-suave/20 shadow-dura-lg ring-2 ring-cesped/30" : "bg-tiza shadow-dura"}`}>
         {p.principal && (
           <span class="chip-tactil active absolute -top-3.5 right-6 text-xs font-display font-black uppercase tracking-wider shadow-dura-sm">
             Recomendado

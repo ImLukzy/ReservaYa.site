@@ -61,6 +61,7 @@ const preguntas = [
           <span class="inline-flex items-center gap-1.5"><span class="text-cesped">✓</span> Sin contratos de permanencia</span>
           <span class="inline-flex items-center gap-1.5"><span class="text-cesped">✓</span> Funciona en el navegador, sin instalar</span>
           <span class="inline-flex items-center gap-1.5"><span class="text-cesped">✓</span> Soporte directo por WhatsApp</span>
+          <span class="-rotate-6 border-4 border-double border-cesped px-3 py-1 font-display text-sm font-black tracking-wider text-cesped">CANCHA VERIFICADA</span>
         </div>
       </div>
 
@@ -108,8 +109,9 @@ const preguntas = [
     }
   </style>
 
-  <section aria-labelledby="panel-titulo" class="border-y-2 border-basalto bg-tiza">
-    <div class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
+  <section aria-labelledby="panel-titulo" class="relative overflow-hidden border-y-2 border-basalto bg-tiza">
+    <span class="pointer-events-none absolute -right-4 -top-12 font-display text-[12rem] font-black leading-none tabular-nums text-cesped/10" aria-hidden="true">{modulos.length}</span>
+    <div class="relative mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
       <div class="flex items-center gap-2">
         <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Módulos del sistema</span>
         <span class="text-xs text-pizarra">·</span>
