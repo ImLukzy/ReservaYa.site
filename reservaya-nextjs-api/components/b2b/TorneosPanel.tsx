@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { CircleHelp, Plus, Trash2, Trophy, X } from 'lucide-react';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { inputCls } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 import {
   ESTADOS_TORNEO,
@@ -51,9 +52,6 @@ async function api<T>(ruta: string, init?: RequestInit): Promise<T> {
   if (!res.ok) throw new Error((body as { error?: string } | null)?.error ?? `Error ${res.status}`);
   return body as T;
 }
-
-const inputCls =
-  'mt-1.5 w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
 
 const TORNEO_VACIO = { complejoId: '', nombre: '', cupoMax: '16', premio: '', fechaInicio: '', fechaFin: '' };
 
@@ -381,14 +379,14 @@ export function TorneosPanel() {
               </button>
             </div>
             {complejos.length !== 1 && (
-              <label className="mt-4 block text-sm font-semibold text-basalto">Complejo<select value={fTorneo.complejoId} onChange={(e) => setFTorneo((f) => ({ ...f, complejoId: e.target.value }))} className={cn(inputCls, 'bg-tiza')}><option value="">Elige un complejo</option>{complejos.map((c) => (<option key={c.id} value={c.id}>{c.nombre}</option>))}</select></label>
+              <label className="mt-4 block text-sm font-semibold text-basalto">Complejo<select value={fTorneo.complejoId} onChange={(e) => setFTorneo((f) => ({ ...f, complejoId: e.target.value }))} className={cn(inputCls, 'mt-1.5', 'bg-tiza')}><option value="">Elige un complejo</option>{complejos.map((c) => (<option key={c.id} value={c.id}>{c.nombre}</option>))}</select></label>
             )}
-            <label className="mt-4 block text-sm font-semibold text-basalto">Nombre<input value={fTorneo.nombre} onChange={(e) => setFTorneo((f) => ({ ...f, nombre: e.target.value }))} placeholder="Ej. Copa ReservaYa Verano" className={inputCls} /></label>
+            <label className="mt-4 block text-sm font-semibold text-basalto">Nombre<input value={fTorneo.nombre} onChange={(e) => setFTorneo((f) => ({ ...f, nombre: e.target.value }))} placeholder="Ej. Copa ReservaYa Verano" className={cn(inputCls, 'mt-1.5')} /></label>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <label className="block text-sm font-semibold text-basalto">Cupo de equipos<input type="number" min={1} value={fTorneo.cupoMax} onChange={(e) => setFTorneo((f) => ({ ...f, cupoMax: e.target.value }))} className={inputCls} /></label>
-              <label className="block text-sm font-semibold text-basalto">Premio<input value={fTorneo.premio} onChange={(e) => setFTorneo((f) => ({ ...f, premio: e.target.value }))} placeholder="Ej. S/ 1,000" className={inputCls} /></label>
-              <label className="block text-sm font-semibold text-basalto">Inicio<input type="date" required value={fTorneo.fechaInicio} onChange={(e) => setFTorneo((f) => ({ ...f, fechaInicio: e.target.value }))} className={inputCls} /></label>
-              <label className="block text-sm font-semibold text-basalto">Fin<input type="date" value={fTorneo.fechaFin} onChange={(e) => setFTorneo((f) => ({ ...f, fechaFin: e.target.value }))} className={inputCls} /></label>
+              <label className="block text-sm font-semibold text-basalto">Cupo de equipos<input type="number" min={1} value={fTorneo.cupoMax} onChange={(e) => setFTorneo((f) => ({ ...f, cupoMax: e.target.value }))} className={cn(inputCls, 'mt-1.5')} /></label>
+              <label className="block text-sm font-semibold text-basalto">Premio<input value={fTorneo.premio} onChange={(e) => setFTorneo((f) => ({ ...f, premio: e.target.value }))} placeholder="Ej. S/ 1,000" className={cn(inputCls, 'mt-1.5')} /></label>
+              <label className="block text-sm font-semibold text-basalto">Inicio<input type="date" required value={fTorneo.fechaInicio} onChange={(e) => setFTorneo((f) => ({ ...f, fechaInicio: e.target.value }))} className={cn(inputCls, 'mt-1.5')} /></label>
+              <label className="block text-sm font-semibold text-basalto">Fin<input type="date" value={fTorneo.fechaFin} onChange={(e) => setFTorneo((f) => ({ ...f, fechaFin: e.target.value }))} className={cn(inputCls, 'mt-1.5')} /></label>
             </div>
             <button type="submit" disabled={ocupado} className="btn-tactil mt-5 w-full bg-cesped py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50">
               {ocupado ? 'Creando…' : 'Crear torneo'}
@@ -520,8 +518,8 @@ export function TorneosPanel() {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-velo p-4" role="dialog" aria-modal="true" aria-label="Agregar inscripción">
           <form onSubmit={(e) => void agregarInscripcion(e)} className="w-full max-w-sm rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg">
             <h2 className="text-lg font-black text-basalto">Inscribir equipo</h2>
-            <label className="mt-3 block text-sm font-semibold text-basalto">Equipo<input value={fInsc.equipo} onChange={(e) => setFInsc((f) => ({ ...f, equipo: e.target.value }))} placeholder="Ej. Los Amigos FC" className={inputCls} /></label>
-            <label className="mt-3 block text-sm font-semibold text-basalto">Teléfono del capitán (opcional)<input value={fInsc.telefono} onChange={(e) => setFInsc((f) => ({ ...f, telefono: e.target.value }))} inputMode="tel" placeholder="Ej. 999 888 777" className={inputCls} /></label>
+            <label className="mt-3 block text-sm font-semibold text-basalto">Equipo<input value={fInsc.equipo} onChange={(e) => setFInsc((f) => ({ ...f, equipo: e.target.value }))} placeholder="Ej. Los Amigos FC" className={cn(inputCls, 'mt-1.5')} /></label>
+            <label className="mt-3 block text-sm font-semibold text-basalto">Teléfono del capitán (opcional)<input value={fInsc.telefono} onChange={(e) => setFInsc((f) => ({ ...f, telefono: e.target.value }))} inputMode="tel" placeholder="Ej. 999 888 777" className={cn(inputCls, 'mt-1.5')} /></label>
             <div className="mt-4 flex gap-2">
               <button type="button" onClick={() => setModalInscripcion(false)} className="btn-tactil flex-1 border-2 border-basalto bg-tiza px-4 py-2 text-sm font-bold text-basalto hover:bg-piedra">Cancelar</button>
               <button type="submit" disabled={ocupado} className="btn-tactil flex-1 bg-cesped px-4 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50">Inscribir</button>
@@ -535,9 +533,9 @@ export function TorneosPanel() {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-velo p-4" role="dialog" aria-modal="true" aria-label="Agregar partido">
           <form onSubmit={(e) => void agregarPartido(e)} className="w-full max-w-sm rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg">
             <h2 className="text-lg font-black text-basalto">Agregar partido</h2>
-            <label className="mt-3 block text-sm font-semibold text-basalto">Equipo A<input value={fPartido.equipoA} onChange={(e) => setFPartido((f) => ({ ...f, equipoA: e.target.value }))} placeholder="Ej. Los Amigos FC" className={inputCls} /></label>
-            <label className="mt-3 block text-sm font-semibold text-basalto">Equipo B<input value={fPartido.equipoB} onChange={(e) => setFPartido((f) => ({ ...f, equipoB: e.target.value }))} placeholder="Ej. Barrio FC" className={inputCls} /></label>
-            <label className="mt-3 block text-sm font-semibold text-basalto">Fecha (opcional)<input type="date" value={fPartido.fecha} onChange={(e) => setFPartido((f) => ({ ...f, fecha: e.target.value }))} className={inputCls} /></label>
+            <label className="mt-3 block text-sm font-semibold text-basalto">Equipo A<input value={fPartido.equipoA} onChange={(e) => setFPartido((f) => ({ ...f, equipoA: e.target.value }))} placeholder="Ej. Los Amigos FC" className={cn(inputCls, 'mt-1.5')} /></label>
+            <label className="mt-3 block text-sm font-semibold text-basalto">Equipo B<input value={fPartido.equipoB} onChange={(e) => setFPartido((f) => ({ ...f, equipoB: e.target.value }))} placeholder="Ej. Barrio FC" className={cn(inputCls, 'mt-1.5')} /></label>
+            <label className="mt-3 block text-sm font-semibold text-basalto">Fecha (opcional)<input type="date" value={fPartido.fecha} onChange={(e) => setFPartido((f) => ({ ...f, fecha: e.target.value }))} className={cn(inputCls, 'mt-1.5')} /></label>
             <div className="mt-4 flex gap-2">
               <button type="button" onClick={() => setModalPartido(false)} className="btn-tactil flex-1 border-2 border-basalto bg-tiza px-4 py-2 text-sm font-bold text-basalto hover:bg-piedra">Cancelar</button>
               <button type="submit" disabled={ocupado} className="btn-tactil flex-1 bg-cesped px-4 py-2 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50">Agregar</button>

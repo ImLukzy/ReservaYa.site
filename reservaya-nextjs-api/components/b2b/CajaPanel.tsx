@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
+import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 import {
   abrirCaja,
@@ -117,11 +118,6 @@ function Modal({
   );
 }
 
-const inputCls =
-  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
-const labelCls = 'mb-1 block font-display text-xs font-bold text-basalto';
-const btnPrimary =
-  'btn-tactil bg-cesped px-4 py-2.5 font-display text-sm font-bold text-tiza hover:bg-cesped-hover disabled:cursor-not-allowed disabled:opacity-50';
 const btnGhost =
   'btn-tactil border-cal bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto hover:bg-piedra';
 
