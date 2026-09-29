@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Building2, ExternalLink, MapPin, Pencil, Phone, Plus, Share2, Copy, Check, X, Trash2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 
 export interface SuscripcionCard {
@@ -30,8 +29,10 @@ export interface ComplejoCard {
 }
 
 const inputCls =
-  'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
-const labelCls = 'mb-1 block text-xs font-bold text-[#0F172A]';
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
+const labelCls = 'mb-1 block text-xs font-bold text-basalto';
+const btnPrimary =
+  'btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:cursor-not-allowed disabled:opacity-50';
 
 // Distritos de la provincia de Arequipa (única ciudad operativa).
 // Debe coincidir con ComplejosController.DistritosArequipa (backend valida).
@@ -262,7 +263,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
   if (lista.length === 0) {
     return (
       <>
-        <div className="rounded-2xl border border-[#E7E5E4] bg-white">
+        <div className="card-tactil">
           <EmptyState
             icon={Building2}
             title="Aún no tienes complejos"
@@ -295,46 +296,46 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
         {lista.map((c) => (
           <article
             key={c.id}
-            className="overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+            className="card-tactil overflow-hidden p-0"
           >
             <div className="relative">
               {c.imagen ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={c.imagen} alt={c.nombre} className="h-36 w-full object-cover" />
               ) : (
-                <div className="flex h-36 w-full items-center justify-center bg-gradient-to-br from-[#0A2E1F] to-[#14532D] text-5xl">
+                <div className="flex h-36 w-full items-center justify-center bg-gradient-to-br from-cesped-hondo to-cesped text-5xl">
                   <span aria-hidden>🏟️</span>
                 </div>
               )}
-              <span className="absolute top-3 right-3 rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur">
+              <span className="absolute top-3 right-3 rounded-md bg-noche/80 px-2 py-1 text-xs font-semibold text-tiza backdrop-blur">
                 {c.canchas} cancha{c.canchas === 1 ? '' : 's'}
               </span>
             </div>
             <div className="p-5">
-              <h3 className="text-lg font-black text-[#0F172A]">{c.nombre}</h3>
+              <h3 className="text-lg font-black text-basalto">{c.nombre}</h3>
               {c.distrito !== '' && (
-                <p className="mt-1 flex items-center gap-2 text-sm text-[#64748B]">
+                <p className="mt-1 flex items-center gap-2 text-sm text-pizarra">
                   <MapPin size={16} strokeWidth={1.85} className="shrink-0" />
                   {c.distrito}
                 </p>
               )}
               {c.telefono && (
-                <p className="mt-1 flex items-center gap-2 text-sm text-[#64748B]">
+                <p className="mt-1 flex items-center gap-2 text-sm text-pizarra">
                   <Phone size={16} strokeWidth={1.85} />
                   {c.telefono}
                 </p>
               )}
-              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl bg-gray-50 px-3 py-2">
+              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-cal bg-sillar px-3 py-2">
                 {c.suscripcion?.vigente && c.publicado !== false ? (
-                  <p className="text-xs font-bold text-[#15803D]">
+                  <p className="text-xs font-bold text-cesped-hondo">
                     ● Publicada · {c.suscripcion.plan} hasta {c.suscripcion.fechaFin} ({c.suscripcion.diasRestantes}d)
                   </p>
                 ) : c.suscripcion?.vigente ? (
-                  <p className="text-xs font-bold text-amber-600">
+                  <p className="text-xs font-bold text-alerta-hondo">
                     ● Suscripción activa pero no publicada: actívala para aparecer
                   </p>
                 ) : (
-                  <p className="text-xs font-bold text-amber-600">
+                  <p className="text-xs font-bold text-alerta-hondo">
                     ● Oculta del buscador (sin suscripción vigente)
                   </p>
                 )}
@@ -345,17 +346,17 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
                     setErrorSub(null);
                     setRenovar(c);
                   }}
-                  className="shrink-0 rounded-lg bg-[#060A08] px-3 py-1.5 text-xs font-bold text-white transition hover:bg-[#0A1A11]"
+                  className="btn-tactil shrink-0 rounded-lg bg-basalto px-3 py-1.5 text-xs font-bold text-tiza hover:bg-noche"
                 >
                   {c.suscripcion?.vigente ? 'Renovar' : 'Publicar'}
                 </button>
               </div>
-              <div className="mt-4 flex items-center justify-between gap-2 border-t border-[#E7E5E4] pt-4">
+              <div className="mt-4 flex items-center justify-between gap-2 border-t border-cal pt-4">
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => abrirEditar(c)}
-                    className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-bold text-[#475569] transition-colors hover:bg-gray-50 hover:text-[#0F172A]"
+                    className="btn-tactil flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-bold text-pizarra hover:bg-piedra hover:text-basalto"
                   >
                     <Pencil size={16} strokeWidth={1.85} />
                     Editar
@@ -364,7 +365,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
                     href={linkPublico(c.slug)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-bold text-[#475569] transition-colors hover:bg-gray-50 hover:text-[#0F172A]"
+                    className="btn-tactil flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-bold text-pizarra hover:bg-piedra hover:text-basalto"
                   >
                     <ExternalLink size={16} strokeWidth={1.85} />
                     Ver perfil
@@ -379,7 +380,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
                     }}
                     aria-label={`Compartir ${c.nombre}`}
                     title="Compartir / QR"
-                    className="rounded-lg p-2 text-[#15803D] transition-colors hover:bg-[#DCFCE7]"
+                    className="btn-tactil rounded-lg p-2 text-cesped-hondo hover:bg-cesped-suave"
                   >
                     <Share2 size={17} strokeWidth={1.85} />
                   </button>
@@ -388,7 +389,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
                     onClick={() => eliminar(c)}
                     aria-label={`Eliminar ${c.nombre}`}
                     title="Eliminar"
-                    className="rounded-lg p-2 text-[#CBD5E1] transition-colors hover:bg-red-50 hover:text-red-500"
+                    className="btn-tactil rounded-lg p-2 text-pizarra hover:bg-error-suave hover:text-error"
                   >
                     <Trash2 size={17} strokeWidth={1.85} />
                   </button>
@@ -402,13 +403,13 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
         <button
           type="button"
           onClick={abrirCrear}
-          className="flex min-h-[280px] flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#E7E5E4] bg-white/60 p-6 text-center transition-colors hover:border-[#22C55E] hover:bg-white"
+          className="btn-tactil flex min-h-[280px] flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-cal bg-tiza/60 p-6 text-center transition-colors hover:border-cesped hover:bg-tiza"
         >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#DCFCE7] text-[#15803D]">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cesped-suave text-cesped-hondo">
             <Plus size={24} strokeWidth={2} />
           </span>
-          <span className="font-black text-[#0F172A]">Nuevo complejo</span>
-          <span className="max-w-[220px] text-xs text-[#64748B]">Agrega otra sede y gestiona sus canchas por separado.</span>
+          <span className="font-black text-basalto">Nuevo complejo</span>
+          <span className="max-w-[220px] text-xs text-pizarra">Agrega otra sede y gestiona sus canchas por separado.</span>
         </button>
       </div>
 
@@ -426,18 +427,18 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
 
       {renovar && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4 backdrop-blur-sm"
           onClick={() => setRenovar(null)}
           role="dialog"
           aria-modal="true"
           aria-label={`Suscripción de ${renovar.nombre}`}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-[#E7E5E4] bg-white p-6"
+            className="w-full max-w-sm rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-black text-[#0F172A]">Publicar «{renovar.nombre}»</h3>
-            <p className="mt-1 text-sm text-[#64748B]">
+            <h3 className="text-lg font-black text-basalto">Publicar «{renovar.nombre}»</h3>
+            <p className="mt-1 text-sm text-pizarra">
               La suscripción activa la visibilidad de tus canchas en el buscador de jugadores.
             </p>
             <label htmlFor="sub-plan" className={cn(labelCls, 'mt-4')}>Plan</label>
@@ -452,7 +453,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
               <option value="ANUAL">Anual · 365 días</option>
             </select>
             {errorSub && (
-              <p role="alert" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">
+              <p role="alert" className="mt-3 rounded-xl border border-error bg-error-suave px-3 py-2 text-sm font-semibold text-error-hondo">
                 {errorSub}
               </p>
             )}
@@ -460,7 +461,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
               <button
                 type="button"
                 onClick={() => setRenovar(null)}
-                className="flex-1 rounded-xl border border-[#E7E5E4] py-2.5 text-sm font-bold text-[#475569]"
+                className="btn-tactil flex-1 rounded-xl border-2 border-basalto bg-tiza py-2.5 text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Cerrar
               </button>
@@ -479,36 +480,36 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
 
       {compartir && (
         <div
-          className="modal-backdrop-enter fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+          className="modal-backdrop-enter fixed inset-0 z-50 flex items-center justify-center bg-velo p-4 backdrop-blur-sm"
           onClick={() => setCompartir(null)}
           role="dialog"
           aria-modal="true"
           aria-label={`Compartir ${compartir.nombre}`}
         >
           <div
-            className="modal-card-enter w-full max-w-sm rounded-2xl border border-[#E7E5E4] bg-white p-6 text-center"
+            className="modal-card-enter w-full max-w-sm rounded-2xl border-2 border-basalto bg-tiza p-6 text-center shadow-dura-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-start justify-between">
-              <h3 className="text-lg font-black text-[#0F172A]">{compartir.nombre}</h3>
+              <h3 className="text-lg font-black text-basalto">{compartir.nombre}</h3>
               <button
                 type="button"
                 onClick={() => setCompartir(null)}
                 aria-label="Cerrar"
-                className="rounded-lg p-1 text-[#64748B] hover:bg-gray-100"
+                className="btn-tactil h-8 w-8 rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
               >
-                <X size={20} strokeWidth={2} />
+                <X size={18} strokeWidth={2} />
               </button>
             </div>
-            <div className="mx-auto w-fit rounded-xl border border-[#E7E5E4] p-4">
+            <div className="mx-auto w-fit rounded-xl border-2 border-basalto bg-tiza p-4">
               <QRCodeSVG size={200} value={linkPublico(compartir.slug)} />
             </div>
-            <p className="mt-3 truncate text-sm text-[#64748B]">{linkPublico(compartir.slug)}</p>
+            <p className="mt-3 truncate text-sm text-pizarra">{linkPublico(compartir.slug)}</p>
             <a
               href={linkPublico(compartir.slug)}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#E7E5E4] py-2.5 text-sm font-bold text-[#0F172A] transition-colors hover:border-[#22C55E]"
+              className="btn-tactil mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-basalto bg-tiza py-2.5 text-sm font-bold text-basalto hover:bg-piedra"
             >
               <ExternalLink size={17} strokeWidth={1.85} />
               Abrir página pública
@@ -516,7 +517,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
             <button
               type="button"
               onClick={copiar}
-              className="btn-press btn-shine mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+              className="btn-tactil btn-press btn-shine mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-cesped py-3 text-sm font-bold text-tiza hover:bg-cesped-hover"
             >
               {copiado ? <Check size={18} strokeWidth={2} /> : <Copy size={18} strokeWidth={2} />}
               {copiado ? '¡Link copiado!' : 'Copiar Link de WhatsApp'}
@@ -547,25 +548,25 @@ function ModalComplejo({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4 backdrop-blur-sm"
       onClick={onCerrar}
       role="dialog"
       aria-modal="true"
       aria-label={titulo}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-[#E7E5E4] bg-white p-6"
+        className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between">
-          <h3 className="text-lg font-black text-[#0F172A]">{titulo}</h3>
+          <h3 className="text-lg font-black text-basalto">{titulo}</h3>
           <button
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar"
-            className="rounded-lg p-1 text-[#64748B] hover:bg-gray-100"
+            className="btn-tactil h-8 w-8 rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
           >
-            <X size={20} strokeWidth={2} />
+            <X size={18} strokeWidth={2} />
           </button>
         </div>
         <div className="space-y-3">
@@ -611,7 +612,7 @@ function ModalComplejo({
                 value={CIUDAD_UNICA}
                 disabled
                 readOnly
-                className={`${inputCls} bg-gray-50 text-gray-500`}
+                className={`${inputCls} bg-sillar text-pizarra`}
               />
             </div>
             <div className="col-span-2">
@@ -626,22 +627,22 @@ function ModalComplejo({
               />
             </div>
           </div>
-          <p className="mt-2 text-xs text-[#64748B]">Elige tu distrito de Arequipa: así te encuentran en el buscador.</p>
-          <label className="mt-3 flex cursor-pointer items-center gap-2.5 rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5">
+          <p className="mt-2 text-xs text-pizarra">Elige tu distrito de Arequipa: así te encuentran en el buscador.</p>
+          <label className="mt-3 flex cursor-pointer items-center gap-2.5 rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5">
             <input
               type="checkbox"
               checked={form.publicado}
               onChange={(e) => setForm({ ...form, publicado: e.target.checked })}
-              className="h-5 w-5 accent-[#22C55E]"
+              className="h-5 w-5 accent-cesped"
             />
-            <span className="text-sm font-bold text-[#0F172A]">
+            <span className="text-sm font-bold text-basalto">
               Publicada
-              <span className="block text-xs font-normal text-[#64748B]">Visible en el buscador (requiere suscripción vigente)</span>
+              <span className="block text-xs font-normal text-pizarra">Visible en el buscador (requiere suscripción vigente)</span>
             </span>
           </label>
         </div>
         {error && (
-          <p role="alert" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">
+          <p role="alert" className="mt-3 rounded-xl border border-error bg-error-suave px-3 py-2 text-sm font-semibold text-error-hondo">
             {error}
           </p>
         )}

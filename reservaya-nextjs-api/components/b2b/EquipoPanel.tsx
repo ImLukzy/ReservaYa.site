@@ -176,9 +176,9 @@ export function EquipoPanel() {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">👥 EQUIPO</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Tu equipo</h1>
-          <p className="mt-1 text-sm text-[#64748B]">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">👥 EQUIPO</p>
+          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Tu equipo</h1>
+          <p className="mt-1 text-sm text-pizarra">
             Quienes te ayudan a operar tus canchas día a día: reservas, caja y validación.
           </p>
         </div>
@@ -187,7 +187,7 @@ export function EquipoPanel() {
             href="/admin/ayuda"
             aria-label="Ayuda sobre equipo"
             title="¿Cómo agrego a mi personal?"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E7E5E4] bg-white text-[#64748B] transition-colors hover:border-[#22C55E] hover:text-[#22C55E]"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra transition-colors hover:border-cesped hover:text-cesped"
           >
             <CircleHelp size={18} strokeWidth={1.85} />
           </a>
@@ -195,7 +195,7 @@ export function EquipoPanel() {
             type="button"
             onClick={() => setModal(true)}
             disabled={!complejoId}
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:opacity-50"
+            className="btn-tactil flex items-center gap-1.5 rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
           >
             <Plus size={18} strokeWidth={2.5} /> Agregar
           </button>
@@ -205,7 +205,7 @@ export function EquipoPanel() {
       {/* Selector de local */}
       {complejos.length > 1 && (
         <div className="mt-4 max-w-xs">
-          <label htmlFor="eq-complejo" className="mb-1 block text-xs font-bold text-[#475569]">LOCAL</label>
+          <label htmlFor="eq-complejo" className="mb-1 block text-xs font-bold text-pizarra">LOCAL</label>
           <select
             id="eq-complejo"
             value={complejoId}
@@ -213,7 +213,7 @@ export function EquipoPanel() {
               setComplejoId(e.target.value);
               void cargar(e.target.value);
             }}
-            className="w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+            className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
           >
             {complejos.map((c) => (
               <option key={c.id} value={c.id}>{c.nombre}</option>
@@ -223,27 +223,27 @@ export function EquipoPanel() {
       )}
 
       {toast && (
-        <p role="status" className="mt-4 rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm font-semibold text-[#0F172A] shadow-sm">
+        <p role="status" className="mt-4 rounded-xl border-2 border-basalto bg-tiza px-4 py-3 text-sm font-semibold text-basalto shadow-dura-sm">
           {toast}
         </p>
       )}
       {claveTemporal && (
-        <p role="alert" className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+        <p role="alert" className="mt-2 rounded-xl border border-sol bg-sol-suave px-4 py-3 text-sm font-semibold text-basalto">
           🔑 {claveTemporal}
         </p>
       )}
 
       {/* Contenido */}
-      <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="card-tactil mt-4 p-2">
         {cargando ? (
-          <p className="px-6 py-12 text-center text-sm text-[#64748B]">Cargando equipo…</p>
+          <p className="px-6 py-12 text-center text-sm text-pizarra">Cargando equipo…</p>
         ) : error ? (
           <div className="px-6 py-8 text-center">
-            <p className="text-sm font-semibold text-[#0F172A]">{error}</p>
+            <p className="text-sm font-semibold text-basalto">{error}</p>
             <button
               type="button"
               onClick={() => void cargar(complejoId)}
-              className="mt-3 rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold text-[#0F172A] hover:border-[#22C55E]"
+              className="btn-tactil mt-3 rounded-xl border-2 border-basalto bg-tiza px-4 py-2 text-sm font-bold text-basalto hover:bg-piedra"
             >
               Reintentar
             </button>
@@ -256,7 +256,7 @@ export function EquipoPanel() {
             action={
               <a
                 href="/admin/complejos"
-                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                className="btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover"
               >
                 Ir a Complejos
               </a>
@@ -271,26 +271,26 @@ export function EquipoPanel() {
               <button
                 type="button"
                 onClick={() => setModal(true)}
-                className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                className="btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover"
               >
                 + Agregar a tu primera persona
               </button>
             }
           />
         ) : (
-          <ul className="divide-y divide-[#F1F0EE]">
+          <ul className="divide-y divide-cal">
             {miembros.map((m) => (
               <li key={m.id} className="flex flex-wrap items-center gap-3 px-4 py-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-lg font-black text-[#060C08]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-cesped text-lg font-black text-tiza">
                   {(m.nombre.trim().charAt(0) || '·').toUpperCase()}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-[#0F172A]">
-                    {m.nombre} {!m.activo && <span className="text-xs font-semibold text-[#94A3B8]">(inactivo)</span>}
+                  <p className="truncate text-sm font-bold text-basalto">
+                    {m.nombre} {!m.activo && <span className="text-xs font-semibold text-pizarra">(inactivo)</span>}
                   </p>
-                  <p className="truncate text-xs text-[#64748B]">{m.email}</p>
+                  <p className="truncate text-xs text-pizarra">{m.email}</p>
                 </div>
-                <span className="rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#15803D]">
+                <span className="rounded-full bg-cesped-suave px-3 py-1 text-xs font-bold text-cesped-hondo">
                   ADMIN
                 </span>
                 <button
@@ -301,12 +301,12 @@ export function EquipoPanel() {
                   onClick={() => void toggleActivo(m)}
                   className={cn(
                     'relative h-6 w-11 rounded-full transition-colors',
-                    m.activo ? 'bg-[#22C55E]' : 'bg-[#E7E5E4]'
+                    m.activo ? 'bg-cesped' : 'bg-cal'
                   )}
                 >
                   <span
                     className={cn(
-                      'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all',
+                      'absolute top-0.5 h-5 w-5 rounded-full bg-tiza shadow-dura-sm transition-all',
                       m.activo ? 'left-[22px]' : 'left-0.5'
                     )}
                   />
@@ -316,7 +316,7 @@ export function EquipoPanel() {
                   onClick={() => void eliminar(m)}
                   aria-label={`Eliminar a ${m.nombre}`}
                   title="Eliminar"
-                  className="rounded-lg p-2 text-[#CBD5E1] transition-colors hover:bg-red-50 hover:text-red-500"
+                  className="btn-tactil rounded-lg p-2 text-pizarra transition-colors hover:bg-error-suave hover:text-error"
                 >
                   <Trash2 size={17} strokeWidth={1.85} />
                 </button>
@@ -325,24 +325,24 @@ export function EquipoPanel() {
           </ul>
         )}
       </div>
-      <p className="mt-3 text-xs text-[#64748B]">
+      <p className="mt-3 text-xs text-pizarra">
         Todo el equipo opera con rol ADMIN en tu local: agenda, caja, reservas y torneos.
         Al agregar a alguien se activa su panel admin; al eliminarlo o desactivarlo, lo pierde.
       </p>
 
       {/* Modal Agregar */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4" role="dialog" aria-modal="true" aria-label="Agregar miembro">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4" role="dialog" aria-modal="true" aria-label="Agregar miembro">
           <form
             onSubmit={(e) => void agregar(e)}
-            className="w-full max-w-md rounded-2xl border border-[#E7E5E4] bg-white p-6 shadow-xl"
+            className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">EQUIPO</p>
-                <h2 className="mt-1 text-xl font-black text-[#0F172A]">Agregar al equipo</h2>
+                <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">EQUIPO</p>
+                <h2 className="mt-1 text-xl font-black text-basalto">Agregar al equipo</h2>
                 {complejos.length > 0 && (
-                  <p className="mt-1 text-xs text-[#64748B]">
+                  <p className="mt-1 text-xs text-pizarra">
                     Local: <strong>{complejos.find((c) => c.id === complejoId)?.nombre}</strong>
                   </p>
                 )}
@@ -351,21 +351,21 @@ export function EquipoPanel() {
                 type="button"
                 onClick={() => setModal(false)}
                 aria-label="Cerrar"
-                className="rounded-lg p-1.5 text-[#64748B] hover:bg-[#F1F0EE] hover:text-[#0F172A]"
+                className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={18} strokeWidth={2} />
               </button>
             </div>
-            <label className="mt-4 block text-sm font-semibold text-[#0F172A]">
+            <label className="mt-4 block text-sm font-semibold text-basalto">
               Nombre
               <input
                 value={form.nombre}
                 onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
                 placeholder="Ej. Juan Pérez"
-                className="mt-1.5 w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm font-normal text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/30"
+                className="mt-1.5 w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm font-normal text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
               />
             </label>
-            <label className="mt-3 block text-sm font-semibold text-[#0F172A]">
+            <label className="mt-3 block text-sm font-semibold text-basalto">
               Correo
               <input
                 type="email"
@@ -373,29 +373,29 @@ export function EquipoPanel() {
                 value={form.email}
                 onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                 placeholder="Ej. juan@tucancha.pe"
-                className="mt-1.5 w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm font-normal text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/30"
+                className="mt-1.5 w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm font-normal text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
               />
             </label>
-            <div className="mt-3 rounded-xl bg-[#F0FDF4] px-3 py-2.5 text-sm font-semibold text-[#15803D]">
+            <div className="mt-3 rounded-xl border border-cesped/30 bg-cesped-suave px-3 py-2.5 text-sm font-semibold text-cesped-hondo">
               Rol: ADMIN · opera agenda, caja y reservas de este local
             </div>
             <div className="mt-5 flex gap-2">
               <button
                 type="button"
                 onClick={() => setModal(false)}
-                className="flex-1 rounded-xl border border-[#E7E5E4] px-4 py-2.5 text-sm font-bold text-[#0F172A] hover:border-[#22C55E]"
+                className="btn-tactil flex-1 rounded-xl border-2 border-basalto bg-tiza px-4 py-2.5 text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={guardando}
-                className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A] disabled:opacity-50"
+                className="btn-tactil flex-1 rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
               >
                 {guardando ? 'Agregando…' : 'Agregar'}
               </button>
             </div>
-            <p className="mt-3 text-[11px] text-[#94A3B8]">
+            <p className="mt-3 text-[11px] text-pizarra">
               Si el correo no tiene cuenta, se crea con clave temporal (te la mostraremos una vez).
             </p>
           </form>

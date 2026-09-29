@@ -52,12 +52,12 @@ function fmtMeta(v: string, tipo: string) {
 }
 
 const inputCls =
-  'w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25';
-const labelCls = 'mb-1 block text-xs font-bold text-[#475569]';
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25';
+const labelCls = 'mb-1 block text-xs font-bold text-pizarra';
 const btnPrimary =
-  'rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50';
+  'btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:cursor-not-allowed disabled:opacity-50';
 const btnGhost =
-  'rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] transition-colors hover:border-[#22C55E]';
+  'btn-tactil rounded-xl border-2 border-basalto bg-tiza px-4 py-2.5 text-sm font-bold text-basalto hover:bg-piedra';
 
 export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
   const [metas, setMetas] = useState<MetaDto[]>(iniciales);
@@ -190,39 +190,39 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">▦ METAS</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Mis metas</h1>
-          <p className="text-sm text-[#64748B]">Define objetivos de ingresos, ocupación y reservas, y sigue tu avance.</p>
+          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ METAS</p>
+          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Mis metas</h1>
+          <p className="text-sm text-pizarra">Define objetivos de ingresos, ocupación y reservas, y sigue tu avance.</p>
         </div>
         <Link
           href="/admin/ayuda"
           aria-label="Ayuda"
-          className="flex h-9 items-center gap-1.5 rounded-xl border border-[#E7E5E4] bg-white px-3 text-sm font-bold text-[#64748B] transition-colors hover:border-[#22C55E]"
+          className="btn-tactil flex h-9 items-center gap-1.5 rounded-xl border border-cal bg-tiza px-3 text-sm font-bold text-pizarra transition-colors hover:border-cesped hover:text-cesped"
         >
           <CircleHelp size={18} strokeWidth={1.85} /> Ayuda
         </Link>
       </div>
 
       {/* Banner */}
-      <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#060A08] via-[#0A2E1F] to-[#14532D] p-5 text-white">
-        <p className="text-[11px] font-bold tracking-[0.14em] text-[#4ADE80]">METAS DE {mesBanner.toUpperCase()}</p>
+      <div className="mt-4 rounded-2xl bg-gradient-to-r from-noche via-noche to-cesped-hondo p-5 text-tiza">
+        <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-suave">METAS DE {mesBanner.toUpperCase()}</p>
         <p className="mt-1 text-xl font-black">Define tus metas para empezar 🎯</p>
-        <p className="mt-0.5 text-[13px] text-white/65">Un objetivo claro por mes: ingresos, ocupación o reservas.</p>
+        <p className="mt-0.5 text-[13px] text-tiza/75">Un objetivo claro por mes: ingresos, ocupación o reservas.</p>
       </div>
 
       {error && (
-        <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700">
+        <p className="mt-3 rounded-xl border border-error bg-error-suave px-4 py-2.5 text-sm font-semibold text-error-hondo">
           {error}
         </p>
       )}
 
       {/* Metas */}
       {cargando && metas.length === 0 ? (
-        <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-12 text-center text-sm text-[#64748B]">
+        <div className="card-tactil mt-4 p-12 text-center text-sm text-pizarra">
           Cargando metas…
         </div>
       ) : metas.length === 0 ? (
-        <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white">
+        <div className="card-tactil mt-4">
           <EmptyState
             icon={Target}
             title="Aún no defines tus metas"
@@ -249,28 +249,28 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
               const completa = pct >= 100;
               const tipo = TIPO_LABEL[m.tipo] ?? { label: m.tipo, unidad: '' };
               return (
-                <div key={m.id} className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
+                <div key={m.id} className="card-tactil p-5">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="rounded-full bg-[#DCFCE7] px-2.5 py-0.5 text-[11px] font-bold text-[#15803D]">
+                      <span className="rounded-full bg-cesped-suave px-2.5 py-0.5 text-[11px] font-bold text-cesped-hondo">
                         {tipo.label}
                       </span>
-                      <h2 className="mt-2 text-lg font-black text-[#0F172A]">{m.titulo}</h2>
-                      <p className="text-xs text-[#64748B]">{formatFecha(m.periodoInicio)} – {formatFecha(m.periodoFin)}</p>
+                      <h2 className="mt-2 text-lg font-black text-basalto">{m.titulo}</h2>
+                      <p className="text-xs text-pizarra">{formatFecha(m.periodoInicio)} – {formatFecha(m.periodoFin)}</p>
                     </div>
-                    <button type="button" onClick={() => borrar(m.id, m.titulo)} aria-label={`Eliminar ${m.titulo}`} className="rounded-lg border border-[#E7E5E4] p-1.5 text-[#CBD5E1] hover:border-red-300 hover:text-red-500">
+                    <button type="button" onClick={() => borrar(m.id, m.titulo)} aria-label={`Eliminar ${m.titulo}`} className="btn-tactil rounded-lg border border-cal p-1.5 text-pizarra hover:border-error hover:text-error">
                       <Trash2 size={15} />
                     </button>
                   </div>
                   <div className="mt-4 flex items-end justify-between">
-                    <p className="text-2xl font-black text-[#0F172A]">{pct}%</p>
-                    <p className="text-xs font-semibold text-[#64748B]">{fmtMeta(m.actual, m.tipo)} de {fmtMeta(m.objetivo, m.tipo)}</p>
+                    <p className="text-2xl font-black text-basalto">{pct}%</p>
+                    <p className="text-xs font-semibold text-pizarra">{fmtMeta(m.actual, m.tipo)} de {fmtMeta(m.objetivo, m.tipo)}</p>
                   </div>
-                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#F1F0EE]">
-                    <div className={cn('h-full rounded-full', completa ? 'bg-[#16A34A]' : 'bg-[#22C55E]')} style={{ width: `${pct}%` }} />
+                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-cal">
+                    <div className={cn('h-full rounded-full', completa ? 'bg-cesped-hover' : 'bg-cesped')} style={{ width: `${pct}%` }} />
                   </div>
                   {completa ? (
-                    <p className="mt-3 rounded-xl bg-[#DCFCE7] px-3 py-2 text-sm font-bold text-[#15803D]">🎉 ¡Meta cumplida!</p>
+                    <p className="mt-3 rounded-xl border border-cesped/30 bg-cesped-suave px-3 py-2 text-sm font-bold text-cesped-hondo">🎉 ¡Meta cumplida!</p>
                   ) : editando === m.id ? (
                     <div className="mt-3 flex gap-2">
                       <input type="number" min="0" step="any" value={avance} onChange={(e) => setAvance(e.target.value)} placeholder={m.actual} aria-label="Nuevo avance" className={inputCls} />
@@ -290,9 +290,9 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
       )}
 
       {/* Historial */}
-      <div className="mt-6 rounded-2xl border border-[#E7E5E4] bg-white p-5">
-        <h2 className="text-lg font-black text-[#0F172A]">Tu historial</h2>
-        <div className="mt-3 inline-flex gap-1 rounded-xl bg-[#F5F5F3] p-1">
+      <div className="card-tactil mt-6 p-5">
+        <h2 className="text-lg font-black text-basalto">Tu historial</h2>
+        <div className="mt-3 inline-flex gap-1 rounded-xl bg-sillar p-1">
           {(['semanal', 'mensual'] as const).map((t) => (
             <button
               key={t}
@@ -300,7 +300,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
               onClick={() => setHistTab(t)}
               className={cn(
                 'rounded-lg px-4 py-1.5 text-sm font-bold capitalize transition-all',
-                histTab === t ? 'bg-white text-[#0F172A] shadow' : 'text-[#64748B]'
+                histTab === t ? 'bg-tiza text-basalto shadow-dura-sm' : 'text-pizarra'
               )}
             >
               {t === 'semanal' ? 'Semanal' : 'Mensual'}
@@ -308,27 +308,27 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
           ))}
         </div>
         {histFiltrado.length === 0 ? (
-          <p className="mt-3 text-sm text-[#64748B]">
+          <p className="mt-3 text-sm text-pizarra">
             Aún no completas metas {histTab === 'semanal' ? 'esta semana' : 'este mes'}. Cuando llegues al 100% aparecen aquí. 🏁
           </p>
         ) : (
-          <ul className="mt-3 divide-y divide-[#F1F0EE]">
+          <ul className="mt-3 divide-y divide-cal">
             {histFiltrado.map((h) => (
               <li key={`${h.id}-${h.completadaEn}`} className="flex items-center justify-between gap-2 py-2.5 text-sm">
                 <div>
-                  <p className="font-bold text-[#0F172A]">✅ {h.titulo}</p>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="font-bold text-basalto">✅ {h.titulo}</p>
+                  <p className="text-xs text-pizarra">
                     {new Date(h.completadaEn).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })} · {TIPO_LABEL[h.tipo]?.label ?? h.tipo}
                   </p>
                 </div>
-                <p className="font-black text-[#15803D]">{h.tipo === 'INGRESOS' ? soles(h.actual) : h.actual}</p>
+                <p className="font-black text-cesped-hondo">{h.tipo === 'INGRESOS' ? soles(h.actual) : h.actual}</p>
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      <div className="mt-4 rounded-2xl border border-[#22C55E]/40 bg-[#DCFCE7] p-4 text-sm leading-relaxed text-[#0F172A]">
+      <div className="mt-4 rounded-2xl border-2 border-cesped bg-cesped-suave p-4 text-sm leading-relaxed text-basalto">
         <strong>¿Cómo se calculan?</strong> El progreso es tu avance ÷ objetivo. Para INGRESOS compara soles acumulados,
         para OCUPACIÓN el % de horas reservadas y para RESERVAS la cantidad de reservas del periodo.
         Actualiza tu avance manualmente y el historial de metas cumplidas se guarda en este dispositivo.
@@ -336,11 +336,11 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
 
       {/* Modal nueva meta */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4" onClick={() => setModal(false)} role="dialog" aria-modal="true" aria-label="Definir meta">
-          <div className="w-full max-w-md rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4" onClick={() => setModal(false)} role="dialog" aria-modal="true" aria-label="Definir meta">
+          <div className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-5 shadow-dura-lg" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-black text-[#0F172A]">Definir mi meta</h3>
-              <button type="button" onClick={() => setModal(false)} aria-label="Cerrar" className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E7E5E4] text-[#64748B] hover:border-[#22C55E]">
+              <h3 className="text-lg font-black text-basalto">Definir mi meta</h3>
+              <button type="button" onClick={() => setModal(false)} aria-label="Cerrar" className="btn-tactil flex h-8 w-8 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra hover:border-cesped hover:text-cesped">
                 <X size={16} />
               </button>
             </div>
@@ -369,7 +369,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
                   <input id="meta-fin" name="periodoFin" type="date" required defaultValue={finMes} className={inputCls} />
                 </div>
               </div>
-              {formError && <p className="mt-3 text-sm font-semibold text-red-600">{formError}</p>}
+              {formError && <p className="mt-3 text-sm font-semibold text-error-hondo">{formError}</p>}
               <button type="submit" disabled={guardando} className={cn(btnPrimary, 'mt-4 w-full')}>
                 {guardando ? 'Guardando…' : 'Guardar meta'}
               </button>
