@@ -1,6 +1,6 @@
 # Especificación: 29 — Auditoría de diseño y elevación frontend (impeccable + design-taste-frontend)
 
-> **Estado:** ✅ Cerrada para ejecución — lotes reorganizados a ≤3 archivos cada uno (orden: admin táctil → a11y del panel → Astro) por `dev-claude` (`task-20260928-dev-plan-frontend`), lista para que Oscar-code la retome.
+> **Estado:** ✅ Cerrada para ejecución — lotes reorganizados a ≤3 archivos cada uno (orden: admin táctil → a11y del panel → Astro) por `dev-claude` (`task-20260928-dev-plan-frontend`), lista para que Oscar-code la retome. **Extensión 2026-09-29:** lotes L7–L12 cubren el resto de `components/b2b/` (590 hex en 14 archivos, medido por jim-qa-b tras L1–L5; línea base 838 → 590 → objetivo 0).
 > **Origen:** Directiva de god/Lukas (2026-09-28) mediante `task-20260928-skills-auditor`. Auditoría técnica y estética rigurosa combinando el marco diagnóstico de `impeccable` (A11y, Performance, Theming, Responsive, Implementation Integrity) y la disciplina anti-slop de `design-taste-frontend` sobre el monorepo ReservaYa.
 
 ---
@@ -49,7 +49,7 @@
 
 ## 3. Archivos afectados
 
-Lotes de **≤3 archivos** cada uno, en el orden fijado por god: admin táctil primero (`CronogramaView.tsx` con prioridad y lote propio por su tamaño), luego a11y del panel Next.js, Astro al final.
+Lotes de **≤3 archivos** cada uno, en el orden fijado por god: admin táctil primero (`CronogramaView.tsx` con prioridad y lote propio por su tamaño), luego a11y del panel Next.js, Astro al final. Extensión L7–L12 (2026-09-29, auditor-b por `task-20260929-s29-lotes-extra`): mismo sistema táctil sobre el resto de `components/b2b/` — 590 hex6 medidos por archivo (0 en archivos L1–L5), misma skill y gates que L1–L3.
 
 | Archivo | Acción | Propósito en Spec 29 | Lote |
 |---|---|---|---|
@@ -63,6 +63,20 @@ Lotes de **≤3 archivos** cada uno, en el orden fijado por god: admin táctil p
 | `reservaya-nextjs-api/components/ui/Button.tsx` | Modificar | Asegurar touch-target >= 44px en móviles y feedback mecánico uniforme. | L4 |
 | `reservaya-frontend-astro/src/components/Header.astro` | Modificar | Asegurar estados de foco visibles y contraste en navegación táctil. | L5 |
 | `reservaya-frontend-astro/src/pages/canchas.astro` | Modificar | Pulir diálogos modales para soporte accesible completo (Escape, foco, aria). | L5 |
+| `reservaya-nextjs-api/components/b2b/TorneosPanel.tsx` | Modificar | Lote propio (536 líneas, 112 hex, 6 sombras difusas): tokenizar brackets/fixture y controles de torneo. | L7 |
+| `reservaya-nextjs-api/components/b2b/ReservasPanel.tsx` | Modificar | Tokenizar tabla de reservas y filtros (67 hex, 3 sombras difusas). | L8 |
+| `reservaya-nextjs-api/components/b2b/ResenasPanel.tsx` | Modificar | Tokenizar tarjetas de reseñas y ratings (57 hex, 2 sombras difusas). | L8 |
+| `reservaya-nextjs-api/components/b2b/ReportesPanel.tsx` | Modificar | Tokenizar métricas y gráficas de reportes (52 hex). | L8 |
+| `reservaya-nextjs-api/components/b2b/EquipoPanel.tsx` | Modificar | Tokenizar gestión de equipo/roles (66 hex, 3 sombras difusas). | L9 |
+| `reservaya-nextjs-api/components/b2b/MetasPanel.tsx` | Modificar | Tokenizar barras de progreso y metas (56 hex, 2 sombras difusas). | L9 |
+| `reservaya-nextjs-api/components/b2b/ComplejosGrid.tsx` | Modificar | Tokenizar grid de tarjetas de complejos (659 líneas, 54 hex). | L9 |
+| `reservaya-nextjs-api/components/b2b/DescuentosPanel.tsx` | Modificar | Tokenizar reglas de descuento (44 hex, 1 sombra difusa). | L10 |
+| `reservaya-nextjs-api/components/b2b/PreciosEspecialesPanel.tsx` | Modificar | Tokenizar tabla de precios especiales (36 hex). | L10 |
+| `reservaya-nextjs-api/components/b2b/HorariosPanel.tsx` | Modificar | Tokenizar editor de horarios (10 hex, 1 sombra difusa). | L10 |
+| `reservaya-nextjs-api/components/b2b/OnboardingChecklist.tsx` | Modificar | Tokenizar checklist de onboarding B2B (16 hex, 1 sombra difusa). | L11 |
+| `reservaya-nextjs-api/components/b2b/ValidarCodigo.tsx` | Modificar | Tokenizar validación de códigos (11 hex). | L11 |
+| `reservaya-nextjs-api/components/b2b/DashboardWidgets.tsx` | Modificar | Tokenizar widgets (40 líneas, 8 hex). | L11 |
+| `reservaya-nextjs-api/components/b2b/ComplejosDashboard.tsx` | Modificar | Micro-lote (24 líneas, 1 hex). | L12 |
 
 ---
 
@@ -100,6 +114,44 @@ Cada lote cita la **sección exacta** de la skill a leer (nunca `reference/` com
 - **Criterio medible:** `astro check` 0 errores; inspección de foco/Escape en diálogos.
 - **Gate:** `astro check` + `astro build` + `/web-interface-guidelines`.
 
+### Lote 7 (L7) — `TorneosPanel.tsx` (lote propio, resto B2B)
+- **Skill:** `design-taste-frontend` §4.2 *Color Calibration* + §4.4 *Materiality, Shadows, Cards*.
+- **Acción:** reemplazo semántico base de L1, extendido a valores solo presentes en el resto B2B — **verificar cada token contra `globals.css`/`tokens.css` antes de usar; si un token no existe, mapear al más cercano existente, nunca inventar clases**: `#0F172A`/`#060C08`/`#060A08`/`#101613`/`#0A1A11`→`text-basalto`; `#475569`/`#64748B`/`#94A3B8`/`#CBD5E1`→`text-pizarra` (texto) o `border-cal` (bordes); `#E7E5E4`/`#E2E8F0`/`#F1F0EE`/`#F5F5F3`→`bg-tiza`/`border-cal`; `#22C55E`/`#16A34A`/`#15803D`/`#008F3B`/`#14532D`/`#0A2E1F`→`bg-cesped`/`hover:bg-cesped-hover`/`text-cesped-hondo`; `#DCFCE7`/`#F0FDF4`/`#4ADE80`→`bg-cesped-suave`; `#3B82F6`/`#1D4ED8`/`#1E3A8A`→`text-cielo-hondo`/`bg-cielo-suave`/`border-cielo`; `#EAB308`/`#A16207`/`#FEF9C3`→tokens sol existentes (`bg-sol-suave`/equivalente verificado); `#3F4A44`→`text-pizarra` (verificar). 6× `shadow-(md|lg|xl)` → sombra dura sin blur; botones a `.btn-tactil`.
+- **Criterio medible:** `Select-String '#[0-9a-fA-F]{6}' TorneosPanel.tsx` → 0; `shadow-(sm|md|lg|xl|2xl)` → 0.
+- **Gate:** typecheck + lint + build Next.js.
+
+### Lote 8 (L8) — `ReservasPanel.tsx`, `ResenasPanel.tsx`, `ReportesPanel.tsx`
+- **Skill:** igual que L7.
+- **Acción:** mismo reemplazo semántico que L7 (176 hex: 67+57+52); tarjetas a `.card-tactil`; 5 sombras difusas (3+2+0) → sombra dura; botones a `.btn-tactil`.
+- **Criterio medible:** igual que L7, por archivo.
+- **Gate:** typecheck + lint + build Next.js.
+
+### Lote 9 (L9) — `EquipoPanel.tsx`, `MetasPanel.tsx`, `ComplejosGrid.tsx`
+- **Skill:** igual que L7.
+- **Acción:** mismo reemplazo semántico que L7 (176 hex: 66+56+54, `ComplejosGrid.tsx` 659 líneas — el archivo más largo del resto); 5 sombras difusas (3+2+0) → sombra dura; botones a `.btn-tactil`.
+- **Criterio medible:** igual que L7, por archivo.
+- **Gate:** typecheck + lint + build Next.js.
+
+### Lote 10 (L10) — `DescuentosPanel.tsx`, `PreciosEspecialesPanel.tsx`, `HorariosPanel.tsx`
+- **Skill:** igual que L7.
+- **Acción:** mismo reemplazo semántico que L7 (90 hex: 44+36+10); 2 sombras difusas (`DescuentosPanel`, `HorariosPanel`) → sombra dura; botones a `.btn-tactil`.
+- **Criterio medible:** igual que L7, por archivo.
+- **Gate:** typecheck + lint + build Next.js.
+
+### Lote 11 (L11) — `OnboardingChecklist.tsx`, `ValidarCodigo.tsx`, `DashboardWidgets.tsx`
+- **Skill:** igual que L7.
+- **Acción:** mismo reemplazo semántico que L7 (35 hex: 16+11+8); 1 sombra difusa (`OnboardingChecklist`) → sombra dura.
+- **Criterio medible:** igual que L7, por archivo.
+- **Gate:** typecheck + lint + build Next.js.
+
+### Lote 12 (L12) — `ComplejosDashboard.tsx` (micro-lote)
+- **Skill:** `design-taste-frontend` §4.2 *Color Calibration*.
+- **Acción:** 1 hex en 24 líneas → token verificado. Ejecutable junto a L11 en la misma pasada de gates.
+- **Criterio medible:** igual que L7.
+- **Gate:** typecheck + lint + build Next.js.
+
+> **Nota de conteo:** L1–L6 usan `grep -E`; en Windows/PowerShell el equivalente es `Select-String -Pattern '#[0-9a-fA-F]{6}'`. Línea base global `components/b2b/`: 838 → 590 tras L1–L5 → **0** tras L7–L12 (cierra criterio A7).
+
 ---
 
 ## 5. Criterios de aceptación
@@ -121,12 +173,18 @@ Cada lote cita la **sección exacta** de la skill a leer (nunca `reference/` com
 
 ## 6. Checklist de implementación (para Oscar-code)
 
-- [ ] **L1: `CronogramaView.tsx`** (prioridad) — hex→tokens, sombras duras, botones táctiles. Gates A1–A4, A7, A8.
-- [ ] **L2: `AbonosPanel.tsx`, `CajaPanel.tsx`, `ConfigPanel.tsx`** — mismo reemplazo + `.card-tactil`. Gates A1–A4, A7, A8.
-- [ ] **L3: `GestionCanchasPanel.tsx`, `loading.tsx`** — cierre de tokenización admin. Gates A1–A4, A7, A8.
-- [ ] **L4: `Modal.tsx`, `Button.tsx`** — trampa de foco, Escape, touch targets 44px. Gates A1–A4, A9, A10, `/web-interface-guidelines`.
-- [ ] **L5: `Header.astro`, `canchas.astro`** — foco/contraste nav, diálogos accesibles. Gates A5, A6, `/web-interface-guidelines`.
+- [x] **L1: `CronogramaView.tsx`** (prioridad) — implementado por Oscar (hex→tokens, sombras duras, `btn-tactil`). Gates A1–A4, A7, A8 verificados. Re-tokenizado con `shadow-dura`, `shadow-dura-sm`, `shadow-dura-lg`, `var(--basalto)` (0 hex literales).
+- [x] **L2: `AbonosPanel.tsx`, `CajaPanel.tsx`, `ConfigPanel.tsx`** — implementado por Oscar (`.card-tactil`, `.btn-tactil`, tokens semánticos, 0 hex huérfanos, 0 sombras difusas). Gates A1–A4, A7, A8 verificados localmente.
+- [x] **L3: `GestionCanchasPanel.tsx`, `loading.tsx`** — implementado por Oscar (cierre de tokenización admin, `.card-tactil`, tono='claro' en modal, skeletons sin sombras difusas, 0 hex huérfanos, 0 sombras difusas). Gates A1–A4, A7, A8 verificados localmente.
+- [x] **L4: `Modal.tsx`, `Button.tsx`** — implementado por Oscar (trampa de foco cíclica con restauración de foco previo, Escape, touch targets mínimos ≥44x44px en botón y botón de cierre, `focus-visible` accesible, `shadow-dura-lg`). Gates A1–A4 verificados localmente.
+- [x] **L5: `Header.astro`, `canchas.astro`** — implementado por Oscar (foco visible y contraste en navegación, botón de cierre accesible con touch target ≥44x44px, foco inicial en diálogo, escape listener y restauración de foco al cerrar, sombra limpia). Gates A5, A6 verificados localmente.
 - [ ] **L6: Verificación integral y auditoría de salud final (JIM-QA)** — 10 criterios + matriz Impeccable (objetivo ≥18/20).
+- [x] **L7: `TorneosPanel.tsx`** — implementado por Oscar (0 hex, 0 sombras difusas, `.card-tactil`, `.btn-tactil`, soporte Escape en drawer y modales). Gates A1–A4, A7, A8 verificados localmente.
+- [ ] **L8: `ReservasPanel.tsx`, `ResenasPanel.tsx`, `ReportesPanel.tsx`** — tokenizar (176 hex, 5 sombras difusas → duras). Gates A1–A4, A7, A8 por archivo.
+- [ ] **L9: `EquipoPanel.tsx`, `MetasPanel.tsx`, `ComplejosGrid.tsx`** — tokenizar (176 hex, 5 sombras difusas → duras). Gates A1–A4, A7, A8 por archivo.
+- [ ] **L10: `DescuentosPanel.tsx`, `PreciosEspecialesPanel.tsx`, `HorariosPanel.tsx`** — tokenizar (90 hex, 2 sombras difusas → duras). Gates A1–A4, A7, A8 por archivo.
+- [ ] **L11: `OnboardingChecklist.tsx`, `ValidarCodigo.tsx`, `DashboardWidgets.tsx`** — tokenizar (35 hex, 1 sombra difusa → dura). Gates A1–A4, A7, A8 por archivo.
+- [ ] **L12: `ComplejosDashboard.tsx`** — micro-lote (1 hex). Gates A1–A4, A7, A8 (misma pasada que L11).
 
 ---
 
@@ -147,9 +205,12 @@ Cada lote cita la **sección exacta** de la skill a leer (nunca `reference/` com
 
 | Fecha | Lote / Criterio | Resultado | Evidencia |
 |---|---|---|---|
-| _Pendiente_ | L1 `CronogramaView.tsx` (A1–A4, A7, A8) | | |
-| _Pendiente_ | L2 `AbonosPanel`/`CajaPanel`/`ConfigPanel` (A1–A4, A7, A8) | | |
-| _Pendiente_ | L3 `GestionCanchasPanel`/`loading.tsx` (A1–A4, A7, A8) | | |
-| _Pendiente_ | L4 `Modal`/`Button` a11y (A1–A4, A9, A10) | | |
-| _Pendiente_ | L5 `Header.astro`/`canchas.astro` (A5, A6) | | |
+| 2026-09-29 | L1 `CronogramaView.tsx` (A1–A4, A7, A8) | ✅ PASS | JIM-QA: typecheck 0 err, lint 0 err (2 warnings), test 40/40, build Next OK, 0 hex huérfanos (A7 PASS), 0 sombras difusas (A8 PASS). Re-tokenizado con `shadow-dura*` y `var(--basalto)` (0 hex literales). |
+| 2026-09-29 | L2 `AbonosPanel`/`CajaPanel`/`ConfigPanel` (A1–A4, A7, A8) | ✅ PASS (local) | Oscar: typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK. 0 hex huérfanos y 0 sombras difusas en los 3 paneles. Solicitado a jim-qa-b. |
+| 2026-09-29 | L3 `GestionCanchasPanel`/`loading.tsx` (A1–A4, A7, A8) | ✅ PASS (local) | Oscar: typecheck 0, lint 0, test 40/40, build Next OK. `.card-tactil`, modal tono claro, skeletons sin sombras difusas. 0 hex huérfanos, 0 sombras difusas. |
+| 2026-09-29 | L4 `Modal`/`Button` a11y (A1–A4, A9, A10) | ✅ PASS (local) | Oscar: trampa de foco cíclica con restauración, Escape, min-h-[44px]/min-w-[44px] en botones y controles, focus-visible accesible, `shadow-dura-lg`. Fix de foco: `onClose` resguardado en `useRef` con efecto dedicado y dependencia `[open]` para evitar pérdida de foco al teclear (lint 0 err con `react-hooks/refs`). Typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK. Verificado que `CajaPanel.tsx` no posee `useEffect` de foco/teclado. |
+| 2026-09-29 | L5 `Header.astro`/`canchas.astro` (A5, A6) | ✅ PASS (local) | Oscar: foco visible y contraste en nav, dialog con foco inicial y restauración, 0 errores en `astro check`, 17 páginas compiladas en `astro build`. |
+| 2026-09-29 | L1–L5 integral jim-qa-b (A1–A6 + conteo hex) | ✅ PASS | jim-qa-b (1 pasada): typecheck 0 err; lint 0 err + 2 warnings conocidos; test 40/40; astro check 0 err/0 warn/1 hint conocido; astro build 17 págs OK. `next build` no verificado (servidor dev usa .next). Hex6: 590 en `components/b2b/` global (archivos fuera de Spec 29: Reportes/Resenas/Reservas/Torneos/ValidarCodigo); 2 en archivos tocados (`Modal.tsx:81,86` variante oscura `#20263a`/`#2b334d`, decisión de god); 0 sombras difusas en tocados; 0× `#1f2a24` literal. |
+| 2026-09-29 | L7 `TorneosPanel.tsx` (A1–A4, A7, A8) | ✅ PASS (local) | Oscar: erradicados 78 hex a tokens semánticos (0 hex6/hex3 restantes); 6 sombras difusas migradas a `shadow-dura*` / `.card-tactil`; soporte Escape en modales y drawer de detalle; botones a `.btn-tactil` con touch target accesible. Typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK. |
+| 2026-09-29 | L7–L12 resto B2B (especificación) | 📝 SPEC | auditor-b: 14 archivos / 590 hex6 medidos por archivo (0 en L1–L5), 19 sombras difusas (6+5+5+2+1+0), mapa semántico extendido con verificación obligatoria contra `globals.css`/`tokens.css`. Pendiente implementación + gates A1–A4, A7, A8 por archivo. |
 | _Pendiente_ | Score Impeccable Final | | Objetivo: >= 18 / 20 (Excelente) |
