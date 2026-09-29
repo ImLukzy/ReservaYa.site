@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 
 interface BadgeProps {
   children: React.ReactNode
-  variant?: 'green' | 'yellow' | 'red' | 'blue' | 'gray'
+  variant?: 'green' | 'yellow' | 'red' | 'blue' | 'gray' | 'futbol' | 'voley' | 'basquet' | 'padel' | 'tenis' | 'losa'
   className?: string
 }
 
@@ -13,6 +13,12 @@ const variants = {
   red: 'border-error/40 bg-error-suave text-error',
   blue: 'border-cielo/40 bg-cielo-suave text-cielo-hondo',
   gray: 'border-borde bg-piedra text-pizarra',
+  futbol: 'border-cesped bg-cesped-suave text-basalto',
+  voley: 'border-mar bg-mar-suave text-basalto',
+  basquet: 'border-miel bg-miel-suave text-basalto',
+  padel: 'border-lima bg-lima-suave text-basalto',
+  tenis: 'border-arcilla bg-arcilla-suave text-basalto',
+  losa: 'border-losa bg-losa-suave text-basalto',
 }
 
 export function Badge({ children, variant = 'gray', className }: BadgeProps) {
