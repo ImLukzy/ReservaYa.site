@@ -15,9 +15,9 @@ const variants = {
 }
 
 const sizes = {
-  sm: 'h-9 px-3.5 text-xs',
-  md: 'min-h-11 px-5 text-sm',
-  lg: 'h-12 px-6 text-base',
+  sm: 'min-h-[44px] min-w-[44px] px-3.5 text-xs',
+  md: 'min-h-[44px] min-w-[44px] px-5 text-sm',
+  lg: 'min-h-[48px] min-w-[48px] px-6 text-base',
 }
 
 export function Button({
@@ -34,7 +34,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none',
+        'inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none',
         variants[variant],
         sizes[size],
         className
