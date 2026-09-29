@@ -48,6 +48,18 @@
   --color-cesped: #17804a;        /* único acento: acción, libre, foco; tiza encima 4.97 */
   --color-cesped-hondo: #116a3c;  /* hover del acento y texto verde; 6.0 sobre sillar */
   --color-cesped-suave: #e3f1e8;  /* fondo de «libre»; cesped-hondo encima 5.7 */
+  /* Tintas de deporte: identidad visual, nunca acciones. Todos los acentos
+     superan 4.5:1 con tiza; los fondos suaves superan 7:1 con basalto. */
+  --color-mar: #0e5a86;           /* vóley; tiza encima 7.4 */
+  --color-mar-suave: #dfedf6;     /* basalto encima > 10 */
+  --color-miel: #9e6200;          /* básquet; tiza encima 5.0 */
+  --color-miel-suave: #f6ebd0;    /* basalto encima > 12 */
+  --color-lima: #4e6e00;          /* pádel; tiza encima 5.9 */
+  --color-lima-suave: #eaf2d2;    /* basalto encima > 10 */
+  --color-arcilla: #a83a1f;       /* tenis; tiza encima 6.3 */
+  --color-arcilla-suave: #f9e4d8; /* basalto encima > 10 */
+  --color-losa: #3e5c6b;          /* losa; tiza encima 7.1 */
+  --color-losa-suave: #e2eaf0;    /* basalto encima > 10 */
   --color-basalto: #1f2a24;       /* texto principal; 13.4 sobre sillar */
   --color-pizarra: #5a6660;       /* texto secundario; 5.43 sobre sillar */
   --color-cal: #d6dbd3;           /* líneas de estructura, nunca texto */
@@ -58,6 +70,7 @@
   --color-alerta-suave: #ffedd5;  /* fondo suave de bloqueo */
   --color-alerta-hondo: #c2410c;  /* texto y hover sobre alerta-suave */
   --color-error: #b42318;         /* 6.57 sobre tiza */
+  --color-error-hondo: #8f1b13;   /* hover de peligro; tiza encima 9.0 */
   --color-error-suave: #fdecea;   /* error encima 5.75 */
   --color-velo: rgb(31 42 36 / 0.5); /* fondo tras un diálogo */
   --color-noche: #0b1912;         /* banda oscura de hero/footer; tiza encima ~19 (spec 26) */

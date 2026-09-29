@@ -1,0 +1,22 @@
+---
+import { DISTRITOS, TIPOS } from "../lib/arequipa";
+
+const items = [...TIPOS.map((tipo) => tipo.etiqueta), ...DISTRITOS.slice(0, 8)];
+---
+
+<div class="cinta-pitazo overflow-hidden border-y-2 border-basalto bg-cesped text-tiza" aria-hidden="true">
+  <div class="cinta-pitazo__pista flex w-max items-center py-2 font-display text-sm font-black uppercase tracking-[0.18em] motion-reduce:translate-x-0">
+    {[...items, ...items].map((item) => (
+      <span class="inline-flex items-center gap-4 px-4"><span>{item}</span><span class="text-tiza/60">●</span></span>
+    ))}
+  </div>
+</div>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .cinta-pitazo__pista { animation: cinta-pitazo 34s linear infinite; }
+  }
+  @keyframes cinta-pitazo {
+    to { transform: translateX(-50%); }
+  }
+</style>
