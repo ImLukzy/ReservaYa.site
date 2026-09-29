@@ -5,22 +5,10 @@ import { MapPin, Moon, Users } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
+import { CroquisCancha } from '@/components/ui/CroquisCancha'
 import { ReservaForm } from './ReservaForm'
 import { tipoCanchaLabel } from './etiquetasJugador'
 import type { Cancha } from '@/lib/api'
-
-// Firma visual compartida con la landing (spec 24): croquis de cancha en líneas de
-// cal (perímetro, línea media, círculo central) cuando no hay foto o la foto no carga.
-// Sin SVG ni imagen, sin icono forzado por deporte.
-function CroquisCancha() {
-  return (
-    <div className="relative flex h-full w-full items-center justify-center bg-cesped-suave" aria-hidden="true">
-      <div className="absolute inset-4 rounded-sm border border-cesped/40" />
-      <div className="absolute inset-y-4 left-1/2 w-px -translate-x-1/2 bg-cesped/40" />
-      <div className="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cesped/40" />
-    </div>
-  )
-}
 
 // onError no burbujea y se puede perder si la imagen ya falló antes de hidratar
 // (404 casi instantáneo): se revisa img.complete/naturalWidth también al montar.

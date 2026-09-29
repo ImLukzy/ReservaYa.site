@@ -1,6 +1,6 @@
 # Especificación: 31 — Croquis de cancha como firma visual de estados vacíos y error
 
-> **Estado:** ✅ Aprobada por Lukas (ILK-13, 2026-09-28) — en cola después de la Spec 29.
+> **Estado:** ✅ Implementada por `dev-claude` (`task-20260929-reparto-pam`, 2026-09-29) — gates A1–A7 en verde, pendiente de verificación jim-qa-b.
 > **Origen:** `task-20260928-dev-plan-frontend`, punto 3 ("la siguiente mejora de mayor impacto visual no genérica").
 
 ---
@@ -34,6 +34,7 @@
 | `reservaya-frontend-astro/src/components/ui/EmptyState.astro` | Modificar | Sumar el croquis sobre el texto existente. |
 | `reservaya-frontend-astro/src/pages/404.astro` | Modificar | Reemplazar el número "404" suelto por el croquis + texto. |
 | `reservaya-frontend-astro/src/pages/500.astro` | Modificar | Mismo tratamiento que 404. |
+| `reservaya-nextjs-api/app/(dashboard)/dashboard/canchas/page.tsx` | Modificar | No listado originalmente: se quitó `icon={SearchX}` de los 2 `EmptyState` (import ahora sin uso, retirado) para que se ejerza el croquis por defecto y cumplir A7. |
 
 ---
 
@@ -60,11 +61,16 @@
 ---
 
 ## 6. Checklist
-- [ ] T1: extraer `CroquisCancha` a componente propio en ambas apps (Next + Astro), sin cambiar su apariencia en los usos actuales.
-- [ ] T2: adoptarlo en `EmptyState` (Next y Astro).
-- [ ] T3: adoptarlo en `404.astro`/`500.astro`.
-- [ ] T4: verificar criterios y anotar en §7.
+- [x] T1: extraer `CroquisCancha` a componente propio en ambas apps (Next + Astro), sin cambiar su apariencia en los usos actuales.
+- [x] T2: adoptarlo en `EmptyState` (Next y Astro).
+- [x] T3: adoptarlo en `404.astro`/`500.astro`.
+- [x] T4: verificar criterios y anotar en §7.
 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
+| 2026-09-29 | A1–A4 Next | ✅ PASS | typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK. |
+| 2026-09-29 | A5 Astro | ✅ PASS | `astro check` 0 err/0 warn/1 hint conocido; `astro build` 17 páginas OK. |
+| 2026-09-29 | A6 Sin duplicación | ✅ PASS | Next: 1 definición (`components/ui/CroquisCancha.tsx`), usada en `CanchaCard.tsx` y `EmptyState.tsx`. Astro: 1 componente (`CroquisCancha.astro`), usado en `EmptyState.astro`/`404.astro`/`500.astro`; `src/scripts/filas.ts` conserva su propia `croquisCancha()` en DOM puro porque es JS de cliente para filtrado dinámico, no una plantilla `.astro` (excepción ya prevista en §3). |
+| 2026-09-29 | A7 Comportamiento | ✅ PASS | Se quitó `icon={SearchX}` de ambos `EmptyState` de `/dashboard/canchas` (fuera de la lista original de §3, necesario para que el criterio se cumpla) para que usen el croquis por defecto; `404.astro`/`500.astro` muestran el croquis en vez del número suelto. Sin cambio de copy. |
+| 2026-09-29 | T1–T4 revisión auditor-b (contra spec, tras verde jim-qa-b) | ✅ APROBADO + 1 nota | Extracción fiel: misma geometría/tokens en ambos `CroquisCancha`, `aria-hidden` siempre, `icon` opcional conservado, copy intacto, A6 con 1 definición por app (`filas.ts` excepción documentada). Nota (no bloqueante): el nuevo componente añade `rounded-xl overflow-hidden` que el original inline no tenía — imperceptible (el padre en `CanchaCard` recorta con `overflow-hidden`), pero estrictamente es un micro-delta visual en el fallback sin foto. |
