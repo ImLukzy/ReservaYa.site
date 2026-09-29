@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SlotBoard from "../components/ui/SlotBoard.astro";
 import PatronCancha from "../components/ui/PatronCancha.astro";
+import CintaPitazo from "../components/CintaPitazo.astro";
 import CroquisCancha from "../components/ui/CroquisCancha.astro";
 import Select from "../components/ui/Select.astro";
 import Button from "../components/ui/Button.astro";
@@ -16,6 +17,16 @@ const distritosTop = [
 ];
 const tipos = [{ valor: "", etiqueta: "Todo deporte" }, ...TIPOS];
 const dias = [{ valor: "hoy", etiqueta: "Hoy" }, { valor: "manana", etiqueta: "Mañana" }];
+const tintasDeporte: Record<string, { tarjeta: string; franja: string }> = {
+  FUTBOL: { tarjeta: "bg-cesped-suave", franja: "bg-cesped" },
+  FUTBOL5: { tarjeta: "bg-cesped-suave", franja: "bg-cesped" },
+  FUTBOL7: { tarjeta: "bg-cesped-suave", franja: "bg-cesped" },
+  VOLLEYBALL: { tarjeta: "bg-mar-suave", franja: "bg-mar" },
+  BASQUET: { tarjeta: "bg-miel-suave", franja: "bg-miel" },
+  PADEL: { tarjeta: "bg-lima-suave", franja: "bg-lima" },
+  TENIS: { tarjeta: "bg-arcilla-suave", franja: "bg-arcilla" },
+  LOZA: { tarjeta: "bg-losa-suave", franja: "bg-losa" },
+};
 
 const pasos = [
   { titulo: "Busca", texto: "Elige distrito, deporte y hora. Solo ves canchas libres, con su precio." },
@@ -66,6 +77,8 @@ const preguntas = [
       aria-hidden="true"
     ></div>
   </section>
+
+  <CintaPitazo />
 
   <style>
     @media (prefers-reduced-motion: no-preference) {
@@ -121,11 +134,13 @@ const preguntas = [
       {TIPOS.map((t) => (
         <a
           href={`/canchas?tipo=${t.valor}`}
-          class="card-tactil group flex flex-col justify-between bg-tiza p-4 shadow-dura-sm transition-transform hover:-translate-y-0.5 hover:shadow-dura motion-reduce:hover:translate-y-0"
+          data-deporte={t.valor}
+          class={`card-tactil group relative flex min-h-28 flex-col justify-between overflow-hidden p-4 text-basalto shadow-dura-sm transition-transform hover:-translate-y-0.5 hover:shadow-dura motion-reduce:hover:translate-y-0 ${tintasDeporte[t.valor].tarjeta}`}
         >
+          <span class={`absolute inset-x-0 top-0 h-2 ${tintasDeporte[t.valor].franja}`} aria-hidden="true"></span>
           <div class="flex items-center justify-between">
-            <span class="font-display text-[11px] font-bold uppercase tracking-wider text-cesped-hondo">Canchas</span>
-            <span aria-hidden="true" class="text-sm text-pizarra transition-transform group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0">→</span>
+            <span class="font-display text-[11px] font-bold uppercase tracking-wider">Canchas</span>
+            <span aria-hidden="true" class="text-sm transition-transform group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0">→</span>
           </div>
           <span class="mt-3 font-display text-lg font-black text-basalto">{t.etiqueta}</span>
         </a>
