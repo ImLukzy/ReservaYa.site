@@ -108,7 +108,7 @@ export function Modal({ open, onClose, title, children, className, tono = 'oscur
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className={cn('inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2', cerrarCls)}
+            className={cn('inline-flex min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-xl p-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2', cerrarCls)}
           >
             <X size={20} className={iconoCls} aria-hidden="true" />
           </button>

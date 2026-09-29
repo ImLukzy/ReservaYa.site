@@ -62,7 +62,7 @@ export function CalificarBtn({ complejoId, complejoNombre }: { complejoId: strin
             </button>
           ))}
         </div>
-        <label className="mt-4 block text-[13px] font-bold text-pizarra">
+        <label className="mt-4 block text-[0.8125rem] font-bold text-pizarra">
           Comentario (opcional)
           <textarea
             value={comentario}

@@ -76,15 +76,15 @@ export default async function PerfilPage() {
             {/* Métricas operativas reales (sin datos RPG) */}
             <div className="grid grid-cols-3 divide-x divide-cal border-t border-cal bg-tiza p-4 text-center">
               <div>
-                <p className="text-[11px] font-semibold text-pizarra uppercase">Reservas</p>
+                <p className="text-[0.6875rem] font-semibold text-pizarra uppercase">Reservas</p>
                 <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{reservas.length}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-pizarra uppercase">Confirmadas</p>
+                <p className="text-[0.6875rem] font-semibold text-pizarra uppercase">Confirmadas</p>
                 <p className="mt-1 font-display text-2xl font-bold tabular-nums text-cesped-hondo">{confirmadas}</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-pizarra uppercase">Completadas</p>
+                <p className="text-[0.6875rem] font-semibold text-pizarra uppercase">Completadas</p>
                 <p className="mt-1 font-display text-2xl font-bold tabular-nums text-basalto">{completadas}</p>
               </div>
             </div>

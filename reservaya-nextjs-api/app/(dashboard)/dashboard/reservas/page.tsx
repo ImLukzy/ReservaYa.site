@@ -102,7 +102,7 @@ export default async function MisReservasPage() {
             ))}
           </div>
 
-          <div className="card-tactil hidden overflow-x-auto p-0 sm:block">
+          <div className="densidad-fija card-tactil hidden overflow-x-auto p-0 sm:block">
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-basalto bg-piedra text-left font-display text-xs font-bold text-basalto">

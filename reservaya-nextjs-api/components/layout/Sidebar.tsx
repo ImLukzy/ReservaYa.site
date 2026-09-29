@@ -228,12 +228,12 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
       )}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[260px] flex-shrink-0 flex-col bg-noche transition-transform duration-200 lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-[16.25rem] flex-shrink-0 flex-col bg-noche transition-transform duration-200 lg:static lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Cabecera */}
-        <div className="flex h-[88px] shrink-0 items-center gap-2 border-b border-white/10 px-6">
+        <div className="flex h-[5.5rem] shrink-0 items-center gap-2 border-b border-white/10 px-6">
           <svg
             className="h-7 w-7 shrink-0 text-cesped"
             viewBox="0 0 28 28"
@@ -270,7 +270,7 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
           <Link
             href={publicAppUrl}
             onClick={() => setOpen(false)}
-            className="mx-3 flex items-center gap-3 border-l-[3px] border-transparent px-3 py-2.5 text-sm font-medium text-niebla transition-colors hover:text-tiza"
+            className="mx-3 flex items-center gap-3 border-l-[0.1875rem] border-transparent px-3 py-2.5 text-sm font-medium text-niebla transition-colors hover:text-tiza"
           >
             <House size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" aria-hidden="true" />
             Página principal
@@ -293,7 +293,7 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
                         onClick={() => setOpen(false)}
                         aria-current={active ? 'page' : undefined}
                         className={cn(
-                          'flex items-center gap-3 rounded-r-md border-l-[3px] px-3 py-2.5 text-sm transition-colors',
+                          'flex items-center gap-3 rounded-r-md border-l-[0.1875rem] px-3 py-2.5 text-sm transition-colors',
                           active
                             ? 'border-cesped bg-white/[0.06] font-semibold text-tiza'
                             : isTorneos

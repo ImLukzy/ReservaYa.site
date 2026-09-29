@@ -37,7 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         />
       </div>
       {nota && (
-        <p id={notaId} className="mt-1.5 text-[11px] text-pizarra">
+        <p id={notaId} className="mt-1.5 text-[0.6875rem] text-pizarra">
           {nota}
         </p>
       )}

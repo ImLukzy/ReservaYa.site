@@ -82,10 +82,10 @@ export default async function AdminPage() {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">
             ▦ DASHBOARD <span className="font-normal text-pizarra">· en vivo</span>
           </p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">
+          <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">
             {saludo(ahora.getHours())}, {nombre} 👋
           </h1>
           <p className="text-sm text-pizarra capitalize">{fechaLarga} De {ahora.getFullYear()}</p>
@@ -109,11 +109,11 @@ export default async function AdminPage() {
             <HeartHandshake size={20} strokeWidth={1.85} />
           </span>
           <div>
-            <span className="rounded-full border border-cesped/40 px-2 py-0.5 text-[10px] font-bold tracking-wider text-cesped">
+            <span className="rounded-full border border-cesped/40 px-2 py-0.5 text-[0.625rem] font-bold tracking-wider text-cesped">
               CUENTA CREADA · PRONTO TE CONTACTAMOS
             </span>
             <p className="mt-1.5 font-bold">¡Bienvenido, {nombre}! Ya tienes tu panel listo. 🎉</p>
-            <p className="mt-0.5 max-w-2xl text-[13px] text-white/65">
+            <p className="mt-0.5 max-w-2xl text-[0.8125rem] text-white/65">
               Estamos revisando tu complejo. En breve nos pondremos en contacto para ayudarte a dejarlo
               fino (fotos, horarios y verificación). Mientras tanto ya puedes cargar tus reservas.
             </p>
@@ -161,7 +161,7 @@ export default async function AdminPage() {
 
       {/* Resumen del mes */}
       <div className="mt-6 flex items-center justify-between">
-        <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">RESUMEN DEL MES</p>
+        <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">RESUMEN DEL MES</p>
         <div className="flex items-center gap-4 text-xs font-semibold text-pizarra">
           <Link href="/admin/reportes" className="transition hover:text-cesped-hondo">
             📊 Ver reportes detallados
@@ -175,14 +175,14 @@ export default async function AdminPage() {
         <div className="overflow-hidden rounded-2xl bg-noche border-2 border-basalto p-5 text-white lg:col-span-2">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-[11px] font-bold tracking-[0.14em] text-white/55">
+              <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-white/55">
                 INGRESOS DE {new Intl.DateTimeFormat('es-PE', { month: 'long' }).format(ahora).toUpperCase()}
               </p>
               <p className="mt-1 text-3xl font-black">S/ {ingresosMes.toLocaleString('es-PE')}</p>
               <p className="mt-0.5 text-xs text-white/50">vs S/ 0 en los mismos días del mes pasado</p>
             </div>
           </div>
-          <div className="mt-6 flex h-20 items-end gap-[3px]">
+          <div className="mt-6 flex h-20 items-end gap-[0.1875rem]">
             {porDia.map((v, i) => (
               <div key={i} className="flex flex-1 flex-col items-center justify-end gap-1 self-stretch">
                 <div
@@ -190,14 +190,14 @@ export default async function AdminPage() {
                   style={{ height: `${Math.max(3, (v / maxDia) * 56)}px`, opacity: v > 0 ? 1 : 0.25 }}
                   title={`Día ${i + 1}: ${v} reservas`}
                 />
-                <span className="text-[8px] text-white/40">{i + 1}</span>
+                <span className="text-[0.5rem] text-white/40">{i + 1}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="space-y-4">
           <div className="rounded-2xl bg-noche border-2 border-basalto p-5 text-white">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-white/60">HOY</p>
+            <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-white/60">HOY</p>
             <p className="mt-1 text-2xl font-black">S/ 0</p>
             <p className="text-xs text-white/55">{reservasHoy.length} reservas hoy</p>
           </div>
@@ -205,7 +205,7 @@ export default async function AdminPage() {
             href="/admin/agenda"
             className="group block rounded-2xl border border-cal bg-white p-5 transition hover:border-cesped"
           >
-            <p className="flex items-center justify-between text-[11px] font-bold tracking-[0.14em] text-pizarra">
+            <p className="flex items-center justify-between text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">
               PENDIENTES HOY
               <ChevronRight size={16} strokeWidth={2} className="text-pizarra transition group-hover:text-cesped" />
             </p>
@@ -218,7 +218,7 @@ export default async function AdminPage() {
       {/* Tu día */}
       <div className="mt-4">
         <div className="rounded-2xl border border-cal bg-white p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">TU DÍA DE HOY</p>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">TU DÍA DE HOY</p>
           <p className="mt-1 text-xl font-black text-basalto">
             {reservasHoy.length} <span className="text-sm font-semibold text-pizarra">reservas</span>
           </p>
@@ -239,7 +239,7 @@ export default async function AdminPage() {
               title="Ahora"
             />
           </div>
-          <div className="mt-1 flex justify-between text-[10px] text-pizarra">
+          <div className="mt-1 flex justify-between text-[0.625rem] text-pizarra">
             <span>07:00</span>
             <span>11:00</span>
             <span>15:00</span>

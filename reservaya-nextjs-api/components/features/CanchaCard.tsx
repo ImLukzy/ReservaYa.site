@@ -96,12 +96,12 @@ export function CanchaCard({
 
           <div className="mb-4 flex flex-wrap gap-1.5">
             {cancha.techada && (
-              <span className="rounded-full border border-basalto bg-piedra px-2.5 py-0.5 text-[11px] font-bold text-basalto">
+              <span className="rounded-full border border-basalto bg-piedra px-2.5 py-0.5 text-[0.6875rem] font-bold text-basalto">
                 Techada
               </span>
             )}
             {cancha.superficie && (
-              <span className="rounded-full border border-basalto bg-piedra px-2.5 py-0.5 text-[11px] font-bold text-basalto">
+              <span className="rounded-full border border-basalto bg-piedra px-2.5 py-0.5 text-[0.6875rem] font-bold text-basalto">
                 {cancha.superficie}
               </span>
             )}

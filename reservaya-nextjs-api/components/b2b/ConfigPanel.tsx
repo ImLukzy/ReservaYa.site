@@ -190,7 +190,7 @@ export function ConfigPanel() {
   return (
     <div>
       <div>
-        <h1 className="mt-1 font-display text-[28px] font-bold tracking-tight text-basalto">Configuración de tu cuenta</h1>
+        <h1 className="mt-1 font-display text-[1.75rem] font-bold tracking-tight text-basalto">Configuración de tu cuenta</h1>
         <p className="mt-1 text-sm text-pizarra">Tus datos de contacto y la suscripción de tus complejos.</p>
       </div>
 
@@ -200,7 +200,7 @@ export function ConfigPanel() {
         </p>
       )}
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[240px_1fr]">
+      <div className="mt-4 grid gap-4 lg:grid-cols-[15rem_1fr]">
         <nav aria-label="Secciones de configuración" className="card-tactil h-fit p-3">
           {TABS.map((t) => (
             <button

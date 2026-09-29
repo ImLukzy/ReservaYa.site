@@ -22,7 +22,7 @@ export default async function CarnePage() {
       </div>
 
       {/* Carné con proporción de tarjeta física CR80 táctil con borde 2px basalto y sombra dura 6px */}
-      <div className="mx-auto aspect-[1.586] w-full max-w-[420px] overflow-hidden rounded-2xl border-2 border-basalto bg-tiza shadow-dura-lg max-[360px]:aspect-auto">
+      <div className="mx-auto aspect-[1.586] w-full max-w-[26.25rem] overflow-hidden rounded-2xl border-2 border-basalto bg-tiza shadow-dura-lg max-[22.5rem]:aspect-auto">
         <div className="h-2 w-full border-b-2 border-basalto bg-cesped" aria-hidden="true" />
         <div className="flex h-full flex-col justify-between p-5 sm:p-6">
           {/* Cabecera: marca y estado */}
@@ -33,7 +33,7 @@ export default async function CarnePage() {
               </div>
               <p className="font-display text-xs font-black text-basalto">ReservaYa</p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full border-2 border-basalto bg-cesped-suave px-2.5 py-0.5 text-[11px] font-bold text-cesped-hondo">
+            <span className="inline-flex items-center gap-1 rounded-full border-2 border-basalto bg-cesped-suave px-2.5 py-0.5 text-[0.6875rem] font-bold text-cesped-hondo">
               <ShieldCheck className="h-3 w-3" aria-hidden="true" />
               Activo
             </span>
