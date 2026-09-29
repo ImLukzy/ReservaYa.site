@@ -55,8 +55,8 @@ const TABS: { id: Tab; label: string }[] = [
 const CLAVES_OBSOLETAS = ['ry_perfil', 'ry_cobros'];
 
 const inputCls =
-  'mt-1.5 w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/30';
-const soloLecturaCls = 'mt-1.5 w-full rounded-xl border border-[#E7E5E4] bg-[#F5F5F3] px-3 py-2.5 text-sm text-[#475569]';
+  'mt-1.5 w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none';
+const soloLecturaCls = 'mt-1.5 w-full rounded-xl border-2 border-cal bg-piedra px-3 py-2.5 font-display text-sm font-semibold text-pizarra';
 
 function texto(v: unknown): string {
   return v === null || v === undefined ? '' : String(v);
@@ -191,18 +191,18 @@ export function ConfigPanel() {
   return (
     <div>
       <div>
-        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Configuración de tu cuenta</h1>
-        <p className="mt-1 text-sm text-[#64748B]">Tus datos de contacto y la suscripción de tus complejos.</p>
+        <h1 className="mt-1 font-display text-[28px] font-bold tracking-tight text-basalto">Configuración de tu cuenta</h1>
+        <p className="mt-1 text-sm text-pizarra">Tus datos de contacto y la suscripción de tus complejos.</p>
       </div>
 
       {toast && (
-        <p role="status" className="mt-4 rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm font-semibold text-[#0F172A] shadow-sm">
+        <p role="status" className="mt-4 rounded-xl border-2 border-basalto bg-tiza px-4 py-3 font-display text-sm font-bold text-basalto shadow-dura-sm">
           {toast}
         </p>
       )}
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[240px_1fr]">
-        <nav aria-label="Secciones de configuración" className="h-fit rounded-2xl border border-[#E7E5E4] bg-white p-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+        <nav aria-label="Secciones de configuración" className="card-tactil h-fit p-3">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -210,8 +210,8 @@ export function ConfigPanel() {
               onClick={() => setTab(t.id)}
               aria-current={tab === t.id ? 'page' : undefined}
               className={cn(
-                'mb-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors last:mb-0',
-                tab === t.id ? 'bg-[#DCFCE7] text-[#15803D]' : 'text-[#475569] hover:bg-[#F5F5F3] hover:text-[#0F172A]'
+                'mb-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left font-display text-sm font-bold transition-colors last:mb-0',
+                tab === t.id ? 'bg-cesped-suave text-cesped-hondo' : 'text-pizarra hover:bg-piedra hover:text-basalto'
               )}
             >
               {t.id === 'perfil' ? <User size={16} strokeWidth={2} /> : <BadgeCheck size={16} strokeWidth={2} />}
@@ -220,26 +220,26 @@ export function ConfigPanel() {
           ))}
         </nav>
 
-        <section className="rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] md:p-6">
+        <section className="card-tactil p-5 md:p-6">
           {tab === 'perfil' &&
             (errorPerfil ? (
-              <p className="text-sm font-semibold text-[#B42318]">{errorPerfil}</p>
+              <p className="text-sm font-semibold text-error">{errorPerfil}</p>
             ) : !perfil ? (
-              <p className="py-8 text-center text-sm text-[#64748B]">Cargando tu perfil…</p>
+              <p className="py-8 text-center text-sm text-pizarra">Cargando tu perfil…</p>
             ) : (
               <form onSubmit={(e) => void guardarPerfil(e)}>
-                <h2 className="text-lg font-black text-[#0F172A]">Mi perfil</h2>
-                <p className="mt-0.5 text-sm text-[#64748B]">Tu equipo y el soporte de ReservaYa te contactan con estos datos.</p>
+                <h2 className="font-display text-lg font-black text-basalto">Mi perfil</h2>
+                <p className="mt-0.5 text-sm text-pizarra">Tu equipo y el soporte de ReservaYa te contactan con estos datos.</p>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Nombre
                     <input value={perfil.nombre} readOnly className={soloLecturaCls} />
                   </label>
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Correo
                     <input value={perfil.email} readOnly className={soloLecturaCls} />
                   </label>
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Teléfono / WhatsApp
                     <input
                       value={perfil.telefono}
@@ -249,7 +249,7 @@ export function ConfigPanel() {
                       className={inputCls}
                     />
                   </label>
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Usuario
                     <input
                       value={perfil.username}
@@ -257,13 +257,13 @@ export function ConfigPanel() {
                       aria-describedby="nota-usuario"
                       className={inputCls}
                     />
-                    <span id="nota-usuario" className="mt-1 block text-xs font-normal text-[#64748B]">
+                    <span id="nota-usuario" className="mt-1 block text-xs font-normal text-pizarra">
                       {perfil.proximoCambioUsername
                         ? `Podrás cambiarlo de nuevo el ${fecha(perfil.proximoCambioUsername)}.`
                         : 'Se puede cambiar una vez al año.'}
                     </span>
                   </label>
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Fecha de nacimiento
                     <input value={fecha(perfil.fechaNacimiento)} readOnly className={soloLecturaCls} />
                   </label>
@@ -271,7 +271,7 @@ export function ConfigPanel() {
                 <button
                   type="submit"
                   disabled={guardando}
-                  className="mt-5 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98] disabled:opacity-50"
+                  className="btn-tactil mt-5 bg-cesped px-6 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
                 >
                   {guardando ? 'Guardando…' : 'Guardar cambios'}
                 </button>
@@ -280,28 +280,28 @@ export function ConfigPanel() {
 
           {tab === 'suscripcion' && (
             <div>
-              <h2 className="text-lg font-black text-[#0F172A]">Suscripción</h2>
-              <p className="mt-0.5 text-sm text-[#64748B]">
+              <h2 className="font-display text-lg font-black text-basalto">Suscripción</h2>
+              <p className="mt-0.5 text-sm text-pizarra">
                 El estado de la suscripción de cada complejo. Las solicitudes nuevas las aprueba el equipo de ReservaYa.
               </p>
               {suscripciones === null ? (
-                <p className="py-8 text-center text-sm text-[#64748B]">Cargando suscripciones…</p>
+                <p className="py-8 text-center text-sm text-pizarra">Cargando suscripciones…</p>
               ) : suscripciones.length === 0 ? (
-                <p className="mt-4 rounded-xl border border-dashed border-[#E7E5E4] p-6 text-center text-sm text-[#64748B]">
+                <p className="mt-4 rounded-xl border-2 border-dashed border-basalto bg-piedra/50 p-6 text-center text-sm text-pizarra">
                   Aún no tienes suscripciones. Solicita una abajo.
                 </p>
               ) : (
-                <ul className="mt-4 divide-y divide-[#F1F0EE] rounded-xl border border-[#E7E5E4]">
+                <ul className="mt-4 divide-y divide-cal rounded-xl border-2 border-basalto bg-tiza shadow-dura-sm">
                   {suscripciones.map((s) => (
                     <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
                       <div>
-                        <p className="text-sm font-bold text-[#0F172A]">{s.complejoNombre}</p>
-                        <p className="text-xs text-[#64748B]">
+                        <p className="font-display text-sm font-bold text-basalto">{s.complejoNombre}</p>
+                        <p className="text-xs text-pizarra">
                           Plan {s.plan.toLowerCase()} · vence el {fecha(s.fechaFin)}
                           {s.estado === 'ACTIVA' ? ` (${s.diasRestantes} días)` : ''}
                         </p>
                       </div>
-                      <span className="rounded-full bg-[#F1F0EE] px-2.5 py-1 text-xs font-bold text-[#0F172A]">
+                      <span className="rounded-full bg-piedra px-2.5 py-1 font-display text-xs font-bold text-basalto">
                         {ETIQUETA_ESTADO[s.estado] ?? s.estado}
                       </span>
                     </li>
@@ -310,13 +310,13 @@ export function ConfigPanel() {
               )}
 
               {complejos.length > 0 && (
-                <form onSubmit={(e) => void solicitarSuscripcion(e)} className="mt-5 grid gap-3 rounded-xl border border-[#E7E5E4] p-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                <form onSubmit={(e) => void solicitarSuscripcion(e)} className="mt-5 grid gap-3 rounded-xl border-2 border-basalto bg-tiza p-4 shadow-dura-sm md:grid-cols-[1fr_1fr_auto] md:items-end">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Complejo
                     <select
                       value={solicitud.complejoId}
                       onChange={(e) => setSolicitud((s) => ({ ...s, complejoId: e.target.value }))}
-                      className={cn(inputCls, 'bg-white')}
+                      className={inputCls}
                     >
                       {complejos.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -325,12 +325,12 @@ export function ConfigPanel() {
                       ))}
                     </select>
                   </label>
-                  <label className="text-sm font-semibold text-[#0F172A]">
+                  <label className="font-display text-sm font-bold text-basalto">
                     Plan
                     <select
                       value={solicitud.plan}
                       onChange={(e) => setSolicitud((s) => ({ ...s, plan: e.target.value }))}
-                      className={cn(inputCls, 'bg-white')}
+                      className={inputCls}
                     >
                       {PLANES.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -342,7 +342,7 @@ export function ConfigPanel() {
                   <button
                     type="submit"
                     disabled={guardando}
-                    className="rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] disabled:opacity-50"
+                    className="btn-tactil bg-cesped px-5 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
                   >
                     Solicitar suscripción
                   </button>
