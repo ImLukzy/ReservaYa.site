@@ -16,7 +16,7 @@ export default async function TecnicoPage() {
     <div>
       <AvisoCarga errores={carga.errores} />
       <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#15803D]">Plataforma ReservaYa</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cesped-hondo">Plataforma ReservaYa</p>
         <h1 className="mt-2 text-3xl font-black text-gray-900">Panel técnico</h1>
         <p className="mt-1 text-gray-500">Opera la plataforma: suscripciones, centros y usuarios.</p>
       </div>
@@ -41,7 +41,7 @@ export default async function TecnicoPage() {
           <p className="text-sm font-semibold text-gray-500">Ingresos confirmados</p>
           <p className="mt-1 text-4xl font-black text-gray-900">S/ {report?.ingresosTotales ?? '—'}</p>
           <p className="mt-1 text-sm text-gray-500">
-            <Link href="/admin/reportes" className="font-semibold text-[#15803D] hover:underline">
+            <Link href="/admin/reportes" className="font-semibold text-cesped-hondo hover:underline">
               Ver reportes →
             </Link>
           </p>

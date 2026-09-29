@@ -82,18 +82,18 @@ export default async function AdminPage() {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">
-            ▦ DASHBOARD <span className="font-normal text-[#8A938D]">· en vivo</span>
+          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">
+            ▦ DASHBOARD <span className="font-normal text-pizarra">· en vivo</span>
           </p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">
+          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">
             {saludo(ahora.getHours())}, {nombre} 👋
           </h1>
-          <p className="text-sm text-[#64748B] capitalize">{fechaLarga} De {ahora.getFullYear()}</p>
+          <p className="text-sm text-pizarra capitalize">{fechaLarga} De {ahora.getFullYear()}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/admin/agenda"
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="flex items-center gap-1.5 rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-grafito transition-all hover:bg-cesped-hover hover:shadow-md active:scale-[0.98]"
           >
             <Plus size={18} strokeWidth={2.5} /> Reserva manual
           </Link>
@@ -101,15 +101,15 @@ export default async function AdminPage() {
       </div>
 
       {/* Bienvenida */}
-      <div className="relative mt-4 flex flex-col justify-between gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-[#060A08] via-[#0A2E1F] to-[#14532D] p-5 text-white md:flex-row md:items-center">
+      <div className="relative mt-4 flex flex-col justify-between gap-3 overflow-hidden rounded-2xl bg-noche border-2 border-basalto p-5 text-white md:flex-row md:items-center">
         <div aria-hidden className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full border border-white/10" />
         <div aria-hidden className="pointer-events-none absolute -right-2 -top-8 h-28 w-28 rounded-full border border-white/10" />
         <div className="relative flex gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#22C55E]/40 bg-[#22C55E]/15 text-[#4ADE80]">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cesped/40 bg-cesped/15 text-cesped">
             <HeartHandshake size={20} strokeWidth={1.85} />
           </span>
           <div>
-            <span className="rounded-full border border-[#4ADE80]/40 px-2 py-0.5 text-[10px] font-bold tracking-wider text-[#4ADE80]">
+            <span className="rounded-full border border-cesped/40 px-2 py-0.5 text-[10px] font-bold tracking-wider text-cesped">
               CUENTA CREADA · PRONTO TE CONTACTAMOS
             </span>
             <p className="mt-1.5 font-bold">¡Bienvenido, {nombre}! Ya tienes tu panel listo. 🎉</p>
@@ -124,7 +124,7 @@ export default async function AdminPage() {
             href={whatsappUrl() ?? undefined}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative shrink-0 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A]"
+            className="relative shrink-0 rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-grafito transition hover:bg-cesped-hover"
           >
             Escríbenos por WhatsApp · {whatsappVisible()}
           </a>
@@ -134,23 +134,23 @@ export default async function AdminPage() {
       {/* Checklist */}
       <Link
         href="/admin/ayuda"
-        className="mt-3 flex items-center gap-3 rounded-xl border border-[#E7E5E4] bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.02)] transition hover:border-[#22C55E]"
+        className="mt-3 flex items-center gap-3 rounded-xl border border-cal bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.02)] transition hover:border-cesped"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#15803D]">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cesped-suave text-cesped-hondo">
           <ListChecks size={18} strokeWidth={1.85} />
         </span>
         <span className="min-w-0 flex-1">
-          <strong className="block text-sm font-bold text-[#101613]">
+          <strong className="block text-sm font-bold text-basalto">
             Completa tu complejo · {hechos} de 5
           </strong>
-          <span className="block truncate text-xs text-[#64748B]">
+          <span className="block truncate text-xs text-pizarra">
             Lo más importante que te falta: {siguiente}
           </span>
         </span>
-        <span className="h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-[#EDEEEC]">
-          <span className="block h-full rounded-full bg-[#22C55E]" style={{ width: `${(hechos / 5) * 100}%` }} />
+        <span className="h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-piedra">
+          <span className="block h-full rounded-full bg-cesped" style={{ width: `${(hechos / 5) * 100}%` }} />
         </span>
-        <span aria-hidden className="shrink-0 text-[#94A3B8]">
+        <span aria-hidden className="shrink-0 text-pizarra">
           <ChevronRight size={18} strokeWidth={2} />
         </span>
       </Link>
@@ -161,18 +161,18 @@ export default async function AdminPage() {
 
       {/* Resumen del mes */}
       <div className="mt-6 flex items-center justify-between">
-        <p className="text-[11px] font-bold tracking-[0.14em] text-[#8A938D]">RESUMEN DEL MES</p>
-        <div className="flex items-center gap-4 text-xs font-semibold text-[#64748B]">
-          <Link href="/admin/reportes" className="transition hover:text-[#15803D]">
+        <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">RESUMEN DEL MES</p>
+        <div className="flex items-center gap-4 text-xs font-semibold text-pizarra">
+          <Link href="/admin/reportes" className="transition hover:text-cesped-hondo">
             📊 Ver reportes detallados
           </Link>
-          <Link href="/admin/ayuda" className="transition hover:text-[#15803D]">
+          <Link href="/admin/ayuda" className="transition hover:text-cesped-hondo">
             ⓘ ¿Qué significa cada número?
           </Link>
         </div>
       </div>
       <div className="mt-3 grid gap-4 lg:grid-cols-3">
-        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#060A08] via-[#0A2415] to-[#14532D] p-5 text-white lg:col-span-2">
+        <div className="overflow-hidden rounded-2xl bg-noche border-2 border-basalto p-5 text-white lg:col-span-2">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[11px] font-bold tracking-[0.14em] text-white/55">
@@ -186,7 +186,7 @@ export default async function AdminPage() {
             {porDia.map((v, i) => (
               <div key={i} className="flex flex-1 flex-col items-center justify-end gap-1 self-stretch">
                 <div
-                  className="w-full rounded-sm bg-[#22C55E]/80"
+                  className="w-full rounded-sm bg-cesped/80"
                   style={{ height: `${Math.max(3, (v / maxDia) * 56)}px`, opacity: v > 0 ? 1 : 0.25 }}
                   title={`Día ${i + 1}: ${v} reservas`}
                 />
@@ -196,37 +196,37 @@ export default async function AdminPage() {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="rounded-2xl bg-gradient-to-br from-[#0A2E1F] to-[#14532D] p-5 text-white">
+          <div className="rounded-2xl bg-noche border-2 border-basalto p-5 text-white">
             <p className="text-[11px] font-bold tracking-[0.14em] text-white/60">HOY</p>
             <p className="mt-1 text-2xl font-black">S/ 0</p>
             <p className="text-xs text-white/55">{reservasHoy.length} reservas hoy</p>
           </div>
           <Link
             href="/admin/agenda"
-            className="group block rounded-2xl border border-[#E7E5E4] bg-white p-5 transition hover:border-[#22C55E]"
+            className="group block rounded-2xl border border-cal bg-white p-5 transition hover:border-cesped"
           >
-            <p className="flex items-center justify-between text-[11px] font-bold tracking-[0.14em] text-[#64748B]">
+            <p className="flex items-center justify-between text-[11px] font-bold tracking-[0.14em] text-pizarra">
               PENDIENTES HOY
-              <ChevronRight size={16} strokeWidth={2} className="text-[#CBD5E1] transition group-hover:text-[#22C55E]" />
+              <ChevronRight size={16} strokeWidth={2} className="text-pizarra transition group-hover:text-cesped" />
             </p>
-            <p className="mt-1 text-2xl font-black text-[#0F172A]">{pendientesHoy}</p>
-            <p className="text-xs text-[#64748B]">todo el día</p>
+            <p className="mt-1 text-2xl font-black text-basalto">{pendientesHoy}</p>
+            <p className="text-xs text-pizarra">todo el día</p>
           </Link>
         </div>
       </div>
 
       {/* Tu día */}
       <div className="mt-4">
-        <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#64748B]">TU DÍA DE HOY</p>
-          <p className="mt-1 text-xl font-black text-[#0F172A]">
-            {reservasHoy.length} <span className="text-sm font-semibold text-[#64748B]">reservas</span>
+        <div className="rounded-2xl border border-cal bg-white p-5">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">TU DÍA DE HOY</p>
+          <p className="mt-1 text-xl font-black text-basalto">
+            {reservasHoy.length} <span className="text-sm font-semibold text-pizarra">reservas</span>
           </p>
-          <div className="relative mt-5 h-8 overflow-hidden rounded-full bg-[#F1F0EE]">
+          <div className="relative mt-5 h-8 overflow-hidden rounded-full bg-sillar">
             {segs.map((s, i) => (
               <span
                 key={i}
-                className={`absolute inset-y-0 ${s.conf ? 'bg-[#22C55E]' : 'bg-[#EAB308]'}`}
+                className={`absolute inset-y-0 ${s.conf ? 'bg-cesped' : 'bg-sol'}`}
                 style={{
                   left: `${((s.ini - INI) / (FIN - INI)) * 100}%`,
                   width: `${Math.max(1.5, ((s.fin - s.ini) / (FIN - INI)) * 100)}%`,
@@ -239,22 +239,22 @@ export default async function AdminPage() {
               title="Ahora"
             />
           </div>
-          <div className="mt-1 flex justify-between text-[10px] text-[#94A3B8]">
+          <div className="mt-1 flex justify-between text-[10px] text-pizarra">
             <span>07:00</span>
             <span>11:00</span>
             <span>15:00</span>
             <span>19:00</span>
             <span>23:00</span>
           </div>
-          <div className="mt-4 flex gap-4 border-t border-gray-100 pt-3 text-xs text-[#64748B]">
+          <div className="mt-4 flex gap-4 border-t border-gray-100 pt-3 text-xs text-pizarra">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-[#22C55E]" /> Confirmada
+              <span className="h-2 w-2 rounded-full bg-cesped" /> Confirmada
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-[#EAB308]" /> Por confirmar
+              <span className="h-2 w-2 rounded-full bg-sol" /> Por confirmar
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-[#E7E5E4]" /> Libre
+              <span className="h-2 w-2 rounded-full bg-piedra" /> Libre
             </span>
           </div>
         </div>

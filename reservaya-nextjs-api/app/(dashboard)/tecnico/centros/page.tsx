@@ -64,8 +64,8 @@ export default async function CentrosPage({
             href={x.v ? `/tecnico/centros?f=${x.v}` : '/tecnico/centros'}
             className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
               filtro === x.v
-                ? 'bg-[#060A08] text-white'
-                : 'bg-white text-gray-600 border border-gray-200 hover:border-[#22C55E]'
+                ? 'bg-noche text-white'
+                : 'bg-white text-gray-600 border border-gray-200 hover:border-cesped'
             }`}
           >
             {x.label}
@@ -98,11 +98,11 @@ export default async function CentrosPage({
                     <td className="px-6 py-4 text-sm text-gray-600">{c.totalCanchas}</td>
                     <td className="px-6 py-4">
                       {c.sub?.vigente ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#DCFCE7] text-[#15803D]">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-cesped-suave text-cesped-hondo">
                           {c.sub.estado} · {c.sub.fechaFin.slice(0, 10)}
                         </span>
                       ) : c.pendiente ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FEF9C3] text-[#A16207]">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-sol-suave text-basalto">
                           Pendiente
                         </span>
                       ) : (
@@ -114,7 +114,7 @@ export default async function CentrosPage({
                     <td className="px-6 py-4 text-right">
                       <Link
                         href="/tecnico/suscripciones"
-                        className="text-sm font-semibold text-[#15803D] hover:underline"
+                        className="text-sm font-semibold text-cesped-hondo hover:underline"
                       >
                         Ver →
                       </Link>
