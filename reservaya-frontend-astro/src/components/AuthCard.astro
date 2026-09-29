@@ -1,10 +1,8 @@
 ---
 // Tarjeta centrada de las páginas de cuenta (entrar, registro y contraseña).
-// En xl+ (1280px) va acompañada del tablero real reducido (AuthTablero); antes de eso es
-// solo la tarjeta. Probado en vivo: a lg (1024px) la columna del tablero mide ~512px y el
-// panel de 6 columnas del tablero se recorta igual (necesita ~432px fijos + espacio para
-// texto); desde xl da ~640px y se lee bien (igual que ya se verificó a 1440px).
-import AuthTablero from "./AuthTablero.astro";
+// En pantallas grandes (xl+) va acompañada de un panel visual decorativo con PatronCancha.
+import PatronCancha from "./ui/PatronCancha.astro";
+
 interface Props {
   titulo: string;
   texto?: string;
@@ -13,15 +11,44 @@ interface Props {
 const { titulo, texto, idTitulo } = Astro.props;
 ---
 
-<div class="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 xl:grid-cols-[minmax(0,28rem)_1fr] xl:items-stretch lg:py-16">
+<div class="mx-auto grid w-full max-w-5xl gap-8 px-4 py-10 lg:py-16 xl:grid-cols-[minmax(0,26rem)_1fr] xl:items-center">
   <section class="mx-auto w-full max-w-md xl:mx-0 xl:max-w-none">
-    <div class="card-tactil p-6 sm:p-8">
+    <div class="card-tactil bg-tiza p-6 shadow-dura sm:p-8">
       <slot name="arriba" />
-      <h1 id={idTitulo} class="text-2xl lg:text-3xl">{titulo}</h1>
+      <h1 id={idTitulo} class="font-display text-2xl font-black text-basalto lg:text-3xl">{titulo}</h1>
       {texto && <p class="mt-2 text-pizarra">{texto}</p>}
       <div class="mt-6"><slot /></div>
     </div>
     <div class="mt-5 text-center"><slot name="pie" /></div>
   </section>
-  <AuthTablero />
+
+  <aside class="relative hidden overflow-hidden rounded-2xl border-2 border-basalto bg-noche p-8 text-tiza shadow-dura xl:flex xl:min-h-[460px] xl:flex-col xl:justify-between" aria-hidden="true">
+    <PatronCancha variante="panel" />
+    <div class="relative z-10">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-cesped/40 bg-cesped/15 px-3 py-1 font-display text-xs font-bold text-cesped">
+        ★ RESERVAYA AREQUIPA
+      </span>
+      <h2 class="mt-4 font-display text-2xl font-black tracking-tight text-tiza lg:text-3xl">
+        Tu cancha lista para el pitazo inicial
+      </h2>
+      <p class="mt-2 max-w-sm text-sm leading-relaxed text-tiza/75">
+        Accede a la red más completa de complejos en Arequipa. Consulta horarios en vivo, arma tus partidos y reserva en segundos.
+      </p>
+    </div>
+
+    <div class="relative z-10 mt-8 space-y-3 border-t border-cesped/20 pt-6">
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-cesped text-xs font-black text-tiza">✓</span>
+        <p class="text-xs font-bold text-tiza/90">Confirmación directa con el dueño</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-cesped text-xs font-black text-tiza">✓</span>
+        <p class="text-xs font-bold text-tiza/90">29 distritos con disponibilidad real</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-cesped text-xs font-black text-tiza">✓</span>
+        <p class="text-xs font-bold text-tiza/90">Organización de partidos y torneos</p>
+      </div>
+    </div>
+  </aside>
 </div>
