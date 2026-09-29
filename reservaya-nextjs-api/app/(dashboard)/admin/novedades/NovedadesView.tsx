@@ -47,11 +47,11 @@ export function NovedadesView() {
   return (
     <div>
       <div>
-        <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">📰 NOVEDADES</p>
-        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">
+        <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">📰 NOVEDADES</p>
+        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">
           Lo que va cambiando
         </h1>
-        <p className="mt-1 text-sm text-[#64748B]">
+        <p className="mt-1 text-sm text-pizarra">
           Mejoras de tu panel contadas en simple, sin tecnicismos.
         </p>
       </div>
@@ -64,25 +64,25 @@ export function NovedadesView() {
               key={n.titulo}
               className={cn(
                 'rounded-2xl border bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
-                n.destacada ? 'border-[#22C55E]/50' : 'border-[#E7E5E4]'
+                n.destacada ? 'border-cesped/50' : 'border-cal'
               )}
             >
               <div className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#DCFCE7] text-lg">
-                  <Newspaper size={19} strokeWidth={1.85} className="text-[#15803D]" />
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cesped-suave text-lg">
+                  <Newspaper size={19} strokeWidth={1.85} className="text-cesped-hondo" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-bold tracking-[0.12em] text-[#94A3B8]">{n.fecha}</p>
-                  <h2 className="mt-0.5 text-base font-black text-[#0F172A]">{n.titulo}</h2>
-                  <p className="mt-1 text-sm text-[#64748B]">{n.resumen}</p>
+                  <p className="text-[11px] font-bold tracking-[0.12em] text-pizarra">{n.fecha}</p>
+                  <h2 className="mt-0.5 text-base font-black text-basalto">{n.titulo}</h2>
+                  <p className="mt-1 text-sm text-pizarra">{n.resumen}</p>
                 </div>
               </div>
-              {open && <p className="mt-3 text-sm leading-relaxed text-[#0F172A]">{n.detalle}</p>}
+              {open && <p className="mt-3 text-sm leading-relaxed text-basalto">{n.detalle}</p>}
               <button
                 type="button"
                 onClick={() => setAbierta(open ? null : i)}
                 aria-expanded={open}
-                className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-[#15803D] hover:underline"
+                className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-cesped-hondo hover:underline"
               >
                 {open ? 'Leer menos' : 'Leer'}
                 <ChevronDown size={15} strokeWidth={2.5} className={cn('transition-transform', open && 'rotate-180')} />

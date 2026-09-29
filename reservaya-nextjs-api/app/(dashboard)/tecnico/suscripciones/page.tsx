@@ -38,8 +38,8 @@ export default async function SuscripcionesPage({
             href={f.v ? `/tecnico/suscripciones?estado=${f.v}` : '/tecnico/suscripciones'}
             className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
               (estado ?? '') === f.v
-                ? 'bg-[#060A08] text-white'
-                : 'bg-white text-gray-600 border border-gray-200 hover:border-[#22C55E]'
+                ? 'bg-noche text-white'
+                : 'bg-white text-gray-600 border border-gray-200 hover:border-cesped'
             }`}
           >
             {f.label}
