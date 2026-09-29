@@ -97,8 +97,8 @@ Lotes de ≤3 archivos, secuenciales (L1 primero: todo cuelga de los tokens), pa
 - [x] T2: orden por mapa (jugador → B2B → técnico neutro tokenizado) + lotes ≤3 archivos secuenciales para Oscar (§3–§4).
 - [x] T3: criterios medibles con gates del panel (§5).
 - [x] T4: aprobación de Lukas (decisión §2.1 incluida) antes de cualquier lote.
-- [ ] T5: con «aprobado», despachar L1 a Oscar; cada lote verde de Jim lo reviso vs spec y anoto §7.
-- [ ] T6: verificar criterios y anotar en §7.
+- [x] T5: lotes ejecutados por Oscar; cada lote verde de Jim revisado vs spec y anotado en §7.
+- [x] T6: criterios verificados y anotados en §7.
 
 ---
 
