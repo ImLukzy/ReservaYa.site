@@ -196,7 +196,7 @@ export function EquipoPanel() {
             href="/admin/ayuda"
             aria-label="Ayuda sobre equipo"
             title="¿Cómo agrego a mi personal?"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra transition-colors hover:border-cesped hover:text-cesped"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra transition-colors hover:border-cesped hover:text-cesped"
           >
             <CircleHelp size={18} strokeWidth={1.85} />
           </a>
@@ -360,7 +360,7 @@ export function EquipoPanel() {
                 type="button"
                 onClick={() => setModal(false)}
                 aria-label="Cerrar"
-                className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
+                className="btn-tactil h-11 w-11 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={18} strokeWidth={2} />
               </button>
