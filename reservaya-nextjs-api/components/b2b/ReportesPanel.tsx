@@ -159,9 +159,9 @@ export function ReportesPanel({
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">▦ REPORTES</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Mis reportes</h1>
-          <p className="text-sm text-[#64748B]">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ REPORTES</p>
+          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Mis reportes</h1>
+          <p className="text-sm text-pizarra">
             Tus números reales: ingresos, ocupación y clientes de {mesInfo.largo.toLowerCase()}.
           </p>
         </div>
@@ -169,14 +169,14 @@ export function ReportesPanel({
           <Link
             href="/admin/ayuda"
             aria-label="Ayuda"
-            className="flex h-9 items-center gap-1.5 rounded-xl border border-[#E7E5E4] bg-white px-3 text-sm font-bold text-[#64748B] transition-colors hover:border-[#22C55E]"
+            className="btn-tactil flex h-9 items-center gap-1.5 rounded-full border-2 border-basalto bg-tiza px-3 text-sm font-bold text-pizarra transition-colors hover:text-basalto hover:bg-piedra"
           >
             <CircleHelp size={18} strokeWidth={1.85} /> Ayuda
           </Link>
           <button
             type="button"
             onClick={exportarExcel}
-            className="flex h-9 items-center gap-1.5 rounded-xl bg-[#0F172A] px-4 text-sm font-bold text-white transition-all hover:bg-black active:scale-[0.98]"
+            className="btn-tactil flex h-9 items-center gap-1.5 rounded-full border-2 border-basalto bg-basalto px-4 text-sm font-bold text-tiza shadow-dura-sm transition-all hover:bg-basalto/90"
           >
             <Download size={16} /> Exportar CSV
           </button>
@@ -184,7 +184,7 @@ export function ReportesPanel({
       </div>
 
       {/* Selector de mes */}
-      <div className="mt-4 flex gap-1.5 overflow-x-auto rounded-2xl border border-[#E7E5E4] bg-white p-1.5" role="tablist" aria-label="Mes">
+      <div className="card-tactil mt-4 flex gap-1.5 overflow-x-auto p-1.5" role="tablist" aria-label="Mes">
         {MESES.map((m) => (
           <button
             key={m.key}
@@ -194,7 +194,9 @@ export function ReportesPanel({
             onClick={() => setMes(m.key)}
             className={cn(
               'shrink-0 rounded-xl px-4 py-2 text-sm font-bold transition-all',
-              mes === m.key ? 'bg-[#0F172A] text-white shadow' : 'text-[#64748B] hover:bg-[#F5F5F3] hover:text-[#0F172A]'
+              mes === m.key
+                ? 'border-2 border-basalto bg-basalto text-tiza shadow-dura-sm'
+                : 'border-2 border-transparent text-pizarra hover:bg-piedra hover:text-basalto'
             )}
           >
             {m.corto}
@@ -203,13 +205,13 @@ export function ReportesPanel({
       </div>
 
       {enMes.length === 0 ? (
-        <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white">
+        <div className="card-tactil mt-4 overflow-hidden">
           <EmptyState
             icon={BarChart3}
             title={`Sin reservas en ${mesInfo.largo}`}
             description="Cuando registres reservas verás aquí tus ingresos, ocupación y mejores clientes."
             action={
-              <Link href="/admin/agenda" className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A]">
+              <Link href="/admin/agenda" className="btn-tactil rounded-full bg-cesped px-4 py-2.5 text-sm font-bold text-tiza transition-all hover:bg-cesped-hover">
                 Crear reserva manual
               </Link>
             }
@@ -223,114 +225,114 @@ export function ReportesPanel({
           <div
             key={k.label}
             className={cn(
-              'rounded-2xl border p-5',
+              'card-tactil p-5',
               k.oscuro
-                ? 'border-transparent bg-gradient-to-br from-[#060A08] via-[#0A2E1F] to-[#14532D] text-white'
-                : 'border-[#E7E5E4] bg-white'
+                ? 'border-2 border-basalto bg-gradient-to-br from-noche via-noche to-cesped-hondo text-tiza shadow-dura'
+                : ''
             )}
           >
-            <p className={cn('text-[11px] font-bold tracking-[0.12em]', k.oscuro ? 'text-white/60' : 'text-[#64748B]')}>
+            <p className={cn('text-[11px] font-bold tracking-[0.12em]', k.oscuro ? 'text-tiza/75' : 'text-pizarra')}>
               {k.label.toUpperCase()}
             </p>
-            <p className={cn('mt-1 text-3xl font-black', k.oscuro ? 'text-white' : 'text-[#0F172A]')}>{k.valor}</p>
-            <p className={cn('mt-0.5 text-xs', k.oscuro ? 'text-white/55' : 'text-[#64748B]')}>{k.sub}</p>
+            <p className={cn('mt-1 text-3xl font-black', k.oscuro ? 'text-tiza' : 'text-basalto')}>{k.valor}</p>
+            <p className={cn('mt-0.5 text-xs', k.oscuro ? 'text-tiza/70' : 'text-pizarra')}>{k.sub}</p>
           </div>
         ))}
       </div>
 
       {/* Ocupación + serie diaria */}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl bg-gradient-to-br from-[#1D4ED8] to-[#1E3A8A] p-5 text-white">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-white/60">OCUPACIÓN · {mesInfo.largo.toUpperCase()}</p>
+        <div className="card-tactil border-2 border-basalto bg-gradient-to-br from-noche via-noche to-cesped-hondo p-5 text-tiza shadow-dura">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-tiza/75">OCUPACIÓN · {mesInfo.largo.toUpperCase()}</p>
           <p className="mt-1 text-5xl font-black">{canchasActivas > 0 ? `${ocupacion.toFixed(1)}%` : '—'}</p>
-          <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-white/20">
-            <div className="h-full rounded-full bg-white" style={{ width: `${ocupacion}%` }} />
+          <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-tiza/20">
+            <div className="h-full rounded-full bg-tiza" style={{ width: `${ocupacion}%` }} />
           </div>
-          <p className="mt-3 text-xs leading-relaxed text-white/70">
+          <p className="mt-3 text-xs leading-relaxed text-tiza/80">
             {canchasActivas > 0
               ? `Reservaste ${horasReservadas.toFixed(0)} de ${capacidadHoras.toFixed(0)} horas disponibles (${canchasActivas} cancha${canchasActivas === 1 ? '' : 's'} × ${dias} días × ${HORAS_POR_DIA}h de 07:00 a 23:00).`
               : 'Agrega tus canchas para medir la ocupación.'}
           </p>
           {reporte && (
-            <p className="mt-2 text-xs text-white/50">
+            <p className="mt-2 text-xs text-tiza/60">
               Global: {reporte.totalReservas} reservas totales · S/ {num(reporte.ingresosTotales).toLocaleString('es-PE')} ingresos confirmados.
             </p>
           )}
         </div>
-        <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#64748B]">RESERVAS DÍA A DÍA</p>
+        <div className="card-tactil p-5">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">RESERVAS DÍA A DÍA</p>
           <div className="mt-4 flex h-32 items-end gap-[3px]">
             {serieDiaria.map((s) => (
               <div key={s.dia} className="flex flex-1 flex-col items-center gap-1" title={`Día ${s.dia}: ${s.reservas} reservas`}>
                 <div
-                  className="w-full rounded-sm bg-[#22C55E]"
+                  className="w-full rounded-sm bg-cesped"
                   style={{ height: `${Math.max(3, (s.reservas / maxDia) * 112)}px`, opacity: s.reservas > 0 ? 1 : 0.2 }}
                 />
-                {s.dia % 5 === 0 && <span className="text-[9px] text-[#94A3B8]">{s.dia}</span>}
+                {s.dia % 5 === 0 && <span className="text-[9px] text-pizarra">{s.dia}</span>}
               </div>
             ))}
           </div>
-          <p className="mt-2 text-xs text-[#64748B]">{validas.length} reservas vigentes en {mesInfo.largo.toLowerCase()}.</p>
+          <p className="mt-2 text-xs text-pizarra">{validas.length} reservas vigentes en {mesInfo.largo.toLowerCase()}.</p>
         </div>
       </div>
 
       {/* Por cancha + últimos 6 meses + top clientes */}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#64748B]">OCUPACIÓN POR CANCHA</p>
+        <div className="card-tactil p-5">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">OCUPACIÓN POR CANCHA</p>
           {porCancha.length === 0 ? (
-            <p className="mt-3 text-sm text-[#64748B]">Sin datos este mes.</p>
+            <p className="mt-3 text-sm text-pizarra">Sin datos este mes.</p>
           ) : (
             <ul className="mt-3 space-y-3">
               {porCancha.map((c) => (
                 <li key={c.nombre}>
                   <div className="flex justify-between text-sm">
-                    <span className="font-bold text-[#0F172A]">{c.nombre}</span>
-                    <span className="text-xs font-semibold text-[#64748B]">{c.horas.toFixed(0)}h · {c.pct.toFixed(0)}%</span>
+                    <span className="font-bold text-basalto">{c.nombre}</span>
+                    <span className="text-xs font-semibold text-pizarra">{c.horas.toFixed(0)}h · {c.pct.toFixed(0)}%</span>
                   </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#F1F0EE]">
-                    <div className="h-full rounded-full bg-[#3B82F6]" style={{ width: `${c.pct}%` }} />
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-piedra">
+                    <div className="h-full rounded-full bg-cesped" style={{ width: `${c.pct}%` }} />
                   </div>
                 </li>
               ))}
             </ul>
           )}
         </div>
-        <div className="rounded-2xl border border-[#E7E5E4] bg-white p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#64748B]">INGRESOS ÚLTIMOS 6 MESES</p>
+        <div className="card-tactil p-5">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">INGRESOS ÚLTIMOS 6 MESES</p>
           <div className="mt-4 flex h-32 items-end gap-2">
             {ultimos6.map((m) => (
               <div key={m.key} className="flex flex-1 flex-col items-center gap-1" title={`${m.largo}: ${soles(m.ingresos)}`}>
-                <span className="text-[10px] font-bold text-[#15803D]">{m.ingresos > 0 ? `S/${Math.round(m.ingresos)}` : ''}</span>
+                <span className="text-[10px] font-bold text-cesped-hondo">{m.ingresos > 0 ? `S/${Math.round(m.ingresos)}` : ''}</span>
                 <div
-                  className={cn('w-full rounded-t-lg', m.key === mes ? 'bg-[#0F172A]' : 'bg-[#22C55E]/70')}
+                  className={cn('w-full rounded-t-lg', m.key === mes ? 'bg-basalto' : 'bg-cesped/70')}
                   style={{ height: `${Math.max(4, (m.ingresos / max6) * 96)}px`, opacity: m.ingresos > 0 ? 1 : 0.25 }}
                 />
-                <span className="text-[10px] font-semibold text-[#64748B]">{m.corto.split(' ')[0]}</span>
+                <span className="text-[10px] font-semibold text-pizarra">{m.corto.split(' ')[0]}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-5">
-        <p className="text-[11px] font-bold tracking-[0.14em] text-[#64748B]">TOP CLIENTES DEL MES</p>
+      <div className="card-tactil mt-4 p-5">
+        <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">TOP CLIENTES DEL MES</p>
         {topClientes.length === 0 ? (
-          <p className="mt-3 text-sm text-[#64748B]">Aún no hay clientes este mes.</p>
+          <p className="mt-3 text-sm text-pizarra">Aún no hay clientes este mes.</p>
         ) : (
-          <ul className="mt-2 divide-y divide-[#F1F0EE]">
+          <ul className="mt-2 divide-y divide-cal">
             {topClientes.map((c, i) => (
               <li key={`${c.nombre}-${i}`} className="flex items-center justify-between gap-2 py-2.5 text-sm">
                 <div className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#DCFCE7] text-sm font-black text-[#15803D]">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-cesped bg-cesped-suave text-sm font-black text-cesped-hondo">
                     {i + 1}
                   </span>
                   <div>
-                    <p className="font-bold text-[#0F172A]">{c.nombre}</p>
-                    <p className="text-xs text-[#64748B]">{c.reservas} reserva{c.reservas === 1 ? '' : 's'}</p>
+                    <p className="font-bold text-basalto">{c.nombre}</p>
+                    <p className="text-xs text-pizarra">{c.reservas} reserva{c.reservas === 1 ? '' : 's'}</p>
                   </div>
                 </div>
-                <p className="font-black text-[#15803D]">{soles(c.ingresos)}</p>
+                <p className="font-black text-cesped-hondo">{soles(c.ingresos)}</p>
               </li>
             ))}
           </ul>
