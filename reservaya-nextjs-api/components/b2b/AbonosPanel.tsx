@@ -103,6 +103,15 @@ export function AbonosPanel() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!modal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModal(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [modal]);
+
   async function guardarCuenta() {
     setErrorCuenta(null);
     if (banco.trim().length < 2) {
@@ -302,7 +311,7 @@ export function AbonosPanel() {
                 type="button"
                 onClick={() => setModal(false)}
                 aria-label="Cerrar"
-                className="rounded-lg p-1 text-pizarra hover:bg-piedra hover:text-basalto"
+                className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={20} strokeWidth={2} />
               </button>

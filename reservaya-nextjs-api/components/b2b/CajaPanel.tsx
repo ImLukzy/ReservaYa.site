@@ -89,6 +89,19 @@ function Modal({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCloseRef.current();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4"
@@ -107,7 +120,7 @@ function Modal({
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="btn-tactil h-8 w-8 rounded-full border-2 border-basalto text-pizarra hover:text-basalto"
+            className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
           >
             <X size={16} />
           </button>
