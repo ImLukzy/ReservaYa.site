@@ -6,49 +6,56 @@
 // sobre fondo noche con líneas de césped visibles y nítidas.
 interface Props {
   variante?: "hero" | "panel";
+  deporte?: "FUTBOL" | "FUTBOL5" | "FUTBOL7" | "VOLLEYBALL" | "BASQUET" | "PADEL" | "TENIS" | "LOZA";
 }
 
-const { variante = "hero" } = Astro.props;
+const { variante = "hero", deporte = "FUTBOL" } = Astro.props;
+const tintas = {
+  FUTBOL: "text-cesped", FUTBOL5: "text-cesped", FUTBOL7: "text-cesped",
+  VOLLEYBALL: "text-mar", BASQUET: "text-miel", PADEL: "text-lima",
+  TENIS: "text-arcilla", LOZA: "text-losa",
+};
+const tinta = tintas[deporte];
 ---
 
-<div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+<div class={`pointer-events-none absolute inset-0 overflow-hidden ${tinta}`} data-deporte={deporte} aria-hidden="true">
   {variante === "hero" ? (
     <div class="mx-auto h-full max-w-page px-4 md:px-6">
       <div class="relative h-full w-full">
         <!-- Cancha táctica detrás del tablero de libres hoy -->
-        <div class="hero-patron absolute -bottom-6 right-0 h-80 w-full max-w-xl rounded-2xl border-2 border-cesped/55 sm:h-96 lg:-bottom-4 lg:left-[19rem] lg:right-0 lg:top-8 lg:h-auto lg:w-auto lg:max-w-none">
+        <div class="hero-patron absolute -bottom-6 right-0 h-80 w-full max-w-xl rounded-2xl border-2 border-current/55 sm:h-96 lg:-bottom-4 lg:left-[19rem] lg:right-0 lg:top-8 lg:h-auto lg:w-auto lg:max-w-none">
           <!-- Línea perimetral interior -->
-          <div class="absolute inset-3 rounded-xl border border-cesped/40 sm:inset-5"></div>
+          <div class="absolute inset-3 rounded-xl border border-current/40 sm:inset-5"></div>
           <!-- Línea media de cal -->
-          <div class="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-cesped/50"></div>
+          <div class="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-current/50"></div>
           <!-- Círculo central -->
-          <div class="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cesped/60 sm:h-48 sm:w-48 lg:h-60 lg:w-60"></div>
+          <div class="absolute left-1/2 top-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-current/60 sm:h-48 sm:w-48 lg:h-60 lg:w-60"></div>
           <!-- Punto de penal central -->
-          <div class="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cesped/70"></div>
+          <div class="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/70"></div>
           <!-- Área grande izquierda -->
-          <div class="absolute inset-y-1/4 left-0 w-20 rounded-r-xl border-y-2 border-r-2 border-cesped/45 sm:w-28 lg:w-40"></div>
+          <div class="absolute inset-y-1/4 left-0 w-20 rounded-r-xl border-y-2 border-r-2 border-current/45 sm:w-28 lg:w-40"></div>
           <!-- Área chica izquierda -->
-          <div class="absolute inset-y-1/3 left-0 w-8 rounded-r-lg border-y border-r border-cesped/35 sm:w-12 lg:w-16"></div>
+          <div class="absolute inset-y-1/3 left-0 w-8 rounded-r-lg border-y border-r border-current/35 sm:w-12 lg:w-16"></div>
           <!-- Área grande derecha -->
-          <div class="absolute inset-y-1/4 right-0 w-20 rounded-l-xl border-y-2 border-l-2 border-cesped/45 sm:w-28 lg:w-40"></div>
+          <div class="absolute inset-y-1/4 right-0 w-20 rounded-l-xl border-y-2 border-l-2 border-current/45 sm:w-28 lg:w-40"></div>
           <!-- Área chica derecha -->
-          <div class="absolute inset-y-1/3 right-0 w-8 rounded-l-lg border-y border-l border-cesped/35 sm:w-12 lg:w-16"></div>
+          <div class="absolute inset-y-1/3 right-0 w-8 rounded-l-lg border-y border-l border-current/35 sm:w-12 lg:w-16"></div>
           <!-- Arcos de esquina -->
-          <div class="absolute left-0 top-0 h-5 w-5 rounded-br-full border-b-2 border-r-2 border-cesped/45"></div>
-          <div class="absolute left-0 bottom-0 h-5 w-5 rounded-tr-full border-t-2 border-r-2 border-cesped/45"></div>
-          <div class="absolute right-0 top-0 h-5 w-5 rounded-bl-full border-b-2 border-l-2 border-cesped/45"></div>
-          <div class="absolute right-0 bottom-0 h-5 w-5 rounded-tl-full border-t-2 border-l-2 border-cesped/45"></div>
+          <div class="absolute left-0 top-0 h-5 w-5 rounded-br-full border-b-2 border-r-2 border-current/45"></div>
+          <div class="absolute bottom-0 left-0 h-5 w-5 rounded-tr-full border-r-2 border-t-2 border-current/45"></div>
+          <div class="absolute right-0 top-0 h-5 w-5 rounded-bl-full border-b-2 border-l-2 border-current/45"></div>
+          <div class="absolute bottom-0 right-0 h-5 w-5 rounded-tl-full border-l-2 border-t-2 border-current/45"></div>
         </div>
       </div>
     </div>
   ) : (
-    <div class="hero-patron absolute inset-4 rounded-xl border-2 border-cesped/45 sm:inset-6">
-      <div class="absolute inset-3 rounded-lg border border-cesped/35"></div>
-      <div class="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-cesped/40"></div>
-      <div class="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cesped/50"></div>
-      <div class="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cesped/60"></div>
-      <div class="absolute inset-y-1/4 left-0 w-16 rounded-r-lg border-y-2 border-r-2 border-cesped/40"></div>
-      <div class="absolute inset-y-1/4 right-0 w-16 rounded-l-lg border-y-2 border-l-2 border-cesped/40"></div>
+    <div class="hero-patron absolute inset-4 rounded-xl border-2 border-current/45 sm:inset-6">
+      <div class="absolute inset-3 rounded-lg border border-current/35"></div>
+      <div class="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-current/40"></div>
+      <div class="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-current/50"></div>
+      <div class="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/60"></div>
+      <div class="absolute inset-y-1/4 left-0 w-16 rounded-r-lg border-y-2 border-r-2 border-current/40"></div>
+      <div class="absolute inset-y-1/4 right-0 w-16 rounded-l-lg border-y-2 border-l-2 border-current/40"></div>
     </div>
   )}
 </div>

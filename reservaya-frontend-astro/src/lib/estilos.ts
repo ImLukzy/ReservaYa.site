@@ -5,7 +5,7 @@ const BOTON_BASE =
   "btn-tactil min-h-11 px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none";
 
 export const BOTON = {
-  primario: `${BOTON_BASE} bg-cesped text-tiza hover:bg-cesped-hover`,
+  primario: `${BOTON_BASE} bg-cesped text-tiza hover:bg-cesped-hondo`,
   secundario: `${BOTON_BASE} bg-tiza text-basalto hover:bg-piedra`,
   oscuro: `${BOTON_BASE} bg-noche text-tiza hover:bg-basalto`,
   peligro: `${BOTON_BASE} bg-error text-tiza hover:bg-error-hondo`,
@@ -13,7 +13,7 @@ export const BOTON = {
 } as const;
 
 export const CAMPO =
-  "w-full rounded-full border-2 border-basalto bg-tiza px-4 py-2.5 text-base text-basalto shadow-[3px_3px_0_0_#1f2a24] focus:shadow-[4px_4px_0_0_#17804a] focus:outline-none disabled:bg-piedra disabled:text-pizarra";
+  "w-full rounded-full border-2 border-basalto bg-tiza px-4 py-2.5 text-base text-basalto shadow-dura-sm focus:shadow-[4px_4px_0_0_var(--color-cesped)] focus:outline-none disabled:bg-piedra disabled:text-pizarra";
 
 export const ETIQUETA = "mb-1.5 block text-sm font-bold text-basalto";
 
