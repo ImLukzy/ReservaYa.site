@@ -28,7 +28,7 @@ const formVacio = {
   complejoId: '', techada: false, superficie: '', imagen: '',
 }
 
-const flabel = 'mb-1.5 block font-display text-[13px] font-bold text-basalto'
+const flabel = 'mb-1.5 block font-display text-[0.8125rem] font-bold text-basalto'
 const finput =
   'w-full rounded-xl border-2 border-basalto bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto placeholder:text-pizarra transition focus:border-cesped focus:shadow-dura-sm focus:outline-none'
 const fselect = finput
@@ -316,17 +316,17 @@ export function GestionCanchasPanel({
                 <p className="text-xs text-pizarra">🌐 Global (sin complejo)</p>
               )}
               {!c.complejo && (
-                <p className="mt-1 rounded-lg border border-alerta/40 bg-alerta-suave px-2.5 py-1 text-[11px] font-semibold text-alerta-hondo">
+                <p className="mt-1 rounded-lg border border-alerta/40 bg-alerta-suave px-2.5 py-1 text-[0.6875rem] font-semibold text-alerta-hondo">
                   ⚠️ Sin complejo: invisible en filtros de lugar y dueño. Edítala y asígnale uno (obligatorio).
                 </p>
               )}
               <p className="mb-3 text-sm text-pizarra">{c.descripcion}</p>
               <div className="mb-3 flex flex-wrap gap-1.5">
                 {c.techada && (
-                  <span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-[11px] font-bold text-basalto">Techada</span>
+                  <span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-[0.6875rem] font-bold text-basalto">Techada</span>
                 )}
                 {c.superficie && (
-                  <span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-[11px] font-bold text-basalto">{c.superficie}</span>
+                  <span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-[0.6875rem] font-bold text-basalto">{c.superficie}</span>
                 )}
               </div>
               <div className="mb-4 flex justify-between text-sm text-pizarra">
@@ -357,7 +357,7 @@ export function GestionCanchasPanel({
       >
         <div className="max-h-[70vh] space-y-5 overflow-y-auto pr-1">
           <section aria-label="Datos básicos" className="space-y-3">
-            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">DATOS BÁSICOS</p>
+            <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">DATOS BÁSICOS</p>
             <div>
               <label htmlFor="cancha-nombre" className={flabel}>Nombre *</label>
               <input
@@ -421,7 +421,7 @@ export function GestionCanchasPanel({
           </section>
 
           <section aria-label="Foto" className="space-y-3">
-            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">FOTO</p>
+            <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">FOTO</p>
             {preview ? (
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -473,7 +473,7 @@ export function GestionCanchasPanel({
           </section>
 
           <section aria-label="Características" className="space-y-3">
-            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">CARACTERÍSTICAS</p>
+            <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">CARACTERÍSTICAS</p>
             <div>
               <label htmlFor="cancha-superficie" className={flabel}>Superficie</label>
               <select
@@ -510,7 +510,7 @@ export function GestionCanchasPanel({
           </section>
 
           <section aria-label="Precio y capacidad" className="space-y-3">
-            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">PRECIO Y CAPACIDAD</p>
+            <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">PRECIO Y CAPACIDAD</p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="cancha-precio" className={flabel}>Precio/hora (S/) *</label>

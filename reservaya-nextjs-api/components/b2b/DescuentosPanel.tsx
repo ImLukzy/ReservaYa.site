@@ -201,11 +201,11 @@ export function DescuentosPanel() {
   return (
     <div>
       <TopBar breadcrumb="Gestión / Descuentos" title="Códigos de descuento" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
+      <p className="mt-3 mb-6 text-[0.875rem] leading-relaxed text-pizarra">
         Crea cupones para atraer más reservas entre semana o en horarios con poca ocupación.
       </p>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[380px_1fr]">
+      <div className="grid items-start gap-4 lg:grid-cols-[23.75rem_1fr]">
         {/* Nuevo código */}
         <section className="card-tactil p-5" aria-label="Nuevo código de descuento">
           <h2 className="text-base font-black text-basalto">Nuevo código</h2>
@@ -320,7 +320,7 @@ export function DescuentosPanel() {
           </div>
 
           <div className="mt-5 border-t border-cal pt-4">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-pizarra">CONDICIONES</p>
+            <p className="text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">CONDICIONES</p>
             <div className="mt-2.5 space-y-2.5">
               <label className="flex cursor-pointer items-center gap-2.5 text-sm text-basalto">
                 <input
@@ -416,11 +416,11 @@ export function DescuentosPanel() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-mono text-base font-black tracking-widest text-basalto">{c.codigo}</p>
-                      <span className="rounded-full bg-piedra px-2.5 py-0.5 text-[11px] font-bold text-basalto">
+                      <span className="rounded-full bg-piedra px-2.5 py-0.5 text-[0.6875rem] font-bold text-basalto">
                         {c.tipo.includes('MONTO') ? 'Monto fijo' : 'Porcentaje'}
                       </span>
                       {!c.activo && (
-                        <span className="rounded-full bg-error-suave px-2.5 py-0.5 text-[11px] font-bold text-error">
+                        <span className="rounded-full bg-error-suave px-2.5 py-0.5 text-[0.6875rem] font-bold text-error">
                           Pausado
                         </span>
                       )}
@@ -450,7 +450,7 @@ export function DescuentosPanel() {
                       <span
                         className={cn(
                           'absolute top-0.5 h-5 w-5 rounded-full bg-tiza shadow-dura-sm transition-all',
-                          c.activo ? 'left-[22px]' : 'left-0.5'
+                          c.activo ? 'left-[1.375rem]' : 'left-0.5'
                         )}
                       />
                     </button>

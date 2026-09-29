@@ -159,8 +159,8 @@ export function ReportesPanel({
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ REPORTES</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Mis reportes</h1>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">▦ REPORTES</p>
+          <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">Mis reportes</h1>
           <p className="text-sm text-pizarra">
             Tus números reales: ingresos, ocupación y clientes de {mesInfo.largo.toLowerCase()}.
           </p>
@@ -231,7 +231,7 @@ export function ReportesPanel({
                 : ''
             )}
           >
-            <p className={cn('text-[11px] font-bold tracking-[0.12em]', k.oscuro ? 'text-tiza/75' : 'text-pizarra')}>
+            <p className={cn('text-[0.6875rem] font-bold tracking-[0.12em]', k.oscuro ? 'text-tiza/75' : 'text-pizarra')}>
               {k.label.toUpperCase()}
             </p>
             <p className={cn('mt-1 text-3xl font-black', k.oscuro ? 'text-tiza' : 'text-basalto')}>{k.valor}</p>
@@ -243,7 +243,7 @@ export function ReportesPanel({
       {/* Ocupación + serie diaria */}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <div className="card-tactil border-2 border-basalto bg-gradient-to-br from-noche via-noche to-cesped-hondo p-5 text-tiza shadow-dura">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-tiza/75">OCUPACIÓN · {mesInfo.largo.toUpperCase()}</p>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-tiza/75">OCUPACIÓN · {mesInfo.largo.toUpperCase()}</p>
           <p className="mt-1 text-5xl font-black">{canchasActivas > 0 ? `${ocupacion.toFixed(1)}%` : '—'}</p>
           <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-tiza/20">
             <div className="h-full rounded-full bg-tiza" style={{ width: `${ocupacion}%` }} />
@@ -260,15 +260,15 @@ export function ReportesPanel({
           )}
         </div>
         <div className="card-tactil p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">RESERVAS DÍA A DÍA</p>
-          <div className="mt-4 flex h-32 items-end gap-[3px]">
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">RESERVAS DÍA A DÍA</p>
+          <div className="mt-4 flex h-32 items-end gap-[0.1875rem]">
             {serieDiaria.map((s) => (
               <div key={s.dia} className="flex flex-1 flex-col items-center gap-1" title={`Día ${s.dia}: ${s.reservas} reservas`}>
                 <div
                   className="w-full rounded-sm bg-cesped"
                   style={{ height: `${Math.max(3, (s.reservas / maxDia) * 112)}px`, opacity: s.reservas > 0 ? 1 : 0.2 }}
                 />
-                {s.dia % 5 === 0 && <span className="text-[9px] text-pizarra">{s.dia}</span>}
+                {s.dia % 5 === 0 && <span className="text-[0.5625rem] text-pizarra">{s.dia}</span>}
               </div>
             ))}
           </div>
@@ -279,7 +279,7 @@ export function ReportesPanel({
       {/* Por cancha + últimos 6 meses + top clientes */}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <div className="card-tactil p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">OCUPACIÓN POR CANCHA</p>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">OCUPACIÓN POR CANCHA</p>
           {porCancha.length === 0 ? (
             <p className="mt-3 text-sm text-pizarra">Sin datos este mes.</p>
           ) : (
@@ -299,16 +299,16 @@ export function ReportesPanel({
           )}
         </div>
         <div className="card-tactil p-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">INGRESOS ÚLTIMOS 6 MESES</p>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">INGRESOS ÚLTIMOS 6 MESES</p>
           <div className="mt-4 flex h-32 items-end gap-2">
             {ultimos6.map((m) => (
               <div key={m.key} className="flex flex-1 flex-col items-center gap-1" title={`${m.largo}: ${soles(m.ingresos)}`}>
-                <span className="text-[10px] font-bold text-cesped-hondo">{m.ingresos > 0 ? `S/${Math.round(m.ingresos)}` : ''}</span>
+                <span className="text-[0.625rem] font-bold text-cesped-hondo">{m.ingresos > 0 ? `S/${Math.round(m.ingresos)}` : ''}</span>
                 <div
                   className={cn('w-full rounded-t-lg', m.key === mes ? 'bg-basalto' : 'bg-cesped/70')}
                   style={{ height: `${Math.max(4, (m.ingresos / max6) * 96)}px`, opacity: m.ingresos > 0 ? 1 : 0.25 }}
                 />
-                <span className="text-[10px] font-semibold text-pizarra">{m.corto.split(' ')[0]}</span>
+                <span className="text-[0.625rem] font-semibold text-pizarra">{m.corto.split(' ')[0]}</span>
               </div>
             ))}
           </div>
@@ -316,7 +316,7 @@ export function ReportesPanel({
       </div>
 
       <div className="card-tactil mt-4 p-5">
-        <p className="text-[11px] font-bold tracking-[0.14em] text-pizarra">TOP CLIENTES DEL MES</p>
+        <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">TOP CLIENTES DEL MES</p>
         {topClientes.length === 0 ? (
           <p className="mt-3 text-sm text-pizarra">Aún no hay clientes este mes.</p>
         ) : (

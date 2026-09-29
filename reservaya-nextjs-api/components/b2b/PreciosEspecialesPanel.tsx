@@ -180,11 +180,11 @@ export function PreciosEspecialesPanel() {
   return (
     <div>
       <TopBar breadcrumb="Gestión / Precios especiales" title="Precios por fecha" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
+      <p className="mt-3 mb-6 text-[0.875rem] leading-relaxed text-pizarra">
         Sube o baja tus tarifas en feriados y fechas clave sin tocar tu precio base.
       </p>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[380px_1fr]">
+      <div className="grid items-start gap-4 lg:grid-cols-[23.75rem_1fr]">
         {/* Nueva regla */}
         <section className="card-tactil p-5" aria-label="Nueva regla de precio">
           <h2 className="text-base font-black text-basalto">Nueva regla</h2>
@@ -227,7 +227,7 @@ export function PreciosEspecialesPanel() {
           <p className="mt-1.5 text-xs text-pizarra">Para un solo día deja Hasta vacío.</p>
 
           <div className="mt-4 border-t border-cal pt-4">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-pizarra">PRECIO POR TURNO</p>
+            <p className="text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">PRECIO POR TURNO</p>
             <div className="mt-2.5 space-y-2.5">
               <div>
                 <label htmlFor="precio-dia" className={labelCls}>Día <span className="font-normal text-pizarra">(antes de las 17:00)</span></label>
@@ -360,7 +360,7 @@ export function PreciosEspecialesPanel() {
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-base font-black text-basalto">{r.nombre}</p>
                         {r.repetirAnual && (
-                          <span className="rounded-full bg-cesped-suave px-2.5 py-0.5 text-[11px] font-bold text-cesped-hondo">
+                          <span className="rounded-full bg-cesped-suave px-2.5 py-0.5 text-[0.6875rem] font-bold text-cesped-hondo">
                             Cada año
                           </span>
                         )}
@@ -386,7 +386,7 @@ export function PreciosEspecialesPanel() {
                       { t: `Noche · desde ${formatearHora(r.inicioNoche)}`, v: r.precioNoche },
                     ].map((f) => (
                       <div key={f.t} className="rounded-xl bg-piedra px-3 py-2 text-center">
-                        <p className="text-[11px] font-semibold text-pizarra">{f.t}</p>
+                        <p className="text-[0.6875rem] font-semibold text-pizarra">{f.t}</p>
                         <p className="mt-0.5 text-sm font-black text-basalto">
                           {f.v != null ? `S/ ${f.v}` : '—'}
                         </p>

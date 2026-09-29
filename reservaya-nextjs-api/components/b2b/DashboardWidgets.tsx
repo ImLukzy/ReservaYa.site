@@ -11,7 +11,7 @@ export function NovedadCard() {
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cesped-suave text-lg">
         💳
       </span>
-      <p className="min-w-0 flex-1 text-[13px] leading-snug text-pizarra">
+      <p className="min-w-0 flex-1 text-[0.8125rem] leading-snug text-pizarra">
         <strong className="font-bold text-basalto">
           Novedad: desde octubre tus jugadores podrán pagarte online
         </strong>

@@ -22,7 +22,7 @@ export function OnboardingChecklist({ completados = [] }: { completados?: readon
         <p className="mb-6 text-sm font-semibold text-pizarra">
           {hechos} de {STEPS.length} pasos completados
         </p>
-        <ol className="relative space-y-8 before:absolute before:top-2 before:bottom-2 before:left-[15px] before:w-px before:bg-cal">
+        <ol className="relative space-y-8 before:absolute before:top-2 before:bottom-2 before:left-[0.9375rem] before:w-px before:bg-cal">
           {STEPS.map((s, i) => {
             const ok = Boolean(completados[i]);
             const current = i === actual;
@@ -39,8 +39,8 @@ export function OnboardingChecklist({ completados = [] }: { completados?: readon
                   {ok ? <Check size={18} strokeWidth={2.5} /> : <span className="text-sm font-bold">{i + 1}</span>}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[14px] font-semibold text-basalto">{s.t}</p>
-                  <p className="text-[14px] leading-relaxed text-pizarra">{s.d}</p>
+                  <p className="text-[0.875rem] font-semibold text-basalto">{s.t}</p>
+                  <p className="text-[0.875rem] leading-relaxed text-pizarra">{s.d}</p>
                   {!ok && (
                     <a
                       href={s.href}

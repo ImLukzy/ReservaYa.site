@@ -195,8 +195,8 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ METAS</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Mis metas</h1>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">▦ METAS</p>
+          <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">Mis metas</h1>
           <p className="text-sm text-pizarra">Define objetivos de ingresos, ocupación y reservas, y sigue tu avance.</p>
         </div>
         <Link
@@ -210,9 +210,9 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
 
       {/* Banner */}
       <div className="mt-4 rounded-2xl bg-gradient-to-r from-noche via-noche to-cesped-hondo p-5 text-tiza">
-        <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-suave">METAS DE {mesBanner.toUpperCase()}</p>
+        <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-suave">METAS DE {mesBanner.toUpperCase()}</p>
         <p className="mt-1 text-xl font-black">Define tus metas para empezar 🎯</p>
-        <p className="mt-0.5 text-[13px] text-tiza/75">Un objetivo claro por mes: ingresos, ocupación o reservas.</p>
+        <p className="mt-0.5 text-[0.8125rem] text-tiza/75">Un objetivo claro por mes: ingresos, ocupación o reservas.</p>
       </div>
 
       {error && (
@@ -257,7 +257,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
                 <div key={m.id} className="card-tactil p-5">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="rounded-full bg-cesped-suave px-2.5 py-0.5 text-[11px] font-bold text-cesped-hondo">
+                      <span className="rounded-full bg-cesped-suave px-2.5 py-0.5 text-[0.6875rem] font-bold text-cesped-hondo">
                         {tipo.label}
                       </span>
                       <h2 className="mt-2 text-lg font-black text-basalto">{m.titulo}</h2>

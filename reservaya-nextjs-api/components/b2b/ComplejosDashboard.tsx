@@ -14,7 +14,7 @@ export async function ComplejosDashboard({ iniciales }: { iniciales?: ComplejoCa
   return (
     <div>
       <TopBar breadcrumb="MIS COMPLEJOS" title="Complejos" />
-      <p className="mt-3 mb-6 text-[14px] leading-relaxed text-pizarra">
+      <p className="mt-3 mb-6 text-[0.875rem] leading-relaxed text-pizarra">
         Gestiona tus sedes: edita sus datos, comparte tu página con QR y crea nuevas sedes.
       </p>
       <ComplejosGrid complejos={complejos} />
