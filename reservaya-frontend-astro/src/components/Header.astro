@@ -27,7 +27,7 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
             href={item.href}
             data-astro-prefetch
             aria-current={activo(item.href) ? "page" : undefined}
-            class="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 font-semibold text-pizarra hover:text-basalto aria-[current=page]:border-cesped aria-[current=page]:text-basalto"
+            class="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 font-semibold text-pizarra hover:text-basalto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:rounded-control aria-[current=page]:border-cesped aria-[current=page]:text-basalto"
           >{item.etiqueta}</a>
         </li>
       ))}
@@ -37,12 +37,12 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
       <a href="/login" data-astro-prefetch data-solo="invitado" class={`${BOTON.secundario} px-5 text-xs`}>Entrar</a>
 
       <div data-solo="usuario" hidden class="relative">
-        <button id="cuenta-boton" type="button" class="flex min-h-11 items-center gap-2 rounded-full border border-basalto px-2.5 hover:bg-piedra cursor-pointer" aria-haspopup="true" aria-expanded="false" aria-controls="cuenta-menu">
+        <button id="cuenta-boton" type="button" class="flex min-h-11 items-center gap-2 rounded-full border border-basalto px-2.5 hover:bg-piedra cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-offset-2" aria-haspopup="true" aria-expanded="false" aria-controls="cuenta-menu">
           <span data-iniciales class="flex h-7 w-7 items-center justify-center rounded-full bg-basalto text-xs font-bold text-tiza"></span>
           <span data-nombre-corto class="hidden max-w-32 truncate font-bold text-xs lg:block"></span>
           <Icon nombre="abajo" class="h-3.5 w-3.5 text-pizarra" />
         </button>
-        <div id="cuenta-menu" hidden class="absolute right-0 top-12 w-64 card-tactil p-2 shadow-[4px_4px_0_0_#1f2a24]">
+        <div id="cuenta-menu" hidden class="absolute right-0 top-12 w-64 card-tactil p-2">
           <div class="border-b border-cal px-3 pb-2">
             <p data-nombre class="truncate font-semibold"></p>
             <p data-correo class="truncate text-sm text-pizarra"></p>
@@ -54,7 +54,7 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
         </div>
       </div>
 
-      <button id="menu-boton" type="button" class="flex h-11 w-11 items-center justify-center rounded-control hover:bg-piedra md:hidden" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil">
+      <button id="menu-boton" type="button" class="flex h-11 w-11 items-center justify-center rounded-control hover:bg-piedra md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto focus-visible:ring-offset-2" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil">
         <Icon nombre="menu" class="h-6 w-6" />
       </button>
     </div>
@@ -63,7 +63,7 @@ const enlaceMenu = "flex min-h-11 items-center gap-3 rounded-control px-3 text-b
   <div id="menu-movil" hidden class="border-t border-cal px-4 pb-4 md:hidden">
     <ul class="py-2">
       {nav.map((item) => (
-        <li><a href={item.href} aria-current={activo(item.href) ? "page" : undefined} class="flex min-h-12 items-center border-b border-cal font-medium aria-[current=page]:text-cesped-hondo">{item.etiqueta}</a></li>
+        <li><a href={item.href} aria-current={activo(item.href) ? "page" : undefined} class="flex min-h-12 items-center border-b border-cal font-medium text-basalto hover:text-cesped-hondo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto aria-[current=page]:text-cesped-hondo">{item.etiqueta}</a></li>
       ))}
     </ul>
   </div>
