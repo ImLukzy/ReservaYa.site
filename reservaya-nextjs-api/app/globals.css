@@ -25,6 +25,16 @@
   --cesped-hover: #126b3d;  /* tiza encima ~6.3 */
   --cesped-hondo: #116a3c;  /* texto verde; 6.0 sobre sillar */
   --cesped-suave: #e3f1e8;  /* fondo de «libre»; cesped-hondo encima 5.7 */
+  --mar: #0e5a86;
+  --mar-suave: #dfedf6;
+  --miel: #9e6200;
+  --miel-suave: #f6ebd0;
+  --lima: #4e6e00;
+  --lima-suave: #eaf2d2;
+  --arcilla: #a83a1f;
+  --arcilla-suave: #f9e4d8;
+  --losa: #3e5c6b;
+  --losa-suave: #e2eaf0;
   --sol: #f0b429;           /* avisos y chips (tarjeta amarilla); basalto encima 7.96 */
   --sol-suave: #fef9c3;     /* fondo suave estado pendiente */
   --alerta: #f97316;        /* acento de bloqueo y advertencia */
@@ -57,6 +67,16 @@
   --color-cesped-hover: var(--cesped-hover);
   --color-cesped-hondo: var(--cesped-hondo);
   --color-cesped-suave: var(--cesped-suave);
+  --color-mar: var(--mar);
+  --color-mar-suave: var(--mar-suave);
+  --color-miel: var(--miel);
+  --color-miel-suave: var(--miel-suave);
+  --color-lima: var(--lima);
+  --color-lima-suave: var(--lima-suave);
+  --color-arcilla: var(--arcilla);
+  --color-arcilla-suave: var(--arcilla-suave);
+  --color-losa: var(--losa);
+  --color-losa-suave: var(--losa-suave);
   --color-sol: var(--sol);
   --color-sol-suave: var(--sol-suave);
   --color-alerta: var(--alerta);

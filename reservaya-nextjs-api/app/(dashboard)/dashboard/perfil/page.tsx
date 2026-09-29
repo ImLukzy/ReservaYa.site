@@ -42,7 +42,7 @@ export default async function PerfilPage() {
               </div>
 
               <div className="mt-6 flex items-center gap-4">
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-basalto bg-piedra shadow-[2px_2px_0_0_#1f2a24]">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-basalto bg-piedra shadow-dura-sm">
                   {session.fotoUrl ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img

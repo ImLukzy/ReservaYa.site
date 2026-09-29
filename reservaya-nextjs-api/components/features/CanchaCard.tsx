@@ -36,15 +36,9 @@ function ImagenCancha({ src, alt }: { src: string; alt: string }) {
   )
 }
 
-const tipoBadge: Record<string, 'green' | 'blue' | 'yellow' | 'red'> = {
-  FUTBOL: 'green',
-  FUTBOL5: 'green',
-  FUTBOL7: 'green',
-  PADEL: 'yellow',
-  TENIS: 'yellow',
-  BASQUET: 'blue',
-  VOLLEYBALL: 'red',
-  LOZA: 'blue',
+const tipoBadge: Record<string, 'futbol' | 'voley' | 'basquet' | 'padel' | 'tenis' | 'losa'> = {
+  FUTBOL: 'futbol', FUTBOL5: 'futbol', FUTBOL7: 'futbol',
+  VOLLEYBALL: 'voley', BASQUET: 'basquet', PADEL: 'padel', TENIS: 'tenis', LOZA: 'losa',
 }
 
 export function CanchaCard({
@@ -70,7 +64,7 @@ export function CanchaCard({
 
   return (
     <>
-      <div className="card-tactil flex flex-col overflow-hidden transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1f2a24]">
+      <div className="card-tactil flex flex-col overflow-hidden transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-dura-lg">
         {/* Contenedor de imagen reservado anti-CLS */}
         <div className="relative aspect-video w-full overflow-hidden border-b-2 border-basalto bg-piedra">
           {cancha.imagen ? <ImagenCancha src={cancha.imagen} alt={cancha.nombre} /> : <CroquisCancha />}
