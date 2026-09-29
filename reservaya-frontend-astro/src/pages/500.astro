@@ -1,13 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
+import CroquisCancha from "../components/ui/CroquisCancha.astro";
 import { EMAIL } from "../lib/contacto";
 ---
 
 <BaseLayout title="Error del servidor | ReservaYa" robots="noindex, follow">
   <section class="mx-auto max-w-texto px-4 py-16 md:px-6 lg:py-24">
     <div class="card-dashed p-8 text-center sm:p-12">
-      <p class="font-display text-5xl font-extrabold tabular-nums tracking-tight text-error">500</p>
+      <CroquisCancha class="mx-auto mb-4 h-32 w-full max-w-xs" />
       <h1 class="mt-3 text-3xl font-bold lg:text-4xl">Algo falló de nuestro lado</h1>
       <p class="mx-auto mt-3 max-w-md text-lg text-pizarra">Vuelve a intentarlo en unos minutos. Si sigue pasando, escríbenos a {EMAIL}.</p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">

@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { CroquisCancha } from './CroquisCancha';
 
 export function EmptyState({
   icon: Icon,
@@ -6,14 +7,18 @@ export function EmptyState({
   description,
   action,
 }: {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   description: string;
   action?: React.ReactNode;
 }) {
   return (
     <div className="card-dashed flex flex-col items-center justify-center p-12 text-center">
-      <Icon className="mb-4 h-12 w-12 text-borde" strokeWidth={1.5} aria-hidden="true" />
+      {Icon ? (
+        <Icon className="mb-4 h-12 w-12 text-borde" strokeWidth={1.5} aria-hidden="true" />
+      ) : (
+        <CroquisCancha className="mb-4 h-24 w-24" />
+      )}
       <p className="font-display text-xl font-semibold text-basalto">{title}</p>
       <p className="mb-6 mt-1 max-w-sm text-sm text-pizarra">{description}</p>
       {action}

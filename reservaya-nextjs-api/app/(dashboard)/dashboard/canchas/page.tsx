@@ -4,7 +4,7 @@ import { CanchaCard } from '@/components/features/CanchaCard'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
-import { CalendarDays, Search, SearchX } from 'lucide-react'
+import { CalendarDays, Search } from 'lucide-react'
 import { tipoCanchaLabel } from '@/components/features/etiquetasJugador'
 import type { ResultadoBusqueda } from '@/lib/api'
 
@@ -199,7 +199,6 @@ export default async function CanchasPage({
 
       {!buscando && !error && resultados.length === 0 && (
         <EmptyState
-          icon={SearchX}
           title="Aún no hay canchas disponibles"
           description="Vuelve pronto: los locales aparecen en esta vitrina conforme abren sus horarios."
         />
@@ -207,7 +206,6 @@ export default async function CanchasPage({
 
       {buscando && !error && resultados.length === 0 && (
         <EmptyState
-          icon={SearchX}
           title="Sin resultados para tu búsqueda"
           description="Prueba seleccionando otro distrito, deporte o ampliando el rango de horario."
           action={
