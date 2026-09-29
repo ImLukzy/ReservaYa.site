@@ -28,13 +28,10 @@ const formVacio = {
   complejoId: '', techada: false, superficie: '', imagen: '',
 }
 
-// Estilos del formulario dentro del Modal oscuro (el Modal es bg-[#20263a]).
-// Los <option> heredan fondo claro del SO: se fuerzan oscuros para que el
-// desplegable sea legible.
-const flabel = 'mb-1.5 block text-[13px] font-bold text-slate-300'
+const flabel = 'mb-1.5 block font-display text-[13px] font-bold text-basalto'
 const finput =
-  'w-full rounded-xl border border-[#303850] bg-[#151b2e] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25'
-const fselect = `${finput} sel-dark [color-scheme:dark] [&>option]:bg-[#151b2e] [&>option]:text-slate-100`
+  'w-full rounded-xl border-2 border-basalto bg-tiza px-4 py-2.5 font-display text-sm font-bold text-basalto placeholder:text-pizarra transition focus:border-cesped focus:shadow-dura-sm focus:outline-none'
+const fselect = finput
 
 export function GestionCanchasPanel({
   canchas,
@@ -217,28 +214,28 @@ export function GestionCanchasPanel({
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestión de Canchas</h1>
-          <p className="text-gray-500 mt-1">Crea, edita y administra las canchas</p>
+          <h1 className="font-display text-2xl font-bold text-basalto">Gestión de Canchas</h1>
+          <p className="mt-1 text-sm text-pizarra">Crea, edita y administra las canchas</p>
         </div>
         <Button onClick={abrirCrear}>+ Nueva Cancha</Button>
       </div>
 
-      <div className="mb-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+      <div className="card-tactil mb-6 p-5">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <div className="sm:col-span-2 lg:col-span-1">
-            <label htmlFor="a-q" className="mb-1 block text-xs font-bold text-gray-700">Texto</label>
+            <label htmlFor="a-q" className="mb-1 block font-display text-xs font-bold text-pizarra">Texto</label>
             <input
               id="a-q"
               value={fq}
               onChange={(e) => setFq(e.target.value)}
               placeholder="Nombre de cancha o local…"
               maxLength={50}
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25"
+              className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none"
             />
           </div>
           <div>
-            <label htmlFor="a-distrito" className="mb-1 block text-xs font-bold text-gray-700">Distrito</label>
-            <select id="a-distrito" value={fdistrito} onChange={(e) => setFdistrito(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25">
+            <label htmlFor="a-distrito" className="mb-1 block font-display text-xs font-bold text-pizarra">Distrito</label>
+            <select id="a-distrito" value={fdistrito} onChange={(e) => setFdistrito(e.target.value)} className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none">
               <option value="">Todos</option>
               {distritos.map((d) => (
                 <option key={d} value={d}>{d}</option>
@@ -246,8 +243,8 @@ export function GestionCanchasPanel({
             </select>
           </div>
           <div>
-            <label htmlFor="a-ciudad" className="mb-1 block text-xs font-bold text-gray-700">Ciudad</label>
-            <select id="a-ciudad" value={fciudad} onChange={(e) => setFciudad(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25">
+            <label htmlFor="a-ciudad" className="mb-1 block font-display text-xs font-bold text-pizarra">Ciudad</label>
+            <select id="a-ciudad" value={fciudad} onChange={(e) => setFciudad(e.target.value)} className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none">
               <option value="">Todas</option>
               {ciudades.map((d) => (
                 <option key={d} value={d}>{d}</option>
@@ -255,8 +252,8 @@ export function GestionCanchasPanel({
             </select>
           </div>
           <div>
-            <label htmlFor="a-complejo" className="mb-1 block text-xs font-bold text-gray-700">Local</label>
-            <select id="a-complejo" value={fcomplejo} onChange={(e) => setFcomplejo(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25">
+            <label htmlFor="a-complejo" className="mb-1 block font-display text-xs font-bold text-pizarra">Local</label>
+            <select id="a-complejo" value={fcomplejo} onChange={(e) => setFcomplejo(e.target.value)} className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none">
               <option value="">Todos</option>
               {complejos.map((c) => (
                 <option key={c.id} value={c.id}>{c.nombre}</option>
@@ -264,8 +261,8 @@ export function GestionCanchasPanel({
             </select>
           </div>
           <div>
-            <label htmlFor="a-tipo" className="mb-1 block text-xs font-bold text-gray-700">Deporte</label>
-            <select id="a-tipo" value={ftipo} onChange={(e) => setFtipo(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25">
+            <label htmlFor="a-tipo" className="mb-1 block font-display text-xs font-bold text-pizarra">Deporte</label>
+            <select id="a-tipo" value={ftipo} onChange={(e) => setFtipo(e.target.value)} className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 font-display text-sm font-bold text-basalto transition focus:border-cesped focus:shadow-dura-sm focus:outline-none">
               <option value="">Todos</option>
               {TIPOS.map((t) => (
                 <option key={t} value={t}>{t}</option>
@@ -276,13 +273,13 @@ export function GestionCanchasPanel({
             <button
               type="button"
               onClick={limpiarFiltros}
-              className="text-sm font-semibold text-gray-500 hover:text-gray-800"
+              className="font-display text-sm font-bold text-pizarra hover:text-basalto"
             >
               Limpiar filtros
             </button>
           </div>
         </div>
-        <p className="mt-3 text-sm text-gray-500">
+        <p className="mt-3 text-sm text-pizarra">
           {hayFiltros
             ? `${filtradas.length} de ${canchas.length} canchas`
             : `${canchas.length} cancha${canchas.length === 1 ? '' : 's'} en total`}
@@ -290,51 +287,51 @@ export function GestionCanchasPanel({
       </div>
 
       {filtradas.length === 0 && (
-        <div className="text-center py-16 text-gray-400">
-          <p className="text-5xl mb-4">🏟️</p>
-          <p className="font-medium text-gray-600">Sin canchas con esos filtros</p>
-          <p className="text-sm mt-1">Ajusta la búsqueda o crea una nueva cancha.</p>
+        <div className="py-16 text-center text-pizarra">
+          <p className="mb-4 text-5xl">🏟️</p>
+          <p className="font-display font-bold text-basalto">Sin canchas con esos filtros</p>
+          <p className="mt-1 text-sm text-pizarra">Ajusta la búsqueda o crea una nueva cancha.</p>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filtradas.map((c) => (
-          <div key={c.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition">
+          <div key={c.id} className="card-tactil overflow-hidden transition hover:-translate-y-0.5 hover:shadow-dura-lg">
             {c.imagen ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={c.imagen} alt={c.nombre} className="h-36 w-full object-cover" />
+              <img src={c.imagen} alt={c.nombre} className="h-36 w-full border-b-2 border-basalto object-cover" />
             ) : (
-              <div className="bg-gradient-to-br from-[#0A3D22] via-[#14532D] to-[#060A08] p-5 text-center text-5xl">
+              <div className="flex h-36 items-center justify-center border-b-2 border-basalto bg-piedra text-5xl">
                 {tipoEmoji[c.tipo] ?? '🏟️'}
               </div>
             )}
             <div className="p-4">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="font-semibold text-gray-900">{c.nombre}</h3>
+              <div className="mb-1 flex items-center justify-between">
+                <h3 className="font-display font-bold text-basalto">{c.nombre}</h3>
                 <Badge variant={c.activa ? 'green' : 'gray'}>{c.activa ? 'Activa' : 'Inactiva'}</Badge>
               </div>
               {c.complejo ? (
-                <p className="text-xs font-semibold text-gray-500">📍 {c.complejo.nombre}{c.complejo.distrito ? ` · ${c.complejo.distrito}` : ''}</p>
+                <p className="text-xs font-semibold text-pizarra">📍 {c.complejo.nombre}{c.complejo.distrito ? ` · ${c.complejo.distrito}` : ''}</p>
               ) : (
-                <p className="text-xs text-gray-400">🌐 Global (sin complejo)</p>
+                <p className="text-xs text-pizarra">🌐 Global (sin complejo)</p>
               )}
               {!c.complejo && (
-                <p className="mt-1 rounded-lg bg-amber-50 border border-amber-200 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
+                <p className="mt-1 rounded-lg border border-alerta/40 bg-alerta-suave px-2.5 py-1 text-[11px] font-semibold text-alerta-hondo">
                   ⚠️ Sin complejo: invisible en filtros de lugar y dueño. Edítala y asígnale uno (obligatorio).
                 </p>
               )}
-              <p className="text-sm text-gray-500 mb-3">{c.descripcion}</p>
-              <div className="flex flex-wrap gap-1.5 mb-3">
+              <p className="mb-3 text-sm text-pizarra">{c.descripcion}</p>
+              <div className="mb-3 flex flex-wrap gap-1.5">
                 {c.techada && (
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">Techada</span>
+                  <span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-[11px] font-bold text-basalto">Techada</span>
                 )}
                 {c.superficie && (
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{c.superficie}</span>
+                  <span className="rounded-full border border-cal bg-piedra px-2.5 py-0.5 font-display text-[11px] font-bold text-basalto">{c.superficie}</span>
                 )}
               </div>
-              <div className="flex justify-between text-sm text-gray-600 mb-4">
-                <span>👥 {c.capacidad} personas</span>
-                <span className="font-semibold text-[#15803D]">S/ {c.precioPorHora}/hr</span>
+              <div className="mb-4 flex justify-between text-sm text-pizarra">
+                <span className="font-display font-medium">👥 {c.capacidad} personas</span>
+                <span className="font-display font-bold text-cesped-hondo">S/ {c.precioPorHora}/hr</span>
               </div>
               <div className="flex gap-2">
                 <Button size="sm" variant="secondary" className="flex-1" onClick={() => abrirEditar(c)}>
@@ -356,10 +353,11 @@ export function GestionCanchasPanel({
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         title={editando ? 'Editar Cancha' : 'Nueva Cancha'}
+        tono="claro"
       >
         <div className="max-h-[70vh] space-y-5 overflow-y-auto pr-1">
           <section aria-label="Datos básicos" className="space-y-3">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-slate-400">DATOS BÁSICOS</p>
+            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">DATOS BÁSICOS</p>
             <div>
               <label htmlFor="cancha-nombre" className={flabel}>Nombre *</label>
               <input
@@ -402,7 +400,7 @@ export function GestionCanchasPanel({
                 </select>
               </div>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-pizarra">
               {esSuperAdmin
                 ? 'Solo las canchas de complejos publicados con suscripción vigente aparecen en el buscador.'
                 : 'Obligatorio: sin complejo tu cancha no aparece en búsquedas por lugar ni dueño.'}
@@ -423,14 +421,14 @@ export function GestionCanchasPanel({
           </section>
 
           <section aria-label="Foto" className="space-y-3">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-slate-400">FOTO</p>
+            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">FOTO</p>
             {preview ? (
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={preview}
                   alt="Foto de la cancha"
-                  className="h-44 w-full rounded-xl border border-[#303850] object-cover"
+                  className="h-44 w-full rounded-xl border-2 border-basalto object-cover"
                   style={{ maxHeight: 176 }}
                 />
                 <button
@@ -439,7 +437,7 @@ export function GestionCanchasPanel({
                     fijarPreview(null)
                     if (fileRef.current) fileRef.current.value = ''
                   }}
-                  className="absolute top-2 right-2 rounded-lg bg-black/70 px-3 py-1.5 text-xs font-bold text-white backdrop-blur transition hover:bg-black/90"
+                  className="btn-tactil absolute top-2 right-2 bg-basalto px-3 py-1.5 text-xs font-bold text-tiza hover:bg-basalto/90"
                 >
                   Quitar
                 </button>
@@ -448,11 +446,11 @@ export function GestionCanchasPanel({
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#303850] bg-[#151b2e] px-4 py-8 text-center transition hover:border-[#22C55E]"
+                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-basalto bg-piedra/50 px-4 py-8 text-center transition hover:bg-piedra"
               >
                 <span className="text-3xl" aria-hidden>📷</span>
-                <span className="text-sm font-bold text-slate-200">Subir foto desde mis archivos</span>
-                <span className="text-xs text-slate-500">JPG, PNG, WEBP o GIF · máximo 3 MB</span>
+                <span className="font-display text-sm font-bold text-basalto">Subir foto desde mis archivos</span>
+                <span className="text-xs text-pizarra">JPG, PNG, WEBP o GIF · máximo 3 MB</span>
               </button>
             )}
             <input
@@ -467,7 +465,7 @@ export function GestionCanchasPanel({
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="text-xs font-bold text-[#4ADE80] hover:underline"
+                className="font-display text-xs font-bold text-cesped-hondo hover:underline"
               >
                 Cambiar foto…
               </button>
@@ -475,7 +473,7 @@ export function GestionCanchasPanel({
           </section>
 
           <section aria-label="Características" className="space-y-3">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-slate-400">CARACTERÍSTICAS</p>
+            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">CARACTERÍSTICAS</p>
             <div>
               <label htmlFor="cancha-superficie" className={flabel}>Superficie</label>
               <select
@@ -489,22 +487,22 @@ export function GestionCanchasPanel({
                 ))}
               </select>
             </div>
-            <div className="flex items-center gap-6 rounded-xl border border-[#303850] bg-[#151b2e] px-4 py-3">
-              <label className="flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-slate-200">
+            <div className="flex items-center gap-6 rounded-xl border-2 border-basalto bg-piedra/50 px-4 py-3">
+              <label className="flex cursor-pointer items-center gap-2.5 font-display text-sm font-bold text-basalto">
                 <input
                   type="checkbox"
                   checked={form.techada}
                   onChange={(e) => setForm({ ...form, techada: e.target.checked })}
-                  className="h-5 w-5 accent-[#22C55E]"
+                  className="h-5 w-5 accent-cesped"
                 />
                 Techada
               </label>
-              <label className="flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-slate-200">
+              <label className="flex cursor-pointer items-center gap-2.5 font-display text-sm font-bold text-basalto">
                 <input
                   type="checkbox"
                   checked={form.activa}
                   onChange={(e) => setForm({ ...form, activa: e.target.checked })}
-                  className="h-5 w-5 accent-[#22C55E]"
+                  className="h-5 w-5 accent-cesped"
                 />
                 Activa
               </label>
@@ -512,7 +510,7 @@ export function GestionCanchasPanel({
           </section>
 
           <section aria-label="Precio y capacidad" className="space-y-3">
-            <p className="text-[11px] font-bold tracking-[0.12em] text-slate-400">PRECIO Y CAPACIDAD</p>
+            <p className="font-display text-[11px] font-bold tracking-[0.12em] text-pizarra">PRECIO Y CAPACIDAD</p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="cancha-precio" className={flabel}>Precio/hora (S/) *</label>
@@ -539,13 +537,13 @@ export function GestionCanchasPanel({
                 />
               </div>
             </div>
-            <p className="text-xs text-slate-500">Para cobrar más de noche usa Precios especiales por franja.</p>
+            <p className="text-xs text-pizarra">Para cobrar más de noche usa Precios especiales por franja.</p>
           </section>
 
-          {error && <p role="alert" className="rounded-xl bg-rose-500/10 border border-rose-400/25 px-4 py-3 text-sm font-semibold text-rose-300">{error}</p>}
+          {error && <p role="alert" className="rounded-xl border border-error/40 bg-error-suave px-4 py-3 text-sm font-semibold text-error">{error}</p>}
 
           <div className="flex gap-3 pt-1">
-            <Button variant="secondary" className="flex-1 border-[#303850] bg-transparent text-slate-200 hover:bg-white/5" onClick={() => setModalOpen(false)}>
+            <Button variant="secondary" className="flex-1" onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
             <Button className="flex-1" loading={loading} onClick={guardar}>
