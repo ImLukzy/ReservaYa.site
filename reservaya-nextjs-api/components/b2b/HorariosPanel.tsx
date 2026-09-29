@@ -132,9 +132,9 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
 
   if (complejos.length === 0) {
     return (
-      <div className="rounded-2xl border border-gray-100 bg-white p-12 text-center text-gray-400">
+      <div className="card-tactil p-12 text-center text-pizarra">
         <p className="text-4xl mb-3">🏟️</p>
-        <p className="font-medium text-gray-600">Primero crea un complejo</p>
+        <p className="font-medium text-basalto">Primero crea un complejo</p>
       </div>
     );
   }
@@ -143,7 +143,7 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
     <div>
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor="h-complejo" className="mb-1 block text-xs font-bold text-gray-700">Local</label>
+          <label htmlFor="h-complejo" className="mb-1 block text-xs font-bold text-basalto">Local</label>
           <select
             id="h-complejo"
             value={complejoId}
@@ -152,7 +152,7 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
               setComplejoId(e.target.value);
               setCanchaId('');
             }}
-            className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25"
+            className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
           >
             {complejos.map((c) => (
               <option key={c.id} value={c.id}>{c.nombre}</option>
@@ -160,8 +160,8 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
           </select>
         </div>
         <div>
-          <label htmlFor="h-cancha" className="mb-1 block text-xs font-bold text-gray-700">
-            Aplica a <span className="font-normal text-gray-400">(vacío = todo el local)</span>
+          <label htmlFor="h-cancha" className="mb-1 block text-xs font-bold text-basalto">
+            Aplica a <span className="font-normal text-pizarra">(vacío = todo el local)</span>
           </label>
           <select
             id="h-cancha"
@@ -170,7 +170,7 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
               marcarCarga();
               setCanchaId(e.target.value);
             }}
-            className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/25"
+            className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
           >
             <option value="">Todo el local</option>
             {canchasDelComplejo.map((c) => (
@@ -181,21 +181,21 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
       </div>
 
       {cargando ? (
-        <p className="py-8 text-center text-sm text-gray-400">Cargando horario…</p>
+        <p className="py-8 text-center text-sm text-pizarra">Cargando horario…</p>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border-2 border-basalto bg-tiza shadow-dura-sm">
           {dias.map((d) => (
             <div
               key={d.dia}
-              className="flex flex-wrap items-center gap-3 border-b border-gray-50 px-4 py-3 last:border-0"
+              className="flex flex-wrap items-center gap-3 border-b border-cal px-4 py-3 last:border-0"
             >
-              <p className="w-24 text-sm font-bold text-gray-900">{DIAS[d.dia]}</p>
-              <label className="flex items-center gap-2 text-sm text-gray-600">
+              <p className="w-24 text-sm font-bold text-basalto">{DIAS[d.dia]}</p>
+              <label className="flex items-center gap-2 text-sm text-pizarra">
                 <input
                   type="checkbox"
                   checked={d.activo}
                   onChange={(e) => setDia(d.dia, { activo: e.target.checked })}
-                  className="h-4 w-4 accent-[#22C55E]"
+                  className="h-4 w-4 accent-cesped"
                 />
                 Abierto
               </label>
@@ -204,16 +204,16 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
                 value={d.apertura}
                 disabled={!d.activo}
                 onChange={(e) => setDia(d.dia, { apertura: e.target.value })}
-                className="rounded-lg border border-gray-200 px-2 py-1.5 text-sm text-gray-900 disabled:opacity-40"
+                className="rounded-lg border border-cal px-2 py-1.5 text-sm text-basalto disabled:opacity-40"
                 aria-label={`Apertura ${DIAS[d.dia]}`}
               />
-              <span className="text-gray-400">–</span>
+              <span className="text-pizarra">–</span>
               <input
                 type="time"
                 value={d.cierre}
                 disabled={!d.activo}
                 onChange={(e) => setDia(d.dia, { cierre: e.target.value })}
-                className="rounded-lg border border-gray-200 px-2 py-1.5 text-sm text-gray-900 disabled:opacity-40"
+                className="rounded-lg border border-cal px-2 py-1.5 text-sm text-basalto disabled:opacity-40"
                 aria-label={`Cierre ${DIAS[d.dia]}`}
               />
             </div>
@@ -225,7 +225,7 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
         <p
           role={msg.ok ? 'status' : 'alert'}
           className={`mt-4 rounded-xl px-4 py-3 text-sm font-semibold ${
-            msg.ok ? 'bg-[#DCFCE7] text-[#15803D]' : 'bg-red-50 text-red-700'
+            msg.ok ? 'bg-cesped-suave text-cesped-hondo' : 'bg-error-suave text-error'
           }`}
         >
           {msg.texto}
@@ -236,11 +236,11 @@ export function HorariosPanel({ complejos, canchas }: { complejos: ComplejoOpt[]
         type="button"
         onClick={guardar}
         disabled={guardando || !complejoId}
-        className="mt-4 rounded-xl bg-[#22C55E] px-6 py-2.5 text-sm font-bold text-[#060C08] transition hover:bg-[#16A34A] disabled:opacity-50"
+        className="btn-tactil mt-4 bg-cesped px-6 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
       >
         {guardando ? 'Guardando…' : 'Guardar horario'}
       </button>
-      <p className="mt-2 text-xs text-gray-400">
+      <p className="mt-2 text-xs text-pizarra">
         Si un local no tiene horario, se genera Lun–Dom 08:00–21:00 con su primera reserva.
       </p>
     </div>
