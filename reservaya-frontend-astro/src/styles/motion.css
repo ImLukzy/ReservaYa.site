@@ -20,7 +20,7 @@
 @keyframes fila-entra {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(0.25rem);
   }
   to {
     opacity: 1;

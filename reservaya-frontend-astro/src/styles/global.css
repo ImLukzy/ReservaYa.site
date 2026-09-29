@@ -3,6 +3,7 @@
 
 @layer base {
   html {
+    font-size: clamp(100%, 0.8rem + 0.5vw, 125%);
     color-scheme: light;
     background: var(--color-sillar);
     scroll-padding-top: 5rem;
@@ -87,11 +88,20 @@
 
   /* Texto legal y de ayuda en Markdown. */
   .prosa h1 {
+    font-family: var(--font-display);
     font-size: var(--text-3xl);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-basalto);
     margin-bottom: 1rem;
   }
   .prosa h2 {
-    font-size: var(--text-xl);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--color-basalto);
     margin: 2rem 0 0.5rem;
   }
   .prosa p,
