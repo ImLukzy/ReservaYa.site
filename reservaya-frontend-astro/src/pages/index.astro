@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SlotBoard from "../components/ui/SlotBoard.astro";
+import PatronCancha from "../components/ui/PatronCancha.astro";
+import CroquisCancha from "../components/ui/CroquisCancha.astro";
 import Select from "../components/ui/Select.astro";
 import Button from "../components/ui/Button.astro";
 import Icon from "../components/ui/Icon.astro";
@@ -8,6 +10,10 @@ import { DISTRITOS, TIPOS } from "../lib/arequipa";
 import { BOTON } from "../lib/estilos";
 
 const distritos = [{ valor: "", etiqueta: "Todo Arequipa" }, ...DISTRITOS.map((d) => ({ valor: d, etiqueta: d }))];
+const distritosTop = [
+  "Arequipa", "Cayma", "Cerro Colorado", "Yanahuara",
+  "José Luis Bustamante y Rivero", "Paucarpata", "Miraflores", "Sachaca"
+];
 const tipos = [{ valor: "", etiqueta: "Todo deporte" }, ...TIPOS];
 const dias = [{ valor: "hoy", etiqueta: "Hoy" }, { valor: "manana", etiqueta: "Mañana" }];
 
@@ -37,12 +43,13 @@ const preguntas = [
   description="Mira qué canchas de fútbol, vóley, básquet, pádel y tenis están libres hoy en Arequipa y resérvalas en un minuto."
 >
   <section class="relative overflow-hidden bg-noche">
-    <div class="mx-auto grid max-w-page gap-8 px-4 pb-14 pt-8 md:px-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-12 lg:pb-20 lg:pt-12">
-      <div>
-        <h1 class="text-3xl text-tiza lg:text-4xl">Canchas libres en Arequipa</h1>
+    <PatronCancha />
+    <div class="relative z-10 mx-auto grid max-w-page gap-8 px-4 pb-14 pt-8 md:px-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start lg:gap-8 xl:gap-12 lg:pb-20 lg:pt-12">
+      <div class="hero-entra">
+        <h1 class="text-4xl text-tiza md:text-5xl lg:text-6xl">Canchas libres en Arequipa</h1>
         <p class="mt-3 max-w-md text-lg text-tiza/75">Elige la hora, mira el precio y reserva en un minuto.</p>
 
-        <form action="/canchas" method="get" class="card-tactil mt-6 grid grid-cols-2 gap-3 p-4 shadow-[4px_4px_0_0_#1f2a24] lg:grid-cols-1 lg:p-5" role="search" aria-label="Buscar canchas">
+        <form action="/canchas" method="get" class="card-tactil mt-6 grid grid-cols-2 gap-3 p-4 shadow-dura lg:grid-cols-1 lg:p-5" role="search" aria-label="Buscar canchas">
           <Select id="buscar-distrito" name="distrito" etiqueta="Distrito" etiquetaOculta opciones={distritos} />
           <Select id="buscar-tipo" name="tipo" etiqueta="Deporte" etiquetaOculta opciones={tipos} />
           <Select id="buscar-dia" name="fecha" etiqueta="Día" etiquetaOculta opciones={dias} />
@@ -60,44 +67,85 @@ const preguntas = [
     ></div>
   </section>
 
+  <style>
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-entra {
+        animation: hero-entra 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+    }
+    @keyframes hero-entra {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
   <section id="como-funciona" aria-labelledby="como-titulo" class="border-y-2 border-basalto bg-tiza">
     <div class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
       <h2 id="como-titulo" class="text-2xl font-bold lg:text-3xl">Cómo funciona</h2>
-      <ol class="mt-6 grid md:grid-cols-3">
-        {pasos.map((p, i) => (
-          <li class="border-t border-cal py-5 md:border-l md:border-t-0 md:px-6 md:py-2 md:first:border-l-0 md:first:pl-0">
-            <p class="font-display text-3xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">{i + 1}</p>
-            <h3 class="mt-1 text-xl font-bold">{p.titulo}</h3>
-            <p class="mt-1 max-w-xs text-pizarra">{p.texto}</p>
-          </li>
-        ))}
-      </ol>
+      <div class="mt-6 grid gap-6 lg:grid-cols-2 lg:gap-10">
+        <div class="card-tactil flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6">
+          <CroquisCancha class="h-20 w-20 shrink-0 sm:h-24 sm:w-24" />
+          <div>
+            <p class="font-display text-3xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">1</p>
+            <h3 class="mt-1 text-xl font-bold">{pasos[0].titulo}</h3>
+            <p class="mt-1 text-pizarra">{pasos[0].texto}</p>
+          </div>
+        </div>
+        <ol class="border-l-2 border-cal pl-6">
+          {pasos.slice(1).map((p, i) => (
+            <li class="relative border-b border-cal py-4 last:border-b-0 last:pb-0">
+              <span class="absolute -left-[1.9rem] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-basalto bg-cesped"></span>
+              <p class="font-display text-2xl font-extrabold tabular-nums tracking-tight text-cesped-hondo">{i + 2}</p>
+              <h3 class="mt-1 text-lg font-bold">{p.titulo}</h3>
+              <p class="mt-1 text-pizarra">{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
 
   <section aria-labelledby="deportes-titulo" class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
-    <h2 id="deportes-titulo" class="text-2xl font-bold lg:text-3xl">Todos los deportes</h2>
-    <p class="mt-2 max-w-xl text-pizarra">Busca cancha por el deporte que juegas.</p>
-    <ul class="mt-6 flex flex-wrap gap-2.5">
+    <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <h2 id="deportes-titulo" class="font-display text-2xl font-black text-basalto lg:text-3xl">Todos los deportes</h2>
+      <p class="max-w-md text-sm text-pizarra">Selecciona tu disciplina para ver todas las canchas disponibles.</p>
+    </div>
+
+    <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
       {TIPOS.map((t) => (
-        <li>
-          <a
-            href={`/canchas?tipo=${t.valor}`}
-            class="chip-tactil"
-          >
-            {t.etiqueta}
-          </a>
-        </li>
+        <a
+          href={`/canchas?tipo=${t.valor}`}
+          class="card-tactil group flex flex-col justify-between bg-tiza p-4 shadow-dura-sm transition-transform hover:-translate-y-0.5 hover:shadow-dura motion-reduce:hover:translate-y-0"
+        >
+          <div class="flex items-center justify-between">
+            <span class="font-display text-[11px] font-bold uppercase tracking-wider text-cesped-hondo">Canchas</span>
+            <span class="text-sm text-pizarra transition-transform group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0">→</span>
+          </div>
+          <span class="mt-3 font-display text-lg font-black text-basalto">{t.etiqueta}</span>
+        </a>
       ))}
-    </ul>
+    </div>
   </section>
 
   <section aria-labelledby="distritos-titulo" class="border-y-2 border-basalto bg-cielo">
     <div class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
-      <h2 id="distritos-titulo" class="text-2xl font-bold lg:text-3xl">Cobertura en los 29 distritos de Arequipa</h2>
-      <p class="mt-2 max-w-xl text-pizarra">Elige tu distrito y mira las canchas libres cerca de ti.</p>
-      <ul class="mt-6 flex flex-wrap gap-2">
-        {DISTRITOS.map((d) => (
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 id="distritos-titulo" class="font-display text-2xl font-black text-basalto lg:text-3xl">Distritos de Arequipa</h2>
+          <p class="mt-2 max-w-xl text-pizarra">Encuentra canchas libres cerca de ti en los distritos más activos de la ciudad.</p>
+        </div>
+        <a href="/canchas" class="btn-tactil min-h-11 inline-flex items-center gap-2 rounded-full border-2 border-basalto bg-tiza px-5 py-2.5 font-display text-sm font-bold text-basalto shadow-dura-sm transition-all hover:bg-piedra hover:shadow-dura">
+          Ver los 29 distritos →
+        </a>
+      </div>
+      <ul class="mt-6 flex flex-wrap gap-2.5">
+        {distritosTop.map((d) => (
           <li>
             <a
               href={`/canchas?distrito=${encodeURIComponent(d)}`}
