@@ -553,7 +553,7 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                           </div>
                           <p className="min-w-0 flex-1 truncate text-sm font-semibold text-basalto">{l.nombre}</p>
                           <p className="font-display text-sm font-bold tabular-nums text-basalto">{soles(l.precio * l.qty)}</p>
-                          <button type="button" onClick={() => setLineas((prev) => prev.filter((x) => x.key !== l.key))} aria-label={`Quitar ${l.nombre}`} className="p-1 text-pizarra hover:text-error">
+                          <button type="button" onClick={() => setLineas((prev) => prev.filter((x) => x.key !== l.key))} aria-label={`Quitar ${l.nombre}`} className="btn-tactil inline-flex h-11 w-11 items-center justify-center rounded-lg p-1 text-pizarra hover:text-error">
                             <Trash2 size={16} />
                           </button>
                         </li>
@@ -694,10 +694,10 @@ export function CajaPanel({ canchas }: { canchas: CanchaPOS[] }) {
                           <td className="py-2.5 pr-3 font-display font-bold tabular-nums text-cesped-hondo">{soles(num(p.precio))}</td>
                           <td className="py-2.5 pr-3 font-display text-pizarra">{p.stock === null ? '∞' : p.stock}</td>
                           <td className="py-2.5 text-right">
-                            <button type="button" onClick={() => setModalProd({ edit: p })} aria-label={`Editar ${p.nombre}`} className="btn-tactil p-1.5 text-pizarra hover:text-basalto">
+                            <button type="button" onClick={() => setModalProd({ edit: p })} aria-label={`Editar ${p.nombre}`} className="btn-tactil inline-flex h-11 w-11 items-center justify-center rounded-lg p-1.5 text-pizarra hover:text-basalto">
                               <Pencil size={15} />
                             </button>{' '}
-                            <button type="button" onClick={() => borrarProducto(p.id)} aria-label={`Eliminar ${p.nombre}`} className="btn-tactil p-1.5 text-pizarra hover:text-error">
+                            <button type="button" onClick={() => borrarProducto(p.id)} aria-label={`Eliminar ${p.nombre}`} className="btn-tactil inline-flex h-11 w-11 items-center justify-center rounded-lg p-1.5 text-pizarra hover:text-error">
                               <Trash2 size={15} />
                             </button>
                           </td>

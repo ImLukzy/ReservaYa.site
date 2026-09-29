@@ -263,7 +263,7 @@ export function MetasPanel({ iniciales }: { iniciales: MetaDto[] }) {
                       <h2 className="mt-2 text-lg font-black text-basalto">{m.titulo}</h2>
                       <p className="text-xs text-pizarra">{formatFecha(m.periodoInicio)} – {formatFecha(m.periodoFin)}</p>
                     </div>
-                    <button type="button" onClick={() => borrar(m.id, m.titulo)} aria-label={`Eliminar ${m.titulo}`} className="btn-tactil rounded-lg border border-cal p-1.5 text-pizarra hover:border-error hover:text-error">
+                    <button type="button" onClick={() => borrar(m.id, m.titulo)} aria-label={`Eliminar ${m.titulo}`} className="btn-tactil inline-flex h-11 w-11 items-center justify-center rounded-lg border border-cal p-1.5 text-pizarra hover:border-error hover:text-error">
                       <Trash2 size={15} />
                     </button>
                   </div>
