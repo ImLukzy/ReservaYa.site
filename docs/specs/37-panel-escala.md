@@ -25,14 +25,25 @@
 
 ---
 
-## 3. Archivos afectados (propuesta de lotes, ningún archivo tocado todavía)
+## 3. Archivos afectados (13 lotes, ningún archivo tocado todavía)
 
-Lotes ≤3 archivos, secuenciales, para Oscar. El inventario px→rem lo trae `mapa-px-panel.md` de Toby (en redacción al cerrar esta spec; L2 cita su sección al llegar).
+Lotes ≤3 archivos, agrupados por carpeta, en orden mecanismo → densidad → jugador → compartidos → B2B → técnico. Base: `mapa-px-panel.md` (151 migran, 104 fijos). Criterio god: migran 82 textos + 19 espaciados fuera de zonas densas; anchos/altos solo de cabeceras/tarjetas/formularios; `min-w` de tablas quedan px dentro de `.densidad-fija`; `HORA_PX=52` es lógica JS y no se toca.
 
-| Archivo | Acción | Propósito | Lote |
+| Lote | Archivos (tope 3) | Ocurrencias | Orden |
 |---|---|---|---|
-| `reservaya-nextjs-api/app/globals.css` | Modificar | Raíz `clamp()` + utilidad `.densidad-fija { font-size: 16px }` | L1 |
-| Tablas densas (tope 3 archivos, según `mapa-px-panel.md`) | Modificar | Aplicar `.densidad-fija` a contenedores de tablas/listas densas | L2 |
+| L1 | `app/globals.css` | mecanismo (clamp + `.densidad-fija`) | mecanismo |
+| L2 | `components/b2b/CronogramaView.tsx`, `CajaPanel.tsx`, `AbonosPanel.tsx` | wrap 3 vistas; migran cabeceras (~5); `HORA_PX`/`h-580`/`min-w` intactos | densidad |
+| L3 | `dashboard/carne/page.tsx`, `dashboard/perfil/page.tsx`, `features/CanchaCard.tsx` | ~8 (anchos tarjeta + textos) | jugador |
+| L4 | `dashboard/reservas/page.tsx`, `features/CalificarBtn.tsx`, `ui/Input.tsx` | wrap tabla + 2 textos | jugador/compartido |
+| L5 | `ui/Button.tsx`, `ui/Modal.tsx`, `layout/Sidebar.tsx` | ~12 (44/48 controles, 260/88 shell) | compartidos |
+| L6 | `admin/page.tsx`, `admin/novedades/NovedadesView.tsx`, `b2b/ConfigPanel.tsx` | ~17 (textos + col 240) | B2B |
+| L7 | `features/GestionCanchasPanel.tsx`, `b2b/ComplejosDashboard.tsx`, `b2b/ComplejosGrid.tsx` | ~11 (textos + tarjeta 280/220) | B2B |
+| L8 | `b2b/DescuentosPanel.tsx`, `b2b/EquipoPanel.tsx`, `b2b/MetasPanel.tsx` | 15 (textos + tarjeta 380) | B2B |
+| L9 | `b2b/PreciosEspecialesPanel.tsx`, `b2b/ReportesPanel.tsx`, `b2b/ResenasPanel.tsx` | ~22 (textos + gap) | B2B |
+| L10 | `b2b/ReservasPanel.tsx`, `b2b/TorneosPanel.tsx`, `b2b/ValidarCodigo.tsx` | 10 (textos) | B2B |
+| L11 | `b2b/OnboardingChecklist.tsx`, `b2b/DashboardWidgets.tsx` | 4 (textos) | B2B |
+| L12 | `features/ClientesPanel.tsx`, `features/SuscripcionesPanel.tsx` | `min-w` 760 quedan px + wrap | B2B tablas |
+| L13 | `tecnico/centros/page.tsx`, `tecnico/usuarios/page.tsx` | `min-w` 720/820 quedan px, sin wrap | técnico |
 
 ---
 
@@ -43,10 +54,13 @@ Lotes ≤3 archivos, secuenciales, para Oscar. El inventario px→rem lo trae `m
 - **Criterio medible:** raíz computada 16 px @1024, ~17.6 px @1440, 18 px @≥1536; a 1536 px, un `<td>` con `text-sm` dentro de `.densidad-fija` computa 14 px con la raíz en 18 px; `typecheck`/`lint`/`test`/`build` en verde.
 - **Gate:** gates del panel.
 
-### Lote 2 (L2, Oscar) — densidad preservada
-- **Acción:** aplicar `.densidad-fija` a los contenedores de tablas/listas densas que indique `mapa-px-panel.md` (tope 3 archivos; candidatas: reservas, caja, agenda). Cabeceras, tarjetas y formularios crecen con la raíz sin tocarlos.
-- **Criterio medible:** a 1280, filas visibles por tabla densa difieren ≤1 vs baseline (con `.densidad-fija` verificada por A7b); 0 scroll horizontal a 360 y 1280; diff sin lógica.
-- **Gate:** gates del panel + capturas 360/1280/1440.
+### Lote 2 (L2, Oscar) — densidad B2B: Cronograma + Caja + Abonos
+- **Acción:** envolver cada vista en `.densidad-fija`; migrar solo textos de cabecera fuera de tablas (Caja ~4, Abonos 1). Intactos: `HORA_PX=52` (lógica JS, override de god sobre la recomendación del mapa), `h-[580px]`, `min-w-[560px]` de tablas, paddings de fila.
+- **Criterio medible:** horas visibles del cronograma y filas de Caja/Abonos idénticas a baseline a 1280; gates del panel en verde.
+
+### Lotes L3–L13 (Oscar) — réplica por carpeta según tabla §3
+- **Acción:** migrar textos/espaciados a `rem` y anchos de cabeceras/tarjetas/formularios según `mapa-px-panel.md`; `min-w` de tablas quedan px + wrap `.densidad-fija` (L4 reservas, L12); técnico L13 sin wrap. Override registrado: el mapa §5 pedía parametrizar `HORA_PX`; god lo prohíbe por ser lógica de posicionado.
+- **Criterio medible:** por lote: gates del panel + conteo de ocurrencias migradas igual al de §3 + 0 scroll horizontal a 360/1280 en las vistas tocadas.
 
 **Invariantes:** 0 lógica; 0 colores nuevos; `.densidad-fija` solo en zonas densas (el resto escala).
 
@@ -65,14 +79,14 @@ Lotes ≤3 archivos, secuenciales, para Oscar. El inventario px→rem lo trae `m
 | A7 | Densidad | Filas visibles por tabla densa a 1280 vs baseline | difieren ≤1 |
 | A7b | `.densidad-fija` congela | `<td>` con `text-sm` dentro de `.densidad-fija` a 1536 px | computa 14 px con raíz en 18 px |
 | A8 | Lógica intacta | Diff por lote | 0 líneas de lógica/fetch tocadas |
-| A9 | Inventario px | `mapa-px-panel.md` (pendiente Toby) vs diff | 0 px fuera de lista |
+| A9 | Inventario px | `mapa-px-panel.md` vs diff por lote | 0 px fuera de lista; conteo por lote igual a §3 |
 
 ---
 
 ## 6. Checklist
 
-- [ ] T1: inventario px→rem (`mapa-px-panel.md` de Toby en redacción; parcial: `clamp()` verificado por cuenta).
-- [x] T2: lotes ≤3 archivos secuenciales para Oscar (§3–§4).
+- [x] T1: inventario px→rem (`mapa-px-panel.md`: 151 migran, 104 fijos; tablas densas identificadas).
+- [x] T2: 13 lotes ≤3 archivos por carpeta, orden mecanismo→técnico (§3).
 - [x] T3: criterios medibles con gates (§5).
 - [x] T4: aprobada por Lukas (ILK-29).
 - [ ] T5: con mapa listo, completar L2 y despachar L1; cada lote verde de Jim lo reviso vs spec y anoto §7.
@@ -86,3 +100,4 @@ Lotes ≤3 archivos, secuenciales, para Oscar. El inventario px→rem lo trae `m
 |---|---|---|---|
 | 2026-09-29 | Redacción (T2–T4) | ✅ Lista y aprobada | Cita ILK-29; `clamp(100%, 0.75rem + 0.3906vw, 112.5%)` verificado por cuenta (16 @1024, 18 @1536); densidad ≤1 fila; `mapa-px-panel.md` pendiente para T1/L2. Sin código tocado. |
 | 2026-09-29 | Fix `.densidad-fija` (god) | ✅ Spec actualizada | `font-size` solo no frena el zoom (utilidades v4 son `rem` de `:root`): `.densidad-fija` fija `--spacing` y `--text-*`; caveat `@theme inline` anotado para el lote; A7b medible (`td` 14 px @1536 con raíz 18 px). |
+| 2026-09-29 | Criterio de lotes (god + mapa) | ✅ 13 lotes numerados | 82 textos + 19 espaciados fuera de densas; anchos solo cabeceras/tarjetas/forms; `min-w` tablas en px + wrap; `HORA_PX` intacto (override god); orden mecanismo→técnico con conteos §3. god despacha a Oscar. |
