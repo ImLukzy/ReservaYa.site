@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MessageCircleReply, Star, X } from 'lucide-react';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { cn } from '@/lib/utils';
 
 interface Resena {
   id: string;
@@ -52,7 +51,7 @@ function Estrellas({ n }: { n: number }) {
           key={i}
           size={15}
           strokeWidth={0}
-          className={i <= Math.round(n) ? 'fill-[#EAB308] text-[#EAB308]' : 'fill-[#E7E5E4] text-[#E7E5E4]'}
+          className={i <= Math.round(n) ? 'fill-sol text-sol' : 'fill-cal text-cal'}
         />
       ))}
     </span>
@@ -111,6 +110,15 @@ export function ResenasPanel() {
     return () => clearTimeout(t);
   }, [toast]);
 
+  useEffect(() => {
+    if (!respondiendo) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setRespondiendo(null);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [respondiendo]);
+
   const { promedio, total } = useMemo(() => {
     if (resenas.length === 0) return { promedio: 0, total: 0 };
     const suma = resenas.reduce((acc, r) => acc + (Number.isFinite(r.estrellas) ? r.estrellas : 0), 0);
@@ -146,41 +154,41 @@ export function ResenasPanel() {
   return (
     <div>
       <div>
-        <p className="text-[11px] font-bold tracking-[0.14em] text-[#EAB308]">⭐ RESEÑAS</p>
-        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">
+        <p className="text-[11px] font-bold tracking-[0.14em] text-alerta-hondo">⭐ RESEÑAS</p>
+        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">
           Reseñas de tus canchas
         </h1>
-        <p className="mt-1 text-sm text-[#64748B]">
+        <p className="mt-1 text-sm text-pizarra">
           Lo que dicen tus jugadores después de jugar. Responde y gana su confianza.
         </p>
       </div>
 
       {toast && (
-        <p role="status" className="mt-4 rounded-xl border border-[#E7E5E4] bg-white px-4 py-3 text-sm font-semibold text-[#0F172A] shadow-sm">
+        <p role="status" className="mt-4 rounded-xl border-2 border-basalto bg-tiza px-4 py-3 text-sm font-semibold text-basalto shadow-dura-sm">
           {toast}
         </p>
       )}
 
       {/* Resumen */}
-      <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="card-tactil mt-4 p-5">
         {cargando ? (
-          <p className="text-sm text-[#64748B]">Cargando resumen…</p>
+          <p className="text-sm text-pizarra">Cargando resumen…</p>
         ) : (
           <div className="flex flex-wrap items-center gap-6">
             <div>
-              <p className="text-4xl font-black text-[#0F172A]">
+              <p className="text-4xl font-black text-basalto">
                 {total > 0 ? promedio.toFixed(1) : '—'}
               </p>
               <div className="mt-1">
                 <Estrellas n={promedio} />
               </div>
-              <p className="mt-1 text-xs text-[#64748B]">
+              <p className="mt-1 text-xs text-pizarra">
                 {total > 0 ? `${total} reseña${total === 1 ? '' : 's'} en total` : 'Sin calificaciones aún'}
               </p>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-[#0F172A]">Tu reputación</p>
-              <p className="mt-0.5 text-sm text-[#64748B]">
+              <p className="text-sm font-bold text-basalto">Tu reputación</p>
+              <p className="mt-0.5 text-sm text-pizarra">
                 {total === 0
                   ? 'Cuando recibas tus primeras reseñas verás aquí tu promedio.'
                   : promedio >= 4.5
@@ -197,22 +205,22 @@ export function ResenasPanel() {
       {/* Lista */}
       <div className="mt-4 space-y-3">
         {cargando ? (
-          <div className="rounded-2xl border border-[#E7E5E4] bg-white p-6">
-            <p className="text-center text-sm text-[#64748B]">Cargando reseñas…</p>
+          <div className="card-tactil p-6">
+            <p className="text-center text-sm text-pizarra">Cargando reseñas…</p>
           </div>
         ) : error ? (
-          <div className="rounded-2xl border border-[#E7E5E4] bg-white p-8 text-center">
-            <p className="text-sm font-semibold text-[#0F172A]">{error}</p>
+          <div className="card-tactil p-8 text-center">
+            <p className="text-sm font-semibold text-basalto">{error}</p>
             <button
               type="button"
               onClick={() => void recargar()}
-              className="mt-3 rounded-xl border border-[#E7E5E4] px-4 py-2 text-sm font-bold text-[#0F172A] hover:border-[#22C55E]"
+              className="btn-tactil mt-3 rounded-full border-2 border-basalto bg-tiza px-4 py-2 text-sm font-bold text-basalto hover:bg-piedra"
             >
               Reintentar
             </button>
           </div>
         ) : resenas.length === 0 ? (
-          <div className="rounded-2xl border border-[#E7E5E4] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="card-tactil overflow-hidden">
             <EmptyState
               icon={Star}
               title="Sin reseñas aún…"
@@ -220,7 +228,7 @@ export function ResenasPanel() {
               action={
                 <a
                   href="/admin/complejos"
-                  className="rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] active:scale-[0.98]"
+                  className="btn-tactil rounded-full bg-cesped px-4 py-2.5 text-sm font-bold text-tiza transition-all hover:bg-cesped-hover"
                 >
                   Compartir mi página
                 </a>
@@ -229,17 +237,17 @@ export function ResenasPanel() {
           </div>
         ) : (
           resenas.map((r) => (
-            <article key={r.id} className="rounded-2xl border border-[#E7E5E4] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <article key={r.id} className="card-tactil p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <Estrellas n={r.estrellas} />
-                <time className="text-xs text-[#94A3B8]">{fechaCorta(r.fecha)}</time>
+                <time className="text-xs text-pizarra">{fechaCorta(r.fecha)}</time>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-[#0F172A]">{r.comentario || 'Sin comentario.'}</p>
-              <p className="mt-2 text-xs font-semibold text-[#64748B]">— {r.jugador}</p>
+              <p className="mt-2 text-sm leading-relaxed text-basalto">{r.comentario || 'Sin comentario.'}</p>
+              <p className="mt-2 text-xs font-semibold text-pizarra">— {r.jugador}</p>
               {r.respuesta ? (
-                <div className="mt-3 rounded-xl bg-[#F5F5F3] p-3">
-                  <p className="text-[11px] font-bold tracking-wide text-[#15803D]">TU RESPUESTA</p>
-                  <p className="mt-1 text-sm text-[#0F172A]">{r.respuesta}</p>
+                <div className="mt-3 rounded-xl border-2 border-cal bg-sillar p-3">
+                  <p className="text-[11px] font-bold tracking-wide text-cesped-hondo">TU RESPUESTA</p>
+                  <p className="mt-1 text-sm text-basalto">{r.respuesta}</p>
                 </div>
               ) : (
                 <button
@@ -248,10 +256,7 @@ export function ResenasPanel() {
                     setRespondiendo(r);
                     setTexto('');
                   }}
-                  className={cn(
-                    'mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[#E7E5E4] px-3 py-2',
-                    'text-sm font-bold text-[#0F172A] transition-colors hover:border-[#22C55E] hover:text-[#15803D]'
-                  )}
+                  className="btn-tactil mt-3 inline-flex items-center gap-1.5 border-2 border-basalto bg-tiza px-3 py-2 text-sm font-bold text-basalto hover:bg-piedra hover:text-cesped-hondo"
                 >
                   <MessageCircleReply size={16} strokeWidth={2} /> Responder
                 </button>
@@ -263,55 +268,55 @@ export function ResenasPanel() {
 
       {/* Modal responder */}
       {respondiendo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4" role="dialog" aria-modal="true" aria-label="Responder reseña">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4" role="dialog" aria-modal="true" aria-label="Responder reseña">
           <form
             onSubmit={(e) => void responder(e)}
-            className="w-full max-w-md rounded-2xl border border-[#E7E5E4] bg-white p-6 shadow-xl"
+            className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-bold tracking-[0.14em] text-[#EAB308]">RESEÑA</p>
-                <h2 className="mt-1 text-xl font-black text-[#0F172A]">Responder a {respondiendo.jugador}</h2>
+                <p className="text-[11px] font-bold tracking-[0.14em] text-alerta-hondo">RESEÑA</p>
+                <h2 className="mt-1 text-xl font-black text-basalto">Responder a {respondiendo.jugador}</h2>
               </div>
               <button
                 type="button"
                 onClick={() => setRespondiendo(null)}
                 aria-label="Cerrar"
-                className="rounded-lg p-1.5 text-[#64748B] hover:bg-[#F1F0EE] hover:text-[#0F172A]"
+                className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={18} strokeWidth={2} />
               </button>
             </div>
-            <blockquote className="mt-3 rounded-xl bg-[#F5F5F3] p-3 text-sm text-[#475569]">
+            <blockquote className="mt-3 rounded-xl border-2 border-cal bg-sillar p-3 text-sm text-pizarra">
               “{respondiendo.comentario || 'Sin comentario.'}”
             </blockquote>
-            <label className="mt-3 block text-sm font-semibold text-[#0F172A]">
+            <label className="mt-3 block text-sm font-semibold text-basalto">
               Tu respuesta
               <textarea
                 value={texto}
                 onChange={(e) => setTexto(e.target.value)}
                 rows={4}
                 placeholder="Ej. ¡Gracias por jugar con nosotros! Te esperamos pronto."
-                className="mt-1.5 w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm font-normal text-[#0F172A] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/30"
+                className="mt-1.5 w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm font-normal text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
               />
             </label>
             <div className="mt-4 flex gap-2">
               <button
                 type="button"
                 onClick={() => setRespondiendo(null)}
-                className="flex-1 rounded-xl border border-[#E7E5E4] px-4 py-2.5 text-sm font-bold text-[#0F172A] hover:border-[#22C55E]"
+                className="btn-tactil flex-1 border-2 border-basalto bg-tiza px-4 py-2.5 text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={enviando || !texto.trim()}
-                className="flex-1 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] hover:bg-[#16A34A] disabled:opacity-50"
+                className="btn-tactil flex-1 bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
               >
                 {enviando ? 'Publicando…' : 'Publicar respuesta'}
               </button>
             </div>
-            <p className="mt-3 font-mono text-[11px] text-[#94A3B8]">
+            <p className="mt-3 font-mono text-[11px] text-pizarra">
               POST /api/resenas/{respondiendo.id}/responder
             </p>
           </form>

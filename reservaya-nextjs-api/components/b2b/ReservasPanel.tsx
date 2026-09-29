@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   CalendarDays,
@@ -68,6 +68,15 @@ export function ReservasPanel({
   const [modalAbierto, setModalAbierto] = useState(false);
   const [accionId, setAccionId] = useState<string | null>(null);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModalAbierto(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [modalAbierto]);
 
   // Form nueva reserva
   const hoy = new Date().toISOString().slice(0, 10);
@@ -235,9 +244,9 @@ export function ReservasPanel({
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-[#15803D]">▦ GESTIÓN</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-[#0F172A]">Reservas</h1>
-          <p className="text-sm text-[#64748B]">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ GESTIÓN</p>
+          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Reservas</h1>
+          <p className="mt-1 text-sm text-pizarra">
             Consulta y gestiona las reservas de tu complejo, ordenadas por fecha y hora.
           </p>
         </div>
@@ -246,14 +255,14 @@ export function ReservasPanel({
             type="button"
             onClick={exportarCSV}
             disabled={visibles.length === 0}
-            className="flex items-center gap-1.5 rounded-xl border border-[#E7E5E4] bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] transition hover:border-[#22C55E] disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn-tactil flex items-center gap-1.5 rounded-full border-2 border-basalto bg-tiza px-4 py-2.5 text-sm font-bold text-basalto transition hover:bg-piedra disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Download size={16} strokeWidth={2} /> Exportar
           </button>
           <button
             type="button"
             onClick={abrirModal}
-            className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+            className="btn-tactil flex items-center gap-1.5 rounded-full bg-cesped px-4 py-2.5 text-sm font-bold text-tiza transition-all hover:bg-cesped-hover"
           >
             <Plus size={18} strokeWidth={2.5} /> Nueva reserva
           </button>
@@ -274,17 +283,17 @@ export function ReservasPanel({
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                'rounded-full border px-4 py-2 text-sm font-bold transition',
+                'rounded-full px-4 py-2 text-sm font-bold transition',
                 tab === t.id
-                  ? 'border-[#0F172A] bg-[#0F172A] text-white'
-                  : 'border-[#E7E5E4] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#0F172A]'
+                  ? 'border-2 border-basalto bg-basalto text-tiza shadow-dura-sm'
+                  : 'border-2 border-basalto bg-tiza text-pizarra hover:bg-piedra hover:text-basalto'
               )}
             >
               {t.label}{' '}
               <span
                 className={cn(
-                  'ml-1 rounded-full px-1.5 text-xs',
-                  tab === t.id ? 'bg-white/20 text-white' : 'bg-[#F1F0EE] text-[#64748B]'
+                  'ml-1 rounded-full px-1.5 text-xs font-bold',
+                  tab === t.id ? 'bg-tiza/20 text-tiza' : 'bg-piedra text-pizarra'
                 )}
               >
                 {conteos[t.id]}
@@ -292,12 +301,12 @@ export function ReservasPanel({
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-sm text-[#475569]">
+        <label className="flex items-center gap-2 text-sm text-pizarra">
           Ordenar
           <select
             value={orden}
             onChange={(e) => setOrden(e.target.value as Orden)}
-            className="rounded-xl border border-[#E7E5E4] bg-white px-3 py-2 text-sm font-semibold text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+            className="rounded-xl border-2 border-basalto bg-tiza px-3 py-2 text-sm font-semibold text-basalto focus:border-cesped focus:outline-none"
           >
             <option value="proximas">Próximas primero</option>
             <option value="recientes">Recientes</option>
@@ -307,14 +316,14 @@ export function ReservasPanel({
       </div>
 
       {error && (
-        <p role="alert" className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+        <p role="alert" className="mt-3 rounded-xl border-2 border-error bg-error-suave px-4 py-3 text-sm font-semibold text-error-hondo">
           {error}
         </p>
       )}
 
       {/* Lista */}
       {visibles.length === 0 ? (
-        <div className="mt-4 rounded-2xl border border-[#E7E5E4] bg-white">
+        <div className="card-tactil mt-4 overflow-hidden">
           <EmptyState
             icon={CalendarDays}
             title="Sin reservas en esta categoría"
@@ -323,7 +332,7 @@ export function ReservasPanel({
               <button
                 type="button"
                 onClick={abrirModal}
-                className="flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] hover:shadow-md active:scale-[0.98]"
+                className="btn-tactil flex items-center gap-1.5 rounded-full bg-cesped px-4 py-2.5 text-sm font-bold text-tiza transition-all hover:bg-cesped-hover"
               >
                 <Plus size={16} strokeWidth={2.5} /> Nueva reserva
               </button>
@@ -337,26 +346,26 @@ export function ReservasPanel({
             return (
               <li
                 key={r.id}
-                className="rounded-2xl border border-[#E7E5E4] bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.02)] md:p-5"
+                className="card-tactil p-4 md:p-5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate text-[15px] font-bold text-[#0F172A]">
+                    <p className="truncate text-[15px] font-bold text-basalto">
                       {r.usuario?.nombre ?? 'Cliente sin nombre'}
                     </p>
-                    <p className="truncate text-xs text-[#64748B]">
+                    <p className="truncate text-xs text-pizarra">
                       {r.cancha.nombre} · {formatFecha(r.fecha)} · {formatHora(r.horaInicio)} –{' '}
                       {formatHora(r.horaFin)}
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                       <Badge variant={estadoBadge[r.estado]}>{r.estado}</Badge>
-                      <span className="font-bold text-[#0F172A]">S/ {Number(r.total)}</span>
-                      <span className="font-mono font-bold tracking-wider text-[#15803D]">
+                      <span className="font-bold text-basalto">S/ {Number(r.total)}</span>
+                      <span className="font-mono font-bold tracking-wider text-cesped-hondo">
                         {codigoMostrado(r)}
                       </span>
                     </div>
                     {r.notas && (
-                      <p className="mt-1.5 max-w-xl break-words text-xs text-[#64748B]">
+                      <p className="mt-1.5 max-w-xl break-words text-xs text-pizarra">
                         Nota: {r.notas}
                       </p>
                     )}
@@ -367,7 +376,7 @@ export function ReservasPanel({
                         type="button"
                         disabled={ocupada}
                         onClick={() => cambiarEstado(r.id, 'CONFIRMADA')}
-                        className="rounded-xl bg-[#22C55E] px-3.5 py-2 text-xs font-bold text-[#060C08] transition-all hover:bg-[#16A34A] disabled:opacity-60"
+                        className="btn-tactil bg-cesped px-3.5 py-2 text-xs font-bold text-tiza hover:bg-cesped-hover disabled:opacity-60"
                       >
                         {ocupada ? 'Guardando…' : 'Confirmar'}
                       </button>
@@ -377,7 +386,7 @@ export function ReservasPanel({
                         type="button"
                         disabled={ocupada}
                         onClick={() => cambiarEstado(r.id, 'CANCELADA')}
-                        className="rounded-xl border border-[#E7E5E4] bg-white px-3.5 py-2 text-xs font-bold text-[#475569] transition hover:border-red-300 hover:text-red-700 disabled:opacity-60"
+                        className="btn-tactil border-2 border-basalto bg-tiza px-3.5 py-2 text-xs font-bold text-pizarra hover:bg-piedra hover:text-basalto disabled:opacity-60"
                       >
                         Cancelar
                       </button>
@@ -388,7 +397,7 @@ export function ReservasPanel({
                       onClick={() => eliminar(r.id)}
                       aria-label={`Eliminar reserva de ${r.usuario?.nombre ?? 'cliente'}`}
                       title="Eliminar"
-                      className="flex items-center gap-1 rounded-xl border border-[#E7E5E4] bg-white px-3 py-2 text-xs font-bold text-red-600 transition hover:border-red-300 hover:bg-red-50 disabled:opacity-60"
+                      className="btn-tactil flex items-center gap-1 border-2 border-error bg-tiza px-3 py-2 text-xs font-bold text-error hover:bg-error-suave hover:text-error-hondo disabled:opacity-60"
                     >
                       <Trash2 size={14} strokeWidth={2} /> Eliminar
                     </button>
@@ -403,37 +412,37 @@ export function ReservasPanel({
       {/* Modal nueva reserva */}
       {modalAbierto && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4"
           onClick={() => setModalAbierto(false)}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-label="Nueva reserva"
-            className="w-full max-w-md rounded-2xl border border-[#E7E5E4] bg-white p-6 shadow-2xl"
+            className="w-full max-w-md rounded-2xl border-2 border-basalto bg-tiza p-6 shadow-dura-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-[#0F172A]">Nueva reserva</h2>
+              <h2 className="text-lg font-bold text-basalto">Nueva reserva</h2>
               <button
                 type="button"
                 aria-label="Cerrar"
                 onClick={() => setModalAbierto(false)}
-                className="rounded-lg p-1.5 text-[#64748B] hover:bg-gray-100 hover:text-[#0F172A]"
+                className="btn-tactil h-9 w-9 rounded-full border-2 border-basalto bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={20} strokeWidth={2} />
               </button>
             </div>
             <div className="mt-4 space-y-3">
               <div>
-                <label htmlFor="nr-cancha" className="mb-1 block text-xs font-bold text-[#475569]">
+                <label htmlFor="nr-cancha" className="mb-1 block text-xs font-bold text-pizarra">
                   CANCHA
                 </label>
                 <select
                   id="nr-cancha"
                   value={fCancha}
                   onChange={(e) => setFCancha(e.target.value)}
-                  className="w-full rounded-xl border border-[#E7E5E4] bg-white px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+                  className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
                 >
                   <option value="">Selecciona una cancha</option>
                   {canchas.map((c) => (
@@ -444,7 +453,7 @@ export function ReservasPanel({
                 </select>
               </div>
               <div>
-                <label htmlFor="nr-fecha" className="mb-1 block text-xs font-bold text-[#475569]">
+                <label htmlFor="nr-fecha" className="mb-1 block text-xs font-bold text-pizarra">
                   FECHA
                 </label>
                 <input
@@ -452,12 +461,12 @@ export function ReservasPanel({
                   type="date"
                   value={fFecha}
                   onChange={(e) => setFFecha(e.target.value)}
-                  className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+                  className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
                 />
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="nr-ini" className="mb-1 block text-xs font-bold text-[#475569]">
+                  <label htmlFor="nr-ini" className="mb-1 block text-xs font-bold text-pizarra">
                     HORA INICIO
                   </label>
                   <input
@@ -465,11 +474,11 @@ export function ReservasPanel({
                     type="time"
                     value={fInicio}
                     onChange={(e) => setFInicio(e.target.value)}
-                    className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+                    className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
                   />
                 </div>
                 <div>
-                  <label htmlFor="nr-fin" className="mb-1 block text-xs font-bold text-[#475569]">
+                  <label htmlFor="nr-fin" className="mb-1 block text-xs font-bold text-pizarra">
                     HORA FIN
                   </label>
                   <input
@@ -477,12 +486,12 @@ export function ReservasPanel({
                     type="time"
                     value={fFin}
                     onChange={(e) => setFFin(e.target.value)}
-                    className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+                    className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="nr-notas" className="mb-1 block text-xs font-bold text-[#475569]">
+                <label htmlFor="nr-notas" className="mb-1 block text-xs font-bold text-pizarra">
                   NOTAS
                 </label>
                 <textarea
@@ -491,16 +500,16 @@ export function ReservasPanel({
                   onChange={(e) => setFNotas(e.target.value)}
                   placeholder="Cliente, teléfono, anticipo…"
                   rows={3}
-                  className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2.5 text-sm text-[#0F172A] focus:border-[#22C55E] focus:outline-none"
+                  className="w-full rounded-xl border-2 border-basalto bg-tiza px-3 py-2.5 text-sm text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
                 />
               </div>
               {formError && (
-                <p role="alert" className="rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-700">
+                <p role="alert" className="rounded-xl border border-error bg-error-suave px-3 py-2.5 text-xs font-semibold text-error-hondo">
                   {formError}
                 </p>
               )}
               {canchas.length === 0 && (
-                <p className="rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-800">
+                <p className="rounded-xl border border-sol bg-sol-suave px-3 py-2.5 text-xs font-semibold text-basalto">
                   Aún no tienes canchas. Agrega una desde{' '}
                   <a href="/admin/canchas" className="underline">
                     Canchas
@@ -513,7 +522,7 @@ export function ReservasPanel({
               <button
                 type="button"
                 onClick={() => setModalAbierto(false)}
-                className="flex-1 rounded-xl border border-[#E7E5E4] py-2.5 text-sm font-bold text-[#475569] transition hover:text-[#0F172A]"
+                className="btn-tactil flex-1 border-2 border-basalto bg-tiza py-2.5 text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Cancelar
               </button>
@@ -521,7 +530,7 @@ export function ReservasPanel({
                 type="button"
                 onClick={crearReserva}
                 disabled={guardando}
-                className="flex-1 rounded-xl bg-[#22C55E] py-2.5 text-sm font-bold text-[#060C08] transition-all hover:bg-[#16A34A] disabled:opacity-60"
+                className="btn-tactil flex-1 bg-cesped py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-60"
               >
                 {guardando ? 'Guardando…' : 'Guardar reserva'}
               </button>
