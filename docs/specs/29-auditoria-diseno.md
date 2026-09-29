@@ -77,6 +77,7 @@ Lotes de **≤3 archivos** cada uno, en el orden fijado por god: admin táctil p
 | `reservaya-nextjs-api/components/b2b/ValidarCodigo.tsx` | Modificar | Tokenizar validación de códigos (11 hex). | L11 |
 | `reservaya-nextjs-api/components/b2b/DashboardWidgets.tsx` | Modificar | Tokenizar widgets (40 líneas, 8 hex). | L11 |
 | `reservaya-nextjs-api/components/b2b/ComplejosDashboard.tsx` | Modificar | Micro-lote (24 líneas, 1 hex). | L12 |
+| `reservaya-nextjs-api/lib/b2b-theme.ts` | Modificar (o borrar) | Limpieza final: centralizar `btnPrimary`/`inputCls`/`labelCls` a tokens y que los paneles los importen (borrar copias locales), o borrar el archivo si L9 lo deja huérfano. Incluye OBS-1. | L13 |
 
 ---
 
@@ -150,6 +151,12 @@ Cada lote cita la **sección exacta** de la skill a leer (nunca `reference/` com
 - **Criterio medible:** igual que L7.
 - **Gate:** typecheck + lint + build Next.js.
 
+### Lote 13 (L13) — limpieza `lib/b2b-theme.ts` + OBS-1 (al final, tras L9)
+- **Skill:** `design-taste-frontend` §4.2 *Color Calibration*.
+- **Acción:** reescribir las constantes con hex/sombras viejas (`card`, `btnPrimary`, `btnDark`, `btnGhost`, `eyebrow`, `badgeOk`, `badgeBeta`, `theme`) a tokens y añadir `inputCls`/`labelCls` canónicos; los 8 paneles con copias locales (`Abonos`, `Caja`, `ComplejosGrid`, `Descuentos`, `Metas`, `PreciosEspeciales`, más `Config`/`Torneos` con `inputCls`) borran sus copias e importan; si nadie lo usa, borrar el archivo. OBS-1: icono de eliminar `text-cal`→`text-pizarra` en `DescuentosPanel:474` y `PreciosEspecialesPanel:380`.
+- **Criterio medible:** `Select-String 'const (btnPrimary|inputCls|labelCls|card) =' components/b2b/` → 0 definiciones locales; A7/A8 siguen en 0.
+- **Gate:** typecheck + lint + build Next.js.
+
 > **Nota de conteo:** L1–L6 usan `grep -E`; en Windows/PowerShell el equivalente es `Select-String -Pattern '#[0-9a-fA-F]{6}'`. Línea base global `components/b2b/`: 838 → 590 tras L1–L5 → **0** tras L7–L12 (cierra criterio A7).
 
 ---
@@ -180,11 +187,12 @@ Cada lote cita la **sección exacta** de la skill a leer (nunca `reference/` com
 - [x] **L5: `Header.astro`, `canchas.astro`** — implementado por Oscar (foco visible y contraste en navegación, botón de cierre accesible con touch target ≥44x44px, foco inicial en diálogo, escape listener y restauración de foco al cerrar, sombra limpia). Gates A5, A6 verificados localmente.
 - [ ] **L6: Verificación integral y auditoría de salud final (JIM-QA)** — 10 criterios + matriz Impeccable (objetivo ≥18/20).
 - [x] **L7: `TorneosPanel.tsx`** — implementado por Oscar (0 hex, 0 sombras difusas, `.card-tactil`, `.btn-tactil`, soporte Escape en drawer y modales). Gates A1–A4, A7, A8 verificados localmente.
-- [ ] **L8: `ReservasPanel.tsx`, `ResenasPanel.tsx`, `ReportesPanel.tsx`** — tokenizar (176 hex, 5 sombras difusas → duras). Gates A1–A4, A7, A8 por archivo.
+- [x] **L8: `ReservasPanel.tsx`, `ResenasPanel.tsx`, `ReportesPanel.tsx`** — implementado por Oscar (0 hex, 0 sombras difusas, `.card-tactil`, `.btn-tactil`, soporte Escape en modales, estrellas y tarjetas con tokens semánticos). Gates A1–A4, A7, A8 verificados localmente.
 - [ ] **L9: `EquipoPanel.tsx`, `MetasPanel.tsx`, `ComplejosGrid.tsx`** — tokenizar (176 hex, 5 sombras difusas → duras). Gates A1–A4, A7, A8 por archivo.
-- [ ] **L10: `DescuentosPanel.tsx`, `PreciosEspecialesPanel.tsx`, `HorariosPanel.tsx`** — tokenizar (90 hex, 2 sombras difusas → duras). Gates A1–A4, A7, A8 por archivo.
-- [ ] **L11: `OnboardingChecklist.tsx`, `ValidarCodigo.tsx`, `DashboardWidgets.tsx`** — tokenizar (35 hex, 1 sombra difusa → dura). Gates A1–A4, A7, A8 por archivo.
-- [ ] **L12: `ComplejosDashboard.tsx`** — micro-lote (1 hex). Gates A1–A4, A7, A8 (misma pasada que L11).
+- [x] **L10: `DescuentosPanel.tsx`, `PreciosEspecialesPanel.tsx`, `HorariosPanel.tsx`** — implementado por dev-claude (`task-20260929-reparto-pam`): hex→tokens (`text-basalto`, `text-pizarra`, `border-cal`, `bg-tiza`, `bg-cesped-suave`/`text-cesped-hondo`, `bg-error-suave`/`text-error`, `accent-cesped`), tarjetas a `card-tactil`, segmentado y switches a tokens, `shadow-sm`→`shadow-dura-sm`. Se retiró el import de `card`/`btnPrimary` de `lib/b2b-theme.ts` (fuera de alcance, se deja intacto) y se usan clases `card-tactil`/`btn-tactil` directas, igual que L2. Gates A1–A4, A7, A8 verificados localmente.
+- [x] **L11: `OnboardingChecklist.tsx`, `ValidarCodigo.tsx`, `DashboardWidgets.tsx`** — implementado por dev-claude (`task-20260929-reparto-pam`): hex→tokens, tarjetas a `card-tactil` (retirada la sombra difusa `shadow-[0_2px_4px_rgba(...)]` de las 3), CTAs a `.btn-tactil`, estados ok/error/advertencia a `cesped-suave`/`error-suave`/`sol-suave`. Gates A1–A4, A7, A8 verificados localmente.
+- [x] **L12: `ComplejosDashboard.tsx`** — implementado por dev-claude (misma pasada que L11): 1 hex → `text-pizarra`. Gates A1–A4, A7, A8 verificados localmente.
+- [ ] **L13: `lib/b2b-theme.ts`** — centralizar `btnPrimary`/`inputCls`/`labelCls` a tokens (o borrar si huérfano) + OBS-1 (`text-cal`→`text-pizarra` en iconos de eliminar). Tras L9. Gates A1–A4, A7, A8.
 
 ---
 
@@ -212,5 +220,10 @@ Cada lote cita la **sección exacta** de la skill a leer (nunca `reference/` com
 | 2026-09-29 | L5 `Header.astro`/`canchas.astro` (A5, A6) | ✅ PASS (local) | Oscar: foco visible y contraste en nav, dialog con foco inicial y restauración, 0 errores en `astro check`, 17 páginas compiladas en `astro build`. |
 | 2026-09-29 | L1–L5 integral jim-qa-b (A1–A6 + conteo hex) | ✅ PASS | jim-qa-b (1 pasada): typecheck 0 err; lint 0 err + 2 warnings conocidos; test 40/40; astro check 0 err/0 warn/1 hint conocido; astro build 17 págs OK. `next build` no verificado (servidor dev usa .next). Hex6: 590 en `components/b2b/` global (archivos fuera de Spec 29: Reportes/Resenas/Reservas/Torneos/ValidarCodigo); 2 en archivos tocados (`Modal.tsx:81,86` variante oscura `#20263a`/`#2b334d`, decisión de god); 0 sombras difusas en tocados; 0× `#1f2a24` literal. |
 | 2026-09-29 | L7 `TorneosPanel.tsx` (A1–A4, A7, A8) | ✅ PASS (local) | Oscar: erradicados 78 hex a tokens semánticos (0 hex6/hex3 restantes); 6 sombras difusas migradas a `shadow-dura*` / `.card-tactil`; soporte Escape en modales y drawer de detalle; botones a `.btn-tactil` con touch target accesible. Typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK. |
-| 2026-09-29 | L7–L12 resto B2B (especificación) | 📝 SPEC | auditor-b: 14 archivos / 590 hex6 medidos por archivo (0 en L1–L5), 19 sombras difusas (6+5+5+2+1+0), mapa semántico extendido con verificación obligatoria contra `globals.css`/`tokens.css`. Pendiente implementación + gates A1–A4, A7, A8 por archivo. |
+| 2026-09-29 | L10 `DescuentosPanel`/`PreciosEspecialesPanel`/`HorariosPanel` (A1–A4, A7, A8) | ✅ PASS (local) | dev-claude: erradicados 100 hex (90 medidos + 10 no contados en gray-*) a tokens semánticos; 1 sombra difusa (`shadow-sm` en `HorariosPanel`) → `.card-tactil`/`shadow-dura-sm`; segmentado, switches, badges y checkboxes a tokens (`accent-cesped`, `bg-error-suave`/`text-error`, `bg-cesped-suave`/`text-cesped-hondo`). Import de `lib/b2b-theme.ts` retirado (archivo no tocado). Typecheck 0, lint 0 (2 warnings preexistentes), test 40/40, build Next OK. Solicitado a jim-qa-b. |
+| 2026-09-29 | L10 revisión auditor-b (contra spec, tras verde jim-qa-b) | ✅ APROBADO + 1 observación no bloqueante | Diff 92+/92− solo clases, lógica intacta; todos los tokens existen en `globals.css` (`btn-tactil bg-cesped text-tiza` idéntico a L1/L2, contraste 4.96:1 documentado); 0 hex, 0 sombras difusas y 0 `shadow-[...]` arbitrarias en los 3 archivos. OBS-1 (no bloqueante, decisión de god): icono de eliminar en `text-cal` sobre tiza (~1.5:1, igual que el original `#CBD5E1` — sin regresión, pero el mapa L7 sugería `text-pizarra` para usos con significado). Vigilancia: `lib/b2b-theme` aún lo usa `ComplejosGrid` (L9); tras L9 verificar si queda huérfano. Aviso jim-qa-b heredado: `cn` sin usar en `ResenasPanel.tsx:7` (toca a L8/Oscar). |
+| 2026-09-29 | L11 `OnboardingChecklist`/`ValidarCodigo`/`DashboardWidgets` (A1–A4, A7, A8) | ✅ PASS (local) | dev-claude: erradicados 35 hex a tokens; 3 sombras difusas arbitrarias (`shadow-[0_2px_4px_...]`, no capturadas por el regex de A8 pero corregidas igual) → `.card-tactil`. Typecheck 0, lint 0 (2 warnings preexistentes + 1 ajeno en `ResenasPanel.tsx` de L8), test 40/40, build Next OK. Solicitado a jim-qa-b. |
+| 2026-09-29 | L11+L12 revisión auditor-b (contra spec, tras verde jim-qa-b) | ✅ APROBADO sin observaciones nuevas | Diff 26+/26− solo clases (`OnboardingChecklist`, `ValidarCodigo`, `DashboardWidgets`, `ComplejosDashboard`), lógica intacta; tokens todos en `globals.css`; 0 hex, 0 sombras, 0 `shadow-[...]`; `active:scale` y `hover:shadow-md` erradicados; `amber/red`→`sol-suave+basalto`/`error+tiza` (contrastes documentados). Único `text-cal`: icono decorativo `ScanLine` (mismo patrón que OBS-1, cubierto por decisión pendiente de god). |
+| 2026-09-29 | L8 `ReservasPanel`/`ResenasPanel`/`ReportesPanel` (A1–A4, A7, A8) | ✅ PASS (local) | Oscar: erradicados 113 hex (36+37+40 en código activo, 0 hex restantes en los 3 paneles); 5 sombras difusas migradas a `.card-tactil`/`shadow-dura*`; soporte Escape en modales (nueva reserva, responder reseña); estrellas con tokens `sol`/`cal`; tarjetas oscuras con `from-noche to-cesped-hondo`; botones a `.btn-tactil`. Typecheck 0, lint 0 (2 warnings preexistentes, warning de cn removido), test 40/40, build Next OK (Turbopack 5.1s). Solicitado a jim-qa-b. |
+| 2026-09-29 | L7–L12 resto B2B (especificación) | 📝 SPEC | auditor-b: 14 archivos / 590 hex6 medidos por archivo (0 en L1–L5), 19 sombras difusas (6+5+5+2+1+0), mapa semántico extendido con verificación obligatoria contra `globals.css`/`tokens.css`. L7, L8, L10, L11, L12 implementados; L9 pendiente (Oscar). |
 | _Pendiente_ | Score Impeccable Final | | Objetivo: >= 18 / 20 (Excelente) |
