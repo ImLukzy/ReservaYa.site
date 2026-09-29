@@ -30,7 +30,7 @@
 
 ## 3. Archivos afectados (propuesta de lotes, ningún archivo tocado todavía)
 
-Lotes de ≤3 archivos, conjuntos disjuntos: dwight-scout (L1+L2, 403 líneas simples) y Oscar (L3+L4, 806 líneas con las 2 interactivas) trabajan en paralelo sin tocar el mismo archivo.
+Lotes de ≤3 archivos, conjuntos disjuntos: angel-audit (L1+L2) y Oscar (L3+L4) trabajan en paralelo sin tocar el mismo archivo.
 
 | Archivo | Acción | Propósito | Lote |
 |---|---|---|---|
@@ -51,13 +51,13 @@ Lotes de ≤3 archivos, conjuntos disjuntos: dwight-scout (L1+L2, 403 líneas si
 
 **Diales:** `DESIGN_VARIANCE: 8` · `MOTION_INTENSITY: 5` (orden de god para el resto; Spec 32 usó 6/3) — toda animación con gate `prefers-reduced-motion` (`motion-safe:`/`motion-reduce:`, patrón ya aceptado en L1/L5 de Spec 32) y solo `transform`/`opacity` (sin CLS).
 
-### Lote 1 (L1, dwight-scout) — `forgot-password` + `reset-password`
+### Lote 1 (L1, angel-audit) — `forgot-password` + `reset-password`
 - **Skill:** `design-taste-frontend` §4.7 *Layout Discipline* + lenguaje `AuthCard` de Spec 32 L3/L4.
 - **Acción:** eyebrow + h1 `font-display` en escala, tarjeta del formulario a `card-tactil`; el `fetch` y los estados de aviso quedan idénticos. Nota (mapa dwight-b verificado): el h1 lo renderiza `AuthCard` desde el prop `titulo` de cada página — se edita el `titulo` por página, no `AuthCard`.
 - **Criterio medible:** `astro check`/`astro build` en verde; diff sin líneas `fetch`/`API` tocadas; 0 hex.
 - **Gate:** `astro check` + `astro build`.
 
-### Lote 2 (L2, dwight-scout) — `ayuda` + `libro-reclamaciones` + `mejoras`
+### Lote 2 (L2, angel-audit) — `ayuda` + `libro-reclamaciones` + `mejoras`
 - **Skill:** `design-taste-frontend` §4.7 + §4.5 *Interactive UI States* (inputs/botones del sistema).
 - **Acción:** ritmo de eyebrows, `card-tactil` en formularios, inputs a `inputCls`-equivalente Astro; campos, validaciones y envíos intactos.
 - **Criterio medible:** igual que L1.
@@ -93,7 +93,7 @@ Lotes de ≤3 archivos, conjuntos disjuntos: dwight-scout (L1+L2, 403 líneas si
 
 ## 6. Checklist
 - [x] T1: mapeo base (dwight S32 + escaneo propio: 9 páginas, líneas y estructuras verificadas).
-- [x] T2: lotes ≤3 archivos, disjuntos, repartidos dwight-scout (L1+L2) / Oscar (L3+L4).
+- [x] T2: lotes ≤3 archivos, disjuntos, repartidos angel-audit (L1+L2) / Oscar (L3+L4).
 - [x] T3: criterios medibles (§5) con gates de god (0 hex, tokens existentes, build verde).
 - [x] T4: mandar esta spec a auditor-b (auto: la redacta auditor-b por `req-20260929-auditorb-s33`).
 - [x] T5: avisar a god en 3 líneas y esperar aprobación de Lukas antes de cualquier lote.
@@ -102,4 +102,13 @@ Lotes de ≤3 archivos, conjuntos disjuntos: dwight-scout (L1+L2, 403 líneas si
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
 | 2026-09-29 | Mapeo + redacción (T1–T4) | ✅ Completo | 9 páginas medidas (`completar-cuadro` 365 … `torneos` 31); `Planes.astro` uso único (`duenos.astro:74`); fetch inline localizados (`completar-cuadro:187,231,337`, `sortear:173`, `forgot:58`, `reset:88`, `mejoras:51,82`) para blindarlos en L4/L1/L2. |
-| _Pendiente_ | A1–A7 | | Se verifican cuando Lukas apruebe y se ejecuten los lotes. |
+| 2026-09-29 | Aprobación Lukas + vínculo Spec 34 (T5) | ✅ Aprobada para ejecución | Vía god `inform-20260929-v2-auditorb`. Paleta ampliada por deporte y elementos firma los define Spec 34 (`worker-diseno-v2`); L1–L4 citan sus tokens sin inventar. Coordinación auditor-b↔worker-diseno-v2 por outbox. |
+| 2026-09-29 | L3 (`duenos.astro`, `Planes.astro`, `torneos.astro`) | ✅ Implementado | Hero dueños con PatronCancha, bg-noche, eyebrow y franja césped; Planes migrado a shadow-dura* (0 hex); torneos con eyebrow y CTA organiza; capturas 1440/375 con 0px scroll horizontal. astro check 0/0/1 hint, astro build 17 págs OK. Despachado a jim-qa-b. |
+| 2026-09-29 | L3 Gates A1–A7 (Jim-QA) | ✅ 100% PASS | A1 astro check 0 err/1 hint; A2 astro build 17 págs (4.11s); A3 0 hex en duenos/Planes/torneos; A4 0px scroll horizontal (1440x900 y 375x812); A5 0 líneas fetch/lógica tocadas; A6 motion-safe y prefers-reduced-motion completos; A7 eyebrows, card-tactil y escala display OK. Verificado por jim-qa-mumwavdb. |
+| 2026-09-29 | L3 Revisión vs spec (Angel-Auditor) | ✅ Conforme, sin bloqueantes | Diff solo clases/contenedores + import `PatronCancha`; arrays comerciales intactos (`planes`, `pasos`, `modulos`, `preguntas`); enlaces Footer (`/duenos`, `/duenos#planes`) y CTAs intactos; 0 hex en L3 (hex solo pre-existente en `sortear`/`completar-cuadro`, fuera de L3); motion con gate (`motion-safe:`, `@media no-preference`, solo transform/opacity). Rama §2.3 EmptyState correcta: el endpoint público de Spec 23 vive en `feature/23` sin merge; consumirlo sería fetch nuevo, fuera de L3. Obs. leves no bloqueantes: (1) copy nuevo «Incluido en Gestión total» en cada módulo + slugs `#id` visibles — validar exactitud comercial; (2) `hover:-translate-y-0.5`/`transition-colors` sin `motion-safe` (micro-transición hover, precedente Spec 32). |
+| 2026-09-29 | L3 Re-gate A1–A7 + Copy (Jim-QA) | ✅ 100% PASS | A1 astro check 0 err/1 hint; A2 build 17 págs OK (5.10s); A3 0 hex; A4 0px scroll; A5 fetch/lógica intactos; A6 motion con gate; A7 dirección Spec 32/33. Validación copy estricta: 0 coincidencias de «Incluido en Gestión total», «en tiempo real», «Activación rápida» (reemplazado por «Funciona en el navegador, sin instalar») y «4 PASOS» fijo (ahora `{pasos.length} pasos`); slugs visibles `#{m.id}` retirados conservando atributo id. Verificado por jim-qa-mumwavdb. |
+| 2026-09-29 | L3 Revisión final vs spec (Angel-Auditor) | ✅ CONFORME, listo para commit | Correcciones verificadas: grep de copy prohibido («Incluido en Gestión total», «en tiempo real», «Activación rápida», «4 PASOS», `#{m.id}`, hex) → 0 coincidencias fuera de `tokens.css`; `torneos.astro` con eyebrow, EmptyState y CTA intactos; diff L3 sigue siendo solo maquetación (0 fetch/lógica). Las 2 obs. leves de mi revisión previa quedan cerradas por la corrección de copy. Visto bueno final para commit de L3. |
+| 2026-09-29 | L2 Revisión vs spec (Angel-Auditor) | ✅ CONFORME, listo para commit | Diff solo maquetación en `ayuda`, `libro-reclamaciones`, `mejoras`: eyebrows + h1 display en escala + formularios a `card-tactil`; IDs intactos (`lr-*`, `data-inbox`, `data-status`, `data-submit`, `idea-*`, `success-card`, `otra-idea`); validaciones y copy legal intactos (15 días, Ley 29571); script de `mejoras` (fetch:51,82) sin tocar; 0 hex en el diff. Visto bueno para commit de L2. |
+| 2026-09-29 | L2 (`ayuda.astro`, `libro-reclamaciones.astro`, `mejoras.astro`) | ✅ Implementado | Eyebrows en las 3 páginas, escala display, card-tactil y shadow-dura en formularios y pasos. astro check 0 err/1 hint, build 17 págs OK. Despachado por Oscar. |
+| 2026-09-29 | L2 Gates A1–A7 (Jim-QA) | ✅ 100% PASS | A1 astro check 0 err/1 hint; A2 astro build 17 págs (4.08s); A3 0 hex en ayuda/libro-reclamaciones/mejoras; A4 sin desbordes horizontales; A5 0 líneas fetch/lógica tocadas (script y handlers inline de mejoras intactos); A6 motion con gate; A7 ritmo de eyebrows y card-tactil consistentes. Copy 100% verificable. Verificado por jim-qa-mumwavdb. |
+| _Pendiente_ | A1–A7 (resto de lotes: L1, L4) | | Se verifican cuando se ejecuten los lotes restantes. |
