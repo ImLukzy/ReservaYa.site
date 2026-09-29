@@ -16,15 +16,21 @@ const preguntas = [
 
 <BaseLayout title="Arma equipos parejos | ReservaYa" description="Escribe los nombres de los jugadores y repártelos al azar en 2, 3 o 4 equipos.">
   <section class="mx-auto max-w-texto px-4 pb-12 pt-8 md:px-6 lg:pt-12">
-    <h1 class="text-3xl lg:text-4xl">Arma los equipos</h1>
-    <p class="mt-3 text-lg text-pizarra">Agrega a los que van a jugar y reparte los equipos al azar, sin discusiones.</p>
+    <div class="flex items-center gap-2">
+      <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Sorteo rápido</span>
+      <span class="text-xs text-pizarra">·</span>
+      <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">2, 3 o 4 equipos</span>
+    </div>
+    <h1 class="mt-2 font-display text-4xl font-black tracking-tight text-basalto sm:text-5xl">Arma los equipos</h1>
+    <p class="mt-3 text-base text-pizarra sm:text-lg">Agrega a los que van a jugar y reparte los equipos al azar, sin discusiones.</p>
 
-    <div class="card-tactil mt-8 p-5 sm:p-6">
+    <div class="card-tactil mt-8 bg-tiza p-5 shadow-dura sm:p-6">
+      <p class="mb-3 font-display text-xl font-black text-basalto">1. Agrega jugadores</p>
       <label for="add-input" class={ETIQUETA}>Agrega jugadores</label>
       <div id="search-wrap" class="relative">
         <Icon nombre="buscar" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-pizarra" />
         <input id="add-input" placeholder="@usuario o nombre" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="suggest" aria-autocomplete="list" class={`${CAMPO} h-11 pl-10`} />
-        <div id="suggest" role="listbox" aria-label="Usuarios encontrados" hidden class="absolute inset-x-0 z-20 mt-2 max-h-64 overflow-y-auto card-tactil p-2 shadow-[4px_4px_0_0_#1f2a24]"></div>
+        <div id="suggest" role="listbox" aria-label="Usuarios encontrados" hidden class="absolute inset-x-0 z-20 mt-2 max-h-64 overflow-y-auto card-tactil bg-tiza p-2 shadow-dura"></div>
       </div>
       <div id="draft-row" hidden class="mt-3">
         <label for="draft-input" class={ETIQUETA}>Invitados sin cuenta</label>
@@ -38,13 +44,13 @@ const preguntas = [
       <Button id="add-guest" variante="secundario" class="mt-3 w-full"><Icon nombre="mas" class="h-4 w-4" />Agregar invitado sin cuenta</Button>
     </div>
 
-    <div class="card-tactil mt-4 p-5 sm:p-6">
-      <h2 class="font-sans text-base font-bold text-basalto">Jugadores <span id="jcount" class="font-display font-extrabold tabular-nums text-pizarra">(0)</span></h2>
+    <div class="card-tactil mt-4 bg-tiza p-5 shadow-dura-sm sm:p-6">
+      <h2 class="font-display text-xl font-black text-basalto">2. Jugadores <span id="jcount" class="font-display font-extrabold tabular-nums text-pizarra">(0)</span></h2>
       <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
       <p id="jempty" class="py-6 text-center text-pizarra">Todavía no hay jugadores.</p>
     </div>
 
-    <div class="card-tactil mt-4 flex flex-col gap-4 p-5 sm:flex-row sm:items-end sm:justify-between sm:p-6">
+    <div class="card-tactil mt-4 flex flex-col gap-4 bg-sillar/40 p-5 shadow-dura sm:flex-row sm:items-end sm:justify-between sm:p-6">
       <fieldset>
         <legend class={ETIQUETA}>¿Cuántos equipos?</legend>
         <div id="tnums" class="flex gap-2">
@@ -53,19 +59,19 @@ const preguntas = [
           ))}
         </div>
       </fieldset>
-      <Button id="sortear" disabled class="sm:px-10">Sortear equipos</Button>
+      <Button id="sortear" disabled class="shadow-dura-sm sm:px-10">Sortear equipos</Button>
     </div>
 
     <div id="out" class="mt-4 grid gap-4 sm:grid-cols-2" aria-live="polite"></div>
 
-    <h2 class="mt-12 text-2xl">Preguntas</h2>
-    <div class="mt-4 border-t border-cal">
+    <h2 class="mt-12 font-display text-3xl font-black tracking-tight text-basalto">Preguntas</h2>
+    <div class="mt-5 space-y-3">
       {preguntas.map(([p, r]) => (
-        <details class="group border-b border-cal">
-          <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 font-semibold [&::-webkit-details-marker]:hidden">
-            {p}<Icon nombre="mas" class="h-5 w-5 shrink-0 text-pizarra transition-transform group-open:rotate-45" />
+        <details class="card-tactil group bg-tiza p-4 open:bg-sillar/30">
+          <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 font-display font-bold text-basalto [&::-webkit-details-marker]:hidden">
+            {p}<Icon nombre="mas" class="h-5 w-5 shrink-0 text-pizarra motion-safe:transition-transform group-open:rotate-45" />
           </summary>
-          <p class="pb-4 text-pizarra">{r}</p>
+          <p class="mt-3 border-t border-cal pt-3 text-pizarra">{r}</p>
         </details>
       ))}
     </div>
@@ -287,7 +293,7 @@ const preguntas = [
     for (var i = 0; i < nEquipos; i++) {
       (function (i) {
         var ms = sh.filter(function (_, j) { return j % nEquipos === i; });
-        var d = nodo("div", "fila-entra card-tactil p-5 shadow-[4px_4px_0_0_#1f2a24]");
+        var d = nodo("div", "fila-entra card-tactil p-5 shadow-dura");
         d.style.animationDelay = i * 60 + "ms";
         var head = nodo("div", "flex items-center justify-between");
         var copyBtn = nodo("button", claseTexto + " text-sm", "Copiar");
