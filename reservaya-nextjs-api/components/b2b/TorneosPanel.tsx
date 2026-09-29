@@ -260,8 +260,8 @@ export function TorneosPanel() {
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-alerta-hondo">🏆 TORNEOS · BETA</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Torneos</h1>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-alerta-hondo">🏆 TORNEOS · BETA</p>
+          <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">Torneos</h1>
           <p className="mt-1 text-sm text-pizarra">
             Crea copas relámpago, inscribe equipos y lleva el fixture sin Excel.
           </p>
@@ -329,7 +329,7 @@ export function TorneosPanel() {
               <article key={t.id} className="card-tactil flex flex-col p-5">
                 <div className="flex items-start justify-between gap-2">
                   <h2 className="text-base font-black text-basalto">{t.nombre}</h2>
-                  <span className={cn('shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold', badgeEstado(t.estado))}>
+                  <span className={cn('shrink-0 rounded-full px-2.5 py-1 text-[0.6875rem] font-bold', badgeEstado(t.estado))}>
                     {ETIQUETA_ESTADO_TORNEO[t.estado] ?? t.estado}
                   </span>
                 </div>
@@ -402,9 +402,9 @@ export function TorneosPanel() {
           <aside className="absolute inset-y-0 right-0 flex w-full max-w-lg flex-col border-l-2 border-basalto bg-sillar shadow-dura-lg">
             <div className="flex items-start justify-between gap-3 border-b-2 border-basalto bg-tiza p-5">
               <div>
-                <p className="text-[11px] font-bold tracking-[0.14em] text-alerta-hondo">TORNEO</p>
+                <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-alerta-hondo">TORNEO</p>
                 <h2 className="mt-0.5 text-xl font-black text-basalto">{detalle.nombre}</h2>
-                <span className={cn('mt-2 inline-block rounded-full px-2.5 py-1 text-[11px] font-bold', badgeEstado(detalle.estado))}>
+                <span className={cn('mt-2 inline-block rounded-full px-2.5 py-1 text-[0.6875rem] font-bold', badgeEstado(detalle.estado))}>
                   {ETIQUETA_ESTADO_TORNEO[detalle.estado] ?? detalle.estado}
                 </span>
               </div>

@@ -185,8 +185,8 @@ export function EquipoPanel() {
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">👥 EQUIPO</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Tu equipo</h1>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">👥 EQUIPO</p>
+          <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">Tu equipo</h1>
           <p className="mt-1 text-sm text-pizarra">
             Quienes te ayudan a operar tus canchas día a día: reservas, caja y validación.
           </p>
@@ -316,7 +316,7 @@ export function EquipoPanel() {
                   <span
                     className={cn(
                       'absolute top-0.5 h-5 w-5 rounded-full bg-tiza shadow-dura-sm transition-all',
-                      m.activo ? 'left-[22px]' : 'left-0.5'
+                      m.activo ? 'left-[1.375rem]' : 'left-0.5'
                     )}
                   />
                 </button>
@@ -348,7 +348,7 @@ export function EquipoPanel() {
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">EQUIPO</p>
+                <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">EQUIPO</p>
                 <h2 className="mt-1 text-xl font-black text-basalto">Agregar al equipo</h2>
                 {complejos.length > 0 && (
                   <p className="mt-1 text-xs text-pizarra">
@@ -404,7 +404,7 @@ export function EquipoPanel() {
                 {guardando ? 'Agregando…' : 'Agregar'}
               </button>
             </div>
-            <p className="mt-3 text-[11px] text-pizarra">
+            <p className="mt-3 text-[0.6875rem] text-pizarra">
               Si el correo no tiene cuenta, se crea con clave temporal (te la mostraremos una vez).
             </p>
           </form>

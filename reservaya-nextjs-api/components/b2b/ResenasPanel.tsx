@@ -154,8 +154,8 @@ export function ResenasPanel() {
   return (
     <div>
       <div>
-        <p className="text-[11px] font-bold tracking-[0.14em] text-alerta-hondo">⭐ RESEÑAS</p>
-        <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">
+        <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-alerta-hondo">⭐ RESEÑAS</p>
+        <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">
           Reseñas de tus canchas
         </h1>
         <p className="mt-1 text-sm text-pizarra">
@@ -246,7 +246,7 @@ export function ResenasPanel() {
               <p className="mt-2 text-xs font-semibold text-pizarra">— {r.jugador}</p>
               {r.respuesta ? (
                 <div className="mt-3 rounded-xl border-2 border-cal bg-sillar p-3">
-                  <p className="text-[11px] font-bold tracking-wide text-cesped-hondo">TU RESPUESTA</p>
+                  <p className="text-[0.6875rem] font-bold tracking-wide text-cesped-hondo">TU RESPUESTA</p>
                   <p className="mt-1 text-sm text-basalto">{r.respuesta}</p>
                 </div>
               ) : (
@@ -275,7 +275,7 @@ export function ResenasPanel() {
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-bold tracking-[0.14em] text-alerta-hondo">RESEÑA</p>
+                <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-alerta-hondo">RESEÑA</p>
                 <h2 className="mt-1 text-xl font-black text-basalto">Responder a {respondiendo.jugador}</h2>
               </div>
               <button
@@ -316,7 +316,7 @@ export function ResenasPanel() {
                 {enviando ? 'Publicando…' : 'Publicar respuesta'}
               </button>
             </div>
-            <p className="mt-3 font-mono text-[11px] text-pizarra">
+            <p className="mt-3 font-mono text-[0.6875rem] text-pizarra">
               POST /api/resenas/{respondiendo.id}/responder
             </p>
           </form>

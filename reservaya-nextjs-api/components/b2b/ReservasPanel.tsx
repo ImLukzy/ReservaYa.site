@@ -244,8 +244,8 @@ export function ReservasPanel({
       {/* Encabezado */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.14em] text-cesped-hondo">▦ GESTIÓN</p>
-          <h1 className="mt-1 text-[28px] font-bold tracking-tight text-basalto">Reservas</h1>
+          <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">▦ GESTIÓN</p>
+          <h1 className="mt-1 text-[1.75rem] font-bold tracking-tight text-basalto">Reservas</h1>
           <p className="mt-1 text-sm text-pizarra">
             Consulta y gestiona las reservas de tu complejo, ordenadas por fecha y hora.
           </p>
@@ -350,7 +350,7 @@ export function ReservasPanel({
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate text-[15px] font-bold text-basalto">
+                    <p className="truncate text-[0.9375rem] font-bold text-basalto">
                       {r.usuario?.nombre ?? 'Cliente sin nombre'}
                     </p>
                     <p className="truncate text-xs text-pizarra">

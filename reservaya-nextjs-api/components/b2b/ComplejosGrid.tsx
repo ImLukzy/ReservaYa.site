@@ -411,13 +411,13 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
         <button
           type="button"
           onClick={abrirCrear}
-          className="btn-tactil flex min-h-[280px] flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-cal bg-tiza/60 p-6 text-center transition-colors hover:border-cesped hover:bg-tiza"
+          className="btn-tactil flex min-h-[17.5rem] flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-cal bg-tiza/60 p-6 text-center transition-colors hover:border-cesped hover:bg-tiza"
         >
           <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cesped-suave text-cesped-hondo">
             <Plus size={24} strokeWidth={2} />
           </span>
           <span className="font-black text-basalto">Nuevo complejo</span>
-          <span className="max-w-[220px] text-xs text-pizarra">Agrega otra sede y gestiona sus canchas por separado.</span>
+          <span className="max-w-[13.75rem] text-xs text-pizarra">Agrega otra sede y gestiona sus canchas por separado.</span>
         </button>
       </div>
 

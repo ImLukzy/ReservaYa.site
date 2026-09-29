@@ -70,8 +70,8 @@ export function ValidarCodigo() {
         ) : (
           <ScanLine className="mx-auto mb-4 h-16 w-16 text-cal" strokeWidth={1.25} />
         )}
-        <h1 className="text-[28px] font-bold tracking-tight text-basalto">Validar código</h1>
-        <p className="mt-1 text-[14px] leading-relaxed text-pizarra">
+        <h1 className="text-[1.75rem] font-bold tracking-tight text-basalto">Validar código</h1>
+        <p className="mt-1 text-[0.875rem] leading-relaxed text-pizarra">
           Listo para escanear QR o tipea el código de 6 dígitos
         </p>
         <input
