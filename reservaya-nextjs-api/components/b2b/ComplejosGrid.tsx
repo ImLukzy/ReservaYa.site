@@ -122,6 +122,19 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!renovar && !compartir && !modal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (renovar) setRenovar(null);
+        if (compartir) setCompartir(null);
+        if (modal) setModal(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [renovar, compartir, modal]);
+
   const waLink = compartir
     ? `https://wa.me/?text=${encodeURIComponent(`Reserva tu cancha aquí: ${linkPublico(compartir.slug)}`)}`
     : '';
@@ -491,7 +504,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
                 type="button"
                 onClick={() => setCompartir(null)}
                 aria-label="Cerrar"
-                className="btn-tactil h-8 w-8 rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
+                className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
               >
                 <X size={18} strokeWidth={2} />
               </button>
@@ -559,7 +572,7 @@ function ModalComplejo({
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar"
-            className="btn-tactil h-8 w-8 rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
+            className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border-2 border-basalto bg-tiza p-1 text-pizarra hover:text-basalto hover:bg-piedra"
           >
             <X size={18} strokeWidth={2} />
           </button>

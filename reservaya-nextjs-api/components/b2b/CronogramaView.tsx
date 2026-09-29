@@ -887,7 +887,7 @@ export function CronogramaView({
               type="button"
               onClick={() => setDetalle(null)}
               aria-label="Cerrar"
-              className="rounded-lg p-1.5 text-pizarra hover:bg-piedra hover:text-basalto"
+              className="btn-tactil flex h-11 w-11 items-center justify-center rounded-lg p-1.5 text-pizarra hover:bg-piedra hover:text-basalto"
             >
               <X size={20} strokeWidth={2} />
             </button>
@@ -965,7 +965,7 @@ export function CronogramaView({
               type="button"
               aria-label="Cerrar"
               onClick={() => setModal(null)}
-              className="rounded-lg p-1.5 text-pizarra hover:bg-piedra hover:text-basalto"
+              className="btn-tactil flex h-11 w-11 items-center justify-center rounded-lg p-1.5 text-pizarra hover:bg-piedra hover:text-basalto"
             >
               <X size={20} strokeWidth={2} />
             </button>
@@ -1094,7 +1094,7 @@ export function CronogramaView({
             href="/admin/ayuda"
             aria-label="Ayuda"
             title="Ayuda"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-cal bg-tiza text-sm font-bold text-pizarra transition-colors hover:border-cesped hover:text-cesped"
+            className="btn-tactil flex h-11 w-11 items-center justify-center rounded-full border border-cal bg-tiza text-sm font-bold text-pizarra transition-colors hover:border-cesped hover:text-cesped"
           >
             <CircleHelp size={18} strokeWidth={1.85} />
           </a>
