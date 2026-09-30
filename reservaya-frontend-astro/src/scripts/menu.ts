@@ -20,8 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const now = panel.hidden;
     panel.hidden = !now;
-    boton.setAttribute("aria-expanded", (!now).toString());
-    if (!now) menuAbierto = panel;
+    boton.setAttribute("aria-expanded", now.toString());
+    if (now) menuAbierto = panel;
+    else menuAbierto = null;
   }
 
   // Clics en botones de menú
@@ -48,6 +49,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         toggle(panel, boton);
+      }
+      if (e.key === "Escape" && !panel.hidden) {
+        e.preventDefault();
+        toggle(panel, boton);
+        boton.focus();
       }
     });
     panel.addEventListener("keydown", (e) => {
@@ -81,9 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
     menuBotonMovil.addEventListener("click", () => {
       const now = menuPanel.hidden;
       menuPanel.hidden = !now;
-      menuBotonMovil.setAttribute("aria-expanded", (!now).toString());
-      if (!now) document.body.style.overflow = "hidden";
-      else document.body.style.overflow = "";
+      menuBotonMovil.setAttribute("aria-expanded", now.toString());
+      document.body.style.overflow = now ? "hidden" : "";
     });
 
     // Escape cierra panel móvil

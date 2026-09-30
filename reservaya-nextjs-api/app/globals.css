@@ -368,3 +368,30 @@ p, li, dd {
   text-wrap: pretty;
 }
 
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    opacity: 0;
+    overflow: clip;
+    transition: block-size 220ms ease, content-visibility 220ms allow-discrete, opacity 180ms ease;
+  }
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+details > summary::marker {
+  transition: transform 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details::details-content,
+  details > summary::marker {
+    transition: none;
+  }
+}
+

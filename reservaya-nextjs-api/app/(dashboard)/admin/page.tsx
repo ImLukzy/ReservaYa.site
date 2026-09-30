@@ -196,14 +196,14 @@ export default async function AdminPage() {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="rounded-2xl bg-noche border-2 border-basalto p-5 text-white">
-            <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-white/60">HOY</p>
-            <p className="mt-1 text-2xl font-black">S/ 0</p>
-            <p className="text-xs text-white/55">{reservasHoy.length} reservas hoy</p>
+          <div className="rounded-2xl border border-cal bg-tiza p-5">
+            <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">HOY</p>
+            <p className="mt-1 text-2xl font-black text-basalto">S/ 0</p>
+            <p className="text-xs text-pizarra">{reservasHoy.length} reservas hoy</p>
           </div>
           <Link
             href="/admin/agenda"
-            className="group block rounded-2xl border border-cal bg-white p-5 transition hover:border-cesped"
+            className="group block rounded-2xl border border-sol bg-sol-suave p-5 transition hover:border-sol"
           >
             <p className="flex items-center justify-between text-[0.6875rem] font-bold tracking-[0.14em] text-pizarra">
               PENDIENTES HOY
@@ -234,10 +234,16 @@ export default async function AdminPage() {
               />
             ))}
             <span
-              className="absolute inset-y-0 w-0.5 bg-red-500"
+              className="absolute inset-y-0 w-0.5 bg-arcilla"
               style={{ left: `${nowPct}%` }}
               title="Ahora"
             />
+            <span
+              className="absolute top-0 -translate-x-1/2 rounded-sm bg-basalto px-1 py-0.5 text-[0.5625rem] font-bold text-tiza"
+              style={{ left: `${nowPct}%` }}
+            >
+              Ahora
+            </span>
           </div>
           <div className="mt-1 flex justify-between text-[0.625rem] text-pizarra">
             <span>07:00</span>
@@ -246,7 +252,7 @@ export default async function AdminPage() {
             <span>19:00</span>
             <span>23:00</span>
           </div>
-          <div className="mt-4 flex gap-4 border-t border-gray-100 pt-3 text-xs text-pizarra">
+          <div className="mt-4 flex gap-4 border-t border-cal pt-3 text-xs text-pizarra">
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-cesped" /> Confirmada
             </span>

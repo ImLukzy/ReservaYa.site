@@ -120,6 +120,7 @@ const desplegables = [
 
   <div id="menu-movil-principal" hidden class="border-t border-cal px-4 pb-4 lg:hidden">
     <div class="space-y-4 py-4">
+      <a href="/canchas" aria-current={activo("/canchas") ? "page" : undefined} class="flex min-h-11 items-center rounded-control px-3 font-semibold text-basalto hover:bg-piedra aria-[current=page]:bg-cesped-suave">Canchas</a>
       <div>
         <h2 class="px-3 py-2 text-sm font-semibold text-pizarra">Jugar</h2>
         <ul class="space-y-1">
@@ -138,13 +139,7 @@ const desplegables = [
         </ul>
       </div>
 
-      <div>
-        <h2 class="px-3 py-2 text-sm font-semibold text-pizarra">Otros</h2>
-        <ul class="space-y-1">
-          <li><a href="/canchas" aria-current={activo("/canchas") ? "page" : undefined} class="block rounded-control px-3 py-2 text-basalto hover:bg-piedra aria-[current=page]:bg-cesped-suave aria-[current=page]:font-semibold">Buscar canchas</a></li>
-          <li><a href="/ayuda" aria-current={activo("/ayuda") ? "page" : undefined} class="block rounded-control px-3 py-2 text-basalto hover:bg-piedra aria-[current=page]:bg-cesped-suave aria-[current=page]:font-semibold">Ayuda</a></li>
-        </ul>
-      </div>
+      <a href="/ayuda" aria-current={activo("/ayuda") ? "page" : undefined} class="flex min-h-11 items-center rounded-control px-3 font-semibold text-basalto hover:bg-piedra aria-[current=page]:bg-cesped-suave">Ayuda</a>
 
       <div data-solo="usuario" hidden class="border-t border-cal pt-4">
         <div class="px-3 pb-2">

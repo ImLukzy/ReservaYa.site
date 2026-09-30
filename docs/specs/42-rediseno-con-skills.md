@@ -63,3 +63,5 @@ Textos (copy), rutas, fetch y lógica de los scripts, API, `prisma/**`, `.env`, 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
+| 2026-09-30 | N1 defectos | ✅ | Oscar-2 (codex): `menu.ts` aria-expanded sigue el estado, Escape cierra y devuelve el foco, el menú del celular bloquea el scroll del fondo, «Canchas» primero en celular, enlaces del pie ≥ 44 px. god: astro check 0 · build 18 páginas · Playwright 360/768/1440/1745 0 px; Enter → aria-expanded=true, Escape → false con foco en el botón; celular → aria-expanded=true y body overflow hidden |
+| 2026-09-30 | F4–F6, F11 | ✅ | Oscar-2: `/admin` con «Hoy» en superficie clara, «Pendientes hoy» en `sol-suave`, marca «Ahora» en `arcilla` con etiqueta, divisor `cal`; Sidebar con separadores solo entre bloques mayores; `<details>` del panel con despliegue suave en `globals.css`. god: typecheck 0 · lint 0 errores (2 avisos de antes) · test 40/40 · build 0. Sin QA visual con sesión (sin cuentas) |
