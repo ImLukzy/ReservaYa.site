@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AuthCard from "../components/AuthCard.astro";
+import Field from "../components/ui/Field.astro";
+import Button from "../components/ui/Button.astro";
+import { API, APP } from "../lib/entorno";
+import { AVISO, BOTON } from "../lib/estilos";
+
+const apiUrl = API;
+const appUrl = APP;
+const claseError = AVISO.error;
+---
+
+<BaseLayout title="Completar registro | ReservaYa" description="Completa tu registro con ReservaYa." robots="noindex, follow">
+  <AuthCard titulo="Completa tu registro" texto="Solo nos falta tu fecha de nacimiento y tu usuario.">
+    <form id="cr-form" class="space-y-4" novalidate>
+      <input type="hidden" id="cr-token" name="t">
+      <Field id="cr-fecha" name="fechaNacimiento" type="date" etiqueta="Fecha de nacimiento" nota="No se puede cambiar después." required />
+      <Field id="cr-user" name="username" type="text" etiqueta="Tu usuario" autocomplete="username" placeholder="tucrack10" nota="Con él te agregan a sorteos y partidos." required />
+      <p id="cr-status" hidden role="alert" class={claseError}></p>
+      <Button type="submit" id="cr-submit" class="w-full">Crear mi cuenta</Button>
+    </form>
+    <p slot="pie" class="text-pizarra">¿Ya tienes cuenta? <a href="/login" class={BOTON.texto}>Entrar</a></p>
+  </AuthCard>
+</BaseLayout>
+
+<script is:inline define:vars={{ apiUrl, appUrl }}>
+  const form = document.getElementById("cr-form");
+  const status = document.getElementById("cr-status");
+  const submit = document.getElementById("cr-submit");
+  const tokenInput = document.getElementById("cr-token");
+  const fecha = document.getElementById("cr-fecha");
+  const user = document.getElementById("cr-user");
+
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("t");
+
+  if (!token) {
+    if (status) {
+      status.textContent = "No hay solicitud de registro válida. Ve a /register.";
+      status.hidden = false;
+    }
+    if (submit) submit.disabled = true;
+  } else {
+    if (tokenInput) tokenInput.value = token;
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement) || !(submit instanceof HTMLButtonElement) || !status) return;
+
+    if (!fecha.value) {
+      status.textContent = "Elige tu fecha de nacimiento.";
+      status.hidden = false;
+      return;
+    }
+    if (!/^[a-zA-Z0-9_.-]{3,20}$/.test(user.value.trim())) {
+      status.textContent = "Tu usuario: de 3 a 20 caracteres (letras, números, _ . o -).";
+      status.hidden = false;
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = "Creando cuenta...";
+    status.hidden = true;
+
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/google/completar`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          t: token,
+          fechaNacimiento: fecha.value,
+          username: user.value.trim().toLowerCase(),
+        }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(body?.error || "No se pudo crear la cuenta");
+      }
+      const role = body?.usuario?.rol;
+      const inicio = { TECNICO: "/tecnico", SUPERADMIN: "/admin", ADMIN: "/admin/agenda" };
+      const defaultUrl = appUrl + (inicio[role] || "/dashboard");
+      window.location.href = defaultUrl;
+    } catch (error) {
+      status.textContent = error instanceof TypeError
+        ? "No se pudo conectar con el servidor. Inténtalo de nuevo en unos minutos."
+        : error instanceof Error ? error.message : "No se pudo crear la cuenta";
+      status.hidden = false;
+      submit.disabled = false;
+      submit.textContent = "Crear mi cuenta";
+    }
+  });
+</script>

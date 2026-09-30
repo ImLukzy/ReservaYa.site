@@ -26,6 +26,7 @@ public class AuthController : ControllerBase
     private readonly PasswordResetTokens _resetTokens;
     private readonly PasswordResetOptions _resetOptions;
     private readonly EmailQueue _emailQueue;
+    private readonly GoogleOAuth? _googleOAuth;
 
     public AuthController(
         AppDbContext db,
@@ -34,7 +35,8 @@ public class AuthController : ControllerBase
         ILogger<AuthController> logger,
         PasswordResetTokens resetTokens,
         PasswordResetOptions resetOptions,
-        EmailQueue emailQueue)
+        EmailQueue emailQueue,
+        GoogleOAuth? googleOAuth = null)
     {
         _db = db;
         _jwt = jwt;
@@ -43,6 +45,7 @@ public class AuthController : ControllerBase
         _resetTokens = resetTokens;
         _resetOptions = resetOptions;
         _emailQueue = emailQueue;
+        _googleOAuth = googleOAuth;
     }
 
     [HttpPost("login")]
@@ -269,6 +272,197 @@ public class AuthController : ControllerBase
                 proximoCambioUsername = PerfilReglas.ProximoCambioUsername(u.UsernameCambiadoEn)
             }
         });
+    }
+
+    [HttpGet("google")]
+    public IActionResult GoogleLogin([FromQuery] string? returnUrl)
+    {
+        if (_googleOAuth is null)
+            return StatusCode(503, new { error = "Google OAuth no está configurado" });
+
+        var validReturnUrl = ValidateReturnUrl(returnUrl);
+        var state = _googleOAuth.GenerateState();
+
+        var stateCookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = HttpContext.Request.IsHttps || Environment.GetEnvironmentVariable("COOKIE_SECURE") == "true",
+            SameSite = SameSiteMode.Lax,
+            MaxAge = TimeSpan.FromMinutes(10),
+            Path = "/"
+        };
+        Response.Cookies.Append("__oauth_state", state, stateCookieOptions);
+
+        if (!string.IsNullOrEmpty(validReturnUrl))
+        {
+            Response.Cookies.Append("__oauth_returnurl", validReturnUrl, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = HttpContext.Request.IsHttps || Environment.GetEnvironmentVariable("COOKIE_SECURE") == "true",
+                SameSite = SameSiteMode.Lax,
+                MaxAge = TimeSpan.FromMinutes(10),
+                Path = "/"
+            });
+        }
+
+        var redirectUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
+            $"scope=openid+email+profile&" +
+            $"response_type=code&" +
+            $"redirect_uri={Uri.EscapeDataString(_googleOAuth.RedirectUri)}&" +
+            $"client_id={Uri.EscapeDataString(_googleOAuth.ClientId ?? "")}&" +
+            $"state={Uri.EscapeDataString(state)}";
+
+        return Redirect(redirectUrl);
+    }
+
+    [HttpGet("google/callback")]
+    public async Task<IActionResult> GoogleCallback([FromQuery] string? code, [FromQuery] string? state)
+    {
+        if (_googleOAuth is null)
+            return Redirect($"{GetPublicAppUrl()}/login?error=google");
+
+        if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(state))
+        {
+            _logger.LogWarning("Google callback missing code or state");
+            return Redirect($"{GetPublicAppUrl()}/login?error=google");
+        }
+
+        Request.Cookies.TryGetValue("__oauth_state", out var stateFromCookie);
+        var profile = await _googleOAuth.ExchangeCodeForProfile(code, state, stateFromCookie);
+        if (profile is null)
+            return Redirect($"{GetPublicAppUrl()}/login?error=google");
+
+        Response.Cookies.Delete("__oauth_state");
+        Request.Cookies.TryGetValue("__oauth_returnurl", out var returnUrl);
+        Response.Cookies.Delete("__oauth_returnurl");
+
+        var correo = profile.Email.Trim().ToLowerInvariant();
+        var usuario = await _db.Usuarios.FirstOrDefaultAsync(u => u.GoogleId == profile.Sub)
+            ?? await _db.Usuarios.FirstOrDefaultAsync(u => u.Email == correo);
+
+        if (usuario is not null)
+        {
+            // Cuenta desactivada o ya vinculada a otra cuenta de Google: no se entra.
+            if (!usuario.Activo || (usuario.GoogleId is not null && usuario.GoogleId != profile.Sub))
+                return Redirect($"{GetPublicAppUrl()}/login?error=google");
+
+            if (usuario.GoogleId is null)
+            {
+                usuario.GoogleId = profile.Sub;
+                usuario.AvatarUrl ??= profile.Picture;
+                await _db.SaveChangesAsync();
+            }
+
+            var token = _jwt.CreateToken(usuario.Id, usuario.Email, usuario.Nombre, usuario.Rol, usuario.TokenVersion);
+            SetTokenCookie(token);
+            return Redirect(UrlTrasGoogle(returnUrl));
+        }
+
+        var pendingToken = _jwt.CreateGooglePendingToken(profile.Sub, profile.Email, profile.Name, profile.Picture);
+        var redirectToComplete = $"{GetPublicAppUrl()}/completar-registro?t={Uri.EscapeDataString(pendingToken)}";
+        return Redirect(redirectToComplete);
+    }
+
+    [HttpPost("google/completar")]
+    public async Task<IActionResult> GoogleCompleteRegister([FromBody] GoogleCompleteRegisterRequest request)
+    {
+        if (_googleOAuth is null)
+            return StatusCode(503, new { error = "Google OAuth no está configurado" });
+
+        var claims = _jwt.ValidateGooglePendingToken(request.T ?? "");
+        if (claims is null)
+            return BadRequest(new { error = "Token inválido o vencido" });
+
+        var nacimiento = DtoFormat.ParseFechaDia(request.FechaNacimiento);
+        if (nacimiento is null)
+            return BadRequest(new { error = "La fecha de nacimiento es obligatoria" });
+        var hoy = DateTime.UtcNow.Date;
+        if (nacimiento.Value.Date > hoy.AddYears(-5) || nacimiento.Value.Date < new DateTime(1900, 1, 1))
+            return BadRequest(new { error = "Fecha de nacimiento inválida" });
+
+        var username = (request.Username ?? "").Trim().ToLowerInvariant();
+        if (!PerfilReglas.UsernameValido(username))
+            return BadRequest(new { error = "Tu usuario: 3-20 caracteres (letras, números, _ . -)" });
+
+        if (_rateLimiter.IsLimited(
+                $"register:{ClientIp()}:{claims.Email}", 5, TimeSpan.FromHours(1)))
+            return StatusCode(429, new { error = "Demasiados intentos. Intenta de nuevo más tarde" });
+
+        var existente = await _db.Usuarios.AsNoTracking()
+            .AnyAsync(u => u.Username == username);
+        if (existente)
+            return Conflict(new { error = "El usuario ya está registrado" });
+
+        var randomPassword = new byte[32];
+        using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomPassword);
+        }
+
+        var usuario = new Usuario
+        {
+            Id = JwtService.NewId(),
+            Nombre = claims.Name ?? "",
+            Email = claims.Email,
+            FechaNacimiento = nacimiento.Value.Date,
+            Username = username,
+            UsernameCambiadoEn = DateTime.UtcNow,
+            Password = Bcrypt.HashPassword(Convert.ToBase64String(randomPassword), 10),
+            GoogleId = claims.Sub,
+            AvatarUrl = claims.Picture,
+            Rol = Rol.USUARIO,
+            Activo = true,
+            TokenVersion = 0,
+            CreadoEn = DateTime.UtcNow
+        };
+
+        _db.Usuarios.Add(usuario);
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (
+                ex.InnerException is Npgsql.PostgresException { SqlState: "23505" })
+        {
+            return Conflict(new { error = "El usuario ya está registrado" });
+        }
+
+        var token = _jwt.CreateToken(usuario.Id, usuario.Email, usuario.Nombre, usuario.Rol, usuario.TokenVersion);
+        SetTokenCookie(token);
+
+        return Ok(new
+        {
+            ok = true,
+            usuario = new { usuario.Id, usuario.Nombre, usuario.Email, usuario.Rol }
+        });
+    }
+
+    // La API solo guarda el returnUrl; la landing lo vuelve a validar (getSafeReturnUrl en login.astro).
+    private static string? ValidateReturnUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url) || url.Length > 512)
+            return null;
+        if (url.StartsWith('/') && !url.StartsWith("//", StringComparison.Ordinal) && !url.StartsWith("/\\", StringComparison.Ordinal))
+            return url;
+        return Uri.TryCreate(url, UriKind.Absolute, out var abs) && (abs.Scheme == Uri.UriSchemeHttp || abs.Scheme == Uri.UriSchemeHttps)
+            ? url
+            : null;
+    }
+
+    // Origen de la landing: el de PASSWORD_RESET_URL (ya apunta a la landing); FRONTEND_ORIGIN es una lista para CORS.
+    private static string GetPublicAppUrl()
+    {
+        var reset = Environment.GetEnvironmentVariable("PASSWORD_RESET_URL");
+        return Uri.TryCreate(reset, UriKind.Absolute, out var uri)
+            ? uri.GetLeftPart(UriPartial.Authority)
+            : "http://localhost:4321";
+    }
+
+    // Tras entrar con Google se vuelve al login de la landing, que ya lleva a cada rol a su inicio.
+    private static string UrlTrasGoogle(string? returnUrl)
+    {
+        var destino = $"{GetPublicAppUrl()}/login?google=ok";
+        return string.IsNullOrEmpty(returnUrl) ? destino : $"{destino}&returnUrl={Uri.EscapeDataString(returnUrl)}";
     }
 
     private void SetTokenCookie(string token)
