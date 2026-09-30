@@ -276,9 +276,12 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
             Página principal
           </Link>
           {groups.map((group, gi) => (
-            <div key={`${group.label || 'g'}-${gi}`} className="mt-3 border-t border-white/10 pt-3">
+            <div
+              key={`${group.label || 'g'}-${gi}`}
+              className={cn('mt-4 pt-1', gi > 0 && !group.label && 'border-t border-white/10 pt-4')}
+            >
               {group.label && (
-                <p className="mb-2 px-6 font-display text-sm font-semibold text-niebla">
+                <p className="mb-2 px-6 font-display text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-niebla">
                   {group.label}
                 </p>
               )}
