@@ -7,8 +7,8 @@ import Badge from "./ui/Badge.astro";
 
 const planes = [
   { nombre: "Publicación", precio: "0", nota: "Gratis", texto: "Para aparecer en la búsqueda y recibir reservas.", incluye: ["Perfil público del complejo", "Reservas en línea todo el día", "1 complejo con hasta 2 canchas"], principal: false },
-  { nombre: "Gestión total", precio: "89.90", nota: "al mes", texto: "Para llevar el día a día del complejo.", incluye: ["Todo lo de Publicación", "Agenda sin choques de horario", "Caja y ventas del día", "Trabajadores con su propio acceso"], principal: true },
-  { nombre: "Red de sedes", precio: "199", nota: "al mes", texto: "Para dueños con varias sedes.", incluye: ["Todo lo de Gestión total", "Sedes sin límite", "Reportes y metas de todas tus sedes", "Atención prioritaria"], principal: false },
+  { nombre: "Gestión total", precio: "89.90", nota: "al mes", texto: "Para llevar el día a día del complejo.", incluye: ["Todo lo de Publicación", "Agenda, caja y trabajadores", "Reportes de ingresos", "Sin contratos"], principal: true },
+  { nombre: "Red de sedes", precio: "199", nota: "al mes", texto: "Para dueños con varias sedes.", incluye: ["Todo lo de Gestión total", "Sedes sin límite", "Reportes de todas tus sedes", "Atención prioritaria"], principal: false },
 ];
 ---
 
@@ -24,7 +24,7 @@ const planes = [
     Planes y precios
   </h2>
   <p class="mt-3 max-w-xl text-base text-pizarra sm:text-lg">
-    Sin contratos. Con pago anual pagas 20 % menos: S/ 71.92 al mes en Gestión total y S/ 159.20 en Red de sedes.
+    Sin sorpresas, sin contratos. Paga mensual o anual: con pago anual pagas 20 % menos (S/ 71.92 al mes en Gestión total y S/ 159.20 en Red de sedes).
   </p>
   <div class="mt-8 grid gap-6 md:grid-cols-3">
     {planes.map((p) => (
