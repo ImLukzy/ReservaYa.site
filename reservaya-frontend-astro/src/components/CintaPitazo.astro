@@ -14,7 +14,7 @@ const items = [...TIPOS.map((tipo) => tipo.etiqueta), ...DISTRITOS.slice(0, 8)];
 
 <style>
   @media (prefers-reduced-motion: no-preference) {
-    .cinta-pitazo__pista { animation: cinta-pitazo 34s linear infinite; }
+    .cinta-pitazo__pista { animation: cinta-pitazo 34s linear infinite; } /* motion: ambiental */
   }
   @keyframes cinta-pitazo {
     to { transform: translateX(-50%); }

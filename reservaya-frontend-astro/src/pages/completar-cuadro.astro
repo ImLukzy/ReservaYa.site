@@ -4,6 +4,7 @@ import Button from "../components/ui/Button.astro";
 import Field from "../components/ui/Field.astro";
 import Select from "../components/ui/Select.astro";
 import Icon from "../components/ui/Icon.astro";
+import SeccionTitulo from "../components/inicio/SeccionTitulo.astro";
 import { API, APP } from "../lib/entorno";
 import { AVISO, BOTON, ETIQUETA, INSIGNIA, INSIGNIA_BASE } from "../lib/estilos";
 
@@ -19,22 +20,21 @@ const clases = { ok: AVISO.ok, error: AVISO.error, chip, libre: `${INSIGNIA_BASE
 <BaseLayout title="Partidos abiertos | ReservaYa" description="Súmate a un partido abierto en Arequipa o publica el tuyo para completar el cuadro.">
   <section class="mx-auto max-w-page px-4 pb-16 pt-8 md:px-6 lg:pt-12">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Completa el cuadro</span>
-          <span class="text-xs text-pizarra">·</span>
-          <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">Partidos en Arequipa</span>
-        </div>
-        <h1 class="mt-2 font-display text-4xl font-black tracking-tight text-basalto sm:text-5xl">Partidos abiertos</h1>
-        <p class="mt-3 max-w-xl text-base text-pizarra sm:text-lg">Te anotas en un partido abierto, el organizador te confirma por WhatsApp y a la cancha. Si te faltan, publica tu pichanga y encuentra con quién jugar.</p>
-      </div>
+      <SeccionTitulo
+        id="cuadro-titulo"
+        nivel={1}
+        alinear="izquierda"
+        antetitulo="Completa el cuadro"
+        titulo="Partidos abiertos"
+        bajada="Te anotas en un partido abierto, el organizador te confirma por WhatsApp y a la cancha. Si te faltan, publica tu pichanga y encuentra con quién jugar."
+      />
       <div class="flex gap-3">
         <Button data-open-publish class="shadow-dura-sm"><Icon nombre="mas" class="h-4 w-4" />Publicar partido</Button>
         <Button href={`${APP}/dashboard/partidos`} variante="secundario">Mis partidos</Button>
       </div>
     </div>
 
-    <div class="card-tactil mt-8 grid gap-4 bg-sillar/40 p-5 shadow-dura md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+    <div class="card-tactil mt-8 grid gap-4 bg-tiza p-5 shadow-dura-cesped md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
       <Field id="q" etiqueta="Buscar" placeholder="Distrito, cancha o título" autocomplete="off" type="search" />
       <div id="nivs" class="flex flex-wrap gap-2" role="group" aria-label="Nivel">
         {niveles.map((n, i) => <button type="button" data-n={n} aria-pressed={i === 0 ? "true" : "false"} class={`${chip} ${i === 0 ? "active" : ""}`}>{n}</button>)}

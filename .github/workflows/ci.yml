@@ -23,6 +23,9 @@ jobs:
       - run: npm ci
       - run: npx astro check
       - run: npm run build
+      - name: Motion único (spec 46)
+        working-directory: .
+        run: node scripts/motion-tokens.mjs --check && node --test scripts/motion-tokens.test.mjs
 
   panel:
     name: Panel (Next.js)

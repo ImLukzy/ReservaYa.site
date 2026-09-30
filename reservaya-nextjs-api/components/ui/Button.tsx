@@ -11,7 +11,7 @@ const variants = {
   primary: 'btn-tactil bg-cesped hover:bg-cesped-hover active:bg-cesped-hover text-tiza',
   secondary: 'btn-tactil bg-tiza hover:bg-piedra active:bg-piedra text-basalto',
   danger: 'btn-tactil bg-error hover:bg-error-hondo active:bg-error-hondo text-tiza',
-  ghost: 'inline-flex items-center justify-center gap-2 font-bold rounded-full transition-colors duration-150 hover:bg-piedra active:bg-piedra text-pizarra hover:text-basalto',
+  ghost: 'inline-flex items-center justify-center gap-2 font-bold rounded-full transition-colors hover:bg-piedra active:bg-piedra text-pizarra hover:text-basalto',
 }
 
 const sizes = {

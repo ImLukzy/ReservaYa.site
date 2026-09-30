@@ -1,0 +1,32 @@
+---
+// Ilustración esquemática del sorteo: dos equipos con nombres en barras.
+import Icon from "../ui/Icon.astro";
+
+const equipos = [
+  { nombre: "Equipo A", marca: "bg-cesped", anchos: ["w-20", "w-14", "w-24", "w-16"] },
+  { nombre: "Equipo B", marca: "bg-mar", anchos: ["w-16", "w-24", "w-12", "w-20"] },
+];
+---
+
+<div class="card-tactil w-full max-w-xs p-5">
+  <div class="grid grid-cols-2 gap-4">
+    {equipos.map((e) => (
+      <div>
+        <p class="eyebrow flex items-center gap-2 text-basalto">
+          <span class={`h-2.5 w-2.5 rounded-full ${e.marca}`}></span>{e.nombre}
+        </p>
+        <ul class="mt-3 space-y-2.5">
+          {e.anchos.map((ancho) => (
+            <li class="flex items-center gap-2">
+              <span class="h-5 w-5 shrink-0 rounded-full border-2 border-basalto bg-tiza"></span>
+              <span class={`h-2.5 rounded-full bg-piedra ${ancho}`}></span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+  <span class="mt-5 flex h-10 items-center justify-center gap-2 rounded-full border-2 border-basalto bg-tiza text-sm font-bold text-basalto shadow-dura-sm">
+    <Icon nombre="grupo" class="h-4 w-4" />Sortear de nuevo
+  </span>
+</div>

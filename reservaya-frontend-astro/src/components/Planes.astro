@@ -4,6 +4,7 @@
 import Button from "./ui/Button.astro";
 import Icon from "./ui/Icon.astro";
 import Badge from "./ui/Badge.astro";
+import SeccionTitulo from "./inicio/SeccionTitulo.astro";
 
 const planes = [
   { nombre: "Publicación", precio: "0", nota: "Gratis", texto: "Para aparecer en la búsqueda y recibir reservas.", incluye: ["Perfil público del complejo", "Reservas en línea todo el día", "1 complejo con hasta 2 canchas"], principal: false },
@@ -12,25 +13,18 @@ const planes = [
 ];
 ---
 
-<section id="planes" aria-labelledby="planes-titulo" class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
-  <div class="flex items-center gap-2">
-    <span class="inline-flex items-center gap-1.5 rounded-full border border-cesped/40 bg-cesped-suave px-3 py-0.5 font-display text-xs font-bold text-cesped-hondo">
-      <span class="h-2 w-2 rounded-full bg-cesped pulso-inicial" aria-hidden="true"></span>
-      TARIFAS TRANSPARENTES
-    </span>
-    <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">Sin sorpresas</span>
-  </div>
-  <h2 id="planes-titulo" class="mt-2 font-display text-3xl font-black tracking-tight text-basalto sm:text-4xl lg:text-5xl">
-    Planes y precios
-  </h2>
-  <p class="mt-3 max-w-xl text-base text-pizarra sm:text-lg">
-    Sin sorpresas, sin contratos. Paga mensual o anual: con pago anual pagas 20 % menos (S/ 71.92 al mes en Gestión total y S/ 159.20 en Red de sedes).
-  </p>
-  <div class="mt-8 grid gap-6 md:grid-cols-3">
+<section id="planes" aria-labelledby="planes-titulo" class="revelar mx-auto max-w-page px-4 py-16 md:px-6 lg:py-24">
+  <SeccionTitulo
+    id="planes-titulo"
+    antetitulo="Tarifas transparentes"
+    titulo="Planes y precios"
+    bajada="Sin sorpresas, sin contratos. Paga mensual o anual: con pago anual pagas 20 % menos (S/ 71.92 al mes en Gestión total y S/ 159.20 en Red de sedes)."
+  />
+  <div class="mt-10 grid gap-6 md:grid-cols-3 lg:mt-12">
     {planes.map((p) => (
       <article class={`card-tactil relative flex flex-col p-6 sm:p-7 ${p.principal ? "border-4 border-cesped-hondo bg-cesped-suave/20 shadow-dura-lg ring-2 ring-cesped/30" : "bg-tiza shadow-dura"}`}>
         {p.principal && (
-          <span class="chip-tactil active absolute -top-3.5 right-6 text-xs font-display font-black uppercase tracking-wider shadow-dura-sm">
+          <span class="chip-tactil active eyebrow absolute -top-3.5 right-6 text-tiza shadow-dura-sm">
             Recomendado
           </span>
         )}

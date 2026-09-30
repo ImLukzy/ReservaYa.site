@@ -3,7 +3,8 @@
 
 @layer base {
   html {
-    font-size: clamp(100%, 0.8rem + 0.5vw, 125%);
+    /* Raíz fija de 16 px como Universo (spec 49; retira la escala fluida de la spec 36). */
+    font-size: 100%;
     color-scheme: light;
     background: var(--color-sillar);
     scroll-padding-top: 5rem;

@@ -32,14 +32,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const panel = document.getElementById(panelId);
     if (!panel) return;
 
-    boton.addEventListener("click", () => toggle(panel, boton));
+    // Con mouse, el hover abre antes del clic: ese clic confirma en vez de cerrar (spec 47).
+    let abiertoPorHover = false;
+    boton.addEventListener("click", () => {
+      if (abiertoPorHover && !panel.hidden) {
+        abiertoPorHover = false;
+        return;
+      }
+      toggle(panel, boton);
+    });
 
     // Hover desktop (sin reducedMotion)
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       boton.addEventListener("mouseenter", () => {
-        if (panel.hidden) toggle(panel, boton);
+        if (panel.hidden) {
+          toggle(panel, boton);
+          abiertoPorHover = true;
+        }
       });
       panel.addEventListener("mouseleave", () => {
+        abiertoPorHover = false;
         if (!panel.hidden) toggle(panel, boton);
       });
     }

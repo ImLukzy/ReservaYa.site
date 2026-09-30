@@ -2,6 +2,7 @@
 // Tarjeta centrada de las páginas de cuenta (entrar, registro y contraseña).
 // En pantallas grandes (xl+) va acompañada de un panel visual decorativo con PatronCancha.
 import PatronCancha from "./ui/PatronCancha.astro";
+import Icon from "./ui/Icon.astro";
 
 interface Props {
   titulo: string;
@@ -9,11 +10,12 @@ interface Props {
   idTitulo?: string;
 }
 const { titulo, texto, idTitulo } = Astro.props;
+const ventajas = ["Confirmación directa del complejo", "Horarios libres por hora y deporte", "Organización de partidos y torneos"];
 ---
 
 <div class="mx-auto grid w-full max-w-5xl gap-8 px-4 py-10 lg:py-16 xl:grid-cols-[minmax(0,26rem)_1fr] xl:items-center">
   <section class="mx-auto w-full max-w-md xl:mx-0 xl:max-w-none">
-    <div class="card-tactil bg-tiza p-6 shadow-dura sm:p-8">
+    <div class="card-tactil bg-tiza p-6 shadow-dura-cesped sm:p-8">
       <slot name="arriba" />
       <h1 id={idTitulo} class="font-display text-2xl font-black text-basalto lg:text-3xl">{titulo}</h1>
       {texto && <p class="mt-2 text-pizarra">{texto}</p>}
@@ -22,11 +24,12 @@ const { titulo, texto, idTitulo } = Astro.props;
     <div class="mt-5 text-center"><slot name="pie" /></div>
   </section>
 
-  <aside class="relative hidden overflow-hidden rounded-2xl border-2 border-basalto bg-noche p-8 text-tiza shadow-dura xl:flex xl:min-h-[28.75rem] xl:flex-col xl:justify-between" aria-hidden="true">
+  <aside class="relative hidden overflow-hidden rounded-surface border-2 border-basalto bg-noche p-8 text-tiza shadow-dura xl:flex xl:min-h-[28.75rem] xl:flex-col xl:justify-between" aria-hidden="true">
     <PatronCancha variante="panel" />
     <div class="relative z-10">
-      <span class="inline-flex items-center gap-1.5 rounded-full border border-cesped/40 bg-cesped/15 px-3 py-1 font-display text-xs font-bold text-cesped">
-        ★ RESERVAYA AREQUIPA
+      <span class="inline-flex items-center gap-2 rounded-full border border-cesped/40 bg-cesped/15 px-3 py-1">
+        <span class="h-2 w-2 rounded-full bg-cesped" aria-hidden="true"></span>
+        <span class="eyebrow text-cesped-suave">ReservaYa Arequipa</span>
       </span>
       <h2 class="mt-4 font-display text-2xl font-black tracking-tight text-tiza lg:text-3xl">
         Tu cancha lista para el pitazo inicial
@@ -36,19 +39,12 @@ const { titulo, texto, idTitulo } = Astro.props;
       </p>
     </div>
 
-    <div class="relative z-10 mt-8 space-y-3 border-t border-cesped/20 pt-6">
-      <div class="flex items-center gap-3">
-        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-cesped text-xs font-black text-tiza">✓</span>
-        <p class="text-xs font-bold text-tiza/90">Confirmación directa del complejo</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-cesped text-xs font-black text-tiza">✓</span>
-        <p class="text-xs font-bold text-tiza/90">Horarios libres por hora y deporte</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-cesped text-xs font-black text-tiza">✓</span>
-        <p class="text-xs font-bold text-tiza/90">Organización de partidos y torneos</p>
-      </div>
-    </div>
+    <ul class="relative z-10 mt-8 space-y-3 border-t border-cesped/20 pt-6">
+      {ventajas.map((v) => (
+        <li class="flex items-center gap-3 text-sm font-bold text-tiza/90">
+          <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cesped text-tiza"><Icon nombre="ok" class="h-4 w-4" /></span>{v}
+        </li>
+      ))}
+    </ul>
   </aside>
 </div>

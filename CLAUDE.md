@@ -20,13 +20,14 @@ reservaya-nextjs-api/          Next 16 :3000 — panel /dashboard /admin /supera
   proxy.ts                     middleware: verifica JWT (jose, claim `rol`) y redirige por rol
   backend/ReservaFacil.Api/    .NET 10 :5000 — única autoridad (auth, reservas, caja, torneos)
   prisma/                      esquema espejo; dueño de la BD = EF Core
-.github/workflows/ci.yml       astro check + build · typecheck + lint + test + build · db:check (secreto DATABASE_URL)
+.github/workflows/ci.yml       astro check + build · motion --check · typecheck + lint + test + build · db:check (secreto DATABASE_URL)
 ```
 
 ## Comandos (npm)
 - Todo: `npm run dev:all` (API 5000 → Next 3000 → Astro 4321) · API sola: `npm run dev:api`
 - Astro: `npm --prefix reservaya-frontend-astro run build` · `npx --prefix reservaya-frontend-astro astro check`
 - Panel: `npm --prefix reservaya-nextjs-api run typecheck` · `run lint` · `test` (node --test) · `run build` · `run db:check` (solo lectura)
+- Motion (spec 46): `node scripts/motion-tokens.mjs --check` (`--write` regenera el resorte) · CLS: `node reservaya-nextjs-api/scripts/cls.mjs` (panel, `QA_<ROL>_EMAIL|PASSWORD`) o `--landing`
 
 ## Entorno (solo nombres)
 - Astro (build-time): `PUBLIC_RESERVAYA_API_URL` `PUBLIC_RESERVAYA_APP_URL` `PUBLIC_GA_ID` `PUBLIC_INBOXMEJIKAI_ENDPOINT`

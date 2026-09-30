@@ -1,0 +1,37 @@
+---
+// Preguntas frecuentes como el Accordion de Universo (specs 47 y 50): tarjeta táctil con
+// icono, categoría y pregunta. <details name> nativo: una abierta a la vez y la primera
+// abierta al cargar; abrir y cerrar animan con el resorte (styles/motion.css).
+import type { ComponentProps } from "astro/types";
+import Icon from "../ui/Icon.astro";
+
+export interface Pregunta {
+  categoria: string;
+  icono: ComponentProps<typeof Icon>["nombre"];
+  pregunta: string;
+  respuesta: string;
+}
+
+interface Props {
+  preguntas: readonly Pregunta[];
+  grupo?: string;
+}
+
+const { preguntas, grupo = "preguntas" } = Astro.props;
+---
+
+<div class="mx-auto mt-10 max-w-3xl space-y-3">
+  {preguntas.map((p, i) => (
+    <details name={grupo} open={i === 0} class="card-tactil group">
+      <summary class="flex min-h-16 cursor-pointer list-none items-center gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <Icon nombre={p.icono} class="h-6 w-6 shrink-0 text-cesped-hondo" />
+        <span class="min-w-0 flex-1">
+          <span class="eyebrow block">{p.categoria}</span>
+          <span class="mt-0.5 block font-bold text-basalto">{p.pregunta}</span>
+        </span>
+        <Icon nombre="abajo" class="h-5 w-5 shrink-0 text-basalto transition-transform ease-resorte duration-(--dur-resorte) group-open:rotate-180" />
+      </summary>
+      <p class="px-5 pb-5 leading-relaxed text-pizarra sm:pl-15">{p.respuesta}</p>
+    </details>
+  ))}
+</div>

@@ -88,7 +88,7 @@ export function CanchaCard({
 
   return (
     <>
-      <div className="card-tactil flex flex-col overflow-hidden transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-dura-lg">
+      <div className="card-tactil flex flex-col overflow-hidden transition-all ease-resorte duration-(--dur-resorte) hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-dura-lg">
         {/* Contenedor de imagen reservado anti-CLS */}
         <div className="relative aspect-video w-full overflow-hidden border-b-2 border-basalto bg-piedra">
           {cancha.imagen ? <ImagenCancha src={cancha.imagen} alt={cancha.nombre} /> : <CroquisCancha />}

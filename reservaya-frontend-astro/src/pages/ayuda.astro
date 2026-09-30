@@ -1,7 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
+import SeccionTitulo from "../components/inicio/SeccionTitulo.astro";
+import PreguntasTactiles from "../components/inicio/PreguntasTactiles.astro";
 import { EMAIL } from "../lib/contacto";
+import { NUMERO_PASO } from "../lib/estilos";
+import { PREGUNTAS_JUGADOR } from "../lib/preguntas";
 
 const pasos = [
   ["Crea tu cuenta", "Con tu nombre, correo, fecha de nacimiento y una contraseña."],
@@ -14,17 +18,18 @@ const pasos = [
 
 <BaseLayout title="Cómo reservar | ReservaYa" description="Guía para reservar una cancha en ReservaYa, paso a paso.">
   <section class="mx-auto max-w-texto px-4 pb-16 pt-8 md:px-6 lg:pt-12">
-    <div class="flex items-center gap-2">
-      <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Guía rápida</span>
-      <span class="text-xs text-pizarra">·</span>
-      <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">{pasos.length} pasos</span>
-    </div>
-    <h1 class="mt-2 font-display text-4xl font-black tracking-tight text-basalto sm:text-5xl">Cómo reservar una cancha</h1>
-    <p class="mt-3 max-w-xl text-base text-pizarra sm:text-lg">De la búsqueda al código confirmado: 5 pasos claros para que juegues sin estrés. Crea cuenta, busca, reserva, espera confirmación, recibe tu código.</p>
+    <SeccionTitulo
+      id="ayuda-titulo"
+      nivel={1}
+      alinear="izquierda"
+      antetitulo="Guía rápida"
+      titulo="Cómo reservar una cancha"
+      bajada="De la búsqueda al código confirmado: 5 pasos claros para que juegues sin estrés. Crea cuenta, busca, reserva, espera confirmación, recibe tu código."
+    />
     <ol class="mt-8 grid gap-4">
       {pasos.map(([t, d], i) => (
         <li class="card-tactil grid grid-cols-[3rem_minmax(0,1fr)] gap-3 bg-tiza p-5 shadow-dura-sm">
-          <span class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-basalto bg-cesped-suave font-display text-xl font-black tabular-nums text-cesped-hondo">{i + 1}</span>
+          <span class={NUMERO_PASO}>{i + 1}</span>
           <div>
             <h2 class="font-display text-xl font-black text-basalto">{t}</h2>
             <p class="mt-1 leading-relaxed text-pizarra">{d}</p>
@@ -32,7 +37,11 @@ const pasos = [
         </li>
       ))}
     </ol>
-    <div class="card-tactil mt-8 flex flex-col gap-4 bg-sillar/40 p-6 shadow-dura sm:flex-row sm:items-center sm:justify-between">
+    <div class="revelar mt-16">
+      <SeccionTitulo id="preguntas-titulo" antetitulo="Ayuda" titulo="Preguntas frecuentes" />
+      <PreguntasTactiles preguntas={PREGUNTAS_JUGADOR} />
+    </div>
+    <div class="card-tactil mt-12 flex flex-col gap-4 bg-sillar/40 p-6 shadow-dura sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p class="font-bold text-basalto">¿Dudas o problemas?</p>
         <p class="mt-0.5 text-sm text-pizarra">Escríbenos a <a href={`mailto:${EMAIL}`} class="font-bold text-cesped-hondo underline">{EMAIL}</a>.</p>

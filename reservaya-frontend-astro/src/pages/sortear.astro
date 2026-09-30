@@ -3,7 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/ui/Button.astro";
 import Icon from "../components/ui/Icon.astro";
 import { API } from "../lib/entorno";
-import { BOTON, CAMPO, ETIQUETA } from "../lib/estilos";
+import SeccionTitulo from "../components/inicio/SeccionTitulo.astro";
+import PreguntasTactiles, { type Pregunta } from "../components/inicio/PreguntasTactiles.astro";
+import { BOTON, CAMPO, ETIQUETA, NUMERO_PASO } from "../lib/estilos";
 
 const apiUrl = API;
 const preguntas = [
@@ -16,20 +18,24 @@ const preguntas = [
   ["¿Puedo volver a sortear?", "Sí, puedes ejecutar el sorteo otra vez con la misma lista. Mantén los jugadores, elige la cantidad de equipos que deseas y vuelve a pulsar Sortear equipos. La herramienta mezcla nuevamente el orden antes de repartirlos. Como el proceso es aleatorio, el nuevo resultado puede cambiar respecto del anterior."],
   ["¿Puedo copiar el resultado?", "Sí, cada equipo generado incluye su propio botón Copiar. Después de sortear, ubica la tarjeta del equipo que quieres compartir y pulsa ese botón. La herramienta intenta copiar el nombre del equipo y su lista de jugadores al portapapeles. El botón indica si se copió o si el navegador no permitió hacerlo."],
 ];
+// Categoría e icono de cada pregunta, en el mismo orden (spec 47).
+const temas = [["Reparto", "mezclar"], ["Equipos", "grupo"], ["Invitados", "mas"], ["Cuenta", "usuario"], ["Reparto", "grupo"], ["Lista", "cerrar"], ["Sorteo", "mezclar"], ["Resultado", "copiar"]] as const;
+const tarjetas: Pregunta[] = preguntas.map(([pregunta, respuesta], i) => ({ categoria: temas[i][0], icono: temas[i][1], pregunta, respuesta }));
 ---
 
 <BaseLayout title="Arma equipos parejos | ReservaYa" description="Escribe los nombres de los jugadores y repártelos al azar en 2, 3 o 4 equipos.">
   <section class="mx-auto max-w-texto px-4 pb-12 pt-8 md:px-6 lg:pt-12">
-    <div class="flex items-center gap-2">
-      <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Sorteo rápido</span>
-      <span class="text-xs text-pizarra">·</span>
-      <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">2, 3 o 4 equipos</span>
-    </div>
-    <h1 class="mt-2 font-display text-4xl font-black tracking-tight text-basalto sm:text-5xl">Arma los equipos</h1>
-    <p class="mt-3 text-base text-pizarra sm:text-lg">Ingresa los nombres de los jugadores, elige 2, 3 o 4 equipos, y sortea parejos sin discusiones. No necesitas cuenta.</p>
+    <SeccionTitulo
+      id="sortear-titulo"
+      nivel={1}
+      alinear="izquierda"
+      antetitulo="Sorteo rápido"
+      titulo="Arma los equipos"
+      bajada="Ingresa los nombres de los jugadores, elige 2, 3 o 4 equipos, y sortea parejos sin discusiones. No necesitas cuenta."
+    />
 
-    <div class="card-tactil mt-8 bg-tiza p-5 shadow-dura sm:p-6">
-      <p class="mb-3 font-display text-xl font-black text-basalto">1. Agrega jugadores</p>
+    <div class="card-tactil mt-8 bg-tiza p-5 shadow-dura-cesped sm:p-6">
+      <p class="mb-4 flex items-center gap-3 font-display text-xl font-black text-basalto"><span class={NUMERO_PASO}>1</span>Agrega jugadores</p>
       <label for="add-input" class={ETIQUETA}>Agrega jugadores</label>
       <div id="search-wrap" class="relative">
         <Icon nombre="buscar" class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-pizarra" />
@@ -49,14 +55,14 @@ const preguntas = [
     </div>
 
     <div class="card-tactil mt-4 bg-tiza p-5 shadow-dura-sm sm:p-6">
-      <h2 class="font-display text-xl font-black text-basalto">2. Jugadores <span id="jcount" class="font-display font-extrabold tabular-nums text-pizarra">(0)</span></h2>
+      <h2 class="flex items-center gap-3 font-display text-xl font-black text-basalto"><span class={NUMERO_PASO}>2</span>Jugadores <span id="jcount" class="font-display font-extrabold tabular-nums text-pizarra">(0)</span></h2>
       <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
       <p id="jempty" class="py-6 text-center text-pizarra">Todavía no hay jugadores.</p>
     </div>
 
     <div class="card-tactil mt-4 flex flex-col gap-4 bg-sillar/40 p-5 shadow-dura sm:flex-row sm:items-end sm:justify-between sm:p-6">
       <fieldset>
-        <legend class={ETIQUETA}>¿Cuántos equipos?</legend>
+        <legend class="mb-3 flex items-center gap-3 font-display text-xl font-black text-basalto"><span class={NUMERO_PASO}>3</span>¿Cuántos equipos?</legend>
         <div id="tnums" class="flex gap-2">
           {[2, 3, 4].map((n) => (
             <button type="button" data-n={n} aria-pressed={n === 2 ? "true" : "false"} class="tnum h-11 w-12 rounded-full border-2 border-basalto bg-tiza font-display text-lg font-extrabold tabular-nums aria-pressed:bg-basalto aria-pressed:text-tiza cursor-pointer">{n}</button>
@@ -68,16 +74,9 @@ const preguntas = [
 
     <div id="out" class="mt-4 grid gap-4 sm:grid-cols-2" aria-live="polite"></div>
 
-    <h2 class="mt-12 font-display text-3xl font-black tracking-tight text-basalto">Preguntas</h2>
-    <div class="mt-5 space-y-3">
-      {preguntas.map(([p, r]) => (
-        <details class="card-tactil group bg-tiza p-4 open:bg-sillar/30">
-          <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 font-display font-bold text-basalto [&::-webkit-details-marker]:hidden">
-            {p}<Icon nombre="mas" class="h-5 w-5 shrink-0 text-pizarra motion-safe:transition-transform group-open:rotate-45" />
-          </summary>
-          <p class="mt-3 border-t border-cal pt-3 text-pizarra">{r}</p>
-        </details>
-      ))}
+    <div class="revelar mt-16">
+      <SeccionTitulo id="preguntas-titulo" antetitulo="Ayuda" titulo="Preguntas frecuentes" />
+      <PreguntasTactiles preguntas={tarjetas} />
     </div>
   </section>
 </BaseLayout>

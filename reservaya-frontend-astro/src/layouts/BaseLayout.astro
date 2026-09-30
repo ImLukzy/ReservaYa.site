@@ -64,7 +64,8 @@ const structuredData = [
   <link rel="canonical" href={canonicalURL} />
   <link rel="sitemap" href="/sitemap.xml" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  {["barlow-400", "barlow-condensed-600"].map((f) => (
+  {/* Títulos h1–h3 en Barlow Condensed 700–900 → archivo 700 (spec 47: evita el salto al cambiar de fuente). */}
+  {["barlow-400", "barlow-condensed-700"].map((f) => (
     <link rel="preload" href={`/fonts/${f}.woff2`} as="font" type="font/woff2" crossorigin />
   ))}
 
@@ -102,13 +103,15 @@ gtag('config', '${gaId}', { anonymize_ip: true });`}</script>
 <body class="flex min-h-screen flex-col" data-inbox-endpoint={inboxEndpoint || undefined}>
   <a href="#contenido" class="skip-link">Saltar al contenido</a>
   <Header />
-  <main id="contenido" tabindex="-1" class="flex-1 focus:outline-none">
+  <!-- El pie empieza fuera de la pantalla: si el contenido crece al cargar datos, no hay salto visible (spec 49). -->
+  <main id="contenido" tabindex="-1" class="min-h-[calc(100svh-4rem)] flex-1 focus:outline-none">
     <slot />
   </main>
   <Footer />
 
   <script>
     import "../scripts/bandeja.ts";
+    import "../scripts/revelar.ts";
   </script>
 </body>
 </html>
