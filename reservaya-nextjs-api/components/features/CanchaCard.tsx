@@ -1,14 +1,38 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { MapPin, Moon, Users } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
 import { CroquisCancha } from '@/components/ui/CroquisCancha'
-import { ReservaForm } from './ReservaForm'
 import { tipoCanchaLabel } from './etiquetasJugador'
 import type { Cancha } from '@/lib/api'
+
+const ModalDinamico = dynamic(
+  () => import('@/components/ui/Modal').then((modulo) => modulo.Modal),
+  {
+    loading: () => (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4" role="status">
+        <div className="card-tactil w-full max-w-lg bg-tiza p-6 text-sm font-semibold text-pizarra shadow-dura-lg">
+          Cargando reserva…
+        </div>
+      </div>
+    ),
+  }
+)
+const ReservaFormDinamico = dynamic(
+  () => import('./ReservaForm').then((modulo) => modulo.ReservaForm),
+  {
+    loading: () => <p className="py-8 text-center text-sm font-semibold text-pizarra">Cargando formulario…</p>,
+  }
+)
+
+function precargarReserva() {
+  if (typeof window === 'undefined') return
+  void import('@/components/ui/Modal')
+  void import('./ReservaForm')
+}
 
 // onError no burbujea y se puede perder si la imagen ya falló antes de hidratar
 // (404 casi instantáneo): se revisa img.complete/naturalWidth también al montar.
@@ -137,6 +161,8 @@ export function CanchaCard({
             variant="primary"
             className="w-full"
             disabled={!disponible}
+            onMouseEnter={precargarReserva}
+            onFocus={precargarReserva}
             onClick={() => setOpen(true)}
           >
             Reservar ahora
@@ -144,17 +170,19 @@ export function CanchaCard({
         </div>
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title={`Reservar — ${cancha.nombre}`} tono="claro">
-        <ReservaForm
-          cancha={cancha}
-          fechaInicial={fecha}
-          horaInicioInicial={horaInicio}
-          horaFinInicial={horaFin}
-          totalInicial={totalEstimado}
-          reglaInicial={reglaPrecio}
-          onSuccess={() => setOpen(false)}
-        />
-      </Modal>
+      {open && (
+        <ModalDinamico open onClose={() => setOpen(false)} title={`Reservar — ${cancha.nombre}`} tono="claro">
+          <ReservaFormDinamico
+            cancha={cancha}
+            fechaInicial={fecha}
+            horaInicioInicial={horaInicio}
+            horaFinInicial={horaFin}
+            totalInicial={totalEstimado}
+            reglaInicial={reglaPrecio}
+            onSuccess={() => setOpen(false)}
+          />
+        </ModalDinamico>
+      )}
     </>
   )
 }
