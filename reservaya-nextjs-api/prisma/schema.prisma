@@ -118,6 +118,8 @@ model Usuario {
   usernameCambiadoEn DateTime?
   telefono      String?
   fotoUrl       String?
+  googleId      String?   @unique
+  avatarUrl     String?
 
   reservas           Reserva[]
   resenas            Resena[]

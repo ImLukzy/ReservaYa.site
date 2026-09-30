@@ -72,7 +72,11 @@ public class AppDbContext : DbContext
             .HasColumnType("timestamp(3) without time zone");
         usuario.Property(u => u.Telefono).HasColumnName("telefono");
         usuario.Property(u => u.FotoUrl).HasColumnName("fotoUrl");
+        usuario.Property(u => u.GoogleId).HasColumnName("googleId");
+        usuario.Property(u => u.AvatarUrl).HasColumnName("avatarUrl");
         usuario.HasIndex(u => u.Username).IsUnique().HasDatabaseName("Usuario_username_key");
+        usuario.HasIndex(u => u.GoogleId).IsUnique().HasFilter("\"googleId\" IS NOT NULL")
+            .HasDatabaseName("Usuario_googleId_key");
         usuario.Property(u => u.CreadoEn).HasColumnName("creadoEn")
             .HasColumnType("timestamp(3) without time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
         usuario.HasIndex(u => u.Email).IsUnique().HasDatabaseName("Usuario_email_key");

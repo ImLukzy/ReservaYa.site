@@ -17,6 +17,8 @@ public class Usuario
     public DateTime? UsernameCambiadoEn { get; set; }
     public string? Telefono { get; set; }
     public string? FotoUrl { get; set; }
+    public string? GoogleId { get; set; }
+    public string? AvatarUrl { get; set; }
 
     public List<Reserva> Reservas { get; set; } = new();
     public List<Resena> Resenas { get; set; } = new();

@@ -151,6 +151,29 @@ else
     emailStatus = "desactivado (revisa EMAIL_PROVIDER, RESEND_API_KEY y EMAIL_FROM)";
 }
 
+// Google OAuth (Spec 44)
+var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
+var googleRedirectUri = Environment.GetEnvironmentVariable("GOOGLE_REDIRECT_URI");
+string googleStatus;
+if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret) && !string.IsNullOrWhiteSpace(googleRedirectUri))
+{
+    builder.Services.AddHttpClient();
+    builder.Services.AddSingleton(sp =>
+        new GoogleOAuth(
+            googleClientId,
+            googleClientSecret,
+            googleRedirectUri,
+            sp.GetRequiredService<IHttpClientFactory>(),
+            sp.GetRequiredService<ILogger<GoogleOAuth>>()));
+    googleStatus = "habilitado";
+}
+else
+{
+    // Sin registro: AuthController recibe googleOAuth = null y responde 503 en los endpoints de Google.
+    googleStatus = "desactivado (faltan GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET o GOOGLE_REDIRECT_URI)";
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -217,6 +240,11 @@ if (emailStatus.StartsWith("desactivado", StringComparison.Ordinal))
     app.Logger.LogError("Email de recuperación de contraseña {Estado}", emailStatus);
 else
     app.Logger.LogInformation("Email de recuperación de contraseña: {Estado}", emailStatus);
+
+if (googleStatus.StartsWith("desactivado", StringComparison.Ordinal))
+    app.Logger.LogInformation("Google OAuth {Estado}", googleStatus);
+else
+    app.Logger.LogInformation("Google OAuth: {Estado}", googleStatus);
 
 app.UseCors();
 app.UseAuthentication();

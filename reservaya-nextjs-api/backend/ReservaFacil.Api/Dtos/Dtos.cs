@@ -29,6 +29,13 @@ public class RegisterRequest
     public string? Username { get; set; }
 }
 
+public class GoogleCompleteRegisterRequest
+{
+    public string? T { get; set; }
+    public string? FechaNacimiento { get; set; }
+    public string? Username { get; set; }
+}
+
 public class CanchaRequest
 {
     public string? Nombre { get; set; }
