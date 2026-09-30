@@ -59,3 +59,4 @@ Backend, `prisma/**`, `.env`, dependencias nuevas (nada de `swr`), cambios de di
 | 2026-09-30 | A5 (tanda A) | ✅ | revisión god del diff: perfil arranca reservas en paralelo con `carga.de` y espera la sesión antes de producir UI; equipo llega desde el servidor (`getEquipo` en `lib/b2b-api.ts`, mismo endpoint) con `AvisoCarga`; edición de canchas en `Promise.all`; clientes con caché `Map` por complejo invalidada al sancionar o levantar |
 | 2026-09-30 | C1 | ✅ | `admin/agenda/page.tsx` proyecta canchas, reservas y complejos a los tipos `*Cronograma` de `CronogramaView.tsx` (Pick); typecheck confirma que no usa otros campos |
 | 2026-09-30 | A7 | pendiente | sin cuentas de prueba: QA visual con sesión la hace Lukas |
+| 2026-09-30 | B2, B3 | descartada | Lukas decidió dejarla (ILK-56, 19:52) tras 3 intentos fallidos; `CronogramaView.tsx` y `CajaPanel.tsx` quedan como en HEAD |
