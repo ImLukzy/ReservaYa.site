@@ -7,10 +7,14 @@ import { BOTON, CAMPO, ETIQUETA } from "../lib/estilos";
 
 const apiUrl = API;
 const preguntas = [
-  ["¿Cómo se reparten los equipos?", "Al azar y del mismo tamaño: si sobra alguien, un equipo queda con uno más."],
-  ["¿Puedo separar en 2, 3 o 4 equipos?", "Sí. Elige 2 para la pichanga clásica, 3 para rotar un equipo afuera o 4 para un mini torneo."],
-  ["¿Cómo agrego a muchos de una vez?", "Escribe los nombres separados por comas (Juan, Pedro, Luis) y se agregan todos."],
-  ["¿Necesito cuenta?", "No. Con cuenta puedes buscar a tus amigos por su @usuario; sin cuenta los agregas como invitados."],
+  ["¿Cómo se reparten los equipos?", "Los jugadores se mezclan al azar y se distribuyen entre los equipos elegidos. Primero agregas los nombres, seleccionas cuántos equipos quieres y pulsas Sortear equipos. La herramienta coloca a cada jugador por turnos en los equipos resultantes. Si la cantidad no divide exacto, algunos equipos quedan con una persona más."],
+  ["¿Puedo separar en 2, 3 o 4 equipos?", "Sí, puedes elegir entre dos, tres o cuatro equipos. Agrega por lo menos dos jugadores, pulsa el número de equipos que quieres y luego usa Sortear equipos. El resultado aparece separado en tarjetas para cada equipo. La cantidad de integrantes depende del total de jugadores que hayas agregado."],
+  ["¿Cómo agrego a muchos de una vez?", "Puedes ingresar varios invitados en una sola acción. Pulsa Agregar invitado sin cuenta, escribe los nombres separados por comas y presiona Agregar. La herramienta limpia cada nombre, evita repetir uno que ya esté en la lista y crea los jugadores. Después puedes revisar los chips antes de hacer el sorteo."],
+  ["¿Necesito cuenta?", "No, puedes completar todo el sorteo como invitado. Abre la opción para agregar invitados, escribe uno o varios nombres y elige entre dos, tres o cuatro equipos. Si tienes una cuenta, también puedes buscar personas por su usuario y agregarlas desde las sugerencias. El resultado se genera en la misma página."],
+  ["¿Qué pasa si los jugadores no se dividen exacto?", "El sorteo mantiene la diferencia lo más pequeña posible al repartir por turnos. Agregas a todos, eliges la cantidad de equipos y ejecutas el sorteo normalmente. Cuando sobra una o más personas, los primeros equipos reciben una adicional. Por eso algunos equipos pueden quedar con un integrante más que otros."],
+  ["¿Puedo quitar a alguien antes del sorteo?", "Sí, cada jugador agregado aparece como un chip con un botón para retirarlo. Revisa la lista, pulsa el botón de quitar junto al nombre que no participará y confirma visualmente que el contador cambió. Luego eliges la cantidad de equipos y sorteas. La distribución usa únicamente los jugadores que permanezcan en la lista."],
+  ["¿Puedo volver a sortear?", "Sí, puedes ejecutar el sorteo otra vez con la misma lista. Mantén los jugadores, elige la cantidad de equipos que deseas y vuelve a pulsar Sortear equipos. La herramienta mezcla nuevamente el orden antes de repartirlos. Como el proceso es aleatorio, el nuevo resultado puede cambiar respecto del anterior."],
+  ["¿Puedo copiar el resultado?", "Sí, cada equipo generado incluye su propio botón Copiar. Después de sortear, ubica la tarjeta del equipo que quieres compartir y pulsa ese botón. La herramienta intenta copiar el nombre del equipo y su lista de jugadores al portapapeles. El botón indica si se copió o si el navegador no permitió hacerlo."],
 ];
 ---
 
