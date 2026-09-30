@@ -84,32 +84,62 @@
 }
 
 /* Detalles: despliegue suave con alto dinámico (F10) */
-@supports (interpolate-size: allow-keywords) {
-  details {
-    transition: transition-property opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  details[open] > *:not(summary) {
-    animation: detalles-abre 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  @keyframes detalles-abre {
-    from {
-      opacity: 0;
-      scale-y: 0;
-    }
-    to {
-      opacity: 1;
-      scale-y: 1;
-    }
-  }
+details {
+  transition: scroll-behavior 0s linear;
 }
 
-/* Ícono del detalle: rotación suave */
-details summary [class*="mas"] {
+details summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+details summary::marker {
+  display: none;
+}
+
+details summary [data-icon="abajo"] {
   will-change: transform;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-details[open] summary [class*="mas"] {
-  transform: rotate(45deg);
+
+details[open] summary [data-icon="abajo"] {
+  transform: rotate(180deg);
+}
+
+@supports (interpolate-size: allow-keywords) {
+  details > *:not(summary) {
+    overflow: hidden;
+  }
+  details[open] > *:not(summary) {
+    animation: detalles-contenido-abre 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes detalles-contenido-abre {
+    from {
+      opacity: 0;
+      block-size: 0;
+    }
+    to {
+      opacity: 1;
+      block-size: auto;
+    }
+  }
+  ::details-content {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* Fallback para navegadores sin interpolate-size */
+@supports not (interpolate-size: allow-keywords) {
+  details {
+    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  details[open] {
+    max-height: 1000px;
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
