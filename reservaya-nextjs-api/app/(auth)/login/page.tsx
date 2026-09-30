@@ -64,7 +64,7 @@ export default function LoginPage() {
         </div>
 
         {errorVisible && (
-          <div className="bg-rose-500/10 border border-rose-400/25 text-rose-300 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div className="mb-6 rounded-lg border border-error bg-error-suave px-4 py-3 text-sm text-error">
             {error}
           </div>
         )}
