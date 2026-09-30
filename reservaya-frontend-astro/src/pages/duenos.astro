@@ -13,12 +13,14 @@ const pasos = [
   "Elige tu plan. Cuando lo aprobamos, tus canchas aparecen en la búsqueda.",
 ];
 
+const introEmpiezas = "Cuatro pasos claros: crea tu cuenta en ReservaYa, actívala con nosotros, registra tu complejo y sus canchas, elige tu plan. Listo.";
+
 const modulos = [
-  { id: "reservas", titulo: "Reservas y agenda", texto: "Confirmas o rechazas cada reserva y ves el día de cada cancha. La reserva confirmada trae un código que validas cuando llega el jugador." },
+  { id: "reservas", titulo: "Reservas", texto: "Confirmas o rechazas cada reserva. La confirmada trae un código que el jugador muestra al llegar." },
   { id: "precios", titulo: "Horarios y precios", texto: "Defines el horario de cada día, precios especiales por franja y descuentos." },
-  { id: "caja", titulo: "Caja", texto: "Abres y cierras caja, vendes productos y registras cada cobro: efectivo, Yape, tarjeta o transferencia." },
+  { id: "caja", titulo: "Caja", texto: "Abres y cierras caja, vendes productos y registras cada cobro con su método." },
   { id: "equipo", titulo: "Trabajadores", texto: "Cada trabajador entra con su cuenta a la agenda, las reservas y la caja. No ve tus reportes ni tus ingresos." },
-  { id: "reportes", titulo: "Reportes y metas", texto: "Ingresos, reservas y metas del mes de cada complejo." },
+  { id: "reportes", titulo: "Reportes", texto: "Ingresos, reservas y metas del mes de cada complejo." },
   { id: "resenas", titulo: "Opiniones", texto: "Solo opinan jugadores con una reserva completada, y tú puedes responder." },
   { id: "torneos", titulo: "Torneos", texto: "Inscribes equipos, armas los partidos y registras los resultados." },
 ];
@@ -67,7 +69,10 @@ const preguntas = [
 
       <div class="card-tactil relative z-10 bg-tiza p-6 shadow-dura-lg sm:p-8">
         <div class="flex items-center justify-between border-b-2 border-cal pb-3">
-          <h2 class="font-display text-xl font-black tracking-tight text-basalto">Cómo empiezas</h2>
+          <div>
+            <h2 class="font-display text-xl font-black tracking-tight text-basalto">Cómo empiezas</h2>
+            <p class="mt-2 text-sm text-pizarra">{introEmpiezas}</p>
+          </div>
           <span class="rounded-full bg-cesped-suave px-2.5 py-0.5 font-display text-xs font-extrabold text-cesped-hondo">{pasos.length} pasos</span>
         </div>
         <ol class="mt-5 space-y-4">
@@ -121,7 +126,7 @@ const preguntas = [
         Qué haces desde el panel
       </h2>
       <p class="mt-2 max-w-2xl text-base text-pizarra sm:text-lg">
-        Control de tus canchas desde un solo panel. Pensado para la agilidad del día a día en celulares y computadoras.
+        Gestiona 7 módulos sin instalar nada en el navegador: reservas confirmadas, agenda, caja del día, trabajadores con su acceso, reportes de ingresos, opiniones de jugadores, torneos. Un complejo o varios.
       </p>
 
       <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -155,7 +160,7 @@ const preguntas = [
         Preguntas de dueños
       </h2>
       <p class="mt-2 text-base text-pizarra sm:text-lg">
-        Todo lo que necesitas saber antes de registrar tu complejo en ReservaYa.
+        Dudas reales antes de registrarte: ¿sin contratos?, ¿sin instalar?, ¿funciona con varias sedes?, ¿cómo cobro?, ¿qué pasa con reservas pendientes? Aquí están las respuestas.
       </p>
 
       <div class="mt-8 space-y-3">
