@@ -1,14 +1,6 @@
 import { ApiError, type Cancha, type CanchaInput, type EstadoReserva, type Rol, type UsuarioSesion } from './api-types'
 import { apiRequest as request } from './http'
 
-export const login = (email: string, password: string) =>
-  request<{ usuario: UsuarioSesion }>('/api/auth/login', {
-    method: 'POST', body: JSON.stringify({ email, password }),
-  })
-export const register = (nombre: string, email: string, password: string, fechaNacimiento?: string, username?: string) =>
-  request<{ usuario: UsuarioSesion }>('/api/auth/register', {
-    method: 'POST', body: JSON.stringify({ nombre, email, password, fechaNacimiento, username }),
-  })
 export const logout = () => request<{ ok: boolean }>('/api/auth/logout', { method: 'POST' })
 export const createCancha = (input: CanchaInput) =>
   request<{ cancha: Cancha }>('/api/canchas', { method: 'POST', body: JSON.stringify(input) })

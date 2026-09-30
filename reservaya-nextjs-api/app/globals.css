@@ -125,55 +125,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Auth: estilo táctil Universo Agustino */
-.auth-shell {
-  background-color: var(--noche);
-}
-
-.auth-card {
-  background-color: var(--tiza);
-  border: 2px solid var(--basalto);
-  box-shadow: 6px 6px 0 0 var(--basalto);
-  border-radius: 1rem;
-}
-
-.auth-label {
-  color: var(--basalto);
-  font-weight: 600;
-}
-
-.auth-input {
-  background: var(--tiza);
-  border: 2px solid var(--basalto);
-  color: var(--basalto);
-}
-
-.auth-input::placeholder {
-  color: var(--pizarra);
-}
-
-.auth-input:focus {
-  border-color: var(--cesped);
-  box-shadow: 2px 2px 0 0 var(--cesped);
-  outline: none;
-}
-
-.auth-link {
-  color: var(--cesped-hondo);
-}
-
-.auth-link:hover {
-  color: var(--cesped-hover);
-}
-
-.auth-home-link {
-  color: var(--pizarra);
-}
-
-.auth-home-link:hover {
-  color: var(--basalto);
-}
-
 ::selection {
   background: var(--cesped-suave);
   color: var(--basalto);

@@ -3,6 +3,7 @@ import { config as appConfig } from '@/lib/config'
 import { fallbackPorRol } from '@/lib/permissions'
 import type { Rol } from '@/lib/api-types'
 import { jwtVerify } from 'jose'
+import { publicAppUrl } from '@/lib/public-app'
 
 // Zonas del panel y roles que pueden entrar (el resto va a su inicio).
 const ZONAS: ReadonlyArray<[prefijo: string, roles: readonly Rol[]]> = [
@@ -16,7 +17,9 @@ const ROLES: readonly string[] = ['USUARIO', 'ADMIN', 'SUPERADMIN', 'TECNICO']
 export async function proxy(request: NextRequest) {
   const token = request.cookies.get(appConfig.jwtCookieName)?.value
   if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const loginUrl = new URL('/login', publicAppUrl)
+    loginUrl.search = `?returnUrl=${encodeURIComponent(request.nextUrl.href)}`
+    return NextResponse.redirect(loginUrl)
   }
 
   try {
@@ -37,7 +40,9 @@ export async function proxy(request: NextRequest) {
     response.headers.set('Pragma', 'no-cache')
     return response
   } catch {
-    const response = NextResponse.redirect(new URL('/login', request.url))
+    const loginUrl = new URL('/login', publicAppUrl)
+    loginUrl.search = `?returnUrl=${encodeURIComponent(request.nextUrl.href)}`
+    const response = NextResponse.redirect(loginUrl)
     response.cookies.delete(appConfig.jwtCookieName)
     return response
   }
