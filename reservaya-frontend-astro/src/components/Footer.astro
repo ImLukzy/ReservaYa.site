@@ -1,39 +1,68 @@
 ---
-// Pie: contacto real, mapa del sitio y enlaces legales.
+// Pie: marca, contacto y legal. Compacto y accesible.
 import Marca from "./Marca.astro";
 import Icon from "./ui/Icon.astro";
-import { APP } from "../lib/entorno";
 import { EMAIL, INSTAGRAM, WHATSAPP_VISIBLE, whatsappUrl } from "../lib/contacto";
 
-const columnas = [
-  { titulo: "Jugadores", enlaces: [["/canchas", "Buscar canchas"], ["/completar-cuadro", "Partidos abiertos"], ["/sortear", "Armar equipos"], ["/torneos", "Torneos"], ["/ayuda", "Cómo reservar"]] },
-  { titulo: "Dueños", enlaces: [["/duenos", "Publicar mis canchas"], ["/duenos#planes", "Planes y precios"], [`${APP}/login`, "Entrar al panel"]] },
-  { titulo: "Legal", enlaces: [["/legal/terms", "Términos de uso"], ["/legal/privacy", "Privacidad"], ["/libro-reclamaciones", "Libro de reclamaciones"], ["/mejoras", "Enviar una sugerencia"]] },
-];
-const enlace = "inline-flex min-h-11 items-center text-pizarra hover:text-basalto hover:underline";
+const enlaceLegal = "text-pizarra hover:text-basalto hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto rounded px-1";
 ---
 
 <footer class="border-t-2 border-basalto bg-tiza">
-  <div class="mx-auto grid max-w-page gap-10 px-4 py-12 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:px-6">
-    <div>
-      <Marca />
-      <p class="mt-2 max-w-xs text-pizarra">Reservas de canchas deportivas en Arequipa.</p>
-      <ul class="mt-4 space-y-1">
-        <li><a href={`mailto:${EMAIL}`} class={`${enlace} gap-2 font-medium`}><Icon nombre="correo" class="h-4 w-4" />{EMAIL}</a></li>
-        <li class="pt-1"><a href={whatsappUrl()} target="_blank" rel="noopener" class="btn-tactil bg-cesped-suave px-4 py-2 text-xs font-bold text-cesped-hondo hover:bg-cesped hover:text-tiza"><Icon nombre="mensaje" class="h-4 w-4" />WhatsApp {WHATSAPP_VISIBLE}</a></li>
-        <li><a href={INSTAGRAM} target="_blank" rel="noopener" class={`${enlace} gap-2 font-medium`}><Icon nombre="instagram" class="h-4 w-4" />Instagram</a></li>
+  <div class="mx-auto max-w-page px-4 py-8 md:px-6">
+    <!-- Fila 1: marca + descripción / contacto -->
+    <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+      <div>
+        <Marca />
+        <p class="mt-2 max-w-xs text-sm text-pizarra">Reservas de canchas deportivas en Arequipa.</p>
+      </div>
+      <ul class="flex items-center gap-3">
+        <li>
+          <a
+            href={whatsappUrl()}
+            target="_blank"
+            rel="noopener"
+            aria-label="WhatsApp"
+            class="flex min-h-11 min-w-11 items-center justify-center rounded-control hover:bg-cesped-suave focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto"
+          >
+            <Icon nombre="mensaje" class="h-5 w-5 text-cesped-hondo" />
+          </a>
+        </li>
+        <li>
+          <a
+            href={`mailto:${EMAIL}`}
+            aria-label="Correo"
+            class="flex min-h-11 min-w-11 items-center justify-center rounded-control hover:bg-piedra focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto"
+          >
+            <Icon nombre="correo" class="h-5 w-5 text-pizarra" />
+          </a>
+        </li>
+        <li>
+          <a
+            href={INSTAGRAM}
+            target="_blank"
+            rel="noopener"
+            aria-label="Instagram"
+            class="flex min-h-11 min-w-11 items-center justify-center rounded-control hover:bg-piedra focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-basalto"
+          >
+            <Icon nombre="instagram" class="h-5 w-5 text-pizarra" />
+          </a>
+        </li>
       </ul>
     </div>
-    {columnas.map((c) => (
-      <nav aria-label={c.titulo}>
-        <h2 class="font-sans text-base font-bold text-basalto">{c.titulo}</h2>
-        <ul class="mt-2">
-          {c.enlaces.map(([href, texto]) => <li><a href={href} data-astro-prefetch={href.startsWith('/') ? "" : undefined} class={enlace}>{texto}</a></li>)}
-        </ul>
-      </nav>
-    ))}
-  </div>
-  <div class="border-t-2 border-basalto/15 bg-piedra/30">
-    <p class="mx-auto max-w-page px-4 py-5 text-sm font-medium text-pizarra md:px-6">© {new Date().getFullYear()} ReservaYa. Hecho en Arequipa, Perú.</p>
+
+    <!-- Fila 2: legal -->
+    <div class="border-t border-basalto/15 mt-6 pt-6">
+      <ul class="flex flex-wrap items-center gap-2 text-xs text-pizarra md:gap-4 md:text-sm">
+        <li>© {new Date().getFullYear()} ReservaYa</li>
+        <li class="hidden md:inline text-basalto/30">·</li>
+        <li><a href="/legal/terms" data-astro-prefetch class={enlaceLegal}>Términos</a></li>
+        <li class="hidden md:inline text-basalto/30">·</li>
+        <li><a href="/legal/privacy" data-astro-prefetch class={enlaceLegal}>Privacidad</a></li>
+        <li class="hidden md:inline text-basalto/30">·</li>
+        <li><a href="/libro-reclamaciones" data-astro-prefetch class={enlaceLegal}>Libro de reclamaciones</a></li>
+        <li class="hidden md:inline text-basalto/30">·</li>
+        <li><a href="/mejoras" data-astro-prefetch class={enlaceLegal}>Sugerencias</a></li>
+      </ul>
+    </div>
   </div>
 </footer>
