@@ -81,22 +81,31 @@
   --font-sans: "Barlow", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
   --font-display: "Barlow Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
 
-  /* Escala tercera mayor (1.25): 14 · 16 · 20 · 25 · 31 · 39 · 49 px. */
+  /* Escala de Tailwind, la de Universo (spec 49): 12 · 14 · 16 · 18 · 20 · 24 · 30 · 36 · 48 · 60 · 72 px.
+     Interlineados cortos desde 2xl para los títulos en Barlow Condensed. */
   --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.5;
   --text-sm: 0.875rem;
   --text-sm--line-height: 1.45;
   --text-base: 1rem;
   --text-base--line-height: 1.5;
-  --text-lg: 1.25rem;
-  --text-lg--line-height: 1.35;
-  --text-xl: 1.5625rem;
-  --text-xl--line-height: 1.15;
-  --text-2xl: 1.9375rem;
-  --text-2xl--line-height: 1.08;
-  --text-3xl: 2.4375rem;
-  --text-3xl--line-height: 1.05;
-  --text-4xl: 3.0625rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 2.25rem;
   --text-4xl--line-height: 1.05;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1.02;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+  --text-7xl: 4.5rem;
+  --text-7xl--line-height: 1;
 
   /* Radio por jerarquía: controles 6 px, superficies 12 px, filas del tablero 0. */
   --radius-*: initial;
@@ -108,14 +117,46 @@
   --shadow-dura-sm: 2px 2px 0 0 #1f2a24;
   --shadow-dura: 4px 4px 0 0 #1f2a24;
   --shadow-dura-lg: 6px 6px 0 0 #1f2a24;
+  /* Panel principal sobre fondo oscuro: sombra dura en césped (firma de Universo, spec 47). */
+  --shadow-dura-cesped: 6px 6px 0 0 var(--color-cesped);
 
   --container-page: 70rem;
-  --container-texto: 42rem;
+  --container-texto: 48rem;
 
+  /* motion:inicio · generado por scripts/motion-tokens.mjs (spec 46); no editar a mano */
+  --ease-resorte: linear(0, 0.018, 0.065, 0.132, 0.212, 0.298, 0.386, 0.473, 0.555, 0.631, 0.7, 0.762, 0.815, 0.862, 0.901, 0.933, 0.959, 0.98, 0.996, 1.008, 1.017, 1.023, 1.026, 1.028, 1.028, 1.028, 1.026, 1.024, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.005, 1.004, 1.003, 1.002, 1);
+  --dur-resorte: 400ms;
   --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-toque: 120ms;
+  --dur-entra: 180ms;
+  --default-transition-duration: var(--dur-toque);
+  --default-transition-timing-function: var(--ease-salida);
+  /* motion:fin */
+}
+
+/* motion:respaldo · sin linear() el resorte cae a la curva de salida */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-resorte: var(--ease-salida);
+  }
 }
 
 @layer components {
+  /* Antetítulo de sección (spec 47): el único lugar con MAYÚSCULAS y tracking. */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-pizarra);
+  }
+  /* Panel ilustrado de la landing (como .panel de Universo). */
+  .panel-tactil {
+    border: 2px solid var(--color-basalto);
+    border-radius: 2rem;
+    box-shadow: 6px 6px 0 0 var(--color-basalto);
+  }
   .card-tactil {
     background-color: var(--color-tiza);
     border: 2px solid var(--color-basalto);
@@ -136,7 +177,7 @@
     border-radius: 9999px;
     border: 2px solid var(--color-basalto);
     box-shadow: 3px 3px 0 0 var(--color-basalto);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transition: transform var(--dur-resorte) var(--ease-resorte), box-shadow var(--dur-toque) var(--ease-salida);
   }
   .btn-tactil:hover {
     transform: translate(-1px, -1px);
@@ -173,7 +214,7 @@
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--color-basalto);
-    transition: background-color 0.15s ease;
+    transition: background-color var(--dur-toque) var(--ease-salida);
   }
   .chip-tactil:hover {
     background-color: var(--color-piedra);

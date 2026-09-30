@@ -15,6 +15,10 @@ export const BOTON = {
 export const CAMPO =
   "w-full rounded-full border-2 border-basalto bg-tiza px-4 py-2.5 text-base text-basalto shadow-dura-sm focus:shadow-[4px_4px_0_0_var(--color-cesped)] focus:outline-none disabled:bg-piedra disabled:text-pizarra";
 
+/** Número de paso en círculo (spec 47): pasos de /duenos y de /sortear. */
+export const NUMERO_PASO =
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-basalto bg-cesped-suave font-display text-lg font-extrabold tabular-nums text-cesped-hondo";
+
 export const ETIQUETA = "mb-1.5 block text-sm font-bold text-basalto";
 
 /** Tonos de etiqueta de estado (Badge.astro y scripts). «libre» es el único verde. */
@@ -26,6 +30,6 @@ export const INSIGNIA = {
 export const INSIGNIA_BASE = "inline-flex items-center rounded-full border-2 px-3 py-0.5 text-xs font-bold";
 
 export const AVISO = {
-  error: "rounded-xl border-2 border-error bg-error-suave px-4 py-3 text-sm font-semibold text-error",
-  ok: "rounded-xl border-2 border-cesped bg-cesped-suave px-4 py-3 text-sm font-semibold text-cesped-hondo",
+  error: "rounded-surface border-2 border-error bg-error-suave px-4 py-3 text-sm font-semibold text-error",
+  ok: "rounded-surface border-2 border-cesped bg-cesped-suave px-4 py-3 text-sm font-semibold text-cesped-hondo",
 } as const;

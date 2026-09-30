@@ -44,7 +44,7 @@ function croquisCancha(claseUbicacion = ""): HTMLDivElement {
   const caja = el("div", `${CLASE_MINIATURA} bg-cesped-suave ${claseUbicacion}`.trim());
   caja.setAttribute("aria-hidden", "true");
   caja.append(
-    el("span", "absolute inset-1 rounded-sm border border-cesped/40"),
+    el("span", "absolute inset-1 rounded-control border border-cesped/40"),
     el("span", "absolute inset-y-1 left-1/2 w-px -translate-x-1/2 bg-cesped/40"),
     el("span", "absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cesped/40"),
   );
@@ -147,7 +147,7 @@ export function filasEsqueleto(n: number): HTMLLIElement[] {
 /** Mensaje dentro del tablero (vacío o error) con una acción opcional. */
 export function avisoTablero(titulo: string, texto: string, accion?: { etiqueta: string; alPulsar: () => void }): HTMLElement {
   const caja = el("div", "flex h-full flex-col items-center justify-center gap-2 px-6 py-10 text-center");
-  caja.append(el("p", "font-display text-xl font-semibold", titulo), el("p", "text-pizarra", texto));
+  caja.append(el("p", "font-display text-xl font-bold", titulo), el("p", "text-pizarra", texto));
   if (accion) {
     const b = el("button", `${BOTON.secundario} mt-2`, accion.etiqueta);
     b.type = "button";

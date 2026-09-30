@@ -98,6 +98,26 @@
   --font-display: var(--ff-barlow-condensed), var(--ff-barlow), Arial, sans-serif;
 }
 
+/* Motion único, idéntico al de la landing (spec 46). */
+@theme static {
+  /* motion:inicio · generado por scripts/motion-tokens.mjs (spec 46); no editar a mano */
+  --ease-resorte: linear(0, 0.018, 0.065, 0.132, 0.212, 0.298, 0.386, 0.473, 0.555, 0.631, 0.7, 0.762, 0.815, 0.862, 0.901, 0.933, 0.959, 0.98, 0.996, 1.008, 1.017, 1.023, 1.026, 1.028, 1.028, 1.028, 1.026, 1.024, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.005, 1.004, 1.003, 1.002, 1);
+  --dur-resorte: 400ms;
+  --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-toque: 120ms;
+  --dur-entra: 180ms;
+  --default-transition-duration: var(--dur-toque);
+  --default-transition-timing-function: var(--ease-salida);
+  /* motion:fin */
+}
+
+/* motion:respaldo · sin linear() el resorte cae a la curva de salida */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-resorte: var(--ease-salida);
+  }
+}
+
 html {
   font-size: clamp(100%, 0.75rem + 0.3906vw, 112.5%);
   scroll-behavior: smooth;
@@ -166,7 +186,7 @@ a:focus-visible {
 }
 
 .flash-green {
-  animation: flash-green 0.6s ease;
+  animation: flash-green 0.6s ease; /* motion: ambiental */
 }
 
 /* Scrollbars sutiles */
@@ -194,7 +214,8 @@ a:focus-visible {
    Solo transform/opacity/filter → 60fps.
    ========================================================= */
 .btn-press {
-  transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  transition: transform var(--dur-resorte) var(--ease-resorte), box-shadow var(--dur-toque) var(--ease-salida),
+    background-color var(--dur-toque) var(--ease-salida);
 }
 .btn-press:hover {
   box-shadow: 3px 3px 0 0 var(--basalto);
@@ -219,7 +240,7 @@ a:focus-visible {
 }
 .btn-shine:hover::after {
   transform: translateX(120%);
-  transition: transform 0.7s ease;
+  transition: transform 0.7s ease; /* motion: ambiental */
 }
 .badge-live {
   position: relative;
@@ -233,7 +254,7 @@ a:focus-visible {
   height: 0.5rem;
   border-radius: 9999px;
   background: currentColor;
-  animation: badge-ping 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: badge-ping 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* motion: ambiental */
 }
 @keyframes badge-ping {
   0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
@@ -249,10 +270,10 @@ a:focus-visible {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .modal-backdrop-enter {
-  animation: modal-backdrop-in 0.28s ease-out both;
+  animation: modal-backdrop-in var(--dur-entra) var(--ease-salida) both;
 }
 .modal-card-enter {
-  animation: modal-card-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: modal-card-in var(--dur-resorte) var(--ease-resorte) both;
 }
 @keyframes ticket-bump {
   0% { transform: scale(1); }
@@ -260,7 +281,7 @@ a:focus-visible {
   100% { transform: scale(1); }
 }
 .ticket-bump {
-  animation: ticket-bump 0.3s ease;
+  animation: ticket-bump var(--dur-resorte) var(--ease-resorte);
 }
 .fly-dot {
   position: fixed;
@@ -276,6 +297,13 @@ a:focus-visible {
   .modal-card-enter,
   .ticket-bump {
     animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -312,7 +340,7 @@ select.sel-dark optgroup {
     border-radius: 9999px;
     border: 2px solid var(--basalto);
     box-shadow: 3px 3px 0 0 var(--basalto);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transition: transform var(--dur-resorte) var(--ease-resorte), box-shadow var(--dur-toque) var(--ease-salida);
   }
   .btn-tactil:hover {
     transform: translate(-1px, -1px);
@@ -348,7 +376,7 @@ select.sel-dark optgroup {
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--basalto);
-    transition: background-color 0.15s ease;
+    transition: background-color var(--dur-toque) var(--ease-salida);
   }
   .chip-tactil:hover {
     background-color: var(--piedra);
@@ -376,7 +404,8 @@ p, li, dd {
     block-size: 0;
     opacity: 0;
     overflow: clip;
-    transition: block-size 220ms ease, content-visibility 220ms allow-discrete, opacity 180ms ease;
+    transition: block-size var(--dur-resorte) var(--ease-salida), content-visibility var(--dur-resorte) allow-discrete,
+      opacity var(--dur-entra) var(--ease-salida);
   }
   details[open]::details-content {
     block-size: auto;
@@ -385,7 +414,7 @@ p, li, dd {
 }
 
 details > summary::marker {
-  transition: transform 180ms ease;
+  transition: transform var(--dur-resorte) var(--ease-resorte);
 }
 
 @media (prefers-reduced-motion: reduce) {

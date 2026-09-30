@@ -150,7 +150,7 @@ export function PartidosJugadorPanel({
               return (
                 <li
                   key={p.id}
-                  className="card-tactil flex flex-col justify-between p-5 transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1f2a24]"
+                  className="card-tactil flex flex-col justify-between p-5 transition-all ease-resorte duration-(--dur-resorte) hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1f2a24]"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">

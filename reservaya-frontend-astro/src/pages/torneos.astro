@@ -4,18 +4,19 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EmptyState from "../components/ui/EmptyState.astro";
 import Button from "../components/ui/Button.astro";
+import BandaCierre from "../components/inicio/BandaCierre.astro";
 ---
 
 <BaseLayout title="Torneos | ReservaYa" description="Torneos organizados por complejos deportivos de Arequipa con ReservaYa.">
   <section class="mx-auto max-w-page px-4 pb-12 pt-8 md:px-6 lg:pt-12">
     <div class="flex items-center gap-2">
-      <span class="inline-flex items-center gap-1.5 rounded-full border border-cesped/40 bg-cesped-suave px-3 py-0.5 font-display text-xs font-bold text-cesped-hondo">
+      <span class="inline-flex items-center gap-2 rounded-full border border-cesped/40 bg-cesped-suave px-3 py-1">
         <span class="h-2 w-2 rounded-full bg-cesped pulso-inicial" aria-hidden="true"></span>
-        COMPETENCIAS LOCALES
+        <span class="eyebrow text-cesped-hondo">Competencias locales</span>
       </span>
-      <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">Arequipa</span>
+      <span class="eyebrow">Arequipa</span>
     </div>
-    <h1 class="mt-2 font-display text-3xl font-black tracking-tight text-basalto sm:text-4xl lg:text-5xl">
+    <h1 class="mt-3 font-display text-3xl font-extrabold leading-[1.05] text-basalto md:text-4xl lg:text-5xl">
       Torneos
     </h1>
     <p class="mt-3 max-w-xl text-base text-pizarra sm:text-lg">
@@ -33,18 +34,11 @@ import Button from "../components/ui/Button.astro";
     <div class="mt-8 h-3 w-full border-2 border-basalto" style="background-image: repeating-linear-gradient(45deg, var(--color-cesped) 0 0.875rem, var(--color-cesped-hondo) 0.875rem 1.75rem);" aria-hidden="true"></div>
   </section>
 
-  <section aria-labelledby="organiza-titulo" class="border-t-2 border-basalto bg-tiza seccion-entra">
-    <div class="mx-auto flex max-w-page flex-col gap-6 px-4 py-12 md:flex-row md:items-center md:justify-between md:px-6 lg:py-16">
-      <div>
-        <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Para dueños y administradores</span>
-        <h2 id="organiza-titulo" class="mt-1 font-display text-2xl font-black tracking-tight text-basalto sm:text-3xl lg:text-4xl">
-          ¿Organizas un torneo en tu complejo?
-        </h2>
-        <p class="mt-2 max-w-xl text-base text-pizarra sm:text-lg">
-          Desde el panel inscribes equipos, armas fechas y partidos, registras resultados y ves quién ganó.
-        </p>
-      </div>
-      <Button href="/duenos#torneos" class="shrink-0 shadow-dura-sm">Ver cómo funciona</Button>
-    </div>
-  </section>
+  <BandaCierre
+    id="organiza-titulo"
+    antetitulo="Para dueños y administradores"
+    titulo="¿Organizas un torneo en tu complejo?"
+    bajada="Desde el panel inscribes equipos, armas fechas y partidos, registras resultados y ves quién ganó."
+    primario={{ href: "/duenos#torneos", texto: "Ver cómo funciona" }}
+  />
 </BaseLayout>

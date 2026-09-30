@@ -14,7 +14,7 @@
 .esqueleto {
   border-radius: var(--radius-control);
   background: var(--color-piedra);
-  animation: esqueleto 1.4s ease-in-out infinite;
+  animation: esqueleto 1.4s ease-in-out infinite; /* motion: ambiental */
 }
 
 @keyframes fila-entra {
@@ -38,11 +38,11 @@
 }
 
 .pulso-inicial {
-  animation: pulso-inicial 2s ease-in-out 3 forwards;
+  animation: pulso-inicial 2s ease-in-out 3 forwards; /* motion: ambiental */
 }
 
 .fila-entra {
-  animation: fila-entra 180ms var(--ease-salida) both;
+  animation: fila-entra var(--dur-entra) var(--ease-salida) both;
 }
 
 .fila-entra:nth-child(1) {
@@ -61,33 +61,21 @@
   animation-delay: 0ms;
 }
 
-@keyframes seccion-entra {
-  from {
+/* Revelar una vez al entrar en pantalla (Reveal de Universo, spec 50; scripts/revelar.ts).
+   Sin JS o con movimiento reducido el bloque se ve desde el inicio. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .revelar {
+    transition:
+      opacity var(--dur-resorte) var(--ease-salida),
+      transform var(--dur-resorte) var(--ease-resorte);
+  }
+  .revelar:not(.visible) {
     opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.seccion-entra {
-  animation: seccion-entra 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@supports (animation-timeline: view()) {
-  .seccion-entra {
-    animation-timeline: view();
-    animation-range: entry 0% cover 30%;
+    transform: translateY(1.25rem);
   }
 }
 
 /* Detalles: despliegue suave con alto dinámico (F10) */
-details {
-  transition: scroll-behavior 0s linear;
-}
-
 details summary {
   cursor: pointer;
   user-select: none;
@@ -99,48 +87,36 @@ details summary::marker {
 
 details summary [data-icon="abajo"] {
   will-change: transform;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur-resorte) var(--ease-resorte);
 }
 
 details[open] summary [data-icon="abajo"] {
   transform: rotate(180deg);
 }
 
+/* Abrir y cerrar con el resorte, en los dos sentidos, como el Accordion de Universo (spec 50):
+   el contenedor ::details-content transiciona su alto (interpolate-size) y su opacidad. */
 @supports (interpolate-size: allow-keywords) {
-  details > *:not(summary) {
-    overflow: hidden;
-  }
-  details[open] > *:not(summary) {
-    animation: detalles-contenido-abre 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  @keyframes detalles-contenido-abre {
-    from {
-      opacity: 0;
-      block-size: 0;
-    }
-    to {
-      opacity: 1;
-      block-size: auto;
-    }
-  }
-  ::details-content {
+  :root {
     interpolate-size: allow-keywords;
   }
-}
-
-/* Fallback para navegadores sin interpolate-size */
-@supports not (interpolate-size: allow-keywords) {
-  details {
-    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    max-height: 0;
+  details::details-content {
+    block-size: 0;
     opacity: 0;
-    overflow: hidden;
+    overflow: clip;
+    transition:
+      block-size var(--dur-resorte) var(--ease-resorte),
+      content-visibility var(--dur-resorte) allow-discrete,
+      opacity var(--dur-entra) var(--ease-salida);
   }
-  details[open] {
-    max-height: 1000px;
+  details[open]::details-content {
+    block-size: auto;
     opacity: 1;
   }
 }
+
+/* Sin interpolate-size (Firefox, Safari) <details> abre de golpe, nativo: un respaldo
+   con max-height sobre el propio details lo ocultaba entero, pregunta incluida (spec 46). */
 
 @media (prefers-reduced-motion: reduce) {
   *,

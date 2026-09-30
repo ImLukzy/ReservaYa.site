@@ -239,7 +239,7 @@ Todas las vistas deben consumir exclusivamente los endpoints documentados en la 
   - [ ] `npm --prefix reservaya-nextjs-api run build` (0 errores).
   - [ ] `npm --prefix reservaya-frontend-astro run build` (22 páginas OK sin regresiones).
   - [ ] Auditoría de accesibilidad WCAG AA en controles y estados de foco.
-  - [ ] Verificación de métricas CLS ≤ 0.05.
+  - [ ] Verificación de métricas CLS ≤ 0.05. → Pasa a la spec 46 (umbral 0.02, `reservaya-nextjs-api/scripts/cls.mjs`; medición pendiente de cuentas QA).
 
 ---
 

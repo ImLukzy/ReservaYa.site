@@ -4,7 +4,11 @@ import Button from "../components/ui/Button.astro";
 import Planes from "../components/Planes.astro";
 import Icon from "../components/ui/Icon.astro";
 import PatronCancha from "../components/ui/PatronCancha.astro";
+import SeccionTitulo from "../components/inicio/SeccionTitulo.astro";
+import PreguntasTactiles, { type Pregunta } from "../components/inicio/PreguntasTactiles.astro";
+import BandaCierre from "../components/inicio/BandaCierre.astro";
 import { whatsappUrl } from "../lib/contacto";
+import { NUMERO_PASO } from "../lib/estilos";
 
 const pasos = [
   "Crea tu cuenta en ReservaYa.",
@@ -14,26 +18,28 @@ const pasos = [
 ];
 
 const introEmpiezas = "Cuatro pasos claros: crea tu cuenta en ReservaYa, actívala con nosotros, registra tu complejo y sus canchas, elige tu plan. Listo.";
+const ventajas = ["Sin contratos de permanencia", "Funciona en el navegador, sin instalar", "Soporte directo por WhatsApp"];
+const whatsapp = whatsappUrl("Hola, quiero publicar mis canchas en ReservaYa");
 
 const modulos = [
-  { id: "reservas", titulo: "Reservas", texto: "Confirmas o rechazas cada reserva. La confirmada trae un código que el jugador muestra al llegar." },
-  { id: "precios", titulo: "Horarios y precios", texto: "Defines el horario de cada día, precios especiales por franja y descuentos." },
-  { id: "caja", titulo: "Caja", texto: "Abres y cierras caja, vendes productos y registras cada cobro con su método." },
-  { id: "equipo", titulo: "Trabajadores", texto: "Cada trabajador entra con su cuenta a la agenda, las reservas y la caja. No ve tus reportes ni tus ingresos." },
-  { id: "reportes", titulo: "Reportes", texto: "Ingresos, reservas y metas del mes de cada complejo." },
-  { id: "resenas", titulo: "Opiniones", texto: "Solo opinan jugadores con una reserva completada, y tú puedes responder." },
-  { id: "torneos", titulo: "Torneos", texto: "Inscribes equipos, armas los partidos y registras los resultados." },
-];
+  { id: "reservas", icono: "ticket", titulo: "Reservas", texto: "Confirmas o rechazas cada reserva. La confirmada trae un código que el jugador muestra al llegar." },
+  { id: "precios", icono: "calendario", titulo: "Horarios y precios", texto: "Defines el horario de cada día, precios especiales por franja y descuentos." },
+  { id: "caja", icono: "billete", titulo: "Caja", texto: "Abres y cierras caja, vendes productos y registras cada cobro con su método." },
+  { id: "equipo", icono: "grupo", titulo: "Trabajadores", texto: "Cada trabajador entra con su cuenta a la agenda, las reservas y la caja. No ve tus reportes ni tus ingresos." },
+  { id: "reportes", icono: "grafico", titulo: "Reportes", texto: "Ingresos, reservas y metas del mes de cada complejo." },
+  { id: "resenas", icono: "mensaje", titulo: "Opiniones", texto: "Solo opinan jugadores con una reserva completada, y tú puedes responder." },
+  { id: "torneos", icono: "trofeo", titulo: "Torneos", texto: "Inscribes equipos, armas los partidos y registras los resultados." },
+] as const;
 
-const preguntas = [
-  ["¿Tengo que instalar algo?", "No, el panel funciona directamente en el navegador. Creas tu cuenta, registras el complejo y completas sus canchas, fotos, horarios y precios desde el celular o la computadora. Luego usas el mismo panel para atender reservas y administrar la operación. Solo necesitas entrar con la cuenta que tenga acceso al complejo."],
-  ["¿ReservaYa cobra las reservas por mí?", "No, actualmente el cobro lo realiza cada complejo. Cuando atiendes una reserva, recibes el pago por el medio que uses normalmente y luego lo registras en la caja del panel con su método. Ese registro queda dentro de la gestión del complejo. La forma de cobro al jugador sigue dependiendo de tu negocio."],
-  ["¿Sirve si tengo varias sedes?", "Sí, puedes gestionar más de un complejo desde el panel. Registras cada sede como un complejo y configuras por separado sus canchas, horarios, precios y trabajadores. Después puedes consultar su agenda, caja y reportes según el complejo seleccionado. La información operativa de cada sede se mantiene asociada a ese complejo."],
-  ["¿Qué pasa con una reserva pendiente?", "Una reserva pendiente todavía requiere una decisión del complejo. En el módulo de reservas revisas la solicitud y eliges confirmarla o rechazarla; mientras siga pendiente, no bloquea el horario. Al confirmarla, el jugador recibe el estado confirmado y puede ver su código. La atención de cada solicitud queda a cargo del complejo."],
-  ["¿Hay contrato de permanencia?", "No, los planes se presentan sin contrato de permanencia. En la sección de planes eliges la opción que corresponda a tu operación y puedes comparar el pago mensual con el anual. El descuento anual se muestra allí antes de elegir. Las funciones disponibles dependen del plan seleccionado."],
-  ["¿Qué puedo configurar de mis canchas?", "Puedes registrar las canchas de cada complejo con sus fotos, horarios y precios. Primero creas el complejo, luego agregas sus canchas y finalmente defines el horario de cada día, las franjas con precios especiales y los descuentos. Esa información alimenta la disponibilidad que ven los jugadores. Cada configuración queda vinculada al complejo correspondiente."],
-  ["¿Qué acceso tienen mis trabajadores?", "Cada trabajador entra al panel con su propia cuenta. Después de agregarlo al complejo, puede usar la agenda, atender las reservas y trabajar con la caja. El panel no le muestra tus reportes ni tus ingresos. Así separas las tareas operativas de la información reservada para la administración."],
-  ["¿Qué muestran los reportes?", "Los reportes reúnen información de ingresos, reservas y metas del mes. Entras al módulo de reportes y consultas los datos del complejo que estás administrando. Si manejas varias sedes, seleccionas el complejo para revisar su operación correspondiente. Los trabajadores no tienen acceso a estos reportes ni a tus ingresos."],
+const preguntas: Pregunta[] = [
+  { categoria: "Panel", icono: "pantalla", pregunta: "¿Tengo que instalar algo?", respuesta: "No, el panel funciona directamente en el navegador. Creas tu cuenta, registras el complejo y completas sus canchas, fotos, horarios y precios desde el celular o la computadora. Luego usas el mismo panel para atender reservas y administrar la operación. Solo necesitas entrar con la cuenta que tenga acceso al complejo." },
+  { categoria: "Cobros", icono: "billete", pregunta: "¿ReservaYa cobra las reservas por mí?", respuesta: "No, actualmente el cobro lo realiza cada complejo. Cuando atiendes una reserva, recibes el pago por el medio que uses normalmente y luego lo registras en la caja del panel con su método. Ese registro queda dentro de la gestión del complejo. La forma de cobro al jugador sigue dependiendo de tu negocio." },
+  { categoria: "Sedes", icono: "lugar", pregunta: "¿Sirve si tengo varias sedes?", respuesta: "Sí, puedes gestionar más de un complejo desde el panel. Registras cada sede como un complejo y configuras por separado sus canchas, horarios, precios y trabajadores. Después puedes consultar su agenda, caja y reportes según el complejo seleccionado. La información operativa de cada sede se mantiene asociada a ese complejo." },
+  { categoria: "Reservas", icono: "reloj", pregunta: "¿Qué pasa con una reserva pendiente?", respuesta: "Una reserva pendiente todavía requiere una decisión del complejo. En el módulo de reservas revisas la solicitud y eliges confirmarla o rechazarla; mientras siga pendiente, no bloquea el horario. Al confirmarla, el jugador recibe el estado confirmado y puede ver su código. La atención de cada solicitud queda a cargo del complejo." },
+  { categoria: "Planes", icono: "documento", pregunta: "¿Hay contrato de permanencia?", respuesta: "No, los planes se presentan sin contrato de permanencia. En la sección de planes eliges la opción que corresponda a tu operación y puedes comparar el pago mensual con el anual. El descuento anual se muestra allí antes de elegir. Las funciones disponibles dependen del plan seleccionado." },
+  { categoria: "Canchas", icono: "calendario", pregunta: "¿Qué puedo configurar de mis canchas?", respuesta: "Puedes registrar las canchas de cada complejo con sus fotos, horarios y precios. Primero creas el complejo, luego agregas sus canchas y finalmente defines el horario de cada día, las franjas con precios especiales y los descuentos. Esa información alimenta la disponibilidad que ven los jugadores. Cada configuración queda vinculada al complejo correspondiente." },
+  { categoria: "Trabajadores", icono: "grupo", pregunta: "¿Qué acceso tienen mis trabajadores?", respuesta: "Cada trabajador entra al panel con su propia cuenta. Después de agregarlo al complejo, puede usar la agenda, atender las reservas y trabajar con la caja. El panel no le muestra tus reportes ni tus ingresos. Así separas las tareas operativas de la información reservada para la administración." },
+  { categoria: "Reportes", icono: "grafico", pregunta: "¿Qué muestran los reportes?", respuesta: "Los reportes reúnen información de ingresos, reservas y metas del mes. Entras al módulo de reportes y consultas los datos del complejo que estás administrando. Si manejas varias sedes, seleccionas el complejo para revisar su operación correspondiente. Los trabajadores no tienen acceso a estos reportes ni a tus ingresos." },
 ];
 ---
 
@@ -45,12 +51,12 @@ const preguntas = [
     <PatronCancha />
     <div class="relative z-10 mx-auto grid max-w-page gap-10 px-4 pb-14 pt-8 md:px-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-center lg:gap-16 lg:pb-20 lg:pt-14">
       <div class="duenos-hero-entra">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 rounded-full border border-cesped/40 bg-cesped/15 px-3 py-1 font-display text-xs font-bold text-cesped">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="inline-flex items-center gap-2 rounded-full border border-cesped/40 bg-cesped/15 px-3 py-1">
             <span class="h-2 w-2 rounded-full bg-cesped pulso-inicial" aria-hidden="true"></span>
-            PANEL DE GESTIÓN PARA DUEÑOS
+            <span class="eyebrow text-cesped-suave">Panel de gestión para dueños</span>
           </span>
-          <span class="font-display text-xs font-bold uppercase tracking-wider text-tiza/70">Arequipa</span>
+          <span class="eyebrow text-tiza/70">Arequipa</span>
         </div>
         <h1 class="mt-4 font-display text-4xl font-black tracking-tight text-tiza sm:text-5xl lg:text-6xl">
           Publica tus canchas y recibe reservas sin llamadas
@@ -60,30 +66,29 @@ const preguntas = [
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button href="/register?plan=dueno" class="shadow-dura-sm">Crear mi cuenta</Button>
-          <Button href={whatsappUrl("Hola, quiero publicar mis canchas en ReservaYa")} variante="secundario" target="_blank" rel="noopener">Escribir por WhatsApp</Button>
+          <Button href={whatsapp} variante="secundario" target="_blank" rel="noopener">Escribir por WhatsApp</Button>
         </div>
-        <div class="mt-8 flex flex-wrap items-center gap-4 text-xs font-bold text-tiza/70">
-          <span class="inline-flex items-center gap-1.5"><span class="text-cesped">✓</span> Sin contratos de permanencia</span>
-          <span class="inline-flex items-center gap-1.5"><span class="text-cesped">✓</span> Funciona en el navegador, sin instalar</span>
-          <span class="inline-flex items-center gap-1.5"><span class="text-cesped">✓</span> Soporte directo por WhatsApp</span>
-          <span class="-rotate-6 border-4 border-double border-cesped px-3 py-1 font-display text-sm font-black tracking-wider text-cesped">CANCHA VERIFICADA</span>
-        </div>
+        <ul class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm font-bold text-tiza/80">
+          {ventajas.map((v) => (
+            <li class="inline-flex items-center gap-2">
+              <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cesped text-tiza"><Icon nombre="ok" class="h-3 w-3" /></span>{v}
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div class="card-tactil relative z-10 bg-tiza p-6 shadow-dura-lg sm:p-8">
-        <div class="flex items-center justify-between border-b-2 border-cal pb-3">
+      <div class="card-tactil relative z-10 bg-tiza p-6 shadow-dura-cesped sm:p-8">
+        <div class="flex items-center justify-between gap-3 border-b-2 border-cal pb-3">
           <div>
             <h2 class="font-display text-xl font-black tracking-tight text-basalto">Cómo empiezas</h2>
             <p class="mt-2 text-sm text-pizarra">{introEmpiezas}</p>
           </div>
-          <span class="rounded-full bg-cesped-suave px-2.5 py-0.5 font-display text-xs font-extrabold text-cesped-hondo">{pasos.length} pasos</span>
+          <span class="shrink-0 rounded-full bg-cesped-suave px-2.5 py-0.5 font-display text-xs font-extrabold text-cesped-hondo">{pasos.length} pasos</span>
         </div>
         <ol class="mt-5 space-y-4">
           {pasos.map((p, i) => (
             <li class="grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-3">
-              <span class="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-basalto bg-cesped-suave font-display text-lg font-black tabular-nums text-cesped-hondo shadow-dura-sm">
-                {i + 1}
-              </span>
+              <span class={NUMERO_PASO}>{i + 1}</span>
               <span class="pt-1 text-sm font-semibold leading-snug text-basalto sm:text-base">{p}</span>
             </li>
           ))}
@@ -91,7 +96,6 @@ const preguntas = [
       </div>
     </div>
 
-    <!-- Franja de césped táctico -->
     <div
       class="h-3 w-full border-t-2 border-basalto"
       style="background-image: repeating-linear-gradient(45deg, var(--color-cesped) 0 0.875rem, var(--color-cesped-hondo) 0.875rem 1.75rem);"
@@ -102,7 +106,7 @@ const preguntas = [
   <style>
     @media (prefers-reduced-motion: no-preference) {
       .duenos-hero-entra {
-        animation: duenos-entra 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation: duenos-entra var(--dur-resorte) var(--ease-resorte) both;
       }
     }
     @keyframes duenos-entra {
@@ -117,32 +121,23 @@ const preguntas = [
     }
   </style>
 
-  <section aria-labelledby="panel-titulo" class="relative overflow-hidden border-y-2 border-basalto bg-tiza seccion-entra">
-    <span class="pointer-events-none absolute -right-4 -top-12 font-display text-[12rem] font-black leading-none tabular-nums text-cesped/10" aria-hidden="true">{modulos.length}</span>
-    <div class="relative mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
-      <div class="flex items-center gap-2">
-        <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Módulos del sistema</span>
-        <span class="text-xs text-pizarra">·</span>
-        <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">Panel administrativo</span>
-      </div>
-      <h2 id="panel-titulo" class="mt-2 font-display text-3xl font-black tracking-tight text-basalto sm:text-4xl">
-        Qué haces desde el panel
-      </h2>
-      <p class="mt-2 max-w-2xl text-base text-pizarra sm:text-lg">
-        Gestiona 7 módulos sin instalar nada en el navegador: reservas confirmadas, agenda, caja del día, trabajadores con su acceso, reportes de ingresos, opiniones de jugadores, torneos. Un complejo o varios.
-      </p>
-
-      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <section aria-labelledby="panel-titulo" class="border-y-2 border-basalto bg-tiza">
+    <div class="revelar mx-auto max-w-page px-4 py-16 md:px-6 lg:py-24">
+      <SeccionTitulo
+        id="panel-titulo"
+        antetitulo="Módulos del panel"
+        titulo="Qué haces desde el panel"
+        bajada="Gestiona 7 módulos sin instalar nada en el navegador: reservas confirmadas, agenda, caja del día, trabajadores con su acceso, reportes de ingresos, opiniones de jugadores, torneos. Un complejo o varios."
+      />
+      <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3">
         {modulos.map((m, i) => (
-          <article
-            id={m.id}
-            class={`card-tactil relative flex flex-col justify-between p-5 transition-transform hover:-translate-y-0.5 ${i === 0 ? "sm:col-span-2 lg:col-span-2 bg-sillar/60" : "bg-tiza"}`}
-          >
+          <article id={m.id} class={`card-tactil flex gap-4 p-5 ${i === 0 ? "bg-cesped-suave sm:col-span-2" : i === modulos.length - 1 ? "bg-miel-suave lg:col-span-2" : "bg-tiza"}`}>
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-surface border-2 border-basalto bg-cesped text-tiza">
+              <Icon nombre={m.icono} class="h-5 w-5" />
+            </span>
             <div>
-              <div class="border-b border-cal pb-2">
-                <h3 class="font-display text-xl font-black text-basalto">{m.titulo}</h3>
-              </div>
-              <p class="mt-3 text-sm leading-relaxed text-pizarra sm:text-base">{m.texto}</p>
+              <h3 class="font-display text-xl font-black text-basalto">{m.titulo}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-pizarra sm:text-base">{m.texto}</p>
             </div>
           </article>
         ))}
@@ -152,33 +147,24 @@ const preguntas = [
 
   <Planes />
 
-  <section aria-labelledby="preguntas-titulo" class="border-t-2 border-basalto bg-tiza seccion-entra">
-    <div class="mx-auto max-w-texto px-4 py-12 md:px-6 lg:py-16">
-      <div class="flex items-center gap-2">
-        <span class="font-display text-xs font-bold uppercase tracking-wider text-cesped-hondo">Respuestas directas</span>
-        <span class="text-xs text-pizarra">·</span>
-        <span class="font-display text-xs font-bold uppercase tracking-wider text-pizarra">FAQ</span>
-      </div>
-      <h2 id="preguntas-titulo" class="mt-2 font-display text-3xl font-black tracking-tight text-basalto sm:text-4xl">
-        Preguntas de dueños
-      </h2>
-      <p class="mt-2 text-base text-pizarra sm:text-lg">
-        Dudas reales antes de registrarte: ¿sin contratos?, ¿sin instalar?, ¿funciona con varias sedes?, ¿cómo cobro?, ¿qué pasa con reservas pendientes? Aquí están las respuestas.
-      </p>
-
-      <div class="mt-8 space-y-3">
-        {preguntas.map(([p, r]) => (
-          <details class="card-tactil group bg-tiza p-4 transition-colors open:bg-sillar/30 sm:p-5">
-            <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold text-basalto [&::-webkit-details-marker]:hidden">
-              <span>{p}</span>
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-basalto bg-tiza shadow-dura-sm">
-                <Icon nombre="mas" class="h-4 w-4 text-basalto motion-safe:transition-transform group-open:rotate-45" />
-              </span>
-            </summary>
-            <p class="mt-3 border-t border-cal pt-3 text-sm leading-relaxed text-pizarra sm:text-base">{r}</p>
-          </details>
-        ))}
-      </div>
+  <section aria-labelledby="preguntas-titulo" class="border-t-2 border-basalto bg-tiza">
+    <div class="revelar mx-auto max-w-page px-4 py-16 md:px-6 lg:py-24">
+      <SeccionTitulo
+        id="preguntas-titulo"
+        antetitulo="Ayuda para dueños"
+        titulo="Preguntas de dueños"
+        bajada="Dudas reales antes de registrarte: ¿sin contratos?, ¿sin instalar?, ¿funciona con varias sedes?, ¿cómo cobro?, ¿qué pasa con reservas pendientes? Aquí están las respuestas."
+      />
+      <PreguntasTactiles preguntas={preguntas} />
     </div>
   </section>
+
+  <BandaCierre
+    id="empezar-titulo"
+    antetitulo="Empieza hoy"
+    titulo="Recibe reservas de tus canchas"
+    bajada="Crea tu cuenta, escríbenos para activarla y registra tu complejo. Sin contratos de permanencia."
+    primario={{ href: "/register?plan=dueno", texto: "Crear mi cuenta" }}
+    secundario={{ href: whatsapp, texto: "Escribir por WhatsApp", externo: true }}
+  />
 </BaseLayout>

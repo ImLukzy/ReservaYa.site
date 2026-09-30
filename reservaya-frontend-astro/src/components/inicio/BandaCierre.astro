@@ -1,0 +1,34 @@
+---
+// Banda de cierre como la de Universo (spec 47): fondo césped hondo, texto centrado,
+// acción principal en amarillo (basalto encima 7.96:1) y una secundaria blanca.
+import Button from "../ui/Button.astro";
+import SeccionTitulo from "./SeccionTitulo.astro";
+
+interface Accion {
+  href: string;
+  texto: string;
+  externo?: boolean;
+}
+
+interface Props {
+  id: string;
+  antetitulo: string;
+  titulo: string;
+  bajada: string;
+  primario: Accion;
+  secundario?: Accion;
+}
+
+const { id, antetitulo, titulo, bajada, primario, secundario } = Astro.props;
+const externo = (a: Accion) => (a.externo ? { target: "_blank", rel: "noopener" } : {});
+---
+
+<section aria-labelledby={id} class="border-t-2 border-basalto bg-cesped-hondo">
+  <div class="revelar mx-auto max-w-page px-4 py-16 md:px-6 lg:py-24">
+    <SeccionTitulo id={id} tono="oscuro" antetitulo={antetitulo} titulo={titulo} bajada={bajada} />
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href={primario.href} {...externo(primario)} class="btn-tactil min-h-11 bg-sol px-6 text-sm font-bold text-basalto hover:bg-sol-suave">{primario.texto}</a>
+      {secundario && <Button href={secundario.href} variante="secundario" {...externo(secundario)}>{secundario.texto}</Button>}
+    </div>
+  </div>
+</section>
