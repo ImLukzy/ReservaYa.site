@@ -7,7 +7,7 @@ import { BOTON } from "../../lib/estilos";
 <section id="tablero" aria-labelledby="tablero-titulo" class="card-tactil overflow-hidden shadow-dura bg-tiza border-2 border-basalto">
   <div class="flex flex-wrap items-end justify-between gap-x-4 border-b-2 border-basalto px-4 pt-3 sm:px-6">
     <div class="flex items-center gap-2 pb-3">
-      <span class="h-2 w-2 rounded-full bg-cesped motion-safe:animate-pulse" aria-hidden="true"></span>
+      <span class="h-2 w-2 rounded-full bg-cesped motion-safe:pulso-inicial" aria-hidden="true"></span>
       <h2 id="tablero-titulo" data-titulo class="font-display text-2xl font-black tracking-tight text-basalto">Libres hoy</h2>
     </div>
     <div role="tablist" aria-label="Hora de inicio" class="-mb-px flex">
@@ -28,7 +28,7 @@ import { BOTON } from "../../lib/estilos";
   <div id="tablero-panel" data-panel role="tabpanel" aria-labelledby="tablero-titulo" class="overflow-hidden sm:min-h-0 sm:h-auto">
     <ul aria-hidden="true">
       {[0, 1, 2].map(() => (
-        <li class="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6">
+        <li class="grid min-h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:min-h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6">
           <span class="esqueleto hidden h-9 w-16 rounded-control sm:block"></span>
           <span class="esqueleto h-6 w-12"></span>
           <span class="esqueleto h-5 w-3/4"></span>
