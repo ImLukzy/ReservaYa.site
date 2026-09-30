@@ -18,6 +18,7 @@ Diseño nuevo, secciones nuevas, imágenes, precios o cifras que no estén ya en
 | T2 | `pages/duenos.astro`, `components/Planes.astro` |
 | T3 | `pages/torneos.astro`, `pages/completar-cuadro.astro`, `pages/sortear.astro` |
 | T4 | `pages/canchas.astro` (cabecera y estado vacío), `pages/ayuda.astro` |
+| T5 | Lukas 03:14: «añadir más texto a las secciones de preguntas en todas». `pages/index.astro:51` (5 preguntas), `pages/duenos.astro:28` (5), `pages/sortear.astro:9` (4): cada una llega a 8 preguntas con respuestas LARGAS de 3 a 5 frases (60 a 90 palabras; Lukas 03:35: «tiene que agregar respuestas más largas»); en el inicio vuelven «¿En qué distritos hay canchas?» y «¿Necesito pagar en la página?». Implementa Oscar |
 
 ## 4. Reglas de redacción
 - **Verdad antes que venta:** solo se afirma lo que el producto hace hoy; cada afirmación nueva debe poder señalarse en el código (página, componente o endpoint). Nada de cifras, reseñas, premios ni «el mejor». Si algo depende del dueño de la cancha (pago, cancelación), se dice así.
@@ -38,6 +39,7 @@ Diseño nuevo, secciones nuevas, imágenes, precios o cifras que no estén ya en
 - [x] Borrador de textos (T1–T4) con fuentes → revisión god.
 - [x] T1 · [x] T2 · [x] T3 · [x] T4 aplicados.
 - [x] Gates y §7.
+- [x] T5: preguntas ampliadas en inicio, dueños y sortear.
 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
@@ -46,3 +48,4 @@ Diseño nuevo, secciones nuevas, imágenes, precios o cifras que no estén ya en
 | 2026-09-30 | A2 | ✅ | borrador v2 (`hive/agents/worker-s45-textos/textos.md`) revisado por god: fuera voseo, «efectivo, Yape, tarjeta», «Cancela cuando quieras», «somos rápidos», «sin choques», «44 distritos», «cercano»; «hoy o mañana» confirmado en `index.astro:19` |
 | 2026-09-30 | A3 | ✅ | Playwright god: `/` y `/canchas` a 360/768/1440/1745 → 0 px; redactora: 21/21 páginas×anchos |
 | 2026-09-30 | Pendiente | — | preguntas del inicio: se reemplazaron las 5 antiguas en vez de sumarse (faltan «¿En qué distritos hay canchas?» y «¿Necesito pagar en la página?»); frases de apoyo en los 3 enlaces de «Para el resto del partido» |
+| 2026-09-30 | T5 | ✅ | Oscar: 8/8/8 preguntas en index/duenos/sortear, 4 frases y ~50 palabras por respuesta (por debajo de las 60 pedidas: no se rellenó sin hechos); vuelven «¿En qué distritos…?» y «¿Necesito pagar en la página?». god corrigió 1 frase falsa («muestra los distritos que tienen opciones» → el buscador incluye los 29, `index.astro:13`). astro check 0 · build 17 páginas · 360 px 0 overflow, 8/8 details abren (Oscar) |
