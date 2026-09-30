@@ -16,7 +16,7 @@
 **Resultado esperado:** las preguntas de portada, `/duenos`, `/sortear` y `/ayuda` se comportan como las de Universo, sin `framer-motion`: `<details name>` nativo (exclusivo), `::details-content` con `interpolate-size` y el resorte de la spec 46 en los dos sentidos, y un `.revelar` de una sola vez con IntersectionObserver.
 
 ## 2. Fuera de alcance
-- El resto de secciones sigue con `seccion-entra`. Textos de las preguntas.
+- Textos de las preguntas. (Ampliación aprobada por Lukas el mismo día: `.revelar` pasa a todas las secciones y se retira `seccion-entra`; ver §8.)
 - Navegadores sin `interpolate-size` o sin `details[name]`: abren de golpe y permiten varias abiertas (comportamiento nativo, sin romper nada).
 
 ## 3. Archivos afectados
@@ -60,3 +60,12 @@
 | 2026-09-30 | A6 CLS / desborde | ✅ | `cls.mjs --landing` 10 páginas × 375/1440: 3 pasadas 20/20, máximo 0.0005. 16 páginas a 375 px: 0 px, 0 errores |
 | 2026-09-30 | A7 Regresión | ✅ | `qa47` 20/20, `qa47b` 0 ✗, `qa47c` 0 ✗ (las pruebas de apertura usan ahora la 2.ª pregunta, porque la 1.ª ya viene abierta) |
 | 2026-09-30 | Capturas | ✅ | Sección de preguntas de la portada a 1280 y 375, comparada con la de Universo |
+
+## 8. Ampliación — `.revelar` en todas las secciones (Lukas: «sí»)
+`.revelar` va en el contenedor interior de cada sección (el fondo de color queda fijo, como el `Reveal` de Universo): portada (Cómo funciona, deportes, distritos, resto del partido), `/duenos` (módulos), `Planes.astro` y `BandaCierre.astro`. `seccion-entra` y su `@keyframes` salen de `motion.css` (0 usos).
+
+| Fecha | Criterio | Resultado | Evidencia |
+|---|---|---|---|
+| 2026-09-30 | Revelar | ✅ | `qa50b.mjs`: `/` 6 bloques (1280 y 375) y `/duenos` 4 bloques ocultos al cargar y visibles tras recorrer la página; `/torneos` 1 bloque visible desde el inicio (cabe en pantalla) |
+| 2026-09-30 | CLS / desborde / regresión | ✅ | 10 páginas × 375/1440: 3 pasadas 20/20, máximo 0.0006; 16 páginas a 375 px: 0 px; `qa50` 22/22, `qa47`/`qa47b`/`qa47c` 0 ✗ |
+| 2026-09-30 | Gates de commit | ✅ / ⚠️ | astro check 0; panel typecheck 0, lint 0 errores, test 40/40, build OK; motion 6/6. `db:check` falla (147: las 19 tablas del snapshot no aparecen en `public` de la BD del `.env`), previo y ajeno a este cambio (no toca BD ni migraciones) |
