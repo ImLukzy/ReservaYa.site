@@ -27,13 +27,34 @@ export default async function Page() {
     complejosPromise,
   ]);
 
+  const canchasCronograma = canchas.map(({ id, nombre, precioPorHora, complejoId }) => ({
+    id,
+    nombre,
+    precioPorHora,
+    complejoId,
+  }));
+  const reservasCronograma = reservas.map((reserva) => ({
+    id: reserva.id,
+    codigo: reserva.codigo,
+    canchaId: reserva.canchaId,
+    fecha: reserva.fecha,
+    horaInicio: reserva.horaInicio,
+    horaFin: reserva.horaFin,
+    estado: reserva.estado,
+    total: reserva.total,
+    notas: reserva.notas,
+    cancha: { nombre: reserva.cancha.nombre },
+    usuario: reserva.usuario ? { nombre: reserva.usuario.nombre } : null,
+  }));
+  const complejosCronograma = complejos.map(({ id, nombre }) => ({ id, nombre }));
+
   return (
     <>
       <AvisoCarga errores={carga.errores} />
       <CronogramaView
-        canchas={canchas}
-        reservasIniciales={reservas}
-        complejos={complejos}
+        canchas={canchasCronograma}
+        reservasIniciales={reservasCronograma}
+        complejos={complejosCronograma}
         fechaInicial={new Date().toISOString().slice(0, 10)}
       />
     </>

@@ -3,14 +3,18 @@ import { getSession } from '@/lib/session'
 import * as api from '@/lib/api'
 import { Card } from '@/components/ui/Card'
 import { PerfilForm } from '@/components/features/PerfilForm'
+import { crearCarga } from '@/lib/carga'
+import { AvisoCarga } from '@/components/ui/AvisoCarga'
 
 export const dynamic = 'force-dynamic'
 
 export default async function PerfilPage() {
+  const carga = crearCarga()
+  const reservasPromise = carga.de(api.getReservas(), [], 'tus reservas')
   const session = await getSession()
   if (!session) return null
+  const reservas = await reservasPromise
 
-  const reservas = await api.getReservas()
   const confirmadas = reservas.filter((reserva) => reserva.estado === 'CONFIRMADA').length
   const completadas = reservas.filter((reserva) => reserva.estado === 'COMPLETADA').length
   const iniciales = session.nombre
@@ -22,6 +26,7 @@ export default async function PerfilPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
+      <AvisoCarga errores={carga.errores} />
       <div className="mb-8 border-b border-cal pb-4">
         <p className="font-display text-xs font-bold text-cesped-hondo">Mi perfil</p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-basalto">Tu perfil. Tu juego.</h1>

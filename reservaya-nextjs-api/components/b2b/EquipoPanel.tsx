@@ -5,6 +5,7 @@ import { CircleHelp, Plus, Trash2, Users, X } from 'lucide-react';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { cn } from '@/lib/utils';
+import type { EquipoMiembroResumen } from '@/lib/b2b-api';
 
 interface ComplejoOpt {
   id: string;
@@ -19,15 +20,7 @@ interface Miembro {
   activo: boolean;
 }
 
-interface MiembroApi {
-  id: string;
-  complejoId: string;
-  rolSede: string;
-  activo: boolean;
-  usuario: { id: string; nombre: string; email: string; rol: string; activo: boolean } | null;
-}
-
-function mapear(m: MiembroApi): Miembro {
+function mapear(m: EquipoMiembroResumen): Miembro {
   return {
     id: m.id,
     complejoId: m.complejoId,
@@ -37,11 +30,17 @@ function mapear(m: MiembroApi): Miembro {
   };
 }
 
-export function EquipoPanel() {
-  const [complejos, setComplejos] = useState<ComplejoOpt[]>([]);
-  const [complejoId, setComplejoId] = useState('');
-  const [miembros, setMiembros] = useState<Miembro[]>([]);
-  const [cargando, setCargando] = useState(true);
+export function EquipoPanel({
+  complejosIniciales,
+  miembrosIniciales,
+}: {
+  complejosIniciales: ComplejoOpt[];
+  miembrosIniciales: EquipoMiembroResumen[];
+}) {
+  const complejos = complejosIniciales;
+  const [complejoId, setComplejoId] = useState(complejosIniciales[0]?.id ?? '');
+  const [miembros, setMiembros] = useState<Miembro[]>(() => miembrosIniciales.map(mapear));
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
   const [guardando, setGuardando] = useState(false);
@@ -61,7 +60,7 @@ export function EquipoPanel() {
       const res = await fetch(`/api/equipo?complejoId=${cid}`, { credentials: 'include', cache: 'no-store' });
       const body = await res.json().catch(() => null);
       if (!res.ok) throw new Error(body?.error ?? `Error ${res.status}`);
-      const lista: MiembroApi[] = Array.isArray(body?.equipo) ? body.equipo : [];
+      const lista: EquipoMiembroResumen[] = Array.isArray(body?.equipo) ? body.equipo : [];
       setMiembros(lista.map(mapear));
     } catch {
       setError('No se pudo cargar el equipo. Revisa tu conexión e inténtalo de nuevo.');
@@ -70,27 +69,6 @@ export function EquipoPanel() {
       setCargando(false);
     }
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/api/complejos', { credentials: 'include', cache: 'no-store' });
-        const body = await res.json().catch(() => null);
-        if (!res.ok) throw new Error(body?.error ?? `Error ${res.status}`);
-        const lista: ComplejoOpt[] = Array.isArray(body?.complejos) ? body.complejos : [];
-        setComplejos(lista.map((c) => ({ id: c.id, nombre: c.nombre })));
-        if (lista.length > 0) {
-          setComplejoId(lista[0].id);
-          void cargar(lista[0].id);
-        } else {
-          setCargando(false);
-        }
-      } catch {
-        setError('No se pudo cargar el equipo. Revisa tu conexión e inténtalo de nuevo.');
-        setCargando(false);
-      }
-    })();
-  }, [cargar]);
 
   useEffect(() => {
     if (!toast && !claveTemporal) return;
