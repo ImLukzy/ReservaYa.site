@@ -28,10 +28,25 @@ export interface MovimientoResumen {
   creadoEn: string;
 }
 
+export interface EquipoMiembroResumen {
+  id: string;
+  complejoId: string;
+  rolSede: string;
+  activo: boolean;
+  usuario: { id: string; nombre: string; email: string; rol: string; activo: boolean } | null;
+}
+
 // Lanza ApiError si la API falla; las páginas lo muestran con crearCarga + <AvisoCarga />.
 export async function getComplejos(): Promise<ComplejoResumen[]> {
   const data = await getJson<{ complejos: ComplejoResumen[] }>('/api/complejos');
   return data.complejos ?? [];
+}
+
+export async function getEquipo(complejoId: string): Promise<EquipoMiembroResumen[]> {
+  const data = await getJson<{ equipo: EquipoMiembroResumen[] }>(
+    `/api/equipo?complejoId=${encodeURIComponent(complejoId)}`
+  );
+  return data.equipo ?? [];
 }
 
 // Filas guardadas del complejo (y de sus canchas); vacío = rige el horario por defecto de la API.

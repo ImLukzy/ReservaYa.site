@@ -174,9 +174,15 @@ export function GestionCanchasPanel({
         : { complejoId: form.complejoId === '' ? null : form.complejoId }),
     }
     try {
-      const id = editando ? editando.id : (await createCancha(input)).cancha.id
-      if (editando) await updateCancha(id, input)
-      if (archivo) await subirImagen(id, archivo)
+      if (editando) {
+        await Promise.all([
+          updateCancha(editando.id, input),
+          ...(archivo ? [subirImagen(editando.id, archivo)] : []),
+        ])
+      } else {
+        const id = (await createCancha(input)).cancha.id
+        if (archivo) await subirImagen(id, archivo)
+      }
     } catch (error) {
       setLoading(false)
       setError(error instanceof Error ? error.message : 'No se pudo guardar la cancha')

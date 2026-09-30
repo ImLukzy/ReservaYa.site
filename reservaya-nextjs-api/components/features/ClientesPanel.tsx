@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { HistorialUsuarioBtn } from '@/components/features/HistorialUsuarioBtn';
@@ -15,6 +15,10 @@ interface SancionActiva {
   id: string;
   nivel: NivelSancion;
   motivo: string;
+}
+
+interface SancionApi extends SancionActiva {
+  usuarioId: string;
 }
 
 export function ClientesPanel({
@@ -33,6 +37,7 @@ export function ClientesPanel({
   const [activas, setActivas] = useState<SancionActiva[]>([]);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
+  const sancionesPorComplejo = useRef(new Map<string, SancionApi[]>());
 
   const lista = iniciales.filter((c) => {
     const t = q.trim().toLowerCase();
@@ -53,16 +58,21 @@ export function ClientesPanel({
 
   async function cargarActivas(usuarioId: string, cid: string) {
     try {
-      const res = await fetch(`/api/sanciones?complejoId=${cid}&soloActivas=true`, {
-        credentials: 'include',
-      });
-      const body = await res.json().catch(() => null);
-      if (!res.ok) return;
-      const arr = Array.isArray(body?.sanciones) ? body.sanciones : [];
+      let arr = sancionesPorComplejo.current.get(cid);
+      if (!arr) {
+        const res = await fetch(`/api/sanciones?complejoId=${cid}&soloActivas=true`, {
+          credentials: 'include',
+        });
+        const body = await res.json().catch(() => null);
+        if (!res.ok) return;
+        const cargadas: SancionApi[] = Array.isArray(body?.sanciones) ? body.sanciones : [];
+        sancionesPorComplejo.current.set(cid, cargadas);
+        arr = cargadas;
+      }
       setActivas(
         arr
-          .filter((s: { usuarioId: string }) => s.usuarioId === usuarioId)
-          .map((s: { id: string; nivel: NivelSancion; motivo: string }) => ({
+          .filter((s) => s.usuarioId === usuarioId)
+          .map((s) => ({
             id: s.id,
             nivel: s.nivel,
             motivo: s.motivo,
@@ -95,6 +105,7 @@ export function ClientesPanel({
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) throw new Error(body?.error ?? `Error ${res.status}`);
+      sancionesPorComplejo.current.delete(complejoId);
       setSancionando(null);
       router.refresh();
     } catch (e) {
@@ -114,6 +125,9 @@ export function ClientesPanel({
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) throw new Error(body?.error ?? `Error ${res.status}`);
+      for (const [cid, sanciones] of sancionesPorComplejo.current) {
+        sancionesPorComplejo.current.set(cid, sanciones.filter((s) => s.id !== id));
+      }
       setActivas((prev) => prev.filter((s) => s.id !== id));
       router.refresh();
     } catch (e) {

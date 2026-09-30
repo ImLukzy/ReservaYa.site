@@ -13,13 +13,23 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { codigoMostrado, formatFecha, formatHora } from '@/lib/utils';
-import type { Cancha, EstadoReserva, Reserva } from '@/lib/api';
+import type { Cancha, EstadoReserva, Reserva, UsuarioReserva } from '@/lib/api';
 import type { ComplejoResumen } from '@/lib/b2b-api';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 
 type Vista = 'dia' | 'semana' | 'mes' | 'horarios';
 type FiltroEstado = 'TODOS' | EstadoReserva;
+
+export type CanchaCronograma = Pick<Cancha, 'id' | 'nombre' | 'precioPorHora' | 'complejoId'>;
+export type ReservaCronograma = Pick<
+  Reserva,
+  'id' | 'codigo' | 'canchaId' | 'fecha' | 'horaInicio' | 'horaFin' | 'estado' | 'total' | 'notas'
+> & {
+  cancha: Pick<Cancha, 'nombre'>;
+  usuario: Pick<UsuarioReserva, 'nombre'> | null;
+};
+export type ComplejoCronograma = Pick<ComplejoResumen, 'id' | 'nombre'>;
 
 const ESTADOS: { id: FiltroEstado; label: string }[] = [
   { id: 'TODOS', label: 'Todos' },
@@ -32,11 +42,11 @@ const ESTADOS: { id: FiltroEstado; label: string }[] = [
 const HORA_PX = 52;
 const HORAS = Array.from({ length: 24 }, (_, h) => h); // 12:00 a.m. – 11:00 p.m.
 
-function esBloqueo(r: Reserva): boolean {
+function esBloqueo(r: ReservaCronograma): boolean {
   return (r.notas ?? '').includes('[BLOQUEO]');
 }
 
-function diaISO(r: Reserva): string {
+function diaISO(r: ReservaCronograma): string {
   return String(r.fecha).slice(0, 10);
 }
 
@@ -95,7 +105,7 @@ async function leerError(res: Response): Promise<string> {
   return body?.error ?? `Error ${res.status}`;
 }
 
-function estiloBloque(r: Reserva): string {
+function estiloBloque(r: ReservaCronograma): string {
   if (esBloqueo(r)) return 'border-l-4 border-double border-alerta bg-alerta-suave text-alerta-hondo';
   switch (r.estado) {
     case 'CONFIRMADA':
@@ -109,7 +119,7 @@ function estiloBloque(r: Reserva): string {
   }
 }
 
-function badgeTextoEstado(r: Reserva): string {
+function badgeTextoEstado(r: ReservaCronograma): string {
   if (esBloqueo(r)) return '⛔ BLOQUEO';
   switch (r.estado) {
     case 'CONFIRMADA':
@@ -133,21 +143,21 @@ export function CronogramaView({
   complejos,
   fechaInicial,
 }: {
-  canchas: Cancha[];
-  reservasIniciales: Reserva[];
-  complejos: ComplejoResumen[];
+  canchas: CanchaCronograma[];
+  reservasIniciales: ReservaCronograma[];
+  complejos: ComplejoCronograma[];
   fechaInicial?: string;
 }) {
   const router = useRouter();
   const hoyISO = new Date().toISOString().slice(0, 10);
-  const [reservas, setReservas] = useState<Reserva[]>(reservasIniciales);
+  const [reservas, setReservas] = useState<ReservaCronograma[]>(reservasIniciales);
   const [fecha, setFecha] = useState(fechaInicial ?? hoyISO);
   const [vista, setVista] = useState<Vista>('dia');
   const [fEstado, setFEstado] = useState<FiltroEstado>('TODOS');
   const [fComplejo, setFComplejo] = useState('todos');
   const [fCancha, setFCancha] = useState('todas');
   const [mostrarBloqueos, setMostrarBloqueos] = useState(true);
-  const [detalle, setDetalle] = useState<Reserva | null>(null);
+  const [detalle, setDetalle] = useState<ReservaCronograma | null>(null);
   const [modal, setModal] = useState<null | 'nueva' | 'bloqueo'>(null);
   const [accionando, setAccionando] = useState(false);
   const [error, setError] = useState('');
@@ -325,7 +335,7 @@ export function CronogramaView({
   }, [reservas, mostrarBloqueos, fEstado, fCancha, fComplejo, idsCanchasVisibles]);
 
   const porDia = useMemo(() => {
-    const map = new Map<string, Reserva[]>();
+    const map = new Map<string, ReservaCronograma[]>();
     for (const r of filtradas) {
       const d = diaISO(r);
       const arr = map.get(d);
@@ -383,7 +393,7 @@ export function CronogramaView({
     router.refresh();
   }
 
-  async function cambiarEstado(r: Reserva, estado: EstadoReserva) {
+  async function cambiarEstado(r: ReservaCronograma, estado: EstadoReserva) {
     setAccionando(true);
     setError('');
     try {
@@ -481,7 +491,7 @@ export function CronogramaView({
         } else {
           await recargar();
           const listaRes = await fetch('/api/reservas', { credentials: 'include', cache: 'no-store' });
-          const listaBody: { reservas?: Reserva[] } | null = await listaRes.json().catch(() => null);
+          const listaBody: { reservas?: ReservaCronograma[] } | null = await listaRes.json().catch(() => null);
           const hallada = listaBody?.reservas?.find(
             (r) => r.canchaId === mCancha && diaISO(r) === mFecha && r.horaInicio === ini && (r.notas ?? '').includes('[BLOQUEO]')
           );
