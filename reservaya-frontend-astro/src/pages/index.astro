@@ -61,9 +61,9 @@ const preguntas = [
         <p class="mt-3 max-w-md text-lg text-tiza/75">Elige la hora, mira el precio y reserva en un minuto.</p>
 
         <form action="/canchas" method="get" class="card-tactil mt-6 grid grid-cols-1 gap-3 p-4 shadow-dura sm:grid-cols-2 lg:grid-cols-1 lg:p-5" role="search" aria-label="Buscar canchas">
-          <Select id="buscar-distrito" name="distrito" etiqueta="Distrito" etiquetaOculta opciones={distritos} />
-          <Select id="buscar-tipo" name="tipo" etiqueta="Deporte" etiquetaOculta opciones={tipos} />
-          <Select id="buscar-dia" name="fecha" etiqueta="Día" etiquetaOculta opciones={dias} />
+          <Select id="buscar-distrito" name="distrito" etiqueta="Distrito" opciones={distritos} />
+          <Select id="buscar-tipo" name="tipo" etiqueta="Deporte" opciones={tipos} />
+          <Select id="buscar-dia" name="fecha" etiqueta="Día" opciones={dias} />
           <input id="buscar-hora" type="hidden" name="hora" value="" />
           <Button type="submit" class="lg:mt-1">Buscar canchas</Button>
         </form>
@@ -98,7 +98,7 @@ const preguntas = [
     }
   </style>
 
-  <section id="como-funciona" aria-labelledby="como-titulo" class="border-y-2 border-basalto bg-tiza">
+  <section id="como-funciona" aria-labelledby="como-titulo" class="border-y-2 border-basalto bg-tiza seccion-entra">
     <div class="mx-auto max-w-page px-4 py-12 md:px-6 lg:py-16">
       <h2 id="como-titulo" class="text-2xl font-bold lg:text-3xl">Cómo funciona</h2>
       <div class="mt-6 grid gap-6 lg:grid-cols-2 lg:gap-10">
