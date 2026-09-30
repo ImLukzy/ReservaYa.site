@@ -167,11 +167,11 @@ body {
 }
 
 .auth-home-link {
-  color: var(--niebla);
+  color: var(--pizarra);
 }
 
 .auth-home-link:hover {
-  color: var(--tiza);
+  color: var(--basalto);
 }
 
 ::selection {

@@ -64,7 +64,7 @@ export default function RegisterPage() {
         </div>
 
         {error && (
-          <div className="bg-rose-500/10 border border-rose-400/25 text-rose-300 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div className="mb-6 rounded-lg border border-error bg-error-suave px-4 py-3 text-sm text-error">
             {error}
           </div>
         )}
@@ -82,7 +82,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="auth-label block text-sm font-medium mb-1">Nacimiento (no editable)</label>
               <input
