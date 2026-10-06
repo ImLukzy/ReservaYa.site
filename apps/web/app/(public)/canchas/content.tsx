@@ -1,0 +1,108 @@
+"use client";
+import { useEffect } from "react";
+import { Select } from "@/components/ui/Select";
+import { Input as Field } from "@/components/ui/Input";
+import Icon from "@/components/public/ui/Icon";
+import BandaCierre from "@/components/public/inicio/BandaCierre";
+import { DISTRITOS, TIPOS } from "@/lib/public/arequipa";
+import { APERTURA, ULTIMA, etiquetaHora } from "@/lib/public/horario";
+import { APP } from "@/lib/public/entorno";
+import { BOTON } from "@/lib/public/estilos";
+const distritos = [{ valor: "", etiqueta: "Todo Arequipa" }, ...DISTRITOS.map((d) => ({ valor: d, etiqueta: d }))];
+const tipos = [{ valor: "", etiqueta: "Todo deporte" }, ...TIPOS];
+const dias = [{ valor: "hoy", etiqueta: "Hoy" }, { valor: "manana", etiqueta: "Mañana" }];
+const horas = Array.from({ length: ULTIMA - APERTURA + 1 }, (_, i) => ({ valor: String(APERTURA + i), etiqueta: etiquetaHora(APERTURA + i) }));
+const orden = [
+    { valor: "precio", etiqueta: "Menor precio" },
+    { valor: "precio-desc", etiqueta: "Mayor precio" },
+    { valor: "valoracion", etiqueta: "Mejor valoradas" },
+];
+import { iniciarCanchas } from "@/lib/public/scripts/canchas";
+export default function PublicContent() {
+    useEffect(() => iniciarCanchas(), []);
+    return (<div className="pantallas pantallas-canchas">
+
+
+    <>
+  <div className="pantalla">
+  <section className="fondo-verde canchas-buscar">
+  <div className="mx-auto max-w-page px-4 pb-8 pt-8 md:px-6 lg:pt-12">
+    {/* Cifras debajo del título: su posición no depende del ancho de la fuente (CLS, spec 47). */}
+    <div className="grid gap-4">
+      <div>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-cesped/40 bg-cesped-suave px-3 py-1">
+            <span className="h-2 w-2 rounded-full bg-cesped pulso-inicial" aria-hidden="true"></span>
+            <span className="eyebrow text-cesped-hondo">Tablero en vivo</span>
+          </span>
+          <span className="eyebrow">Arequipa</span>
+        </div>
+        <h1 className="gigante mt-3">
+          Buscar canchas
+        </h1>
+        <p id="resumen" className="mt-2 min-h-14 text-base text-pizarra sm:text-lg lg:min-h-7">
+          Canchas libres en los 29 distritos. Filtra por deporte, día, hora y precio.
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-basalto">
+        <span className="inline-flex items-center rounded-full border border-cal bg-tiza px-3 py-1">{DISTRITOS.length} distritos</span>
+        <span className="inline-flex items-center rounded-full border border-cal bg-tiza px-3 py-1">{TIPOS.length} tipos de cancha</span>
+        <span className="inline-flex items-center rounded-full border border-cal bg-tiza px-3 py-1">Precios publicados</span>
+      </div>
+    </div>
+
+    <div className="card-tactil mt-6 bg-tiza p-4 shadow-suave-lg sm:p-5">
+      <form id="filtros" action="/canchas" method="get" role="search" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))]">
+        <Field apariencia="publica" id="f-q" name="q" type="search" etiqueta="Complejo o cancha" placeholder="Nombre" autoComplete="off" className="sm:col-span-2 lg:col-span-1"/>
+        <Select apariencia="publica" id="f-distrito" name="distrito" etiqueta="Distrito" opciones={distritos}/>
+        <Select apariencia="publica" id="f-tipo" name="tipo" etiqueta="Deporte" opciones={tipos}/>
+        <Select apariencia="publica" id="f-fecha" name="fecha" etiqueta="Día" opciones={dias}/>
+        <Select apariencia="publica" id="f-hora" name="hora" etiqueta="Hora" opciones={horas}/>
+        <noscript><button type="submit" className={BOTON.primario}>Buscar</button></noscript>
+      </form>
+    </div>
+  </div>
+  </section>
+
+  <section className="fondo-noche canchas-resultados" aria-labelledby="resumen">
+  <div className="mx-auto max-w-page px-4 pb-16 pt-6 md:px-6">
+    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <p className="eyebrow">Resultados y horarios libres</p>
+      <div className="flex items-center justify-end">
+        <Select apariencia="publica" id="f-orden" etiqueta="Ordenar por" opciones={orden} className="flex items-center gap-2 [&_label]:mb-0 [&_label]:text-xs [&_label]:font-bold [&_label]:text-pizarra"/>
+      </div>
+    </div>
+    <div className="card-tactil overflow-hidden p-0 shadow-suave">
+      <div className="hidden h-12 grid-cols-[4rem_4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] items-center gap-x-4 border-b border-cal bg-piedra px-6 eyebrow text-basalto sm:grid" aria-hidden="true">
+        <span></span><span>Hora</span><span>Complejo y cancha</span><span>Deporte y distrito</span><span className="text-right">Precio</span><span></span>
+      </div>
+      <ul id="resultados" aria-live="polite" aria-busy="true" className="[counter-reset:cancha]">
+        {[0, 1, 2, 3].map((index) => (<li className="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6" aria-hidden="true" key={index}>
+            <span className="esqueleto hidden h-9 w-16 rounded-full sm:block"></span><span className="esqueleto h-6 w-12"></span><span className="esqueleto h-5 w-3/4"></span><span className="esqueleto h-9 w-20 justify-self-end"></span>
+          </li>))}
+      </ul>
+    </div>
+  </div>
+  </section>
+  </div>
+
+  <BandaCierre id="canchas-cierre" foto="pichanga-sintetica" antetitulo="¿Te faltan jugadores?" titulo="Súmate a una pichanga" bajada="En Jugar encuentras partidos abiertos con cupos libres, armas equipos parejos y ves los torneos de tu complejo." primario={{ href: "/jugar#partidos", texto: "Ver partidos abiertos" }} secundario={{ href: "/ayuda", texto: "Cómo reservar" }}/>
+
+  <dialog id="opiniones" aria-labelledby="opiniones-titulo" className="card-tactil m-auto w-[min(32rem,calc(100%-2rem))] p-0 text-basalto backdrop:bg-velo motion-safe:transition-all overscroll-contain">
+    <div className="flex items-start justify-between gap-4 border-b border-cal/15 px-5 py-4">
+      <h2 id="opiniones-titulo" className="text-xl font-bold">Opiniones</h2>
+      <button type="button" data-cerrar className="btn-tactil flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cal bg-tiza text-pizarra hover:bg-piedra hover:text-basalto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped focus-visible:ring-offset-2" aria-label="Cerrar opiniones">
+        <Icon nombre="cerrar"/>
+      </button>
+    </div>
+    <ul id="opiniones-lista" className="max-h-[60vh] overflow-y-auto px-5 overscroll-contain"></ul>
+    <div className="border-t border-cal/15 px-5 py-4 text-sm text-pizarra">
+      ¿Jugaste aquí? Califica desde tu reserva completada.
+      <a href={`${APP}/dashboard/reservas`} className={`${BOTON.texto} text-sm`}>Ir a mis reservas</a>
+    </div>
+  </dialog>
+    </>
+
+
+
+    </div>);}

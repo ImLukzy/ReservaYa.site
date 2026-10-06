@@ -3,7 +3,7 @@ info:
   title: ReservaYa API — Contrato de Área Jugador y Vitrina Pública
   description: >
     Especificación OpenAPI de los contratos compartidos entre la landing pública
-    (reservaya-frontend-astro), el panel de usuario (reservaya-nextjs-api) y
+    (apps/web), el panel de usuario (apps/web) y
     el backend (.NET 10 ReservaFacil.Api) para el área del jugador bajo
     arquitectura desacoplada.
   version: 1.0.0

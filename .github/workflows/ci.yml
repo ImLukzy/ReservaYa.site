@@ -7,45 +7,32 @@ on:
     branches: [main]
 
 jobs:
-  frontend:
-    name: Frontend (Astro)
+  web:
+    name: Web pública y panel (Next.js)
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reservaya-frontend-astro
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: reservaya-frontend-astro/package-lock.json
-      - run: npm ci
-      - run: npx astro check
-      - run: npm run build
-      - name: Motion único (spec 46)
-        working-directory: .
-        run: node scripts/motion-tokens.mjs --check && node --test scripts/motion-tokens.test.mjs
-
-  panel:
-    name: Panel (Next.js)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: reservaya-nextjs-api
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: reservaya-nextjs-api/package-lock.json
+          cache-dependency-path: apps/web/package-lock.json
       - run: npm ci
       - name: Generar JWT_SECRET dinámico (solo build, no es un secreto real)
         run: echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - run: npm exec -- next typegen
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
+      - name: Arranque multiplataforma (contratos y ciclo de vida)
+        working-directory: .
+        run: node --test scripts/start-dev.test.mjs
+      - name: Motion único (spec 46)
+        working-directory: .
+        run: node scripts/motion-tokens.mjs --check && node --test scripts/motion-tokens.test.mjs
       - run: npm run build
 
   db-check:
@@ -53,15 +40,25 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: reservaya-nextjs-api
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: reservaya-nextjs-api/package-lock.json
+          cache-dependency-path: apps/web/package-lock.json
       - run: npm ci
       - run: npm run db:check
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  api:
+    name: API (.NET 10)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet build apps/api/ReservaFacil.Api.csproj --configuration Release

@@ -22,9 +22,9 @@ Lo que no se toca aunque parezca relacionado.
 ## 5. Criterios de aceptación
 | # | Criterio | Cómo se verifica | Umbral |
 |---|---|---|---|
-| A1 | Tipos panel | `npm --prefix reservaya-nextjs-api run typecheck` | 0 errores |
-| A2 | Lint panel | `npm --prefix reservaya-nextjs-api run lint` | 0 errores |
-| A3 | Astro | `astro check` + `astro build` | 0 errores |
+| A1 | Tipos web | `npm --prefix apps/web run typecheck` | 0 errores |
+| A2 | Lint web | `npm --prefix apps/web run lint` | 0 errores |
+| A3 | Build API | `dotnet build apps/api/ReservaFacil.Api.csproj` | 0 errores |
 | A4 | Comportamiento | "<pasos> → <resultado observable>" | pasa |
 
 ## 6. Checklist

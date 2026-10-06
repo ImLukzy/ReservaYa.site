@@ -1,0 +1,462 @@
+@import "tailwindcss";
+@import "./public.css";
+
+:root {
+  /* Paleta única verde (spec 53, enriquecida en spec 54). Neutros con tinte verde;
+     amarillo y rojo solo comunican estado. */
+  --sillar: #f5f8f6;
+  --piedra: #ebf1ed;
+  --tiza: #ffffff;
+  --cal: #dde6e0;
+  --borde: #7a8e81;
+  --basalto: #14261c;
+  --pizarra: #4d5f55;
+  --grafito: #0b2117;
+  --niebla: #bdd0c3;
+  --cesped: #17804a;
+  --cesped-hover: #126b3d;
+  --cesped-hondo: #0f5434;
+  --cesped-suave: #e6f4ec;
+  /* Verde vivo (spec 54, parentesco): acento de CTA, palabra destacada, chips y precios.
+     Siempre con texto oscuro encima (8.39:1 con cancha-noche); nunca con texto blanco (2.3:1). */
+  --cesped-vivo: #22c55e;
+  /* Reflector = verde vivo: texto y detalles sobre noche o fotos con velo (8.39:1 sobre noche). */
+  --reflector: var(--cesped-vivo);
+  /* Noche de cancha: verde casi negro, fondo del sitio público y de las escenas con foto. */
+  --cancha-noche: #06120a;
+  /* Blanco fijo: texto sobre fotos con velo. No cambia con el tema oscuro público (tiza sí). */
+  --blanco: #ffffff;
+  --sol: #b97a10;
+  --sol-hondo: #805d0f;
+  --sol-suave: #fff5dc;
+  --alerta: var(--sol);
+  --alerta-suave: var(--sol-suave);
+  --alerta-hondo: var(--sol-hondo);
+  --error: #b42318;
+  --error-hondo: #912018;
+  --error-suave: #fdecea;
+  --noche: var(--grafito);
+  --cielo: var(--cesped-suave);
+  --cielo-suave: var(--cesped-suave);
+  --cielo-hondo: var(--cesped-hondo);
+  --background: var(--sillar);
+  --foreground: var(--basalto);
+  --accent: var(--cesped);
+  --accent-hover: var(--cesped-hover);
+  --accent-neon: var(--cesped-suave);
+  --accent-warn: var(--sol);
+  --sidebar: var(--noche);
+  --border-soft: var(--cal);
+  --velo: color-mix(in srgb, var(--grafito) 55%, transparent);
+  /* Sombras suaves teñidas de verde oscuro: elevación, nunca contorno. */
+  --tinte-sombra: 11 33 23;
+  --sombra-suave-sm: 0 1px 2px rgb(var(--tinte-sombra) / 0.06), 0 1px 3px rgb(var(--tinte-sombra) / 0.06);
+  --sombra-suave: 0 2px 4px -1px rgb(var(--tinte-sombra) / 0.06), 0 8px 20px -6px rgb(var(--tinte-sombra) / 0.12);
+  --sombra-suave-lg: 0 4px 8px -2px rgb(var(--tinte-sombra) / 0.06), 0 20px 44px -12px rgb(var(--tinte-sombra) / 0.2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sillar: var(--sillar);
+  --color-piedra: var(--piedra);
+  --color-tiza: var(--tiza);
+  --color-cal: var(--cal);
+  --color-borde: var(--borde);
+  --color-basalto: var(--basalto);
+  --color-pizarra: var(--pizarra);
+  --color-grafito: var(--grafito);
+  --color-niebla: var(--niebla);
+  --color-cesped: var(--cesped);
+  --color-cesped-hover: var(--cesped-hover);
+  --color-cesped-hondo: var(--cesped-hondo);
+  --color-cesped-suave: var(--cesped-suave);
+  --color-mar: var(--cesped);
+  --color-mar-suave: var(--cesped-suave);
+  --color-miel: var(--cesped);
+  --color-miel-suave: var(--cesped-suave);
+  --color-lima: var(--cesped);
+  --color-lima-suave: var(--cesped-suave);
+  --color-arcilla: var(--cesped);
+  --color-arcilla-suave: var(--cesped-suave);
+  --color-losa: var(--cesped);
+  --color-losa-suave: var(--cesped-suave);
+  --color-sol: var(--sol);
+  --color-sol-hondo: var(--sol-hondo);
+  --color-sol-suave: var(--sol-suave);
+  --color-alerta: var(--alerta);
+  --color-alerta-suave: var(--alerta-suave);
+  --color-alerta-hondo: var(--alerta-hondo);
+  --color-error: var(--error);
+  --color-error-hondo: var(--error-hondo);
+  --color-error-suave: var(--error-suave);
+  --color-velo: var(--velo);
+  --color-noche: var(--noche);
+  --color-cielo: var(--cielo);
+  --color-cielo-suave: var(--cielo-suave);
+  --color-cielo-hondo: var(--cielo-hondo);
+  --color-cesped-vivo: var(--cesped-vivo);
+  --color-reflector: var(--reflector);
+  --color-cancha-noche: var(--cancha-noche);
+  --color-blanco: var(--blanco);
+  --shadow-suave-sm: var(--sombra-suave-sm);
+  --shadow-suave: var(--sombra-suave);
+  --shadow-suave-lg: var(--sombra-suave-lg);
+  --radius-control: 10px;
+  --radius-surface: 16px;
+  --font-sans: var(--ff-instrument), system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  /* Spec 54: Instrument Sans para leer, Anybody para titulares, cifras y horas. */
+  --font-cuerpo: var(--font-sans);
+  --font-display: var(--ff-anybody), "Arial Narrow", system-ui, sans-serif;
+  /* Anybody llega a 900; Instrument Sans se queda en su máximo de 700. */
+  --font-weight-extrabold: 800;
+  --font-weight-black: 850;
+}
+
+/* Motion único, idéntico al de la landing (spec 46). */
+@theme static {
+  /* motion:inicio · generado por scripts/motion-tokens.mjs (spec 46); no editar a mano */
+  --ease-resorte: linear(0, 0.018, 0.065, 0.132, 0.212, 0.298, 0.386, 0.473, 0.555, 0.631, 0.7, 0.762, 0.815, 0.862, 0.901, 0.933, 0.959, 0.98, 0.996, 1.008, 1.017, 1.023, 1.026, 1.028, 1.028, 1.028, 1.026, 1.024, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.005, 1.004, 1.003, 1.002, 1);
+  --dur-resorte: 400ms;
+  --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-toque: 120ms;
+  --dur-entra: 180ms;
+  --default-transition-duration: var(--dur-toque);
+  --default-transition-timing-function: var(--ease-salida);
+  /* motion:fin */
+}
+
+/* motion:respaldo · sin linear() el resorte cae a la curva de salida */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-resorte: var(--ease-salida);
+  }
+}
+
+html {
+  font-size: 100%;
+  scroll-behavior: smooth;
+}
+
+.densidad-fija {
+  --spacing: 4px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  font-size: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--cesped-suave);
+  color: var(--basalto);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Foco verde global (nunca negro) */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--cesped);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cesped) 18%, transparent);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--cesped);
+  outline-offset: 2px;
+}
+
+@keyframes flash-green {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    border-color: var(--cal);
+  }
+  30% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--cesped) 25%, transparent);
+    border-color: var(--cesped);
+  }
+}
+
+.flash-green {
+  animation: flash-green 0.6s ease; /* motion: ambiental */
+}
+
+/* Scrollbars sutiles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cal) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--cal);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* =========================================================
+   RESERVAYA MOTION SYSTEM (compartido con Astro)
+   Solo transform/opacity/filter → 60fps.
+   ========================================================= */
+.btn-press {
+  transition: transform var(--dur-resorte) var(--ease-resorte), box-shadow var(--dur-toque) var(--ease-salida),
+    background-color var(--dur-toque) var(--ease-salida);
+}
+.btn-press:hover {
+  box-shadow: var(--sombra-suave);
+}
+.btn-press:active {
+  transform: scale(0.98);
+  box-shadow: var(--sombra-suave-sm);
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--tiza) 45%, transparent) 50%, transparent 60%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(120%);
+  transition: transform 0.7s ease; /* motion: ambiental */
+}
+.badge-live {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.badge-live::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: badge-ping 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* motion: ambiental */
+}
+@keyframes badge-ping {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--cesped) 55%, transparent); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-card-in {
+  from { opacity: 0; transform: translateY(48px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-backdrop-enter {
+  animation: modal-backdrop-in var(--dur-entra) var(--ease-salida) both;
+}
+.modal-card-enter {
+  animation: modal-card-in var(--dur-resorte) var(--ease-resorte) both;
+}
+@keyframes ticket-bump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+.ticket-bump {
+  animation: ticket-bump var(--dur-resorte) var(--ease-resorte);
+}
+.fly-dot {
+  position: fixed;
+  z-index: 90;
+  border-radius: 9999px;
+  pointer-events: none;
+  box-shadow: 0 6px 18px var(--cesped);
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after,
+  .badge-live::before,
+  .modal-backdrop-enter,
+  .modal-card-enter,
+  .ticket-bump {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Desplegables nativos en superficies oscuras (modales). Los navegadores
+   ignoran casi todo el CSS en la lista <option>: color-scheme: dark es el
+   mecanismo estandar para que la pinten oscura, con reglas explicitas de respaldo. */
+select.sel-dark {
+  color-scheme: dark;
+}
+select.sel-dark option,
+select.sel-dark optgroup {
+  background-color: var(--noche);
+  color: var(--tiza);
+}
+
+@layer components {
+  /* Superficies y controles del sistema verde (spec 53): borde fino, radio constante, sombra suave. */
+  .card-tactil {
+    background-color: var(--tiza);
+    border: 1px solid var(--cal);
+    box-shadow: var(--sombra-suave-sm);
+    border-radius: var(--radius-surface);
+  }
+  .card-dashed {
+    background-color: var(--tiza);
+    border: 1px dashed var(--borde);
+    border-radius: var(--radius-surface);
+  }
+  .btn-tactil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    box-shadow: var(--sombra-suave-sm);
+    transition: transform var(--dur-resorte) var(--ease-resorte), box-shadow var(--dur-toque) var(--ease-salida),
+      background-color var(--dur-toque) var(--ease-salida), border-color var(--dur-toque) var(--ease-salida);
+  }
+  .btn-tactil--claro {
+    border-color: var(--borde);
+    box-shadow: none;
+  }
+  .btn-tactil:hover {
+    box-shadow: var(--sombra-suave);
+  }
+  .btn-tactil--claro:hover {
+    border-color: var(--cesped);
+    box-shadow: none;
+  }
+  .btn-tactil:active {
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+  .searchbar-tactil {
+    display: flex;
+    height: 3rem;
+    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid var(--borde);
+    background-color: var(--tiza);
+    padding-left: 1rem;
+    padding-right: 0.375rem;
+    box-shadow: var(--sombra-suave-sm);
+  }
+  .searchbar-tactil:focus-within {
+    border-color: var(--cesped);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cesped) 18%, transparent);
+  }
+  .chip-tactil {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--cal);
+    background-color: var(--tiza);
+    padding: 0.5rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--basalto);
+    transition: background-color var(--dur-toque) var(--ease-salida), border-color var(--dur-toque) var(--ease-salida);
+  }
+  .chip-tactil:hover {
+    border-color: var(--cesped);
+    background-color: var(--cesped-suave);
+  }
+  /* Antetítulo (spec 54): en minúsculas de frase, sin espaciado decorativo; solo cuando aporta contexto. */
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--cesped-hondo);
+  }
+  .chip-tactil.active,
+  .chip-tactil[aria-selected="true"] {
+    border-color: var(--cesped);
+    background-color: var(--cesped);
+    color: var(--tiza);
+  }
+}
+
+/* Balance tipográfico nativo */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+p, li, dd {
+  text-wrap: pretty;
+}
+
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    opacity: 0;
+    overflow: clip;
+    transition: block-size var(--dur-resorte) var(--ease-salida), content-visibility var(--dur-resorte) allow-discrete,
+      opacity var(--dur-entra) var(--ease-salida);
+  }
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+details > summary::marker {
+  transition: transform var(--dur-resorte) var(--ease-resorte);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details::details-content,
+  details > summary::marker {
+    transition: none;
+  }
+}
+
