@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import DashboardLoading from './loading';
 import { requireAuth } from '@/lib/session';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { cn } from '@/lib/utils';
@@ -6,7 +8,7 @@ import { ApiError } from '@/lib/api-types';
 import { panelBloqueado, type EstadoConvenio } from '@/lib/convenio';
 import ConvenioPanel from '@/components/b2b/ConvenioPanel';
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+async function DashboardShell({ children }: { children: React.ReactNode }) {
   const session = await requireAuth();
 
   const esGestion = session.rol !== 'USUARIO' && session.rol !== 'TECNICO';
@@ -49,4 +51,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </main>
     </div>
   );
+}
+
+// Stream a neutral shell while session and subscription are verified.
+// No personal content leaves DashboardShell before the same guards succeed.
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<div className="min-h-screen bg-sillar px-4 pt-16 font-cuerpo text-basalto sm:px-6 lg:pt-8"><DashboardLoading /></div>}>
+    <DashboardShell>{children}</DashboardShell>
+  </Suspense>;
 }

@@ -41,15 +41,14 @@ public class ReportesController : ControllerBase
     {
         var alcance = await AlcanceReporteAsync();
         var totalUsuarios = await alcance.Usuarios.CountAsync();
-        var totalReservas = await alcance.Reservas.CountAsync();
 
-        var porEstado = (await alcance.Reservas
+        var grupos = await alcance.Reservas
             .GroupBy(r => r.Estado)
-            .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+            .Select(g => new { Estado = g.Key, Cantidad = g.Count(), Total = g.Sum(r => r.Total) })
             .OrderBy(d => d.Estado)
-            .ToListAsync())
-            .Select(d => new ReservasPorEstadoDto(d.Estado, d.Cantidad))
-            .ToList();
+            .ToListAsync();
+        var totalReservas = grupos.Sum(g => g.Cantidad);
+        var porEstado = grupos.Select(g => new ReservasPorEstadoDto(g.Estado, g.Cantidad)).ToList();
 
         var canchasData = await alcance.Canchas
             .OrderBy(c => c.Nombre)
@@ -90,11 +89,8 @@ public class ReportesController : ControllerBase
                 DtoFormat.Money(c.Ingresos)))
             .ToList();
 
-        var confirmadas = await alcance.Reservas
-            .CountAsync(r => r.Estado == EstadoReserva.CONFIRMADA);
-        var ingresosTotales = await alcance.Reservas
-            .Where(r => r.Estado == EstadoReserva.CONFIRMADA)
-            .SumAsync(r => (decimal?)r.Total) ?? 0m;
+        var confirmadas = grupos.Where(g => g.Estado == EstadoReserva.CONFIRMADA).Sum(g => g.Cantidad);
+        var ingresosTotales = grupos.Where(g => g.Estado == EstadoReserva.CONFIRMADA).Sum(g => g.Total);
         var promedio = confirmadas > 0
             ? Math.Round(ingresosTotales / confirmadas, 2, MidpointRounding.AwayFromZero)
             : 0m;

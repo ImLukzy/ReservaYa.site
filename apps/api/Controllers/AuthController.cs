@@ -56,15 +56,17 @@ public class AuthController : ControllerBase
 
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
-        var usuario = await _db.Usuarios.AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
-
         // El rate-limit aplica a TODOS, incluidas cuentas ADMIN/SUPERADMIN:
         // son las más valiosas para un ataque de fuerza bruta. Mismo mensaje
         // genérico para no revelar si el email existe.
         if (_rateLimiter.IsLimited(
                 $"login:{ClientIp()}:{normalizedEmail}", 5, TimeSpan.FromMinutes(15)))
             return StatusCode(429, new { error = "No se pudo iniciar sesión. Verifica tus datos e inténtalo nuevamente." });
+
+        var usuario = await _db.Usuarios.AsNoTracking()
+            .Where(u => u.Email == normalizedEmail)
+            .Select(u => new { u.Id, u.Email, u.Nombre, u.Password, u.Rol, u.Activo, u.TokenVersion })
+            .FirstOrDefaultAsync();
 
         var passwordOk = usuario is not null
             ? SafeVerify(request.Password, usuario!.Password)

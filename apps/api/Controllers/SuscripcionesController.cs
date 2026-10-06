@@ -40,23 +40,31 @@ public class SuscripcionesController : ControllerBase
     [HttpGet("estado")]
     public async Task<IActionResult> Estado()
     {
-        var ids = await ComplejoAccess.IdsAsync(_db, User, incluirBloqueados: true);
+        // Scope remains the same; keep it in SQL and avoid two queries per center.
+        var ids = ComplejoAccess.IdsQuery(_db, User, incluirBloqueados: true);
         var query = _db.Complejos.AsNoTracking().AsQueryable();
         if (ids is not null) query = query.Where(c => ids.Contains(c.Id));
-        var rows = await query.Include(c => c.Dueno).OrderBy(c => c.CreadoEn).ToListAsync();
+        var ahora = DateTime.UtcNow;
+        var hoy = DateTime.SpecifyKind(ahora.Date, DateTimeKind.Unspecified);
+        var rows = await query.OrderBy(c => c.CreadoEn).Select(c => new
+        {
+            c.Id, c.Nombre, c.Publicado, c.CreadoEn,
+            RolDueno = c.Dueno != null ? (Rol?)c.Dueno.Rol : null,
+            Activa = c.Suscripciones.Any(s => s.Estado == EstadoSuscripcion.ACTIVA && s.FechaInicio <= hoy && s.FechaFin >= hoy),
+            Cantidad = c.Canchas.Count(),
+        }).ToListAsync();
         var estados = new List<object>();
         foreach (var c in rows)
         {
-            var activa = await ConvenioPrueba.ActivaAsync(_db, c.Id);
+            var activa = c.Activa;
             var fin = c.CreadoEn.AddDays(30);
-            var pendiente = !c.Publicado && c.Dueno?.Rol == Rol.USUARIO;
-            var prueba = !pendiente && !activa && c.Dueno?.Rol != Rol.USUARIO && fin > DateTime.UtcNow;
-            var cantidad = await _db.Canchas.CountAsync(x => x.ComplejoId == c.Id);
+            var pendiente = !c.Publicado && c.RolDueno == Rol.USUARIO;
+            var prueba = !pendiente && !activa && c.RolDueno != Rol.USUARIO && fin > ahora;
             estados.Add(new { complejoId = c.Id, nombre = c.Nombre, enPrueba = prueba,
-                pendiente, estadoSolicitud = pendiente ? "PENDIENTE" : "APROBADA", diasRestantes = prueba ? (int)Math.Ceiling((fin - DateTime.UtcNow).TotalDays) : 0,
+                pendiente, estadoSolicitud = pendiente ? "PENDIENTE" : "APROBADA", diasRestantes = prueba ? (int)Math.Ceiling((fin - ahora).TotalDays) : 0,
                 pruebaHasta = DtoFormat.Utc(fin), activa, vencida = !pendiente && !activa && !prueba,
                 bloqueada = pendiente || (!activa && !prueba), canchasPermitidas = prueba ? (int?)1 : null,
-                puedeCrearCancha = !pendiente && (activa || (prueba && cantidad == 0)) });
+                puedeCrearCancha = !pendiente && (activa || (prueba && c.Cantidad == 0)) });
         }
         return Ok(new { ok = true, complejos = estados });
     }
