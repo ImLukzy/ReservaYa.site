@@ -63,21 +63,20 @@ export default function Header() {
     <button type="button" onClick={salir} disabled={saliendo} className={`${linkClass} w-full`}>Salir</button>
   </>
   return <header ref={ref} className="sticky top-0 z-40 border-b border-cal bg-sillar/95">
-    <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6" aria-label="Principal">
-      <div className="flex items-center gap-6"><Marca />
-        <ul className="hidden items-center gap-1 lg:flex">
-          <li><Link href="/canchas" aria-current={active('/canchas')} className={linkClass}>Canchas</Link></li>
-          <li><Link href="/jugar" aria-current={active('/jugar')} className={linkClass}>Jugar</Link></li>
-          {menus.map(menu => <li key={menu.titulo} className="relative">
-            <button type="button" className={linkClass} aria-expanded={abierto === menu.titulo} aria-controls={`menu-${menu.titulo}`} onClick={() => toggle(menu.titulo)}>{menu.titulo}<Icon nombre="abajo" className="ml-1 h-4 w-4" /></button>
-            <div id={`menu-${menu.titulo}`} hidden={abierto !== menu.titulo} className="card-tactil absolute left-0 top-14 min-w-56 p-2 shadow-suave-lg">
-              {menu.items.map(([href, text]) => <Link key={href} href={href} className={linkClass} aria-current={active(href)}>{text}</Link>)}
-            </div>
-          </li>)}
-          <li><Link href="/ayuda" aria-current={active('/ayuda')} className={linkClass}>Ayuda</Link></li>
-        </ul>
-      </div>
-      <div className="flex items-center gap-2">
+    <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6" aria-label="Principal">
+      <Marca className="justify-self-start" />
+      <ul className="hidden items-center gap-1 lg:flex">
+        <li><Link href="/canchas" aria-current={active('/canchas')} className={linkClass}>Canchas</Link></li>
+        <li><Link href="/jugar" aria-current={active('/jugar')} className={linkClass}>Jugar</Link></li>
+        {menus.map(menu => <li key={menu.titulo} className="relative">
+          <button type="button" className={linkClass} aria-expanded={abierto === menu.titulo} aria-controls={`menu-${menu.titulo}`} onClick={() => toggle(menu.titulo)}>{menu.titulo}<Icon nombre="abajo" className="ml-1 h-4 w-4" /></button>
+          <div id={`menu-${menu.titulo}`} hidden={abierto !== menu.titulo} className="card-tactil absolute left-0 top-14 min-w-56 p-2 shadow-suave-lg">
+            {menu.items.map(([href, text]) => <Link key={href} href={href} className={linkClass} aria-current={active(href)}>{text}</Link>)}
+          </div>
+        </li>)}
+        <li><Link href="/ayuda" aria-current={active('/ayuda')} className={linkClass}>Ayuda</Link></li>
+      </ul>
+      <div className="flex items-center justify-end gap-2 whitespace-nowrap">
         <Link href="/duenos" className="btn-tactil btn-tactil--claro hidden min-h-11 bg-tiza px-5 text-sm text-basalto xl:inline-flex">Publicar mis canchas</Link>
         {!usuario && <>
           <Link href="/login" className={`${linkClass} hidden sm:flex`}>Iniciar sesión</Link>
