@@ -5,7 +5,7 @@ Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web públic
 ## Trabajo
 
 - Español. Entregar resultado verificable, archivos cambiados y comandos/salidas. No commit/push/tag sin instrucción explícita.
-- Implementar desde spec aprobada en `docs/specs`; plantilla `_TEMPLATE.md`, spec activa 51 e historia en `archivo`. El plan vigente está en `PLAN_OTRO_AGENTE.md`; en la oficina god asigna cards y Pam registra §7.
+- Implementar desde spec aprobada en `docs/specs`; plantilla `_TEMPLATE.md`, spec vigente [55 — paneles por rol](docs/specs/55-paneles-por-rol.md) (rama `main`) e historia en `archivo`. En la oficina god asigna cards y Pam registra §7.
 - Antes de frontend leer `docs/skills/panel-next.md`. Contrato API: `docs/api.md`; arquitectura: `docs/architecture.md`; deploy: `DEPLOY_GRATIS.md`.
 - BLOQUEO-API: endpoint, payload y respuesta; no parchear ausencia de datos o permisos.
 - Spec, exploración y revisión describen trabajos del equipo; no asumir slash commands ni aliases de agentes instalados. Seguir las herramientas/skills realmente disponibles en la sesión.
@@ -13,7 +13,7 @@ Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web públic
 ## Árbol
 
 ```text
-apps/web/                  Next 16 :3000 — público y /dashboard /admin /superadmin /tecnico
+apps/web/                  Next 16 :3000 — público y /dashboard /admin /tecnico
   app/(public)             rutas públicas, metadata y layout sin guarda
   app/(dashboard)          guardas requireAuth/requireRole
   components/ui            UI compartida público/panel

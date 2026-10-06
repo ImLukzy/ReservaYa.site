@@ -1,5 +1,3 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+# apps/web — Next.js 16.2 (App Router) + React 19, web pública y paneles por rol en :3000.
+Antes de tocar frontend leer `docs/skills/panel-next.md` y el `CLAUDE.md` raíz (reglas, cero migraciones, cookie HttpOnly).
+Contrato de API en `docs/api.md`; spec vigente `docs/specs/55-paneles-por-rol.md`.

@@ -5,8 +5,6 @@
 Configuración de ejemplo: `apps/web/.env.example`. El runner usa `apps/web/.env` solo en ejecución local; la API hereda esas variables. Para `dev:api` solo, proporcionarlas en el entorno del shell. La resolución privada `BACKEND_URL` y JWT se configura en servidor.
 | Variable | Uso | Local |
 |---|---|---|
-| `NEXT_PUBLIC_RESERVAYA_API_URL` | Compatibilidad documental; las solicitudes actuales usan el rewrite same-origin `/api/*` | mismo origen |
-| `NEXT_PUBLIC_RESERVAYA_APP_URL` | Compatibilidad documental; la navegación actual usa rutas locales | mismo origen |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics (opcional) | vacío |
 | `NEXT_PUBLIC_INBOXMEJIKAI_ENDPOINT` | Receptor de formularios de contacto/mejoras (opcional) | vacío |
 

@@ -5,7 +5,7 @@ La web pública y el panel comparten Next.js 16 (:3000). El navegador llama a `/
 ## Árbol vigente tras F4
 
 - `apps/web/app/(public)`: web pública; sin guarda de sesión en su layout.
-- `apps/web/app/(dashboard)`: zonas protegidas `/dashboard`, `/admin`, `/superadmin`, `/tecnico`.
+- `apps/web/app/(dashboard)`: zonas protegidas `/dashboard`, `/admin`, `/tecnico` (las mismas que protege `apps/web/proxy.ts`).
 - `apps/web/components/ui`: componentes compartidos con props de apariencia pública/panel.
 - `apps/web/lib`: cliente/servidor API y utilidades públicas; contrato en [api.md](./api.md).
 - `apps/api`: API existente, mismo código y namespace; archivos protegidos trasladados sin cambios de bytes.

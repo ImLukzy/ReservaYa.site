@@ -6,8 +6,10 @@ Reservas de canchas deportivas en Arequipa. Una web Next.js 16.2.9 / React 19.2.
 
 - `apps/web`: Next, componentes públicos/panel, cliente de API, assets y espejo Prisma.
 - `apps/api`: API ASP.NET Core, modelos EF Core y migraciones existentes protegidas.
-- `docs`: arquitectura, contrato de API, spec activa y archivo histórico.
+- `docs`: arquitectura, contrato de API, spec vigente ([55 — paneles por rol](docs/specs/55-paneles-por-rol.md), rama `main`) y archivo histórico.
 - `scripts`: arranque Node web/API y checker de motion.
+
+El proyecto .NET se llama `ReservaFacil.Api` (`apps/api/ReservaFacil.Api.csproj`, `ReservaFacil.Api.dll` en el `Dockerfile`) a propósito: la spec 51 conservó el nombre sin renombrar. No es un clon equivocado; no renombrarlo.
 
 ## Desarrollo
 
@@ -35,10 +37,12 @@ El runner carga el entorno local de `apps/web/.env` en el proceso, sin imprimirl
 | `dotnet build apps/api/ReservaFacil.Api.csproj` | Compilar API |
 | `npm --prefix apps/web run db:check` | Comprobación de BD de solo lectura |
 
+`npm --prefix apps/web run db:check` y el `prisma generate` del `postinstall` necesitan una `DATABASE_URL` real de Neon en el entorno; sin ella fallan. La API no tiene tests en el repo: CI solo ejecuta `dotnet build`, así que los cambios de API se verifican compilando y probando a mano contra la web.
+
 CI genera tipos con `next typegen` antes de typecheck. Para un checkout sin tipos generados, ejecutar ese comando dentro de `apps/web` mediante `npm exec -- next typegen`.
 
 ## Reglas
 
 Cero migraciones o cambios a Prisma, Migrations, Entities.cs y AppDbContext.cs en esta tarea. Cookie HttpOnly emitida por API; el cliente no lee JWT. `/api/*` y `/uploads/*` usan el rewrite privado `BACKEND_URL`; no publicar secretos. Los roles son USUARIO, ADMIN, SUPERADMIN y TECNICO.
 
-Ver [arquitectura](docs/architecture.md), [API y variables](docs/api.md), [guía Next](docs/skills/panel-next.md), [despliegue](DEPLOY_GRATIS.md) y [spec 51](docs/specs/51-migracion-monorepo.md). La documentación previa se conserva en `docs/specs/archivo`.
+Ver [arquitectura](docs/architecture.md), [API y variables](docs/api.md), [guía Next](docs/skills/panel-next.md), [despliegue](DEPLOY_GRATIS.md) y [spec 55](docs/specs/55-paneles-por-rol.md) (vigente). La documentación previa se conserva en `docs/specs/archivo`.

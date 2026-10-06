@@ -43,3 +43,6 @@ npm-debug.log*
 hive/
 roster.json
 roster-backups/
+
+# Estado local del harness de agentes; no es producto
+restore-gate.json

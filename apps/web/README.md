@@ -28,8 +28,8 @@ Copy-Item .env.example .env   # pide DATABASE_URL de Neon
 npm run dev                   # panel en http://localhost:3000
 ```
 
-La API corre en `http://localhost:5000` (`dotnet run --project
-../api --launch-profile http`) y Next proxya `/api/*`.
+La API corre en `http://localhost:5000` (desde la raíz: `npm run dev:api`;
+el proyecto es `apps/api/ReservaFacil.Api.csproj`, nombre conservado a propósito) y Next proxya `/api/*`.
 Desde la raíz: `npm run dev:all` levanta API + web pública/panel.
 
 ## Marketplace: suscripción, buscador y precios por franja
