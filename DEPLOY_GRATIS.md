@@ -19,6 +19,16 @@ En el proyecto conectado a `ImLukzy/ReservaYa.site`:
 | `NEXT_PUBLIC_GA_ID` | Opcional; identificador público de Analytics, vacío si no se usa |
 | `NEXT_PUBLIC_INBOXMEJIKAI_ENDPOINT` | Opcional; contacto/sugerencias, no Libro de reclamaciones |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Opcional; solo dígitos con código de país |
+| `NEXT_PUBLIC_MEDIA_URL` | Host público del bucket R2 (dominio propio o `r2.dev`), sin barra final; mismo valor que `MEDIA_PUBLIC_URL` de Render |
+| `R2_BUCKET_NAME` | Nombre del bucket R2 |
+| `R2_ENDPOINT` | `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` |
+| `R2_ACCESS_KEY_ID` · `R2_SECRET_ACCESS_KEY` | Token API de R2 con escritura en el bucket; privados, nunca `NEXT_PUBLIC_` |
+
+Imágenes: el navegador pide una URL prefirmada a `POST /api/upload` (route handler de Next, no se reenvía a Render), sube el archivo directo a R2 con `PUT` y luego guarda la URL pública en la API. El CORS del bucket debe permitir `PUT`/`GET` desde `https://reservaya.site` (y `http://localhost:3000` en local) con cabecera `Content-Type`.
+
+`/api/upload` limita a 20 firmas por usuario cada 10 min (429). El conteo vive en memoria de cada instancia de Vercel, así que frena bucles, no es un tope global.
+
+Opcional — imágenes huérfanas: la API (Render, con `R2_*`) borra el objeto anterior al reemplazar una foto o eliminar cancha/partido. Aun así quedan huérfanos si el navegador sube a R2 y no llega a guardar la URL, si el borrado falla (solo deja aviso en el log) o al eliminar un usuario. Si el almacenamiento crece, añadir en R2 → bucket → *Settings → Object lifecycle rules* una regla sobre el prefijo `uploads/` (p. ej. borrar a los N días) solo después de confirmar que no borra fotos vigentes: R2 no sabe cuáles siguen referenciadas en la BD, así que una regla por antigüedad también borra fotos en uso. Lo seguro es una purga que compare con la BD; no está implementada.
 
 El navegador llama a `/api/*` y `/uploads/*` en `reservaya.site`; Next los reenvía a `BACKEND_URL`. No usar un dominio de Render como URL pública de auth ni exponer JWT/conexiones con el prefijo `NEXT_PUBLIC_`. Las variables públicas se incorporan al build. [Configuración de monorepos en Vercel](https://vercel.com/docs/monorepos).
 
@@ -36,6 +46,8 @@ Usar el servicio web Docker conectado a `https://github.com/ImLukzy/ReservaYa.si
 | `DATABASE_URL_UNPOOLED` | URL **directa** de esa misma base, con SSL |
 | `JWT_SECRET` | Mismo secreto privado de Vercel, ≥32 caracteres; `sync:false`, sin `generateValue` |
 | `FRONTEND_ORIGIN` | `https://reservaya.site`; si se añaden otros orígenes, separados por coma, sin rutas |
+| `MEDIA_PUBLIC_URL` | Host público del bucket R2, igual a `NEXT_PUBLIC_MEDIA_URL` de Vercel, sin barra final. La API rechaza URLs de imagen con otro prefijo; vacío = guardado de imágenes por URL desactivado (503) |
+| `R2_ENDPOINT` · `R2_ACCESS_KEY_ID` · `R2_SECRET_ACCESS_KEY` · `R2_BUCKET_NAME` | Mismos valores que en Vercel; el token necesita permiso de borrado en el bucket. La API borra el objeto anterior al reemplazar una imagen o eliminar cancha/partido. Si faltan, la API funciona igual y solo registra un aviso (los objetos reemplazados quedan huérfanos) |
 | `COOKIE_SECURE` | `true` en producción HTTPS |
 | `EMAIL_PROVIDER` | `resend` si se envían correos; `log` solo sirve en Development y no entrega correo |
 | `RESEND_API_KEY` | Clave privada del proveedor |

@@ -8,6 +8,8 @@ import { Select } from "@/components/ui/Select";
 import Icon from "@/components/public/ui/Icon";
 import SeccionTitulo from "@/components/public/inicio/SeccionTitulo";
 import { API, APP } from "@/lib/public/entorno";
+import { ApiError } from "@/lib/api-types";
+import { uploadToR2 } from "@/lib/upload-r2";
 import { AVISO, BOTON, ETIQUETA, INSIGNIA, INSIGNIA_BASE } from "@/lib/public/estilos";
 const apiUrl = API;
 const niveles = ["Todos los niveles", "Principiante", "Intermedio", "Avanzado"];
@@ -293,9 +295,18 @@ export default function PartidosAbiertos() {
                     fd.append("superficie", elemento<HTMLSelectElement>("#p-superficie").value);
                     fd.append("precio", elemento<HTMLInputElement>("#p-precio").value || "0");
                     fd.append("descripcion", elemento<HTMLTextAreaElement>("#p-desc").value.trim());
-                    if (fotoInput && fotoInput.files && fotoInput.files[0])
-                        fd.append("foto", fotoInput.files[0]);
-                    fetch(base + "/api/partidos", { method: "POST", credentials: "include", body: fd })
+                    // La foto va directo a R2; la API solo recibe su URL pública.
+                    const foto = fotoInput.files && fotoInput.files[0];
+                    (foto ? uploadToR2(foto, "partido") : Promise.resolve(null))
+                        .then(function (fotoUrl) {
+                        if (fotoUrl)
+                            fd.append("fotoUrl", fotoUrl);
+                        return fetch(base + "/api/partidos", { method: "POST", credentials: "include", body: fd });
+                    }, function (err: unknown) {
+                        if (err instanceof ApiError && err.status === 401)
+                            return new Response(null, { status: 401 });
+                        throw err;
+                    })
                         .then(function (res) {
                         if (res.status === 401) {
                             window.location.href = "/login?returnUrl=" + encodeURIComponent("/jugar#partidos");
@@ -389,7 +400,7 @@ export default function PartidosAbiertos() {
           <Image id="p-foto-preview" src="/og-default.png" width={640} height={400} unoptimized alt="" hidden className="h-full w-full object-cover"/>
           <span id="p-foto-empty" className="font-medium">Subir foto</span>
         </label>
-        <input id="p-foto" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only"/>
+        <input id="p-foto" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only"/>
         <Field apariencia="publica" id="p-desc" etiqueta="Descripción" multilinea filas={4} placeholder="Faltan 4, se pide puntualidad." className="mt-4"/>
       </div>
       <div className="space-y-3">

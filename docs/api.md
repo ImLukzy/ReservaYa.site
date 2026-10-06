@@ -7,6 +7,7 @@ Configuración de ejemplo: `apps/web/.env.example`. El runner usa `apps/web/.env
 |---|---|---|
 | `NEXT_PUBLIC_GA_ID` | Google Analytics (opcional) | vacío |
 | `NEXT_PUBLIC_INBOXMEJIKAI_ENDPOINT` | Receptor de formularios de contacto/mejoras (opcional) | vacío |
+| `NEXT_PUBLIC_MEDIA_URL` | Host público del bucket R2 de imágenes, sin barra final | requerido para subir imágenes |
 
 La API .NET sigue siendo la autoridad de datos y sesión. `BACKEND_URL` solo configura el rewrite en el servidor Next; no se expone al cliente.
 
@@ -23,12 +24,37 @@ Nunca `DATABASE_URL` ni secretos aquí: todo `NEXT_PUBLIC_*` puede terminar en e
 | GET | `/api/resenas/publicas` | — | canchas |
 | GET | `/api/reservas` | sí | perfil |
 | PATCH | `/api/usuarios/me` | sí | perfil |
-| POST | `/api/usuarios/me/foto` | sí | perfil (multipart) |
+| PUT | `/api/usuarios/me/foto` `{ url }` | sí | perfil (URL ya subida a R2) |
+| POST | `/api/usuarios/me/foto` | sí | heredado multipart (disco de Render, efímero); la UI ya no lo usa |
 | GET | `/api/usuarios/buscar` | sí | sortear |
 | GET / POST | `/api/partidos` | GET — / POST sí | completar-cuadro |
 | GET | `/api/partidos/mios` | sí | mis-partidos |
 | POST / DELETE | `/api/partidos/{id}/anotarse` | sí | completar-cuadro, mis-partidos |
 | DELETE | `/api/partidos/{id}` | sí | mis-partidos |
+
+## Imágenes en Cloudflare R2
+
+Flujo: `uploadToR2(file, tipo)` (`apps/web/lib/upload-r2.ts`) → `POST /api/upload` (route handler de Next, estático: se sirve antes del rewrite `/api/:path*`, no llega a la API .NET) → `PUT` directo del navegador a R2 → endpoint PUT de la API con la URL pública. La API solo acepta URLs que empiezan por `MEDIA_PUBLIC_URL` + `/`.
+
+| M | Ruta | Sesión | Body | Respuesta |
+|---|---|---|---|---|
+| POST | `/api/upload` (Next) | sí (cookie; 401 si no) | `{ filename, contentType, size, tipo: 'cancha'\|'perfil'\|'partido' }`; JPG/PNG/WEBP/GIF, ≤3 MB; `cancha` solo ADMIN/SUPERADMIN/TECNICO | `{ uploadUrl, publicUrl, key }`, firma 300 s con `Content-Type` y `Content-Length` firmados; clave `uploads/<tipo>/<userId>/<ms>-<uuid8>-<slug>.<ext>` · 400 datos · 403 rol · 503 sin variables R2 |
+| PUT | `/api/canchas/{id}/imagen` | ADMIN/SUPERADMIN/TECNICO con permiso sobre la cancha | `{ url }` | `{ ok, cancha }` · 400 URL inválida · 403 · 404 · 503 sin `MEDIA_PUBLIC_URL` |
+| PUT | `/api/usuarios/me/foto` | sí | `{ url }` | `{ ok, fotoUrl }` · 400 · 503 |
+| PUT | `/api/partidos/{id}/foto` | organizador o TECNICO | `{ url }` | `{ ok, partido }` · 400 · 403 · 404 · 503 |
+| POST | `/api/partidos` | sí | multipart; campo `fotoUrl` (R2) en lugar de `foto` | 201; 400 `URL de imagen inválida` |
+
+Al reemplazar una imagen (PUT `{url}` o multipart) o al eliminar una cancha o un partido, la API borra del bucket el objeto anterior si su URL empieza por `MEDIA_PUBLIC_URL/uploads/` (`Services/AlmacenR2.cs`, `DeleteObject`). Se hace después de guardar en BD y es mejor esfuerzo: si R2 falla o faltan `R2_*` en la API, solo queda un aviso en el log (`R2 no se pudo borrar {Clave}` / `R2 sin configurar`) y el objeto huérfano. Las rutas `/uploads/...` locales se siguen borrando del disco como antes.
+
+Propiedad: una URL R2 **nueva** (distinta de la guardada) solo se acepta si su clave es de la carpeta del usuario: `uploads/perfil/<userId>/` en `PUT /api/usuarios/me/foto`; `uploads/partido/<userId>/` en `POST /api/partidos` (`fotoUrl`) y `PUT /api/partidos/{id}/foto`; `uploads/cancha/<userId>/` en `PUT /api/canchas/{id}/imagen`, `PUT`/`POST /api/canchas` (`imagen`) y `POST /api/solicitudes`. TECNICO puede usar cualquier `uploads/partido/` o `uploads/cancha/`. Si no, 400. Reenviar la URL ya guardada (p. ej. al editar otros campos de la cancha) no se revalida. Además el borrado solo actúa sobre claves `uploads/<tipo>/` del tipo de la entidad. Así nadie puede adoptar la URL de otro y provocar que la API borre ese objeto.
+
+Los POST multipart heredados (`/api/canchas/{id}/imagen`, `/api/usuarios/me/foto`, `foto` en `/api/partidos`) siguen funcionando por compatibilidad, pero escriben en `wwwroot/uploads` de Render (efímero). Responden con la cabecera `Deprecation: true` y registran `LegacyUploadUsed {Endpoint} {UserId}` (warning). La web ya no los usa: todo pasa por `lib/upload-r2.ts`.
+
+### Plan de retiro de /uploads
+
+1. **Observar (ahora).** Multipart marcado con `Deprecation: true` y log `LegacyUploadUsed`. Vigilar en los logs de Render que no aparezca durante al menos 2 semanas (solo clientes viejos o scripts lo llamarían).
+2. **Quitar la escritura.** Eliminar los tres POST multipart (o devolver `410 Gone`) y el campo `foto` de `POST /api/partidos`. `UseStaticFiles` de `/uploads` se mantiene: aún hay URLs `/uploads/...` en BD.
+3. **Quitar la lectura.** Cuando una consulta de solo lectura confirme que ninguna fila de `Cancha.Imagen`, `Usuario.FotoUrl` ni `PartidoAbierto.FotoUrl` empieza por `/uploads/` (los dueños vuelven a subir o se dejan sin imagen), retirar `UseStaticFiles` de `/uploads`, `ImagenArchivo.GuardarVersionadaAsync` y el borrado local. Sin migraciones: solo código.
 
 ## Errores
 | Código | Significado | Qué hace la UI |

@@ -105,6 +105,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSingleton(new JwtService(jwtSecret));
 builder.Services.AddSingleton<IRateLimiter, MemoryRateLimiter>();
+// Borrado de imágenes reemplazadas en R2 (vars R2_*; sin ellas solo registra).
+builder.Services.AddSingleton<AlmacenR2>();
 
 // Recuperación de contraseña (spec 15): Resend en producción, log solo en desarrollo.
 var emailProvider = (Environment.GetEnvironmentVariable("EMAIL_PROVIDER") ?? "").Trim().ToLowerInvariant();

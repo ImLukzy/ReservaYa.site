@@ -1,9 +1,9 @@
 // Filas del tablero (home y /canchas). Solo DOM API: los datos de la API
 // nunca pasan por innerHTML.
 import { BOTON } from "../estilos";
-import { API } from "../entorno";
 import { etiquetaTipo } from "../arequipa";
 import { etiquetaHora, soles } from "../horario";
+import { esImagenPropia } from "../../media";
 
 export interface CanchaApi {
   id: string;
@@ -51,14 +51,14 @@ function croquisCancha(claseUbicacion = ""): HTMLDivElement {
   return caja;
 }
 
-/** Miniatura 16:9 de tamaño reservado: foto real solo si viene de /uploads/, si no el croquis.
+/** Miniatura 16:9 de tamaño reservado: foto real solo si es propia (/uploads/ o R2), si no el croquis.
  *  claseUbicacion se reaplica en el croquis de reemplazo para que el error de carga no pierda
  *  la posición de grid que le dio filaCancha. */
 function miniaturaCancha(cancha: CanchaApi, claseUbicacion = ""): HTMLElement {
-  if (!cancha.imagen?.startsWith("/uploads/")) return croquisCancha(claseUbicacion);
+  if (!esImagenPropia(cancha.imagen)) return croquisCancha(claseUbicacion);
   const caja = el("div", `${CLASE_MINIATURA} bg-piedra ${claseUbicacion}`.trim());
   const img = document.createElement("img");
-  img.src = new URL(cancha.imagen, API).toString();
+  img.src = cancha.imagen; // relativa (/uploads/, mismo origen) o absoluta R2
   img.alt = ""; // el nombre ya está en la fila
   img.width = 64;
   img.height = 36;

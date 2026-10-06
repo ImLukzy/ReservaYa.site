@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Badge } from '@/components/ui/Badge'
-import { createCancha, deleteCancha, updateCancha } from '@/lib/api-client'
+import { createCancha, deleteCancha, subirImagenCancha, updateCancha } from '@/lib/api-client'
 import { apiRequest } from '@/lib/http';
 import type { EstadoConvenio } from '@/lib/convenio';
 import type { Cancha, CanchaInput, TipoCancha } from '@/lib/api'
@@ -190,11 +190,11 @@ export function GestionCanchasPanel({
       if (editando) {
         await Promise.all([
           updateCancha(editando.id, input),
-          ...(archivo ? [subirImagen(editando.id, archivo)] : []),
+          ...(archivo ? [subirImagenCancha(editando.id, archivo)] : []),
         ])
       } else {
         const id = (await createCancha(input)).cancha.id
-        if (archivo) await subirImagen(id, archivo)
+        if (archivo) await subirImagenCancha(id, archivo)
       }
     } catch (error) {
       setLoading(false)
@@ -204,18 +204,6 @@ export function GestionCanchasPanel({
     setLoading(false)
     setModalOpen(false)
     router.refresh()
-  }
-
-  async function subirImagen(id: string, file: File) {
-    const datos = new FormData()
-    datos.append('archivo', file)
-    const res = await fetch(`/api/canchas/${id}/imagen`, {
-      method: 'POST',
-      credentials: 'include',
-      body: datos,
-    })
-    const body = await res.json().catch(() => null)
-    if (!res.ok) throw new Error(body?.error ?? `No se pudo subir la imagen (error ${res.status})`)
   }
 
   async function eliminar(id: string) {

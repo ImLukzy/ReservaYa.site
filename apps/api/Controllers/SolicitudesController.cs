@@ -59,7 +59,7 @@ public class SolicitudesController(AppDbContext db, IEmailSender emailSender, IL
             return BadRequest(new { error = "Completa los datos del centro y de una cancha con precio y capacidad mayores que cero." });
         var distrito = ComplejosController.NormalizarDistrito(centro.Distrito);
         if (distrito is null) return BadRequest(new { error = "Distrito inválido: debe ser un distrito de Arequipa." });
-        var imagen = string.IsNullOrWhiteSpace(cancha.Imagen) ? null : CanchasController.ValidarImagen(cancha.Imagen);
+        var imagen = string.IsNullOrWhiteSpace(cancha.Imagen) ? null : CanchasController.ValidarImagen(cancha.Imagen, MediaPublica.PrefijoPropio("cancha", User));
         if (!string.IsNullOrWhiteSpace(cancha.Imagen) && imagen is null) return BadRequest(new { error = "Imagen inválida." });
 
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);

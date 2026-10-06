@@ -18,12 +18,17 @@ public class UsuariosController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IRateLimiter _rateLimiter;
     private readonly IWebHostEnvironment _env;
+    private readonly AlmacenR2 _r2;
+    private readonly ILogger<UsuariosController> _logger;
 
-    public UsuariosController(AppDbContext db, IRateLimiter rateLimiter, IWebHostEnvironment env)
+    public UsuariosController(AppDbContext db, IRateLimiter rateLimiter, IWebHostEnvironment env,
+        AlmacenR2 r2, ILogger<UsuariosController> logger)
     {
         _db = db;
         _rateLimiter = rateLimiter;
         _env = env;
+        _r2 = r2;
+        _logger = logger;
     }
 
     // Autocompletado público para el sorteador (/sortear): solo devuelve
@@ -386,6 +391,8 @@ public class UsuariosController : ControllerBase
     [RequestSizeLimit(3_500_000)]
     public async Task<IActionResult> SubirFoto(IFormFile archivo)
     {
+        Response.Headers["Deprecation"] = "true";
+        _logger.LogWarning("LegacyUploadUsed {Endpoint} {UserId}", "POST /api/usuarios/me/foto", User.IdOrEmpty());
         var usuario = await _db.Usuarios.FirstOrDefaultAsync(u => u.Id == User.IdOrEmpty());
         if (usuario is null)
             return Unauthorized(new { error = "Sesión inválida" });
@@ -398,8 +405,35 @@ public class UsuariosController : ControllerBase
         if (ext is null)
             return BadRequest(new { error = "Solo se aceptan imágenes JPG, PNG, WEBP o GIF" });
 
+        var anterior = usuario.FotoUrl;
         usuario.FotoUrl = await ImagenArchivo.GuardarVersionadaAsync(_env, "perfiles", usuario.Id, archivo, ext);
         await _db.SaveChangesAsync();
+        await _r2.BorrarAsync(anterior, "perfil");
+        return Ok(new { ok = true, fotoUrl = usuario.FotoUrl });
+    }
+
+    // Foto ya subida por el navegador a R2 (ver /api/upload en la web): solo
+    // se guarda la URL pública del bucket.
+    [HttpPut("me/foto")]
+    [Authorize]
+    public async Task<IActionResult> GuardarFotoUrl([FromBody] MediaPublica.UrlRequest request)
+    {
+        if (!MediaPublica.Configurada)
+            return StatusCode(503, new { error = "La subida de imágenes no está configurada" });
+        var usuario = await _db.Usuarios.FirstOrDefaultAsync(u => u.Id == User.IdOrEmpty());
+        if (usuario is null)
+            return Unauthorized(new { error = "Sesión inválida" });
+        // La URL nueva debe ser de su carpeta; re-guardar la actual no se revalida.
+        var url = request.Url?.Trim() == usuario.FotoUrl
+            ? MediaPublica.Validar(request.Url)
+            : MediaPublica.Validar(request.Url, MediaPublica.PrefijoPropio("perfil", User, plataformaTodo: false));
+        if (url is null)
+            return BadRequest(new { error = "URL de imagen inválida" });
+
+        var anterior = usuario.FotoUrl;
+        usuario.FotoUrl = url;
+        await _db.SaveChangesAsync();
+        if (anterior != url) await _r2.BorrarAsync(anterior, "perfil");
         return Ok(new { ok = true, fotoUrl = usuario.FotoUrl });
     }
 

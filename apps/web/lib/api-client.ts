@@ -1,5 +1,6 @@
-import { ApiError, type Cancha, type CanchaInput, type EstadoReserva, type Rol, type UsuarioSesion } from './api-types'
+import { type Cancha, type CanchaInput, type EstadoReserva, type Rol, type UsuarioSesion } from './api-types'
 import { apiRequest as request } from './http'
+import { uploadToR2 } from './upload-r2'
 
 export const logout = () => request<{ ok: boolean }>('/api/auth/logout', { method: 'POST' })
 export const createCancha = (input: CanchaInput) =>
@@ -33,16 +34,20 @@ export const updatePerfil = (input: {
     body: JSON.stringify(input),
   })
 
+// Imágenes: el archivo va directo a R2 (uploadToR2) y la API solo guarda la URL pública.
 export async function subirFotoPerfil(file: File): Promise<{ ok: boolean; fotoUrl: string }> {
-  const fd = new FormData()
-  fd.append('archivo', file)
-  const res = await fetch('/api/usuarios/me/foto', {
-    method: 'POST',
-    credentials: 'include',
-    body: fd,
+  const url = await uploadToR2(file, 'perfil')
+  return request<{ ok: boolean; fotoUrl: string }>('/api/usuarios/me/foto', {
+    method: 'PUT',
+    body: JSON.stringify({ url }),
   })
-  const body = await res.json().catch(() => null)
-  if (!res.ok) throw new ApiError(res.status, body?.error ?? 'No se pudo subir la foto')
-  return body
+}
+
+export async function subirImagenCancha(id: string, file: File): Promise<{ ok: boolean; cancha: Cancha }> {
+  const url = await uploadToR2(file, 'cancha')
+  return request<{ ok: boolean; cancha: Cancha }>(`/api/canchas/${encodeURIComponent(id)}/imagen`, {
+    method: 'PUT',
+    body: JSON.stringify({ url }),
+  })
 }
 

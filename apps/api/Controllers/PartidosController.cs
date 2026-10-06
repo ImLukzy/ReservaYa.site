@@ -25,12 +25,17 @@ public class PartidosController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IRateLimiter _rateLimiter;
     private readonly IWebHostEnvironment _env;
+    private readonly AlmacenR2 _r2;
+    private readonly ILogger<PartidosController> _logger;
 
-    public PartidosController(AppDbContext db, IRateLimiter rateLimiter, IWebHostEnvironment env)
+    public PartidosController(AppDbContext db, IRateLimiter rateLimiter, IWebHostEnvironment env,
+        AlmacenR2 r2, ILogger<PartidosController> logger)
     {
         _db = db;
         _rateLimiter = rateLimiter;
         _env = env;
+        _r2 = r2;
+        _logger = logger;
     }
 
     public sealed class PartidoRequest
@@ -48,6 +53,8 @@ public class PartidosController : ControllerBase
         public string? Superficie { get; set; }
         public decimal? Precio { get; set; }
         public IFormFile? Foto { get; set; }
+        // Foto ya subida a R2 por el navegador (alternativa a Foto multipart).
+        public string? FotoUrl { get; set; }
     }
 
     // Vitrina pública: solo partidos de hoy en adelante, ordenados por fecha.
@@ -197,45 +204,31 @@ public class PartidosController : ControllerBase
         var descripcion = string.IsNullOrWhiteSpace(request.Descripcion)
             ? null : request.Descripcion.Trim()[..Math.Min(500, request.Descripcion.Trim().Length)];
 
+        var id = JwtService.NewId();
         string? fotoUrl = null;
-        if (request.Foto is not null && request.Foto.Length > 0)
+        if (!string.IsNullOrWhiteSpace(request.FotoUrl))
         {
+            if (!MediaPublica.Configurada)
+                return StatusCode(503, new { error = "La subida de imágenes no está configurada" });
+            fotoUrl = MediaPublica.Validar(request.FotoUrl, MediaPublica.PrefijoPropio("partido", User));
+            if (fotoUrl is null)
+                return BadRequest(new { error = "URL de imagen inválida" });
+        }
+        else if (request.Foto is not null && request.Foto.Length > 0)
+        {
+            Response.Headers["Deprecation"] = "true";
+            _logger.LogWarning("LegacyUploadUsed {Endpoint} {UserId}", "POST /api/partidos (foto)", uid);
             if (request.Foto.Length > ImagenArchivo.TopeBytes)
                 return BadRequest(new { error = "La imagen no puede superar 3 MB" });
             var ext = await ImagenArchivo.DetectarExtensionAsync(request.Foto);
             if (ext is null)
                 return BadRequest(new { error = "Solo se aceptan imágenes JPG, PNG, WEBP o GIF" });
-            var id = JwtService.NewId();
             fotoUrl = await ImagenArchivo.GuardarVersionadaAsync(_env, "partidos", id, request.Foto, ext);
-            var partidoConFoto = new PartidoAbierto
-            {
-                Id = id,
-                OrganizadorId = uid,
-                Titulo = titulo,
-                Descripcion = descripcion,
-                Formato = formato,
-                Nivel = nivel,
-                CuposTotales = request.CuposTotales.Value,
-                Distrito = distrito,
-                Cancha = cancha,
-                Superficie = superficie,
-                Precio = precio,
-                Fecha = fecha.Value.Date,
-                DesdeMin = desde,
-                HastaMin = hasta,
-                FotoUrl = fotoUrl,
-                CreadoEn = DateTime.UtcNow
-            };
-            _db.PartidosAbiertos.Add(partidoConFoto);
-            await _db.SaveChangesAsync();
-            partidoConFoto.Organizador = await _db.Usuarios.AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == uid);
-            return StatusCode(201, new { ok = true, partido = PartidoShape(partidoConFoto, 0, false) });
         }
 
         var partido = new PartidoAbierto
         {
-            Id = JwtService.NewId(),
+            Id = id,
             OrganizadorId = uid,
             Titulo = titulo,
             Descripcion = descripcion,
@@ -249,7 +242,7 @@ public class PartidosController : ControllerBase
             Fecha = fecha.Value.Date,
             DesdeMin = desde,
             HastaMin = hasta,
-            FotoUrl = null,
+            FotoUrl = fotoUrl,
             CreadoEn = DateTime.UtcNow
         };
         _db.PartidosAbiertos.Add(partido);
@@ -309,6 +302,34 @@ public class PartidosController : ControllerBase
         return Ok(new { ok = true });
     }
 
+    // Cambiar la foto de un partido propio con una URL ya subida a R2.
+    // Mismos permisos que cancelarlo: organizador o plataforma.
+    [HttpPut("{id}/foto")]
+    public async Task<IActionResult> GuardarFotoUrl(string id, [FromBody] MediaPublica.UrlRequest request)
+    {
+        if (!MediaPublica.Configurada)
+            return StatusCode(503, new { error = "La subida de imágenes no está configurada" });
+        var partido = await _db.PartidosAbiertos.Include(p => p.Organizador).FirstOrDefaultAsync(p => p.Id == id);
+        if (partido is null)
+            return NotFound(new { error = "Partido no encontrado" });
+        var uid = User.IdOrEmpty();
+        if (!User.IsInRole("TECNICO") && partido.OrganizadorId != uid)
+            return StatusCode(403, new { error = "Solo el organizador puede cambiar la foto" });
+        var url = request.Url?.Trim() == partido.FotoUrl
+            ? MediaPublica.Validar(request.Url)
+            : MediaPublica.Validar(request.Url, MediaPublica.PrefijoPropio("partido", User));
+        if (url is null)
+            return BadRequest(new { error = "URL de imagen inválida" });
+
+        var anterior = partido.FotoUrl;
+        partido.FotoUrl = url;
+        await _db.SaveChangesAsync();
+        if (anterior != url) await _r2.BorrarAsync(anterior, "partido");
+        var anotados = await _db.AnotacionesPartido.CountAsync(a => a.PartidoId == id);
+        var anotado = await _db.AnotacionesPartido.AnyAsync(a => a.PartidoId == id && a.UsuarioId == uid);
+        return Ok(new { ok = true, partido = PartidoShape(partido, anotados, anotado) });
+    }
+
     // Cancelar un partido propio (el organizador o la plataforma).
     [HttpDelete("{id}")]
     public async Task<IActionResult> Eliminar(string id)
@@ -324,6 +345,7 @@ public class PartidosController : ControllerBase
 
         _db.PartidosAbiertos.Remove(partido);
         await _db.SaveChangesAsync();
+        await _r2.BorrarAsync(partido.FotoUrl, "partido");
 
         if (!string.IsNullOrWhiteSpace(partido.FotoUrl) && partido.FotoUrl.StartsWith("/uploads/"))
         {

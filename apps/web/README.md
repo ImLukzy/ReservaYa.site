@@ -78,7 +78,8 @@ Desde la raíz: `npm run dev:all` levanta API + web pública/panel.
   `PATCH /api/usuarios/me`; lectura: `GET /api/auth/me`. Usuarios legacy
   sin fecha/username los fijan por única vez desde `/dashboard/perfil`.
   Teléfono editable (7-15 dígitos, se puede quitar) y foto de perfil
-  (`POST /api/usuarios/me/foto`, JPG/PNG/WEBP/GIF ≤3 MB, mage `FotoUrl`).
+  (archivo directo a R2 vía `lib/upload-r2.ts` y luego `PUT /api/usuarios/me/foto`
+  `{ url }`; JPG/PNG/WEBP/GIF ≤3 MB, guarda `FotoUrl`).
 - **Reseñas post-experiencia** (sin migración): `POST /api/resenas`
   (1-5 + comentario ≤500, crea o actualiza la propia; exige reserva
   COMPLETADA en el local, 403 si no jugó) y `GET /api/resenas/publicas`

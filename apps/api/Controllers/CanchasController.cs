@@ -17,12 +17,14 @@ public class CanchasController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IWebHostEnvironment _env;
     private readonly ILogger<CanchasController> _logger;
+    private readonly AlmacenR2 _r2;
 
-    public CanchasController(AppDbContext db, IWebHostEnvironment env, ILogger<CanchasController> logger)
+    public CanchasController(AppDbContext db, IWebHostEnvironment env, ILogger<CanchasController> logger, AlmacenR2 r2)
     {
         _db = db;
         _env = env;
         _logger = logger;
+        _r2 = r2;
     }
 
     [HttpGet]
@@ -102,7 +104,7 @@ public class CanchasController : ControllerBase
         string? imagen = null;
         if (!string.IsNullOrWhiteSpace(request.Imagen))
         {
-            imagen = ValidarImagen(request.Imagen);
+            imagen = ValidarImagen(request.Imagen, MediaPublica.PrefijoPropio("cancha", User));
             if (imagen is null)
                 return BadRequest(new { error = "Imagen inválida (URL http(s) o ruta / de hasta 500 caracteres)" });
         }
@@ -186,7 +188,10 @@ public class CanchasController : ControllerBase
             }
             else
             {
-                var imagen = ValidarImagen(request.Imagen);
+                // Solo una imagen nueva se exige de la carpeta propia; editar otros
+                // campos reenviando la actual sigue funcionando.
+                var imagen = ValidarImagen(request.Imagen,
+                    request.Imagen.Trim() == cancha.Imagen ? null : MediaPublica.PrefijoPropio("cancha", User));
                 if (imagen is null)
                     return BadRequest(new { error = "Imagen inválida (URL http(s) o ruta / de hasta 500 caracteres)" });
                 if (cancha.Imagen != imagen)
@@ -232,7 +237,7 @@ public class CanchasController : ControllerBase
             return Conflict(new { error = "Otra solicitud cambió las canchas. Revisa la lista antes de reintentar." });
         }
 
-        if (imagenAnterior != cancha.Imagen) BorrarImagenLocal(imagenAnterior);
+        if (imagenAnterior != cancha.Imagen) await BorrarImagenAsync(imagenAnterior);
         return Ok(new { ok = true, cancha = CanchaDto.From(cancha) });
     }
 
@@ -261,11 +266,17 @@ public class CanchasController : ControllerBase
             });
         }
 
-        BorrarImagenLocal(cancha.Imagen);
+        await BorrarImagenAsync(cancha.Imagen);
         return Ok(new { ok = true });
     }
 
-    // Borra el archivo subido (solo rutas /uploads/...). Mejor esfuerzo.
+    // Borra la imagen reemplazada: archivo local /uploads/... o objeto R2. Mejor esfuerzo.
+    private async Task BorrarImagenAsync(string? imagen)
+    {
+        await _r2.BorrarAsync(imagen, "cancha");
+        BorrarImagenLocal(imagen);
+    }
+
     private void BorrarImagenLocal(string? imagen)
     {
         if (string.IsNullOrWhiteSpace(imagen) || !imagen.StartsWith("/uploads/"))
@@ -474,6 +485,8 @@ public class CanchasController : ControllerBase
     [RequestSizeLimit(3_500_000)]
     public async Task<IActionResult> SubirImagen(string id, IFormFile archivo)
     {
+        Response.Headers["Deprecation"] = "true";
+        _logger.LogWarning("LegacyUploadUsed {Endpoint} {UserId}", "POST /api/canchas/{id}/imagen", User.IdOrEmpty());
         var cancha = await _db.Canchas.FirstOrDefaultAsync(c => c.Id == id);
         if (cancha is null)
             return NotFound(new { error = "No encontrada" });
@@ -490,8 +503,10 @@ public class CanchasController : ControllerBase
 
         try
         {
+            var anterior = cancha.Imagen;
             cancha.Imagen = await ImagenArchivo.GuardarVersionadaAsync(_env, "canchas", cancha.Id, archivo, ext);
             await _db.SaveChangesAsync();
+            await _r2.BorrarAsync(anterior, "cancha");
             return Ok(new { ok = true, cancha = CanchaDto.From(cancha) });
         }
         catch (Exception ex)
@@ -501,6 +516,32 @@ public class CanchasController : ControllerBase
             _logger.LogError(ex, "No se pudo guardar imagen de cancha {CanchaId}", id);
             return StatusCode(500, new { error = $"No se pudo guardar la imagen en el servidor ({ex.GetType().Name})" });
         }
+    }
+
+    // Imagen ya subida por el navegador a R2 (ver /api/upload en la web): solo
+    // se guarda la URL pública. Mismos permisos que SubirImagen.
+    [HttpPut("{id}/imagen")]
+    [Authorize(Roles = "ADMIN,SUPERADMIN,TECNICO")]
+    public async Task<IActionResult> GuardarImagenUrl(string id, [FromBody] MediaPublica.UrlRequest request)
+    {
+        if (!MediaPublica.Configurada)
+            return StatusCode(503, new { error = "La subida de imágenes no está configurada" });
+        var cancha = await _db.Canchas.FirstOrDefaultAsync(c => c.Id == id);
+        if (cancha is null)
+            return NotFound(new { error = "No encontrada" });
+        if (!await PuedoGestionarCanchaAsync(cancha))
+            return StatusCode(403, new { error = "Sin permisos" });
+        var url = request.Url?.Trim() == cancha.Imagen
+            ? MediaPublica.Validar(request.Url)
+            : MediaPublica.Validar(request.Url, MediaPublica.PrefijoPropio("cancha", User));
+        if (url is null)
+            return BadRequest(new { error = "URL de imagen inválida" });
+
+        var anterior = cancha.Imagen;
+        cancha.Imagen = url;
+        await _db.SaveChangesAsync();
+        if (anterior != url) await BorrarImagenAsync(anterior);
+        return Ok(new { ok = true, cancha = CanchaDto.From(cancha) });
     }
 
     // Gestión: plataforma todo; resto sus canchas (de sus complejos +
@@ -514,7 +555,9 @@ public class CanchasController : ControllerBase
         return await ComplejoAccess.EsDuenoAsync(_db, User, cancha.ComplejoId);
     }
 
-    internal static string? ValidarImagen(string? value)
+    // prefijoR2: si la imagen es un objeto de nuestro bucket (borrable al
+    // reemplazarla), su clave debe empezar por él. Enlaces externos y /uploads no cambian.
+    internal static string? ValidarImagen(string? value, string? prefijoR2 = null)
     {
         if (string.IsNullOrWhiteSpace(value))
             return null;
@@ -524,7 +567,11 @@ public class CanchasController : ControllerBase
         if (v.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
             v.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
             v.StartsWith("/"))
+        {
+            if (prefijoR2 is not null && MediaPublica.Clave(v) is not null && MediaPublica.Validar(v, prefijoR2) is null)
+                return null;
             return v;
+        }
         return null;
     }
 
