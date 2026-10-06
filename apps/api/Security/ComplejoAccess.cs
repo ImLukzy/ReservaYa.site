@@ -1,0 +1,121 @@
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using ReservaFacil.Api.Data;
+using ReservaFacil.Api.Models;
+
+namespace ReservaFacil.Api.Security;
+
+// Alcance multitenancy estricto: cada dueño (SUPERADMIN) y su equipo solo
+// operan sus propios complejos (DuenoId) + membresías activas.
+// Solo TECNICO (plataforma) ve y gestiona todo.
+// SUPERADMIN -> propios + membresías (como los demás; lista vacía = sin acceso).
+// Demás roles -> propios (DuenoId) + membresías activas (ComplejoMiembro).
+// Lista vacía = sin acceso (ver vacío, nunca todo).
+internal static class ComplejoAccess
+{
+    public static bool EsPlataforma(ClaimsPrincipal user)
+    {
+        return user.RolOr() == Rol.TECNICO;
+    }
+
+    public static IQueryable<string>? IdsQuery(AppDbContext db, ClaimsPrincipal user, bool incluirBloqueados = false)
+    {
+        if (EsPlataforma(user))
+            return null;
+        var mine = user.IdOrEmpty();
+        var habilitados = ConvenioPrueba.Habilitados(db);
+        return db.Complejos.AsNoTracking()
+            .Where(c => c.DuenoId == mine && (incluirBloqueados || habilitados.Contains(c.Id)))
+            .Select(c => c.Id)
+            .Concat(
+                db.ComplejoMiembros.AsNoTracking()
+                    .Where(m => m.UsuarioId == mine && m.Activo && (incluirBloqueados || habilitados.Contains(m.ComplejoId)))
+                    .Select(m => m.ComplejoId)
+            )
+            .Distinct();
+    }
+
+    public static async Task<List<string>?> IdsAsync(AppDbContext db, ClaimsPrincipal user, bool incluirBloqueados = false)
+    {
+        var query = IdsQuery(db, user, incluirBloqueados);
+        return query is null ? null : await query.ToListAsync();
+    }
+
+    public static async Task<bool> TieneAccesoAsync(AppDbContext db, ClaimsPrincipal user, string complejoId, bool incluirBloqueados = false)
+    {
+        if (string.IsNullOrWhiteSpace(complejoId))
+            return false;
+        if (EsPlataforma(user))
+            return await db.Complejos.AsNoTracking().AnyAsync(c => c.Id == complejoId);
+        if (!incluirBloqueados && !await ConvenioPrueba.Habilitados(db).AnyAsync(id => id == complejoId))
+            return false;
+        var mine = user.IdOrEmpty();
+        if (await db.Complejos.AsNoTracking().AnyAsync(c => c.Id == complejoId && c.DuenoId == mine))
+            return true;
+        return await db.ComplejoMiembros.AsNoTracking()
+            .AnyAsync(m => m.ComplejoId == complejoId && m.UsuarioId == mine && m.Activo);
+    }
+
+    // Solo dueño o plataforma (mutaciones: equipo, promos, config).
+    public static async Task<bool> EsDuenoAsync(AppDbContext db, ClaimsPrincipal user, string complejoId, bool incluirBloqueados = false)
+    {
+        if (string.IsNullOrWhiteSpace(complejoId))
+            return false;
+        if (EsPlataforma(user))
+            return await db.Complejos.AsNoTracking().AnyAsync(c => c.Id == complejoId);
+        if (!incluirBloqueados && !await ConvenioPrueba.Habilitados(db).AnyAsync(id => id == complejoId))
+            return false;
+        return await db.Complejos.AsNoTracking()
+            .AnyAsync(c => c.Id == complejoId && c.DuenoId == user.IdOrEmpty());
+    }
+
+    // Alcance estricto (nunca null): propios + membresías activas, para
+    // todos los roles incluida plataforma. Para vistas de dueño (clientes, historial).
+    public static async Task<List<string>> IdsPropiosAsync(AppDbContext db, ClaimsPrincipal user)
+    {
+        var mine = user.IdOrEmpty();
+        var propios = await db.Complejos.AsNoTracking()
+            .Where(c => c.DuenoId == mine).Select(c => c.Id).ToListAsync();
+        var miembro = await db.ComplejoMiembros.AsNoTracking()
+            .Where(m => m.UsuarioId == mine && m.Activo).Select(m => m.ComplejoId).ToListAsync();
+        return propios.Concat(miembro).Distinct().ToList();
+    }
+
+    // Primer complejo operable: propio más antiguo, luego membresía más
+    // antigua, luego el primero global solo para plataforma. Null = sin acceso.
+    public static async Task<string?> PrimeroAsync(AppDbContext db, ClaimsPrincipal user)
+    {
+        var mine = user.IdOrEmpty();
+        var propio = await db.Complejos.AsNoTracking()
+            .Where(c => c.DuenoId == mine)
+            .OrderBy(c => c.CreadoEn)
+            .Select(c => c.Id)
+            .FirstOrDefaultAsync();
+        if (propio is not null) return propio;
+
+        var miembro = await db.ComplejoMiembros.AsNoTracking()
+            .Where(m => m.UsuarioId == mine && m.Activo)
+            .OrderBy(m => m.CreadoEn)
+            .Select(m => m.ComplejoId)
+            .FirstOrDefaultAsync();
+        if (miembro is not null) return miembro;
+
+        if (EsPlataforma(user))
+            return await db.Complejos.AsNoTracking()
+                .OrderBy(c => c.CreadoEn)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
+        return null;
+    }
+
+    // Vitrina pública: complejos publicados CON suscripción activa vigente (IQueryable para subconsultas).
+    public static IQueryable<string> IdsVisiblesQuery(AppDbContext db)
+    {
+        var habilitados = ConvenioPrueba.Habilitados(db);
+        return db.Complejos.AsNoTracking().Where(c => c.Publicado && habilitados.Contains(c.Id)).Select(c => c.Id);
+    }
+
+    // Vitrina pública: complejos publicados CON suscripción activa vigente.
+    public static async Task<HashSet<string>> IdsVisiblesAsync(AppDbContext db) =>
+        await IdsVisiblesQuery(db).ToHashSetAsync();
+}

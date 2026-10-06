@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { bloque, curvaLinear, metricas, posicion, RESORTE, violaciones } from './motion-tokens.mjs';
+import { bloque, curvaLinear, metricas, posicion, RESORTE, violaciones, TOKENS, ESCANEO } from './motion-tokens.mjs';
 
 test('el resorte 400/30 parte de 0 y termina en 1', () => {
   assert.equal(posicion(RESORTE, 0), 0);
@@ -42,4 +42,9 @@ test('violaciones: utilidades de Tailwind en componentes', () => {
   assert.deepEqual(violaciones('B.tsx', "'transition-transform ease-resorte duration-(--dur-resorte)'"), []);
   assert.deepEqual(violaciones('a.css', '.x { color: red } /* duration-150 */'), []);
   assert.equal(violaciones('B.tsx', "style={{ transition: 'opacity 0.3s' }}").length, 1);
+});
+
+test('tokens y escáner cubren la única web Next tras retirar Astro', () => {
+  assert.deepEqual(TOKENS, ['apps/web/app/globals.css']);
+  assert.deepEqual(ESCANEO, ['apps/web/app', 'apps/web/components', 'apps/web/lib']);
 });

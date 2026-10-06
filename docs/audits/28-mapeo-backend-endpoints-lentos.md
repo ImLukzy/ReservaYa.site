@@ -20,7 +20,7 @@ Por ende, cualquier endpoint que ejecute **3 o 4 consultas secuenciales** (`awai
 ### Endpoint 1: `GET /api/canchas/disponibles`
 - **Uso en frontend:** `/dashboard/canchas` y `canchas.astro`.
 - **Latencia observada:** **346.2ms – 351.1ms** (caliente).
-- **Ubicación:** `reservaya-nextjs-api/backend/ReservaFacil.Api/Controllers/CanchasController.cs:248-368`
+- **Ubicación:** `apps/api/Controllers/CanchasController.cs:248-368`
 - **Cadena de consultas actual (4 round-trips secuenciales):**
   1. `L274`: `await ComplejoAccess.IdsVisiblesAsync(_db)`:
      - Realiza una consulta con `Join` entre `Suscripciones` y `Complejos` para traer a memoria un `HashSet<string>` con todos los IDs de complejos visibles. (~80ms).
@@ -42,7 +42,7 @@ Por ende, cualquier endpoint que ejecute **3 o 4 consultas secuenciales** (`awai
 ### Endpoint 2: `GET /api/reportes/dashboard`
 - **Uso en frontend:** `/dashboard` (página principal del jugador).
 - **Latencia observada:** Componente principal de los **680ms** en `/dashboard`.
-- **Ubicación:** `reservaya-nextjs-api/backend/ReservaFacil.Api/Controllers/ReportesController.cs:119-142` (`DashboardUsuarioAsync`)
+- **Ubicación:** `apps/api/Controllers/ReportesController.cs:119-142` (`DashboardUsuarioAsync`)
 - **Cadena de consultas actual (4 round-trips secuenciales):**
   1. `L123`: `await _db.Reservas.CountAsync(r => r.UsuarioId == userId)` (~75ms).
   2. `L125`: `await _db.Reservas.CountAsync(r => r.UsuarioId == userId && r.Estado == EstadoReserva.CONFIRMADA)` (~75ms).
@@ -72,7 +72,7 @@ Por ende, cualquier endpoint que ejecute **3 o 4 consultas secuenciales** (`awai
 ### Endpoint 3: `GET /api/complejos`
 - **Uso en frontend:** `/admin/agenda` (provoca que la agenda ronde los **993ms**).
 - **Latencia observada:** **~320ms**.
-- **Ubicación:** `reservaya-nextjs-api/backend/ReservaFacil.Api/Controllers/ComplejosController.cs:65-91`
+- **Ubicación:** `apps/api/Controllers/ComplejosController.cs:65-91`
 - **Cadena de consultas actual (5 round-trips secuenciales):**
   1. `L69`: `ComplejoAccess.IdsAsync`: consulta complejos propios + consulta miembros de complejo (2 queries).
   2. `L75`: `await query.OrderBy(...).ToListAsync()`.
@@ -93,7 +93,7 @@ Por ende, cualquier endpoint que ejecute **3 o 4 consultas secuenciales** (`awai
 ### Endpoint 4: `GET /api/partidos/mios`
 - **Uso en frontend:** `/dashboard/partidos`.
 - **Latencia observada:** **336.4ms – 341.4ms**.
-- **Ubicación:** `reservaya-nextjs-api/backend/ReservaFacil.Api/Controllers/PartidosController.cs:108-152`
+- **Ubicación:** `apps/api/Controllers/PartidosController.cs:108-152`
 - **Cadena de consultas actual (4 round-trips secuenciales):**
   1. `L114`: `PartidosAbiertos.Where(OrganizadorId == uid).ToListAsync()` (~85ms).
   2. `L121`: `AnotacionesPartido.Where(UsuarioId == uid).Select(PartidoId).ToListAsync()` (~75ms).
@@ -111,7 +111,7 @@ Por ende, cualquier endpoint que ejecute **3 o 4 consultas secuenciales** (`awai
 ### Endpoint 5: `GET /api/reservas`
 - **Uso en frontend:** `/dashboard/reservas`, `/dashboard`, `/admin/agenda`, `/dashboard/perfil`.
 - **Latencia observada:** **~350ms** para roles staff / admin; ~180ms para usuarios regulares.
-- **Ubicación:** `reservaya-nextjs-api/backend/ReservaFacil.Api/Controllers/ReservasController.cs:28-64`
+- **Ubicación:** `apps/api/Controllers/ReservasController.cs:28-64`
 - **Problemas identificados:**
   - Para staff/admin: calcula `ComplejoAccess.IdsAsync`, luego consulta `Canchas.Where(ComplejoId)`, y finalmente filtra reservas por ambos conjuntos con `Contains`.
 - **Propuesta de optimización para L5:**

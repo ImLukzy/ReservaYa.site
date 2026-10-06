@@ -1,41 +1,46 @@
 # CLAUDE.md — ReservaYa
-Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Monorepo: landing Astro + panel Next.js + API .NET + Neon Postgres.
+
+Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web pública y panel Next.js 16 en `apps/web`; API .NET 10 en `apps/api`; Neon conserva su esquema existente.
 
 ## Trabajo
-- Español. Al terminar: "Hecho." + resultado verificable. Sin explicar código.
-- Tarea = spec `docs/specs/NN-slug.md` (plantilla `docs/specs/_TEMPLATE.md`); `[x]` + evidencia en §7 solo con gates en verde.
-- Backlog y estado: `PLAN_OTRO_AGENTE.md` §3. Bloqueos de API/BD se anotan `BLOQUEO-API` (endpoint, payload, respuesta), no se parchean.
-- No commit/push sin pedirlo. Nunca `.env`, `bin/`, `obj/`, `.next/`, `dist/`.
-- Skills (leer antes de tocar): Astro → `docs/skills/astro-landing.md` · Panel Next → `docs/skills/panel-next.md`.
-- Bajo demanda: API `reservaya-frontend-astro/docs/api.md` · arquitectura `reservaya-frontend-astro/docs/architecture.md` · deploy `DEPLOY_GRATIS.md`.
+
+- Español. Entregar resultado verificable, archivos cambiados y comandos/salidas. No commit/push/tag sin instrucción explícita.
+- Implementar desde spec aprobada en `docs/specs`; plantilla `_TEMPLATE.md`, spec activa 51 e historia en `archivo`. El plan vigente está en `PLAN_OTRO_AGENTE.md`; en la oficina god asigna cards y Pam registra §7.
+- Antes de frontend leer `docs/skills/panel-next.md`. Contrato API: `docs/api.md`; arquitectura: `docs/architecture.md`; deploy: `DEPLOY_GRATIS.md`.
+- BLOQUEO-API: endpoint, payload y respuesta; no parchear ausencia de datos o permisos.
+- Spec, exploración y revisión describen trabajos del equipo; no asumir slash commands ni aliases de agentes instalados. Seguir las herramientas/skills realmente disponibles en la sesión.
 
 ## Árbol
+
+```text
+apps/web/                  Next 16 :3000 — público y /dashboard /admin /superadmin /tecnico
+  app/(public)             rutas públicas, metadata y layout sin guarda
+  app/(dashboard)          guardas requireAuth/requireRole
+  components/ui            UI compartida público/panel
+  lib                      server-fetch→api/b2b-api; http→api-client/b2b-client; public/*
+  proxy.ts                 verifica JWT/rol solo en rutas protegidas
+  prisma                   espejo protegido; dueño del esquema = EF Core
+apps/api/                  .NET 10 :5000 — auth, reservas, caja, torneos; Migrations protegidas
+scripts/                   runner Node y checker/tests motion
+.github/workflows/ci.yml   tipos/lint/tests/build web, runner/motion, build API, db:check
 ```
-reservaya-frontend-astro/      Astro 5 estático :4321 — landing, login/register, jugador (src/pages, layouts/BaseLayout.astro)
-reservaya-nextjs-api/          Next 16 :3000 — panel /dashboard /admin /superadmin /tecnico; rewrites /api/* y /uploads/* → BACKEND_URL
-  app/(auth) app/(dashboard)   rutas; guardas en lib/session.ts (requireAuth, requireRole)
-  components/{b2b,features,layout,ui}
-  lib/                         server-fetch.ts→api.ts,b2b-api.ts (servidor) · http.ts→api-client.ts,b2b-client.ts (cliente)
-                               carga.ts (errores visibles) · redirect.ts · permissions.ts (fallbackPorRol) · *.test.mjs
-  proxy.ts                     middleware: verifica JWT (jose, claim `rol`) y redirige por rol
-  backend/ReservaFacil.Api/    .NET 10 :5000 — única autoridad (auth, reservas, caja, torneos)
-  prisma/                      esquema espejo; dueño de la BD = EF Core
-.github/workflows/ci.yml       astro check + build · motion --check · typecheck + lint + test + build · db:check (secreto DATABASE_URL)
-```
 
-## Comandos (npm)
-- Todo: `npm run dev:all` (API 5000 → Next 3000 → Astro 4321) · API sola: `npm run dev:api`
-- Astro: `npm --prefix reservaya-frontend-astro run build` · `npx --prefix reservaya-frontend-astro astro check`
-- Panel: `npm --prefix reservaya-nextjs-api run typecheck` · `run lint` · `test` (node --test) · `run build` · `run db:check` (solo lectura)
-- Motion (spec 46): `node scripts/motion-tokens.mjs --check` (`--write` regenera el resorte) · CLS: `node reservaya-nextjs-api/scripts/cls.mjs` (panel, `QA_<ROL>_EMAIL|PASSWORD`) o `--landing`
+## Comandos desde raíz
 
-## Entorno (solo nombres)
-- Astro (build-time): `PUBLIC_RESERVAYA_API_URL` `PUBLIC_RESERVAYA_APP_URL` `PUBLIC_GA_ID` `PUBLIC_INBOXMEJIKAI_ENDPOINT`
-- Panel: `DATABASE_URL` `DATABASE_URL_UNPOOLED` `JWT_SECRET`(≥32) `BACKEND_URL` `FRONTEND_ORIGIN` `NEXT_PUBLIC_PUBLIC_APP_URL` `COOKIE_SECURE`
+- `npm run dev:all`: runner Node, API :5000 saludable antes de web :3000; Ctrl+C limpia hijos propios. Carga entorno local apps/web/.env en ejecución; no imprime secretos.
+- `npm run dev`, `dev:next`, `build`, `build:next`, `preview`: web. `dev:api`: API sola con variables en el entorno del shell.
+- `npm --prefix apps/web run typecheck`, `run lint`, `test`, `run build`, `run db:check` (solo lectura).
+- Dentro de apps/web: `npm exec -- next typegen` si faltan tipos generados. CI lo ejecuta antes de typecheck.
+- `dotnet build apps/api/ReservaFacil.Api.csproj`; `node --test scripts/start-dev.test.mjs`.
+- Motion: `node scripts/motion-tokens.mjs --check` y `node --test scripts/motion-tokens.test.mjs`.
+- CLS: `node apps/web/scripts/cls.mjs` (QA_<ROL>_EMAIL/PASSWORD del shell) o `--landing` para público.
 
-## Reglas críticas
-- ⛔ Cero migraciones: prohibido `dotnet ef`, `prisma migrate|db push|db pull|db execute`; no tocar `prisma/**`, `backend/**/Migrations/**`, `Entities.cs`, `AppDbContext.cs`.
-- Sesión: cookie HttpOnly `token` emitida por la API; el cliente nunca lee el JWT. Roles: `USUARIO` `ADMIN` `SUPERADMIN` `TECNICO` (sin `PERSONAL`).
-- Multitenancy: `TECNICO` = plataforma; cada `SUPERADMIN` solo sus complejos; 403 cross-owner lo decide la API.
-- Rama `agents/frontend-nextjs-ui`: solo `reservaya-frontend-astro/src/**` y `public/**`, y `app/` `components/` `lib/` del panel (+ `docs/`, `.github/`).
-- Comandos IA: `/spec` (escribir spec y esperar "aprobado") · `/gates` (correr gates y anotar §7) · `@explorer` (haiku, solo lectura) · `@reviewer` (revisión vs spec). Hook `.claude/settings.json` bloquea editar `.env`, `prisma/**`, `Migrations/**`, `Entities.cs`, `AppDbContext.cs`, `bin/obj/.next/dist`.
+## Entorno y reglas críticas
+
+Variables de ejemplo en apps/web/.env.example. Públicas: NEXT_PUBLIC_GA_ID, NEXT_PUBLIC_INBOXMEJIKAI_ENDPOINT, NEXT_PUBLIC_WHATSAPP_NUMBER. Privadas: DATABASE_URL, DATABASE_URL_UNPOOLED, JWT_SECRET (≥32), BACKEND_URL; API además FRONTEND_ORIGIN, COOKIE_SECURE y configuración de correo. Nunca editar/versionar .env real ni artefactos node_modules/.next/bin/obj/dist.
+
+Cero migraciones: prohibidos dotnet ef y prisma migrate/db push/db pull/db execute. No cambiar bytes de apps/web/prisma/**, apps/api/Migrations/**, Entities.cs ni AppDbContext.cs. En spec 51 solo se autorizó su traslado con hashes iguales. No ejecutar seed.
+
+Cookie HttpOnly token emitida por API; cliente no lee JWT. Roles USUARIO, ADMIN, SUPERADMIN y TECNICO. Multitenancy y 403 cross-owner los decide la API. Requests y uploads del navegador usan el mismo origen web.
+
+El hook real existe en `.claude/settings.json`, creado y probado por god para esta fase. Filtra Edit/Write/MultiEdit en herramientas compatibles, protege .env/Prisma/Migrations/Entities/AppDbContext/artefactos y permite únicamente .env.example como excepción exacta de entorno. No asumir que cubre shell u otros proveedores; las reglas anteriores siguen aplicando.

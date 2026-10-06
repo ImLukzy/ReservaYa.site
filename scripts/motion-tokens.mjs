@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Motion único (spec 46): el resorte k 400 / c 30 / m 1 de Universo_Agustino como
-// `linear()` de CSS, idéntico en la landing Astro y en el panel Next.
+// `linear()` de CSS, compartido por la web pública y el panel Next.
 //   node scripts/motion-tokens.mjs           imprime el bloque de tokens
 //   node scripts/motion-tokens.mjs --write   lo escribe entre los marcadores de ambos CSS
 //   node scripts/motion-tokens.mjs --check   falla si difiere o hay curvas/duraciones sueltas
@@ -100,19 +100,18 @@ export function violaciones(ruta, texto) {
 }
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
-const TOKENS = ['reservaya-frontend-astro/src/styles/tokens.css', 'reservaya-nextjs-api/app/globals.css'];
-const ESCANEO = [
-  'reservaya-frontend-astro/src',
-  'reservaya-nextjs-api/app',
-  'reservaya-nextjs-api/components',
-  'reservaya-nextjs-api/lib',
+export const TOKENS = ['apps/web/app/globals.css'];
+export const ESCANEO = [
+  'apps/web/app',
+  'apps/web/components',
+  'apps/web/lib',
 ];
 
 function archivos(dir) {
   return readdirSync(dir).flatMap((nombre) => {
     const ruta = join(dir, nombre);
     if (statSync(ruta).isDirectory()) return archivos(ruta);
-    return /\.(css|astro|tsx|ts)$/.test(nombre) && !nombre.endsWith('.d.ts') ? [ruta] : [];
+    return /\.(css|tsx|ts)$/.test(nombre) && !nombre.endsWith('.d.ts') ? [ruta] : [];
   });
 }
 
