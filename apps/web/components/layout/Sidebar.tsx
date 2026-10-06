@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { logout as apiLogout } from '@/lib/api-client';
 import { publicAppUrl } from '@/lib/public-app';
+import { Marca } from '@/components/ui/Marca';
 import {
   LayoutDashboard,
   CalendarDays,
@@ -214,27 +215,14 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
       >
         {/* Cabecera */}
         <div className="flex h-[5.5rem] shrink-0 items-center gap-2 border-b border-tiza/10 px-6">
-          <svg
-            className="h-7 w-7 shrink-0 text-cesped-vivo"
-            viewBox="0 0 28 28"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            aria-hidden="true"
-          >
-            <rect x="3" y="5" width="22" height="18" rx="2" />
-            <path d="M14 5v18" />
-            <circle cx="14" cy="14" r="3.5" />
-          </svg>
+          {/* Misma Marca que la cabecera pública; rol y "Panel" debajo, alineados con el nombre. */}
           <div className="min-w-0">
-            <p className="truncate font-display text-xl font-bold leading-none text-tiza">
-              Reserva<span className="text-cesped-vivo">Ya</span>
+            <Marca tono="noche" href={`${publicAppUrl}/`} />
+            <p className="-mt-2 flex items-center gap-2 pl-9 text-xs text-niebla">
+              <span className="truncate">{rolLabel[rol]}</span>
+              <span className="rounded-md bg-cesped/15 px-1.5 py-0.5 font-semibold text-cesped-vivo">Panel</span>
             </p>
-            <p className="mt-1 text-xs text-niebla">{rolLabel[rol]}</p>
           </div>
-          <span className="ml-1 rounded-md bg-cesped/15 px-1.5 py-0.5 text-xs font-semibold text-cesped-vivo">
-            Panel
-          </span>
           <button
             type="button"
             aria-label="Cerrar menú"

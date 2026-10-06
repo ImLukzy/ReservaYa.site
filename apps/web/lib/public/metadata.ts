@@ -5,7 +5,7 @@ export function publicMetadata(title: string, description: string, path: string,
   const canonical = new URL(path, site).href
   const image = new URL('/og-default.png', site).href
   return {
-    title, description, metadataBase: new URL(site),
+    title: { absolute: title }, description, metadataBase: new URL(site),
     alternates: { canonical }, robots,
     referrer: 'strict-origin-when-cross-origin',
     icons: { icon: '/favicon.svg' },

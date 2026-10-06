@@ -20,8 +20,11 @@ const instrument = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'ReservaYa',
+  // El panel titula con plantilla; el sitio público pasa títulos absolutos (publicMetadata).
+  title: { default: 'ReservaYa', template: '%s | ReservaYa' },
   description: 'Busca, reserva y juega. Sistema de reservas de canchas deportivas',
+  // Mismo icono en público y panel; app/favicon.ico es su versión .ico para /favicon.ico.
+  icons: { icon: '/favicon.svg' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
