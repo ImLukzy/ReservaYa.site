@@ -12,12 +12,19 @@ const ZONAS: ReadonlyArray<[prefijo: string, roles: readonly Rol[]]> = [
 ]
 const ROLES: readonly string[] = ['USUARIO', 'ADMIN', 'SUPERADMIN', 'TECNICO']
 
+// El panel nunca se guarda en caché HTTP ni en bfcache: tras cerrar sesión, Atrás vuelve a pasar por aquí.
+function sinCache(response: NextResponse) {
+  response.headers.set('Cache-Control', 'private, no-store, max-age=0, must-revalidate')
+  response.headers.set('Pragma', 'no-cache')
+  return response
+}
+
 export async function proxy(request: NextRequest) {
   const token = request.cookies.get(appConfig.jwtCookieName)?.value
   if (!token) {
     const loginUrl = new URL('/login', request.url)
     loginUrl.search = `?returnUrl=${encodeURIComponent(request.nextUrl.pathname + request.nextUrl.search)}`
-    return NextResponse.redirect(loginUrl)
+    return sinCache(NextResponse.redirect(loginUrl))
   }
 
   try {
@@ -30,19 +37,16 @@ export async function proxy(request: NextRequest) {
     const path = request.nextUrl.pathname
     const zona = ZONAS.find(([prefijo]) => path === prefijo || path.startsWith(prefijo + '/'))
     if (zona && !zona[1].includes(role)) {
-      return NextResponse.redirect(new URL(fallbackPorRol(role), request.url))
+      return sinCache(NextResponse.redirect(new URL(fallbackPorRol(role), request.url)))
     }
 
-    const response = NextResponse.next()
-    response.headers.set('Cache-Control', 'private, no-store, max-age=0')
-    response.headers.set('Pragma', 'no-cache')
-    return response
+    return sinCache(NextResponse.next())
   } catch {
     const loginUrl = new URL('/login', request.url)
     loginUrl.search = `?returnUrl=${encodeURIComponent(request.nextUrl.pathname + request.nextUrl.search)}`
     const response = NextResponse.redirect(loginUrl)
     response.cookies.delete(appConfig.jwtCookieName)
-    return response
+    return sinCache(response)
   }
 }
 

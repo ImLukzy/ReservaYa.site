@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { logout as apiLogout } from '@/lib/api-client';
@@ -163,28 +163,37 @@ const rolLabel: Record<RolSidebar, string> = {
 
 export function Sidebar({ rol, nombre, email }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const groups = MENU[rol];
 
+  // El panel puede volver desde la caché del router (Atrás tras ir al landing) o desde el bfcache:
+  // en ambos casos se confirma la sesión y, si ya no existe, se sale a /login.
   useEffect(() => {
-    const onRestore = () => {
+    const comprobar = () => {
       void fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
         .then((r) => {
-          if (!r.ok) window.location.replace('/login');
+          if (r.status === 401) window.location.replace('/login');
         })
-        .catch(() => window.location.replace('/login'));
+        .catch(() => undefined);
     };
-    window.addEventListener('pageshow', onRestore);
-    return () => window.removeEventListener('pageshow', onRestore);
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) window.location.reload();
+    };
+    comprobar();
+    window.addEventListener('pageshow', onPageShow);
+    window.addEventListener('popstate', comprobar);
+    return () => {
+      window.removeEventListener('pageshow', onPageShow);
+      window.removeEventListener('popstate', comprobar);
+    };
   }, []);
 
   async function logout() {
     try {
       await apiLogout();
     } finally {
-      router.replace('/login');
-      router.refresh();
+      // Navegación dura: descarta la caché del router para que Atrás no reabra el panel.
+      window.location.replace('/login');
     }
   }
 

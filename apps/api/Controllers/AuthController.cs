@@ -184,7 +184,7 @@ public class AuthController : ControllerBase
             }
         }
 
-        Response.Cookies.Delete(JwtService.CookieName);
+        DeleteTokenCookie();
         return Ok(new { ok = true });
     }
 
@@ -243,7 +243,7 @@ public class AuthController : ControllerBase
         if (filas == 0)
             return BadRequest(new { error = EnlaceInvalido });
 
-        Response.Cookies.Delete(JwtService.CookieName);
+        DeleteTokenCookie();
         _logger.LogInformation("Contraseña restablecida para el usuario {UserId}", usuario.Id);
         return Ok(new { ok = true });
     }
@@ -483,17 +483,26 @@ public class AuthController : ControllerBase
 
     private void SetTokenCookie(string token)
     {
+        var options = TokenCookieOptions();
+        options.MaxAge = JwtService.Ttl;
+        Response.Cookies.Append(JwtService.CookieName, token, options);
+    }
+
+    // El borrado repite Path/Secure/SameSite de la creación para que el navegador reemplace la misma cookie.
+    private void DeleteTokenCookie() => Response.Cookies.Delete(JwtService.CookieName, TokenCookieOptions());
+
+    private CookieOptions TokenCookieOptions()
+    {
         // En prod el panel/landing (vercel/pages) llaman a la API (render):
         // cross-site exige SameSite=None + Secure. En dev se mantiene Lax.
         var crossSite = Environment.GetEnvironmentVariable("COOKIE_SECURE") == "true";
-        Response.Cookies.Append(JwtService.CookieName, token, new CookieOptions
+        return new CookieOptions
         {
             HttpOnly = true,
             Secure = HttpContext.Request.IsHttps || crossSite,
             SameSite = crossSite ? SameSiteMode.None : SameSiteMode.Lax,
-            MaxAge = JwtService.Ttl,
             Path = "/"
-        });
+        };
     }
 
     private string ClientIp()

@@ -48,9 +48,14 @@ export default function Header() {
   }, [])
   async function salir() {
     setSaliendo(true)
-    try { await logout(); setUsuario(null); setAbierto(null); setError('') }
-    catch { setError('No pudimos cerrar tu sesión. Inténtalo de nuevo.') }
-    finally { setSaliendo(false) }
+    try {
+      await logout()
+      // Recarga dura: vacía la caché del router de Next para que Atrás no muestre el panel.
+      window.location.reload()
+    } catch {
+      setError('No pudimos cerrar tu sesión. Inténtalo de nuevo.')
+      setSaliendo(false)
+    }
   }
   const active = (href: string) => path === href ? 'page' : undefined
   const toggle = (name: string) => setAbierto(abierto === name ? null : name)
