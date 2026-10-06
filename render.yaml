@@ -1,27 +1,29 @@
-# Blueprint Render: API .NET (plan free). La DB vive en Neon (no usar la de Render).
-# Uso: dashboard Render → New → Blueprint → repo ImLukzy/ReservaYa → Apply.
-# Luego completa a mano: DATABASE_URL (Neon prod), FRONTEND_ORIGIN (tus URLs) y el
-# email de recuperación: RESEND_API_KEY, EMAIL_FROM, PASSWORD_RESET_URL.
+# API .NET de ReservaYa; PostgreSQL externo en Neon.
+# Blueprint: ImLukzy/ReservaYa.site, rama main; Dockerfile y contexto en la raíz.
+# Los sync:false se completan en Render. En un servicio existente revisa
+# Environment manualmente: el Blueprint no reemplaza esos valores.
 services:
   - type: web
     name: reservaya-api
+    repo: https://github.com/ImLukzy/ReservaYa.site
+    branch: main
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
     plan: free
     healthCheckPath: /healthz
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-      - key: COOKIE_SECURE
-        value: "true"
       - key: DATABASE_URL
         sync: false
-      - key: JWT_SECRET
-        generateValue: true
-      - key: FRONTEND_ORIGIN
+      - key: DATABASE_URL_UNPOOLED
         sync: false
-      # Recuperación de contraseña (spec 15): Resend por API HTTP.
+      # Mismo secreto privado que JWT_SECRET de Vercel; mínimo 32 caracteres.
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_ORIGIN
+        value: https://reservaya.site
+      - key: COOKIE_SECURE
+        value: "true"
       - key: EMAIL_PROVIDER
         value: resend
       - key: RESEND_API_KEY
@@ -29,4 +31,10 @@ services:
       - key: EMAIL_FROM
         sync: false
       - key: PASSWORD_RESET_URL
+        value: https://reservaya.site/reset-password
+      - key: GOOGLE_CLIENT_ID
         sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        value: https://reservaya.site/api/auth/google/callback
