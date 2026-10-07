@@ -7,7 +7,7 @@ import { BindingFilter } from './public/binding';
 import { AppModule } from './app.module';
 
 export async function createApp(): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { logger: false });
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { logger: false, rawBody: true });
   await app.register(cookie);
   await app.register(multipart, { limits: { fileSize: 8 * 1024 * 1024, files: 1, fields: 10, parts: 11 } });
   app.useGlobalFilters(new BindingFilter());

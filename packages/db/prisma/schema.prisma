@@ -1,5 +1,6 @@
 // Canonical Prisma model: actual catalogue from Jim, 2026-10-07.
-// No Reclamo table in the source database; F1 never creates it.
+// No Reclamo table in the source database; F1 never creates it. Spec 56 F6 adds it
+// (migration 1_libro_reclamaciones, mirror of the .NET LibroReclamaciones migration), applied only in QA.
 // IDs are application-generated; database has no cuid()/uuid() defaults.
 generator client {
   provider = "prisma-client-js"
@@ -377,6 +378,38 @@ model Promocion {
 
   @@unique([codigo], map: "Promocion_codigo_key")
   @@index([complejoId, activa], map: "Promocion_complejoId_activa_idx")
+}
+
+model Reclamo {
+  id String @id(map: "Reclamo_pkey")
+  numero String
+  anio Int
+  correlativo Int
+  tipo String
+  nombre String
+  documentoTipo String
+  documento String
+  domicilio String
+  telefono String
+  email String
+  menor Boolean
+  apoderado String?
+  apoderadoDocumento String?
+  apoderadoDomicilio String?
+  apoderadoTelefono String?
+  bienTipo String
+  bienDescripcion String
+  monto Decimal? @db.Decimal(12, 2)
+  detalle String
+  pedido String
+  medioRespuesta String
+  creadoEn DateTime @db.Timestamp(3)
+  estado String?
+  respuestaProveedor String?
+  respondidoEn DateTime? @db.Timestamp(3)
+
+  @@unique([anio, correlativo], map: "Reclamo_anio_correlativo_key")
+  @@unique([numero], map: "Reclamo_numero_key")
 }
 
 model Resena {

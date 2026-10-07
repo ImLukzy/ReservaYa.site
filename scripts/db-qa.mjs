@@ -44,6 +44,11 @@ try {
     } finally { await db.$disconnect(); }
     run(['migrate', 'resolve', '--applied', '0_baseline']);
     run(['migrate', 'status']);
+  } else if (action === 'deploy') {
+    // Applies pending migrations (Spec 56 F6: 1_libro_reclamaciones) to the QA branch only.
+    if (process.argv[3] !== '--confirm-qa-migracion-ts') throw new Error('Requiere confirmación explícita de la rama QA');
+    run(['migrate', 'deploy']);
+    run(['migrate', 'status']);
   } else if (action === 'status') run(['migrate', 'status']);
   else if (action !== 'drift') throw new Error('Acción desconocida');
   if (action !== 'status') {

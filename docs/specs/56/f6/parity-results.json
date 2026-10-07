@@ -1,0 +1,1754 @@
+{
+ "runtime": "v22.20.0",
+ "basis": "Actual legacy controllers, disposable empty QA database with fictitious data only",
+ "normalization": [
+  "New IDs validated GUID N/D and mapped",
+  "Request timestamps mapped after a 120 s range check",
+  "ProblemDetails traceId mapped after W3C or Kestrel request-id format check",
+  "Effects sorted after normalization; money columns compared as exact text"
+ ],
+ "complete": true,
+ "rows": [
+  {
+   "id": "E001-nominal",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=a",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E001-sin-sesion",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=a",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E002-nominal",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E002-sin-sesion",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E003-nominal",
+   "endpointId": "E003",
+   "path": "/api/abonos/cuenta?complejoId=a",
+   "result": "PASS",
+   "status": 501
+  },
+  {
+   "id": "E003-sin-sesion",
+   "endpointId": "E003",
+   "path": "/api/abonos/cuenta?complejoId=a",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E004-nominal",
+   "endpointId": "E004",
+   "path": "/api/abonos/cuenta",
+   "result": "PASS",
+   "status": 501
+  },
+  {
+   "id": "E004-sin-sesion",
+   "endpointId": "E004",
+   "path": "/api/abonos/cuenta",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E015-nominal",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E015-sin-sesion",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E016-nominal",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E016-sin-sesion",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E017-nominal",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E017-sin-sesion",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E018-nominal",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E018-sin-sesion",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E019-nominal",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-sin-sesion",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E020-nominal",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E020-sin-sesion",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E021-nominal",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E021-sin-sesion",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E022-nominal",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E022-sin-sesion",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E023-nominal",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E023-sin-sesion",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E048-nominal",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E048-sin-sesion",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E049-nominal",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E049-sin-sesion",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E050-nominal",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E050-sin-sesion",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E051-nominal",
+   "endpointId": "E051",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E051-sin-sesion",
+   "endpointId": "E051",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E064-nominal",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-sin-sesion",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E065-nominal",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E065-sin-sesion",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 401
+  },
+  {
+   "id": "E001-tv-revocado",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=a",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 403,
+   "nestStatus": 403
+  },
+  {
+   "id": "E001-rol-no-permitido",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=a",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E002-tv-revocado",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 403,
+   "nestStatus": 403
+  },
+  {
+   "id": "E002-rol-no-permitido",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E003-tv-revocado",
+   "endpointId": "E003",
+   "path": "/api/abonos/cuenta?complejoId=a",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E004-tv-revocado",
+   "endpointId": "E004",
+   "path": "/api/abonos/cuenta",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E015-tv-revocado",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E015-rol-no-permitido",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E016-tv-revocado",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E016-rol-no-permitido",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E017-tv-revocado",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 201,
+   "nestStatus": 403
+  },
+  {
+   "id": "E017-rol-no-permitido",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E018-tv-revocado",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E018-rol-no-permitido",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E019-tv-revocado",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 201,
+   "nestStatus": 403
+  },
+  {
+   "id": "E019-rol-no-permitido",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E020-tv-revocado",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E020-rol-no-permitido",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E021-tv-revocado",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 201,
+   "nestStatus": 403
+  },
+  {
+   "id": "E021-rol-no-permitido",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E022-tv-revocado",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E022-rol-no-permitido",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E023-tv-revocado",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-cola",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E023-rol-no-permitido",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E048-tv-revocado",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E048-rol-no-permitido",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E049-tv-revocado",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 201,
+   "nestStatus": 403
+  },
+  {
+   "id": "E049-rol-no-permitido",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E050-tv-revocado",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E050-rol-no-permitido",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E051-tv-revocado",
+   "endpointId": "E051",
+   "path": "/api/metas/meta-a1",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E051-rol-no-permitido",
+   "endpointId": "E051",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E064-tv-revocado",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E065-tv-revocado",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "SECURITY_DIVERGENCE",
+   "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+   "legacyStatus": 200,
+   "nestStatus": 403
+  },
+  {
+   "id": "E065-rol-no-permitido",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E001-todas",
+   "endpointId": "E001",
+   "path": "/api/abonos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E001-platform",
+   "endpointId": "E001",
+   "path": "/api/abonos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E001-member",
+   "endpointId": "E001",
+   "path": "/api/abonos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E001-otra-sede",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=b",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E001-bloqueado-propio",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=a2",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E001-missing",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=absent",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E001-sin-complejos",
+   "endpointId": "E001",
+   "path": "/api/abonos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E001-expired",
+   "endpointId": "E001",
+   "path": "/api/abonos",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E001-blank-query",
+   "endpointId": "E001",
+   "path": "/api/abonos?complejoId=%20",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E002-sin-complejo",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E002-monto-cero",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E002-monto-negativo",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E002-monto-texto",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E002-monto-bool",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E002-otra-sede",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E002-metodo",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E002-metodo-vacio",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E002-bloqueado-sin-caja",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E002-platform",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E002-member",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E002-numero-redondeo",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E002-mayusculas",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E015-platform",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E015-member",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E015-sin-complejo",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E015-expired",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E015-sin-caja",
+   "endpointId": "E015",
+   "path": "/api/caja/hoy",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E016-sin-complejo",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E016-otra",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E016-sin-caja",
+   "endpointId": "E016",
+   "path": "/api/caja/sesion",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E017-caja-ya-abierta",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 409
+  },
+  {
+   "id": "E017-negativo",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E017-sin-monto",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E017-sin-complejo",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E017-texto",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E017-cero",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E017-abierta-y-negativo",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 409
+  },
+  {
+   "id": "E018-sin-caja",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E018-negativo",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E018-sin-monto",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E018-sin-complejo",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E018-member",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E018-platform",
+   "endpointId": "E018",
+   "path": "/api/caja/cierre",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E019-simple",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-simple-default",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-tipo",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-metodo",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-metodo-numero",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-cantidad-cero",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-producto-ajeno",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-producto-inactivo",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-stock",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-stock-acumulado",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-stock-justo",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-directo-sin-precio",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-directo-cero",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-items-vacios",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-auto-apertura-rechazada",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-auto-apertura",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-sin-descripcion",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-monto-cero",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-sin-complejo",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-precio-texto",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E019-member",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E019-platform",
+   "endpointId": "E019",
+   "path": "/api/caja/movimientos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E020-platform",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E020-sin-complejo",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E020-otra",
+   "endpointId": "E020",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E021-sin-nombre",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E021-categoria",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E021-sin-categoria",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E021-precio",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E021-stock",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E021-sin-complejo",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E021-servicio-sin-stock",
+   "endpointId": "E021",
+   "path": "/api/caja/productos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E022-otra-sede",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-b",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E022-platform",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-b",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E022-categoria",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E022-precio",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E022-stock",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E022-nombre-blanco",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E022-missing",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/absent",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E022-member",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-agua",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E022-inactivo",
+   "endpointId": "E022",
+   "path": "/api/caja/productos/p-off",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E023-otra-sede",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-b",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E023-missing",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/absent",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E023-platform",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-b",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E023-sin-complejo",
+   "endpointId": "E023",
+   "path": "/api/caja/productos/p-cola",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E048-platform",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E048-sin-complejo",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E048-otra",
+   "endpointId": "E048",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E049-sin-titulo",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E049-tipo",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E049-tipo-numero",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E049-objetivo",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E049-fecha",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E049-fecha-corta",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E049-fin-anterior",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E049-mismo-dia",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E049-sin-complejo",
+   "endpointId": "E049",
+   "path": "/api/metas",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-otra-sede",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-b",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E050-platform",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-b",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E050-tipo",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-objetivo",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-actual",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-fecha-inicio",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-fecha-fin",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-fin-anterior",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a1",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E050-missing",
+   "endpointId": "E050",
+   "path": "/api/metas/absent",
+   "result": "PASS",
+   "status": 404
+  },
+  {
+   "id": "E050-member",
+   "endpointId": "E050",
+   "path": "/api/metas/meta-a2",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E051-otra-sede",
+   "endpointId": "E051",
+   "path": "/api/metas/meta-b",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E051-missing",
+   "endpointId": "E051",
+   "path": "/api/metas/absent",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E051-platform",
+   "endpointId": "E051",
+   "path": "/api/metas/meta-b",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E063-payload-invalido",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-email",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-documento-tipo",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-longitudes",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-nombre-recortado",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-menor-sin-apoderado",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-monto-decimales",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-monto-negativo",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-medio",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E063-nulos",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 400
+  },
+  {
+   "id": "E064-owner",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-admin",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-admin-b",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-platform",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-sin-complejos",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-client",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-expired",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 403
+  },
+  {
+   "id": "E065-platform",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E065-admin",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E065-otra",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E065-sin-complejos",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E065-tercero",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E002-literal-exacto",
+   "endpointId": "E002",
+   "path": "/api/abonos/abonar",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E017-literal-exacto",
+   "endpointId": "E017",
+   "path": "/api/caja/apertura",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E065-aislamiento",
+   "endpointId": "E065",
+   "path": "/api/reportes/global",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E064-cache-canchas",
+   "endpointId": "E064",
+   "path": "/api/reportes/dashboard",
+   "result": "PASS",
+   "status": 200
+  },
+  {
+   "id": "E063-nominal",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E063-menor",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E063-segundo-del-anio",
+   "endpointId": "E063",
+   "path": "/api/reclamos",
+   "result": "PASS",
+   "status": 201
+  },
+  {
+   "id": "E063-rate-limit",
+   "endpointId": "E063",
+   "result": "PASS",
+   "statuses": [
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    429
+   ]
+  },
+  {
+   "id": "E019-stock-concurrente-legacy",
+   "endpointId": "E019",
+   "result": "INFO",
+   "invariantHeld": false,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "stockFinal": 0,
+   "ventas": 5,
+   "stockInicial": 2
+  },
+  {
+   "id": "E019-stock-concurrente-nest",
+   "endpointId": "E019",
+   "result": "PASS",
+   "invariantHeld": true,
+   "statuses": [
+    201,
+    201,
+    400,
+    400,
+    400
+   ],
+   "stockFinal": 0,
+   "ventas": 2,
+   "stockInicial": 2
+  },
+  {
+   "id": "E017-apertura-concurrente-legacy",
+   "endpointId": "E017",
+   "result": "INFO",
+   "invariantHeld": false,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "cajasAbiertas": 5
+  },
+  {
+   "id": "E017-apertura-concurrente-nest",
+   "endpointId": "E017",
+   "result": "PASS",
+   "invariantHeld": true,
+   "statuses": [
+    201,
+    409,
+    409,
+    409,
+    409
+   ],
+   "cajasAbiertas": 1
+  },
+  {
+   "id": "E018-cierre-concurrente-legacy",
+   "endpointId": "E018",
+   "result": "INFO",
+   "invariantHeld": false,
+   "statuses": [
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "estado": "CERRADA",
+   "montoFinal": "104.00"
+  },
+  {
+   "id": "E018-cierre-concurrente-nest",
+   "endpointId": "E018",
+   "result": "PASS",
+   "invariantHeld": true,
+   "statuses": [
+    200,
+    400,
+    400,
+    400,
+    400
+   ],
+   "estado": "CERRADA",
+   "montoFinal": "103.00"
+  },
+  {
+   "id": "E019-auto-apertura-concurrente-legacy",
+   "endpointId": "E019",
+   "result": "INFO",
+   "invariantHeld": false,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "cajasCreadas": 5,
+   "movimientos": 5
+  },
+  {
+   "id": "E019-auto-apertura-concurrente-nest",
+   "endpointId": "E019",
+   "result": "PASS",
+   "invariantHeld": true,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "cajasCreadas": 1,
+   "movimientos": 5
+  },
+  {
+   "id": "E002-abono-concurrente-legacy",
+   "endpointId": "E002",
+   "result": "INFO",
+   "invariantHeld": false,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "cajasAbiertas": 5,
+   "totalAbonado": "35.00"
+  },
+  {
+   "id": "E002-abono-concurrente-nest",
+   "endpointId": "E002",
+   "result": "PASS",
+   "invariantHeld": true,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "cajasAbiertas": 1,
+   "totalAbonado": "35.00"
+  },
+  {
+   "id": "E063-correlativo-concurrente-legacy",
+   "endpointId": "E063",
+   "result": "INFO",
+   "invariantHeld": false,
+   "statuses": [
+    201,
+    500,
+    500,
+    500,
+    500
+   ],
+   "correlativos": [
+    1
+   ]
+  },
+  {
+   "id": "E063-correlativo-concurrente-nest",
+   "endpointId": "E063",
+   "result": "PASS",
+   "invariantHeld": true,
+   "statuses": [
+    201,
+    201,
+    201,
+    201,
+    201
+   ],
+   "correlativos": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ ]
+}

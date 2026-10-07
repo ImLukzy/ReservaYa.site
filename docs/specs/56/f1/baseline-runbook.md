@@ -54,3 +54,14 @@ Solo tras aprobación humana posterior: confirmar rama/endpoint productivo con e
 ## Recreación efímera
 
 En PostgreSQL descartable, crear base vacía, aplicar migration.sql y ejecutar migrate diff contra el mismo schema. Exigir código0. No usar un schema nuevo en la rama compartida si no fue aprobado ni usar shadowDatabaseUrl productivo. Ensayo ejecutado por god: BD temporal recreacion_efimera dentro de QA, migrate deploy/status/diff0 PASS; BD eliminada después. CI conserva una recreación independiente con PostgreSQL17.
+
+## Migración posterior: 1_libro_reclamaciones (Spec 56 F6)
+
+Aprobada por el humano solo para QA (2026-10-07). Crea `Reclamo` con columnas, tipos e índices únicos (`Reclamo_numero_key`, `Reclamo_anio_correlativo_key`) idénticos a la migración .NET `20261006133334_LibroReclamaciones`. SQL generado con `prisma migrate diff` desde el schema anterior; sin datos ni seed.
+
+```bash
+node scripts/db-qa.mjs deploy --confirm-qa-migracion-ts   # migrate deploy + status, solo URLs TEST de hive/qa.env
+node scripts/db-qa.mjs drift                              # exige diff 0
+```
+
+Aplicada en `qa-migracion-ts`: status «Database schema is up to date», drift 0. **Producción: pendiente.** Requiere aprobación humana aparte y el procedimiento productivo de la sección anterior (backup/PITR, ventana, verificación de rama). Reversión en QA: `DROP TABLE "Reclamo"` y borrar la fila `1_libro_reclamaciones` de `_prisma_migrations`, solo si no hay reclamos reales.
