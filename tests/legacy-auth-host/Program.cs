@@ -30,7 +30,7 @@ public static class FixtureHost {
   var b=WebApplication.CreateBuilder(args);
   b.Logging.ClearProviders();
   var url=new Uri(Environment.GetEnvironmentVariable("DATABASE_URL")!);var parts=url.UserInfo.Split(':',2);
-  var cs=new NpgsqlConnectionStringBuilder {Host=url.Host,Port=url.Port>0?url.Port:5432,Database=url.AbsolutePath.TrimStart('/'),Username=Uri.UnescapeDataString(parts[0]),Password=Uri.UnescapeDataString(parts[1]),SslMode=SslMode.Require};
+  var cs=new NpgsqlConnectionStringBuilder {Host=url.Host,Port=url.Port>0?url.Port:5432,Database=url.AbsolutePath.TrimStart('/'),Username=Uri.UnescapeDataString(parts[0]),Password=Uri.UnescapeDataString(parts[1]),SslMode=Environment.GetEnvironmentVariable("PARITY_CI")=="true"&&url.IsLoopback?SslMode.Disable:SslMode.Require};
   if(!cs.Database.StartsWith("f3_fixture_",StringComparison.Ordinal) && !(Environment.GetEnvironmentVariable("F4_QA_FIXTURE")=="true" && cs.Database.StartsWith("f4_fixture_",StringComparison.Ordinal)) && !(Environment.GetEnvironmentVariable("F5_QA_FIXTURE")=="true" && cs.Database.StartsWith("f5_fixture_",StringComparison.Ordinal)) && !(Environment.GetEnvironmentVariable("F6_QA_FIXTURE")=="true" && cs.Database.StartsWith("f6_fixture_",StringComparison.Ordinal)) && !(Environment.GetEnvironmentVariable("F7_QA_FIXTURE")=="true" && cs.Database.StartsWith("f7_fixture_",StringComparison.Ordinal)))throw new Exception("Only disposable F3 fixture databases allowed");
   var source=new NpgsqlDataSourceBuilder(cs.ConnectionString);
   source.MapEnum<Rol>("Rol",new NpgsqlNullNameTranslator());
