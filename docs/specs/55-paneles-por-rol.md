@@ -47,18 +47,26 @@ Cambiar contratos de reservas/caja/torneos, esquema o seed; `prisma/**`, `Migrat
 | A9 | Limpieza | `rg "plan=dueno\|aceptaConvenio\|superadmin/" apps/web/app --files-with-matches` vacío salvo histórico; 0 links a `/superadmin/*` y `/admin/complejos/nuevo` | pasa |
 
 ## 6. Checklist
-- [ ] F1 API: `SolicitudesController` + cambios canchas/complejos/suscripciones + quitar `PlanDueno`; A3+A4+A5+A6+A7.
+- [x] F1 API: `SolicitudesController` + cambios canchas/complejos/suscripciones + quitar `PlanDueno`; A3+A4+A5+A6+A7.
 - [x] F2 Panel jugador: ruta publicar-centro + entrada menú + estado; A1+A2+A4.
 - [x] F3 Panel técnico: cola solicitudes + email motivo; A1+A2+A5+A6.
 - [x] F4 Panel dueño + guía: tour saltable/reabrible + primer-login; A8.
 - [x] F5 Admin: menús finales + permisos; A1+A2.
 - [x] F6 Limpieza: register, duenos/Planes, terms, shim, links muertos; A9 + §7 Pam.
-- Nota F2–F6 (temp worker-paneles-roles, 2026-10-06): web codificada contra el contrato de §4/§8 más `GET /api/solicitudes` (cola TECNICO, solo pendientes), no listado en §4; 404 de la API se muestra como «aún no disponible». A4–A6 y A8 extremo a extremo quedan para Pam con la API F1 desplegada.
+- Nota F2–F6 (temp worker-paneles-roles, 2026-10-06): web codificada contra el contrato de §4/§8 más `GET /api/solicitudes` (cola TECNICO, solo pendientes), no listado en §4; 404 de la API se muestra como «aún no disponible». A4–A6 y A8 extremo a extremo verificados por Pam en producción con cuentas QA y datos qa+.
 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
 |---|---|---|---|
-| — | — | pendiente (spec sin implementar) | — |
+| 2026-10-07 | A1 Tipos web | PASS | `npm --prefix apps/web run typecheck` exit 0 (0 errores). |
+| 2026-10-07 | A2 Lint web | PASS | `npm --prefix apps/web run lint` exit 0 (0 errores, 1 warning preexistente en seed.ts). |
+| 2026-10-07 | A3 Build API | PASS | Endpoints de Solicitudes activos y validados en producción Render (`https://reservaya.site/api/*`). |
+| 2026-10-07 | A4 Solicitud jugador | PASS | Jugador `qa+dueno_*` envía centro vía `POST /api/solicitudes` → HTTP 201 (`estado: "PENDIENTE"`); visible en `GET /api/solicitudes/mias`. |
+| 2026-10-07 | A5 Aprobación técnica | PASS | Técnico aprueba vía `PATCH /api/solicitudes/{id}/aprobar` → HTTP 200 (`estado: "APROBADA"`); `POST /api/auth/refrescar` promueve rol a `SUPERADMIN`; `GET /api/suscripciones/estado` confirma `enPrueba: true`, 30 días, 1 cancha permitida y 1 cancha activa (`activa: true`). |
+| 2026-10-07 | A6 Rechazo con motivo | PASS | Técnico rechaza vía `PATCH /api/solicitudes/{id}/rechazar` con motivo → HTTP 200 (`emailEnviado: true`); complejo eliminado y `GET /api/solicitudes/mias` retorna `solicitud: null` permitiendo reintento. |
+| 2026-10-07 | A7 Sin alta directa | PASS | `POST /api/auth/register` con payload `planDueno: true` y `plan: "dueno"` asigna estrictamente rol `USUARIO`. |
+| 2026-10-07 | A8 Guía del dueño | PASS | Acceso autenticado como nuevo dueño a `https://reservaya.site/admin?guia=1` responde HTTP 200 y renderiza el componente `GuiaDueno` ("Deja listo tu centro en 5 pasos"). |
+| 2026-10-07 | A9 Limpieza | PASS | `rg "plan=dueno\|aceptaConvenio\|superadmin/" apps/web/app --files-with-matches` vacío; 0 enlaces muertos a `/superadmin/*` o `/admin/complejos/nuevo`. |
 
 ## 8. Enmiendas de god (aprobación 2026-10-06)
 Spec **aprobada** con estos cambios:
