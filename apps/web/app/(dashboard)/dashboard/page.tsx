@@ -14,6 +14,7 @@ import { crearCarga } from '@/lib/carga'
 import { AvisoCarga } from '@/components/ui/AvisoCarga'
 import { EntradaCentro } from '@/components/solicitudes/EntradaCentro'
 import { miSolicitudSegura } from '@/lib/solicitudes-server'
+import { TarjetaInvitaciones } from '@/components/invitaciones/TarjetaInvitaciones'
 export const dynamic = 'force-dynamic'
 const estadoBadge: Record<string, 'green' | 'yellow' | 'red' | 'blue' | 'gray'> = {
   CONFIRMADA: 'green',
@@ -63,6 +64,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <AvisoCarga errores={carga.errores} />
+      <TarjetaInvitaciones />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-cal pb-4">
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-basalto">Hola, {session!.nombre}</h1>

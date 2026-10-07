@@ -1,11 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CircleHelp, Plus, Trash2, Users, X } from 'lucide-react';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { cn } from '@/lib/utils';
 import type { EquipoMiembroResumen } from '@/lib/b2b-api';
+import { estadoMiembro } from '@/lib/invitaciones';
+import { invitarAlEquipo, quitarDelEquipo } from '@/lib/invitaciones-client';
 
 interface ComplejoOpt {
   id: string;
@@ -17,7 +19,7 @@ interface Miembro {
   complejoId: string;
   nombre: string;
   email: string;
-  activo: boolean;
+  estado: 'PENDIENTE' | 'ACTIVO';
 }
 
 function mapear(m: EquipoMiembroResumen): Miembro {
@@ -26,7 +28,7 @@ function mapear(m: EquipoMiembroResumen): Miembro {
     complejoId: m.complejoId,
     nombre: m.usuario?.nombre ?? '(sin nombre)',
     email: m.usuario?.email ?? '',
-    activo: m.activo,
+    estado: estadoMiembro(m),
   };
 }
 
@@ -45,8 +47,13 @@ export function EquipoPanel({
   const [modal, setModal] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [claveTemporal, setClaveTemporal] = useState<string | null>(null);
-  const [form, setForm] = useState({ nombre: '', email: '' });
+  const [email, setEmail] = useState('');
+  const botonInvitar = useRef<HTMLButtonElement>(null);
+
+  const cerrarModal = useCallback(() => {
+    setModal(false);
+    botonInvitar.current?.focus();
+  }, []);
 
   const cargar = useCallback(async (cid: string) => {
     if (!cid) {
@@ -71,90 +78,58 @@ export function EquipoPanel({
   }, []);
 
   useEffect(() => {
-    if (!toast && !claveTemporal) return;
-    const t = setTimeout(() => {
-      setToast(null);
-      setClaveTemporal(null);
-    }, 12000);
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 12000);
     return () => clearTimeout(t);
-  }, [toast, claveTemporal]);
+  }, [toast]);
 
   useEffect(() => {
     if (!modal) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setModal(false);
+      if (e.key === 'Escape') cerrarModal();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [modal]);
+  }, [modal, cerrarModal]);
 
-  async function agregar(e: React.FormEvent) {
+  async function invitar(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.email.trim()) {
+    const correo = email.trim();
+    if (!correo) {
       setToast('El correo es obligatorio.');
       return;
     }
     setGuardando(true);
-    setClaveTemporal(null);
     try {
-      const res = await fetch('/api/equipo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          complejoId,
-          email: form.email.trim(),
-          nombre: form.nombre.trim() || undefined,
-          rolSede: 'ADMIN',
-        }),
-      });
-      const body = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(body?.error ?? `Error ${res.status}`);
-      if (body?.usuarioNuevo && body?.passwordTemporal) {
-        setClaveTemporal(`Cuenta nueva: entra con ${form.email.trim()} / clave ${body.passwordTemporal} (cámbiala luego).`);
-      }
-      setToast(body?.existente ? 'Ya era miembro: se reactivó.' : 'Miembro agregado al equipo (rol ADMIN).');
-      setModal(false);
-      setForm({ nombre: '', email: '' });
+      const body = await invitarAlEquipo(complejoId, correo);
+      setToast(
+        body.existente
+          ? `${correo} ya tenía una invitación pendiente.`
+          : `Invitación enviada a ${correo}. Verá Pendiente hasta que la acepte desde su bandeja.`
+      );
+      cerrarModal();
+      setEmail('');
       await cargar(complejoId);
     } catch (err) {
-      setToast(err instanceof Error ? err.message : 'No se pudo agregar.');
+      // La API explica el motivo (sin cuenta → correo para registrarse, ya es miembro, etc.).
+      setToast(err instanceof Error ? err.message : 'No se pudo enviar la invitación.');
     } finally {
       setGuardando(false);
     }
   }
 
-  async function toggleActivo(m: Miembro) {
+  async function quitar(m: Miembro) {
+    const pendiente = m.estado === 'PENDIENTE';
+    const pregunta = pendiente
+      ? `¿Cancelar la invitación a ${m.nombre}?`
+      : `¿Quitar a ${m.nombre} del equipo? Perderá el acceso al panel de este local.`;
+    if (!window.confirm(pregunta)) return;
     try {
-      const res = await fetch(`/api/equipo/${m.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ activo: !m.activo }),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.error ?? `Error ${res.status}`);
-      }
-      setMiembros((prev) => prev.map((x) => (x.id === m.id ? { ...x, activo: !x.activo } : x)));
-      setToast(m.activo ? 'Miembro desactivado.' : 'Miembro activado.');
-    } catch (err) {
-      setToast(err instanceof Error ? err.message : 'No se pudo actualizar.');
-    }
-  }
-
-  async function eliminar(m: Miembro) {
-    if (!window.confirm(`¿Eliminar a ${m.nombre} del equipo?`)) return;
-    try {
-      const res = await fetch(`/api/equipo/${m.id}`, { method: 'DELETE', credentials: 'include' });
-      if (!res.ok) {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.error ?? `Error ${res.status}`);
-      }
+      await quitarDelEquipo(m.id);
       setMiembros((prev) => prev.filter((x) => x.id !== m.id));
-      setToast('Miembro eliminado.');
+      setToast(pendiente ? 'Invitación cancelada.' : `${m.nombre} ya no es parte del equipo.`);
     } catch (err) {
-      setToast(err instanceof Error ? err.message : 'No se pudo eliminar.');
+      setToast(err instanceof Error ? err.message : 'No se pudo completar. Inténtalo de nuevo.');
     }
   }
 
@@ -179,12 +154,13 @@ export function EquipoPanel({
             <CircleHelp size={18} strokeWidth={1.85} />
           </a>
           <button
+            ref={botonInvitar}
             type="button"
             onClick={() => setModal(true)}
             disabled={!complejoId}
             className="btn-tactil flex items-center gap-1.5 rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
           >
-            <Plus size={18} strokeWidth={2.5} /> Agregar
+            <Plus size={18} strokeWidth={2.5} aria-hidden="true" /> Invitar
           </button>
         </div>
       </div>
@@ -209,16 +185,13 @@ export function EquipoPanel({
         </div>
       )}
 
-      {toast && (
-        <p role="status" className="mt-4 rounded-xl border border-cal bg-tiza px-4 py-3 text-sm font-semibold text-basalto shadow-suave-sm">
-          {toast}
-        </p>
-      )}
-      {claveTemporal && (
-        <p role="alert" className="mt-2 rounded-xl border border-sol bg-sol-suave px-4 py-3 text-sm font-semibold text-basalto">
-          🔑 {claveTemporal}
-        </p>
-      )}
+      <div role="status" aria-live="polite">
+        {toast && (
+          <p className="mt-4 rounded-xl border border-cal bg-tiza px-4 py-3 text-sm font-semibold text-basalto shadow-suave-sm">
+            {toast}
+          </p>
+        )}
+      </div>
 
       {/* Contenido */}
       <div className="card-tactil mt-4 p-2">
@@ -239,7 +212,7 @@ export function EquipoPanel({
           <EmptyState
             icon={Users}
             title="Primero crea tu local"
-            description="El equipo trabaja por local. Crea tu complejo para agregar personal."
+            description="El equipo trabaja por local. Crea tu complejo para invitar a tu personal."
             action={
               <a
                 href="/admin/complejos"
@@ -253,14 +226,14 @@ export function EquipoPanel({
           <EmptyState
             icon={Users}
             title="Aún no tienes a nadie en el equipo…"
-            description="Agrega a tu personal para que te ayude con reservas, caja y validación de códigos. Cada uno entra con su propio correo."
+            description="Invita a tu personal para que te ayude con reservas, caja y validación de códigos. Cada uno acepta la invitación con su propia cuenta."
             action={
               <button
                 type="button"
                 onClick={() => setModal(true)}
                 className="btn-tactil rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover"
               >
-                + Agregar a tu primera persona
+                + Invitar a tu primera persona
               </button>
             }
           />
@@ -272,40 +245,25 @@ export function EquipoPanel({
                   {(m.nombre.trim().charAt(0) || '·').toUpperCase()}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-basalto">
-                    {m.nombre} {!m.activo && <span className="text-xs font-semibold text-pizarra">(inactivo)</span>}
-                  </p>
+                  <p className="truncate text-sm font-bold text-basalto">{m.nombre}</p>
                   <p className="truncate text-xs text-pizarra">{m.email}</p>
                 </div>
-                <span className="rounded-full bg-cesped-suave px-3 py-1 text-xs font-bold text-cesped-hondo">
-                  ADMIN
+                <span
+                  className={cn(
+                    'rounded-full px-3 py-1 text-xs font-bold',
+                    m.estado === 'PENDIENTE' ? 'bg-sol-suave text-basalto' : 'bg-cesped-suave text-cesped-hondo'
+                  )}
+                >
+                  {m.estado === 'PENDIENTE' ? 'Pendiente' : 'Activo'}
                 </span>
                 <button
                   type="button"
-                  role="switch"
-                  aria-checked={m.activo}
-                  aria-label={`${m.activo ? 'Desactivar' : 'Activar'} a ${m.nombre}`}
-                  onClick={() => void toggleActivo(m)}
-                  className={cn(
-                    'relative h-6 w-11 rounded-full transition-colors',
-                    m.activo ? 'bg-cesped' : 'bg-cal'
-                  )}
+                  onClick={() => void quitar(m)}
+                  aria-label={m.estado === 'PENDIENTE' ? `Cancelar la invitación a ${m.nombre}` : `Quitar a ${m.nombre} del equipo`}
+                  title={m.estado === 'PENDIENTE' ? 'Cancelar invitación' : 'Quitar del equipo'}
+                  className="btn-tactil flex h-11 w-11 items-center justify-center rounded-lg text-pizarra transition-colors hover:bg-error-suave hover:text-error"
                 >
-                  <span
-                    className={cn(
-                      'absolute top-0.5 h-5 w-5 rounded-full bg-tiza shadow-suave-sm transition-all',
-                      m.activo ? 'left-[1.375rem]' : 'left-0.5'
-                    )}
-                  />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void eliminar(m)}
-                  aria-label={`Eliminar a ${m.nombre}`}
-                  title="Eliminar"
-                  className="btn-tactil rounded-lg p-2 text-pizarra transition-colors hover:bg-error-suave hover:text-error"
-                >
-                  <Trash2 size={17} strokeWidth={1.85} />
+                  {m.estado === 'PENDIENTE' ? <X size={17} strokeWidth={1.85} aria-hidden="true" /> : <Trash2 size={17} strokeWidth={1.85} aria-hidden="true" />}
                 </button>
               </li>
             ))}
@@ -314,20 +272,20 @@ export function EquipoPanel({
       </div>
       <p className="mt-3 text-xs text-pizarra">
         Todo el equipo opera con rol ADMIN en tu local: agenda, caja, reservas y torneos.
-        Al agregar a alguien se activa su panel admin; al eliminarlo o desactivarlo, lo pierde.
+        La persona invitada acepta desde su bandeja (campana) y recién ahí se activa su panel; si la quitas, lo pierde.
       </p>
 
-      {/* Modal Agregar */}
+      {/* Modal Invitar */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4" role="dialog" aria-modal="true" aria-label="Agregar miembro">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4" role="dialog" aria-modal="true" aria-labelledby="eq-invitar-titulo">
           <form
-            onSubmit={(e) => void agregar(e)}
+            onSubmit={(e) => void invitar(e)}
             className="w-full max-w-md rounded-2xl border border-cal bg-tiza p-6 shadow-suave-lg"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-cesped-hondo">EQUIPO</p>
-                <h2 className="mt-1 text-xl font-black text-basalto">Agregar al equipo</h2>
+                <h2 id="eq-invitar-titulo" className="mt-1 text-xl font-black text-basalto">Invitar al equipo</h2>
                 {complejos.length > 0 && (
                   <p className="mt-1 text-xs text-pizarra">
                     Local: <strong>{complejos.find((c) => c.id === complejoId)?.nombre}</strong>
@@ -336,30 +294,24 @@ export function EquipoPanel({
               </div>
               <button
                 type="button"
-                onClick={() => setModal(false)}
+                onClick={cerrarModal}
                 aria-label="Cerrar"
                 className="btn-tactil h-11 w-11 rounded-full border border-cal bg-tiza p-1.5 text-pizarra hover:text-basalto hover:bg-piedra"
               >
-                <X size={18} strokeWidth={2} />
+                <X size={18} strokeWidth={2} aria-hidden="true" />
               </button>
             </div>
             <label className="mt-4 block text-sm font-semibold text-basalto">
-              Nombre
-              <input
-                value={form.nombre}
-                onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
-                placeholder="Ej. Juan Pérez"
-                className="mt-1.5 w-full rounded-xl border border-borde bg-tiza px-3 py-2.5 text-sm font-normal text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
-              />
-            </label>
-            <label className="mt-3 block text-sm font-semibold text-basalto">
-              Correo
+              Correo de su cuenta ReservaYa
               <input
                 type="email"
                 required
-                value={form.email}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                autoFocus
+                autoComplete="off"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Ej. juan@tucancha.pe"
+                aria-describedby="eq-invitar-ayuda"
                 className="mt-1.5 w-full rounded-xl border border-borde bg-tiza px-3 py-2.5 text-sm font-normal text-basalto focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
               />
             </label>
@@ -369,7 +321,7 @@ export function EquipoPanel({
             <div className="mt-5 flex gap-2">
               <button
                 type="button"
-                onClick={() => setModal(false)}
+                onClick={cerrarModal}
                 className="btn-tactil flex-1 rounded-xl border border-cal bg-tiza px-4 py-2.5 text-sm font-bold text-basalto hover:bg-piedra"
               >
                 Cancelar
@@ -377,13 +329,14 @@ export function EquipoPanel({
               <button
                 type="submit"
                 disabled={guardando}
+                aria-busy={guardando || undefined}
                 className="btn-tactil flex-1 rounded-xl bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
               >
-                {guardando ? 'Agregando…' : 'Agregar'}
+                {guardando ? 'Enviando…' : 'Enviar invitación'}
               </button>
             </div>
-            <p className="mt-3 text-[0.6875rem] text-pizarra">
-              Si el correo no tiene cuenta, se crea con clave temporal (te la mostraremos una vez).
+            <p id="eq-invitar-ayuda" className="mt-3 text-[0.6875rem] text-pizarra">
+              La persona verá la invitación en su bandeja y decide si acepta. Si aún no tiene cuenta, le enviamos un correo para que se registre; luego vuelve a invitarla.
             </p>
           </form>
         </div>

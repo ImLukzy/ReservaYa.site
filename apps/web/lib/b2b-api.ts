@@ -32,7 +32,10 @@ export interface EquipoMiembroResumen {
   id: string;
   complejoId: string;
   rolSede: string;
+  /** false = invitación pendiente (aún no acepta). */
   activo: boolean;
+  estado?: 'PENDIENTE' | 'ACTIVO';
+  creadoEn?: string;
   usuario: { id: string; nombre: string; email: string; rol: string; activo: boolean } | null;
 }
 

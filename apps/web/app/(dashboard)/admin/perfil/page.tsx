@@ -3,5 +3,5 @@ import { PaginaPerfil } from '@/components/features/PaginaPerfil'
 export const dynamic = 'force-dynamic'
 
 export default function PerfilPage() {
-  return <PaginaPerfil ruta="/dashboard/perfil" />
+  return <PaginaPerfil ruta="/admin/perfil" />
 }

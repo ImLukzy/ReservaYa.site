@@ -107,3 +107,19 @@ Sin migraciones. Pendiente = centro no publicado cuyo dueño conserva rol USUARI
 - `GET /api/suscripciones/estado` incluye para el jugador su centro pendiente con `pendiente:true,estadoSolicitud:"PENDIENTE",enPrueba:false,puedeCrearCancha:false,bloqueada:true`; aún no arranca la prueba. La prueba empieza al aprobar y mantiene 30 días/una cancha.
 - **BLOQUEO-3:** Activa=false también significa desactivación voluntaria, no existe un discriminador fiable de revisión pendiente. Se aplica la alternativa aprobada: nuevas canchas de centros con suscripción vigente conservan activación normal, sin revisión adicional; no se reactivan canchas que el dueño desactivó. La primera cancha se activa al aprobar la solicitud. Prueba/vencimiento/403 vigentes de RYS-27 se mantienen.
 - El PUT de complejos y la aprobación/creación de suscripciones no publican solicitudes de jugadores: requieren pasar primero por la aprobación de solicitudes. El alta de complejos/canchas sigue reservada a roles de gestión y técnico; register deja de ser una vía de elevación directa.
+
+## Invitaciones de equipo (sin migración)
+
+Una invitación es un `ComplejoMiembro` con `Activo=false` (= **pendiente**); `Activo=true` = miembro activo. Invitar no cambia el rol del invitado. No existe «miembro desactivado»: quitar a alguien o cancelar una invitación borra el registro. Los filtros de alcance (`ComplejoAccess`, abonos, reportes, reservas, caja) solo cuentan membresías activas, así que una invitación pendiente no da acceso a nada.
+
+| Método y ruta | Rol | Cuerpo | Respuesta |
+|---|---|---|---|
+| `GET /api/equipo?complejoId=` | ADMIN/SUPERADMIN/TECNICO con acceso | — | `200 {ok:true,equipo:Miembro[]}`; `Miembro = {id,complejoId,rolSede,activo,estado:"PENDIENTE"\|"ACTIVO",creadoEn,usuario{id,nombre,email,rol,activo}}` |
+| `POST /api/equipo` | dueño del complejo o TECNICO | `{complejoId,email,rolSede?:"ADMIN"}` | `201 {ok:true,existente:false,miembro,correoEnviado}` invitación creada y correo de aviso en cola; `200 {existente:true,miembro}` ya estaba pendiente (idempotente, sin correo); `404 {codigo:"SIN_CUENTA",error,correoEnviado}` el email no tiene cuenta: no se crea ninguna, se le envía correo para registrarse en `/register`; `409` ya es miembro activo o carrera; `422` invitarse a uno mismo, cuenta SUPERADMIN/TECNICO, desactivada o con centro propio/solicitud en revisión; `429` más de 30 invitaciones/hora por dueño. Máximo 3 correos/día por destinatario (pasado el tope, `correoEnviado:false`) |
+| `PUT /api/equipo/{id}` | dueño | `{rolSede?}` | `200 {ok,miembro}`; enviar `activo` devuelve 400 (el estado no se edita) |
+| `DELETE /api/equipo/{id}` | dueño | — | `200 {ok:true}`; borra el registro. Si era activo, el usuario vuelve a USUARIO cuando no le queda otra sede activa ni centro propio (incrementa TokenVersion: su sesión se cierra). Cancelar una pendiente no toca el rol |
+| `GET /api/invitaciones/mias` | cualquier sesión | — | `200 {ok:true,invitaciones:[{id,complejo{id,nombre,distrito},invitadoPor{nombre}\|null,creadoEn}]}`, más recientes primero |
+| `POST /api/invitaciones/{id}/aceptar` | solo el invitado | — | `200 {ok:true,complejo{id,nombre},requiereRefrescarSesion:true}`; activa la membresía y USUARIO→ADMIN **sin** incrementar TokenVersion (subida de privilegio, criterio spec 55): la web llama a `POST /api/auth/refrescar` y navega a `/admin`. `404` no existe, no es suya o la cancelaron; `409` cuenta SUPERADMIN/TECNICO o con centro propio/solicitud en revisión |
+| `POST /api/invitaciones/{id}/rechazar` | solo el invitado | — | `200 {ok:true}`; borra la invitación. `404` si ya no existe |
+
+Los correos salen por la cola de email (Resend) y usan el origen de `PASSWORD_RESET_URL` (por defecto `https://reservaya.site`). Registros `Activo=false` creados por el flujo anterior («desactivar miembro») se leen ahora como invitaciones pendientes.

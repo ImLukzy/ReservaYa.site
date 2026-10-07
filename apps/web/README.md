@@ -56,8 +56,8 @@ Desde la raíz: `npm run dev:all` levanta API + web pública/panel.
   horario (`Fuera de horario (HH:MM–HH:MM)`) o día cerrado
   (`Cerrado ese día (...)`). Gestión: `GET/PUT /api/horarios` + página
   `/admin/horarios` (dueño/tecnico); el modal de agenda muestra el resumen.
-- **Roles**: `USUARIO` (jugador), `ADMIN` (trabajador: el dueño lo da de alta
-  en su local y se activa su panel admin con alcance a esa sede; al salir se
+- **Roles**: `USUARIO` (jugador), `ADMIN` (trabajador: el dueño lo invita a
+  su local y, cuando acepta, se activa su panel admin con alcance a esa sede; al salir se
   revoca), `SUPERADMIN` (dueño: opera solo sus complejos, con poderes de
   plataforma acotados a su sede — altas/bajas de equipo, config),
   `TECNICO` (plataforma global, `/tecnico`). `PERSONAL` en desuso (etiqueta
@@ -66,7 +66,8 @@ Desde la raíz: `npm run dev:all` levanta API + web pública/panel.
   `/admin/clientes`.
 - **Multitenancy estricta**: cada `SUPERADMIN` opera SOLO sus complejos
   (`DuenoId` + membresías); solo `TECNICO` ve todo. El dueño da de alta a sus
-  trabajadores con `POST /api/equipo` (roles de sede `PERSONAL`/`ADMIN`).
+  trabajadores invitándolos con `POST /api/equipo`; el invitado acepta o rechaza
+  desde su bandeja (`/api/invitaciones`) y solo al aceptar pasa a `ADMIN`.
   Reservas con alcance (create/get/validar/patch/delete → 403 cross-owner);
   el trabajador opera la sede pero no configura (403 en horarios/precios/
   equipo/promos). El jugador solo reserva vitrina visible (publicado +

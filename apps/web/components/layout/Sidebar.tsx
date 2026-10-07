@@ -7,6 +7,9 @@ import { cn } from '@/lib/utils';
 import { logout as apiLogout } from '@/lib/api-client';
 import { publicAppUrl } from '@/lib/public-app';
 import { Marca } from '@/components/ui/Marca';
+import { Avatar } from '@/components/ui/Avatar';
+import { perfilPorRol } from '@/lib/permissions';
+import { BandejaInvitaciones } from '@/components/invitaciones/BandejaInvitaciones';
 import {
   LayoutDashboard,
   CalendarDays,
@@ -40,6 +43,7 @@ interface SidebarProps {
   rol: RolSidebar;
   nombre: string;
   email: string;
+  fotoUrl?: string | null;
 }
 
 interface NavItem {
@@ -67,7 +71,7 @@ const MENU: Record<RolSidebar, NavGroup[]> = {
         { href: '/dashboard/canchas', label: 'Reservar cancha', icon: Search },
         { href: '/dashboard/reservas', label: 'Mis reservas', icon: CalendarDays },
         { href: '/dashboard/partidos', label: 'Mis partidos', icon: Users },
-        { href: '/dashboard/perfil', label: 'Mi perfil', icon: User },
+        { href: perfilPorRol('USUARIO'), label: 'Mi perfil', icon: User },
       ],
     },
     {
@@ -161,9 +165,10 @@ const rolLabel: Record<RolSidebar, string> = {
   TECNICO: 'Supervisor',
 };
 
-export function Sidebar({ rol, nombre, email }: SidebarProps) {
+export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [pendientes, setPendientes] = useState(0);
   const groups = MENU[rol];
 
   // El panel puede volver desde la caché del router (Atrás tras ir al landing) o desde el bfcache:
@@ -197,17 +202,23 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
     }
   }
 
-  const initial = (nombre.trim().charAt(0) || 'R').toUpperCase();
+  // El jugador tiene «Mi perfil» en su menú; el resto lo ve junto a su cuenta, abajo.
+  const perfilHref = perfilPorRol(rol);
+  const perfilEnMenu = groups.some((g) => g.items.some((i) => i.href === perfilHref));
+  const perfilActivo = esActivo(pathname, perfilHref);
 
   return (
     <>
       <button
         type="button"
-        aria-label="Abrir menú"
+        aria-label={pendientes > 0 ? 'Abrir menú (tienes invitaciones pendientes)' : 'Abrir menú'}
         onClick={() => setOpen(true)}
         className="fixed left-4 top-4 z-40 rounded-md bg-noche p-2 text-tiza shadow-lg lg:hidden"
       >
         <Menu size={ICON.size} strokeWidth={ICON.strokeWidth} aria-hidden="true" />
+        {pendientes > 0 && (
+          <span aria-hidden="true" className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-noche bg-error" />
+        )}
       </button>
       {open && (
         <div
@@ -295,16 +306,29 @@ export function Sidebar({ rol, nombre, email }: SidebarProps) {
         </nav>
 
         {/* Usuario */}
-        <div className="border-t border-tiza/10 p-4">
+        <div className="relative border-t border-tiza/10 p-4">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cesped font-display text-base font-bold text-tiza">
-              {initial}
-            </div>
+            <Avatar nombre={nombre} fotoUrl={fotoUrl} className="h-9 w-9 bg-cesped font-display text-sm font-bold text-tiza" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-tiza">{nombre}</p>
               <p className="truncate text-xs text-niebla">{email}</p>
             </div>
+            <BandejaInvitaciones tono="noche" abreHacia="arriba" onCambio={setPendientes} className="static" />
           </div>
+          {!perfilEnMenu && (
+            <Link
+              href={perfilHref}
+              onClick={() => setOpen(false)}
+              aria-current={perfilActivo ? 'page' : undefined}
+              className={cn(
+                'mb-1 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                perfilActivo ? 'bg-cesped/20 font-semibold text-tiza' : 'text-niebla hover:bg-tiza/5 hover:text-tiza'
+              )}
+            >
+              <User size={16} strokeWidth={2} aria-hidden="true" />
+              Mi perfil
+            </Link>
+          )}
           <button
             type="button"
             onClick={logout}

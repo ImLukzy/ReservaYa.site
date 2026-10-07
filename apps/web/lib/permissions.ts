@@ -45,3 +45,10 @@ export function fallbackPorRol(rol: Rol): string {
   if (rol === 'ADMIN') return '/admin/agenda';
   return '/dashboard';
 }
+
+// "Mi perfil" vive dentro del panel de cada rol (proxy.ts deja /dashboard solo a USUARIO).
+export function perfilPorRol(rol: Rol): string {
+  if (rol === 'TECNICO') return '/tecnico/perfil';
+  if (rol === 'ADMIN' || rol === 'SUPERADMIN') return '/admin/perfil';
+  return '/dashboard/perfil';
+}

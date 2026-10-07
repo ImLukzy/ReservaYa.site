@@ -6,8 +6,10 @@ import { usePathname } from 'next/navigation'
 import { apiRequest } from '@/lib/http'
 import { logout } from '@/lib/api-client'
 import { ApiError, type UsuarioSesion } from '@/lib/api-types'
-import { fallbackPorRol } from '@/lib/permissions'
+import { fallbackPorRol, perfilPorRol } from '@/lib/permissions'
+import { Avatar } from '@/components/ui/Avatar'
 import { Marca } from '@/components/ui/Marca'
+import { BandejaInvitaciones } from '@/components/invitaciones/BandejaInvitaciones'
 import Icon from './ui/Icon'
 
 const menus = [
@@ -62,8 +64,9 @@ export default function Header() {
   const account = usuario && <>
     <p className="truncate px-3 font-semibold">{usuario.nombre}</p>
     <p className="truncate px-3 text-sm text-pizarra">{usuario.email}</p>
-    <Link href="/dashboard/perfil" className={linkClass}>Mi perfil</Link>
-    <Link href="/dashboard/reservas" className={linkClass}>Mis reservas</Link>
+    <Link href={perfilPorRol(usuario.rol)} className={linkClass}>Mi perfil</Link>
+    {/* Las reservas propias solo existen en el panel del jugador (/dashboard es zona USUARIO). */}
+    {usuario.rol === 'USUARIO' && <Link href="/dashboard/reservas" className={linkClass}>Mis reservas</Link>}
     <Link href={fallbackPorRol(usuario.rol)} className={linkClass}>Mi panel</Link>
     <button type="button" onClick={salir} disabled={saliendo} className={`${linkClass} w-full`}>Salir</button>
   </>
@@ -87,9 +90,10 @@ export default function Header() {
           <Link href="/login" className={`${linkClass} hidden sm:flex`}>Iniciar sesión</Link>
           <Link href="/register" className="btn-tactil btn-vivo min-h-11 px-3.5 text-sm font-bold sm:px-5">Registrarse</Link>
         </>}
+        {usuario && <BandejaInvitaciones />}
         {usuario && <div className="relative hidden lg:block">
           <button type="button" aria-expanded={abierto === 'cuenta'} aria-controls="cuenta-menu" onClick={() => toggle('cuenta')} className="flex min-h-11 items-center gap-2 rounded-full border border-cal px-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-cesped-hondo text-xs font-bold text-tiza">{usuario.nombre?.split(/\s+/).slice(0, 2).map(p => p[0]).join('')}</span><span className="max-w-32 truncate text-xs font-bold">{usuario.nombre}</span><Icon nombre="abajo" />
+            <Avatar nombre={usuario.nombre} fotoUrl={usuario.fotoUrl} className="h-7 w-7 bg-cesped-hondo text-xs font-bold text-tiza" /><span className="max-w-32 truncate text-xs font-bold">{usuario.nombre}</span><Icon nombre="abajo" />
           </button>
           <div id="cuenta-menu" hidden={abierto !== 'cuenta'} className="card-tactil absolute right-0 top-12 w-64 p-2 shadow-suave-lg">{account}</div>
         </div>}

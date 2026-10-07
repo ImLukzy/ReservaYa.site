@@ -10,9 +10,11 @@ import { Input } from '@/components/ui/Input'
 
 interface PerfilFormProps {
   usuario: UsuarioSesion
+  /** Textos del jugador (carné deportivo); el resto de roles ve textos de cuenta. */
+  jugador?: boolean
 }
 
-export function PerfilForm({ usuario }: PerfilFormProps) {
+export function PerfilForm({ usuario, jugador = true }: PerfilFormProps) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -114,8 +116,10 @@ export function PerfilForm({ usuario }: PerfilFormProps) {
   return (
     <Card className="border-cal bg-tiza">
       <div className="border-b border-cal pb-4">
-        <h2 className="font-display text-xl font-bold tracking-tight text-basalto">Editar perfil deportivo</h2>
-        <p className="mt-1 text-sm text-pizarra">Actualiza tus datos de contacto y personaliza tu carné de jugador.</p>
+        <h2 className="font-display text-xl font-bold tracking-tight text-basalto">{jugador ? 'Editar perfil deportivo' : 'Editar perfil'}</h2>
+        <p className="mt-1 text-sm text-pizarra">
+          {jugador ? 'Actualiza tus datos de contacto y personaliza tu carné de jugador.' : 'Actualiza tus datos de contacto y tu foto de perfil.'}
+        </p>
       </div>
 
       <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center border-b border-cal pb-6">

@@ -7,6 +7,7 @@ import { getJson } from '@/lib/server-fetch';
 import { ApiError } from '@/lib/api-types';
 import { panelBloqueado, type EstadoConvenio } from '@/lib/convenio';
 import ConvenioPanel from '@/components/b2b/ConvenioPanel';
+import { AvisoUnion } from '@/components/invitaciones/AvisoUnion';
 
 async function DashboardShell({ children }: { children: React.ReactNode }) {
   const session = await requireAuth();
@@ -34,10 +35,12 @@ async function DashboardShell({ children }: { children: React.ReactNode }) {
         rol={session.rol}
         nombre={session.nombre}
         email={session.email}
+        fotoUrl={session.fotoUrl}
       />
       <main className="relative min-w-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
         {/* pt-16 hasta lg: deja libre el botón de menú fijo (Sidebar, left-4 top-4). */}
         <div className="px-4 pb-4 pt-16 sm:px-6 sm:pb-6 md:px-8 md:pb-8 lg:pt-8">
+          <AvisoUnion />
           {falloSuscripcion && <p role="status" className="mb-4 text-sm text-pizarra">No pudimos comprobar tu suscripción</p>}
           {/* Suscripción y prueba son decisiones del dueño; el trabajador solo ve el bloqueo. */}
           {estados.length > 0 && session.rol === 'SUPERADMIN' && <ConvenioPanel estados={estados} bloqueado={bloqueado} />}
