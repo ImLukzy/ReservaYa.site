@@ -1,4 +1,4 @@
-import {readFileSync,writeFileSync,mkdtempSync,mkdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
@@ -104,4 +104,4 @@ try{
  writeFileSync(resolve(root,'docs/specs/56/f3/parity-results.json'),JSON.stringify({runtime:process.version,basis:'Actual legacy AuthController/GoogleOAuth/ValidSessionHandler with captured mail and in-memory RSA Google HTTP provider, no external provider calls',normalization:['JWTs cryptographically verified; random nbf/exp omitted only after exact TTL check','New register IDs validated GUID N and mapped','OAuth state validated 32 bytes and mapped; pending JWT verified','Cookie attributes compared semantically without changing flags; traceId only random'],rows,cross},null,2)+'\n');
  console.log(`F3 parity ${rows.filter(r=>r.result==='PASS').length}/${rows.length}; cross ${cross.filter(r=>r.result==='PASS').length}/${cross.length}`);if([...rows,...cross].some(r=>r.result==='FAIL'))process.exitCode=1;
 }catch(e){console.error(safe(e?.stack||String(e)));process.exitCode=1;}
-finally{globalThis.fetch=originalFetch;if(host){host.kill('SIGTERM');await new Promise(r=>{if(host.exitCode!==null)return r();host.once('exit',r);setTimeout(()=>{host.kill('SIGKILL');r();},5000);});}await app?.close();await db?.$disconnect();if(created){await admin.$executeRawUnsafe(`DROP DATABASE "${dbName}" WITH (FORCE)`);console.log('Disposable F3 QA database removed');}await admin.$disconnect();}
+finally{globalThis.fetch=originalFetch;if(host){host.kill('SIGTERM');await new Promise(r=>{if(host.exitCode!==null)return r();host.once('exit',r);setTimeout(()=>{host.kill('SIGKILL');r();},5000);});}await app?.close();await db?.$disconnect();if(created){await admin.$executeRawUnsafe(`DROP DATABASE "${dbName}" WITH (FORCE)`);console.log('Disposable F3 QA database removed');}await admin.$disconnect();rmSync(scratch,{recursive:true,force:true});}

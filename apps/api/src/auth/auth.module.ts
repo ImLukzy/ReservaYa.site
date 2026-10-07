@@ -4,5 +4,5 @@ import { AuthService } from './auth.service';
 import { RateLimiter } from './rate';
 import { GoogleProvider, MailProvider } from './providers';
 import { DbModule } from '../public/db.module';
-@Module({ imports:[DbModule], controllers:[AuthController], providers:[AuthService,RateLimiter,GoogleProvider,MailProvider] })
+@Module({ imports:[DbModule], controllers:[AuthController], providers:[AuthService,RateLimiter,GoogleProvider,MailProvider], exports:[AuthService,RateLimiter] })
 export class AuthModule {}

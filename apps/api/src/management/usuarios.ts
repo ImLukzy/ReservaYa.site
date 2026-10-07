@@ -1,0 +1,54 @@
+import { Prisma } from '@reservaya/db';
+import { databaseError, foreignKeyError } from './errors';
+import { Inject, Injectable, HttpException } from '@nestjs/common';
+import bcrypt from 'bcryptjs';
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import { DbService } from '../public/db.service';
+import { fail, day, money, parseDay, utc } from '../public/format';
+import { RateLimiter } from '../auth/rate';
+import { Access, ip, validRoles, type Actor } from './access';
+import { Media, base, mediaUrl, ownPrefix } from './media';
+import { canchaShape } from './canchas';
+export type UserBody={nombre?:string;email?:string;rol?:string;activo?:boolean;password?:string;username?:string;fechaNacimiento?:string;currentPassword?:string;telefono?:string};
+const clean=(s?:string)=>s?.trim()||null;
+const plain=(d:Date|null)=>d?utc(d).replace(/Z$/,''):null;
+export function addYears(date:Date,years:number){const d=new Date(date),month=d.getUTCMonth();d.setUTCFullYear(d.getUTCFullYear()+years);if(d.getUTCMonth()!==month)d.setUTCDate(0);return d;}
+const nextUsername=(d:Date|null)=>d&&addYears(d,1)>new Date()?addYears(d,1):null;
+@Injectable()
+export class Usuarios {
+  constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access,@Inject(Media)private media:Media,@Inject(RateLimiter)private rate:RateLimiter){}
+  async search(q:string|undefined,r:FastifyRequest){if(this.rate.limited('buscar:'+ip(r),30,60000))fail(429,'Demasiadas búsquedas. Intenta de nuevo en un momento.');const term=(q||'').trim().replace(/^@+/,'').replace(/[%_]/g,'').slice(0,50);if(term.length<2)return {usuarios:[]};return {usuarios:await this.store.db.usuario.findMany({where:{activo:true,OR:[{nombre:{contains:term,mode:'insensitive'}},{username:{contains:term,mode:'insensitive'}}]},orderBy:{nombre:'asc'},take:8,select:{id:true,nombre:true,username:true}})};}
+  async list(r:FastifyRequest){await this.access.actor(r,['TECNICO']);const [users,counts]=await Promise.all([this.store.db.usuario.findMany({orderBy:{creadoEn:'desc'},select:{id:true,nombre:true,email:true,rol:true,activo:true,creadoEn:true}}),this.store.db.reserva.groupBy({by:['usuarioId'],_count:{_all:true}})]);const totals=new Map(counts.map(c=>[c.usuarioId,c._count._all]));return {usuarios:users.map(u=>({id:u.id,nombre:u.nombre,email:u.email,rol:u.rol,activo:u.activo,creadoEn:utc(u.creadoEn),_count:{reservas:totals.get(u.id)??0}}))};}
+  private async scope(a:Actor):Promise<Prisma.ReservaWhereInput>{const ids=(await this.access.ids(a,true,true))!,canchas=await this.store.db.cancha.findMany({where:{complejoId:{in:ids}},select:{id:true}});return {OR:[{complejoId:{in:ids}},{complejoId:null,canchaId:{in:canchas.map(c=>c.id)}}]};}
+  async clients(r:FastifyRequest){const a=await this.access.actor(r,['SUPERADMIN','TECNICO']),scope=a.rol==='TECNICO'?{}:await this.scope(a);
+    const users=await this.store.db.usuario.findMany({where:{reservaByUsuarioId:{some:scope}},orderBy:{creadoEn:'desc'},take:200,include:{reservaByUsuarioId:{select:{estado:true,fecha:true}},_count:{select:{sancionByUsuarioId:{where:{activa:true}}}}}});
+    return {ok:true,clientes:users.map(u=>({id:u.id,nombre:u.nombre,email:u.email,rol:u.rol,activo:u.activo,creadoEn:plain(u.creadoEn),reservas:u.reservaByUsuarioId.length,confirmadas:u.reservaByUsuarioId.filter(x=>x.estado==='CONFIRMADA').length,ultimaReserva:plain(u.reservaByUsuarioId.reduce<Date|null>((max,x)=>!max||x.fecha>max?x.fecha:max,null)),sancionesActivas:u._count.sancionByUsuarioId}))};
+  }
+  async history(id:string,r:FastifyRequest){const a=await this.access.actor(r,['SUPERADMIN','TECNICO']),u=await this.store.db.usuario.findUnique({where:{id}});if(!u)fail(404,'Usuario no encontrado');const scope=a.rol==='TECNICO'?{}:await this.scope(a),ids=a.rol==='TECNICO'?null:await this.access.ids(a,true,true);
+    const reservas=await this.store.db.reserva.findMany({where:{usuarioId:id,...scope},include:{canchaByCanchaId:true},orderBy:{creadoEn:'desc'}}),sanciones=await this.store.db.sancion.findMany({where:{usuarioId:id,...(ids?{complejoId:{in:ids}}:{})},include:{complejoByComplejoId:true},orderBy:{creadoEn:'desc'}});
+    if(a.rol!=='TECNICO'&&!reservas.length&&!sanciones.length)fail(404,'Usuario no encontrado');
+    return {ok:true,usuario:{id:u!.id,nombre:u!.nombre,email:u!.email,rol:u!.rol,activo:u!.activo,creadoEn:utc(u!.creadoEn)},stats:{reservas:reservas.length,confirmadas:reservas.filter(x=>x.estado==='CONFIRMADA').length,canceladas:reservas.filter(x=>x.estado==='CANCELADA').length,sancionesActivas:sanciones.filter(x=>x.activa).length},reservas:reservas.map(x=>({id:x.id,codigo:x.codigo,usuarioId:x.usuarioId,canchaId:x.canchaId,fecha:utc(x.fecha),horaInicio:x.horaInicio,horaFin:x.horaFin,estado:x.estado,total:money(x.total),notas:x.notas,creadoEn:utc(x.creadoEn),cancha:canchaShape(x.canchaByCanchaId),usuario:null})),sanciones:sanciones.map(x=>({id:x.id,complejoId:x.complejoId,complejo:x.complejoByComplejoId?.nombre||'',nivel:x.nivel,motivo:x.motivo,activa:x.activa,creadoEn:utc(x.creadoEn)}))};
+  }
+  async patch(id:string,b:UserBody,r:FastifyRequest){const a=await this.access.actor(r,['TECNICO']);if(id===a.id)fail(400,'No puedes modificar tu propia cuenta');const nombre=clean(b.nombre),email=clean(b.email)?.toLowerCase()??null,rol=clean(b.rol),password=b.password||null;
+    if(!nombre&&!email&&!rol&&b.activo==null&&!password)fail(400,'No hay campos válidos para actualizar');if(rol&&!validRoles.includes(rol as typeof validRoles[number]))fail(400,'Rol inválido');if(password&&password.length<6)fail(400,'La contraseña debe tener al menos 6 caracteres');
+    const u=await this.store.db.usuario.findUnique({where:{id}});if(!u)fail(404,'Usuario no encontrado');if(email&&email!==u!.email&&await this.store.db.usuario.findFirst({where:{id:{not:id},email}}))fail(409,'El email ya está registrado');
+    const data:Prisma.UsuarioUncheckedUpdateInput={};if(nombre)data.nombre=nombre;if(email)data.email=email;if(rol)data.rol=rol as typeof validRoles[number];if(b.activo!=null)data.activo=b.activo;if(password)data.password=await bcrypt.hash(password,10);if(rol||b.activo===false||password)data.tokenVersion={increment:1};
+    try{const updated=await this.store.db.usuario.update({where:{id},data});return {ok:true,usuario:{id:updated.id,nombre:updated.nombre,email:updated.email,rol:updated.rol,activo:updated.activo}};}catch(e){if(databaseError(e,'P2002'))fail(409,'El email ya está registrado');throw e;}
+  }
+  async me(b:UserBody,r:FastifyRequest){const a=await this.access.actor(r),u=await this.store.db.usuario.findUnique({where:{id:a.id}});if(!u)fail(401,'Sesión inválida');
+    if(clean(b.nombre)&&b.nombre!.trim()!==u!.nombre)fail(400,'El nombre no se puede cambiar');if(clean(b.email)&&b.email!.trim().toLowerCase()!==u!.email.toLowerCase())fail(400,'El correo no se puede cambiar');
+    const username=clean(b.username)?.toLowerCase()??null;let birth:Date|null=null;
+    if(clean(b.fechaNacimiento)){if(u!.fechaNacimiento)fail(400,'La fecha de nacimiento no se puede cambiar');birth=parseDay(b.fechaNacimiento);const cutoff=addYears(new Date(day(new Date())+'T00:00:00Z'),-5);if(!birth||birth>cutoff||birth<new Date('1900-01-01Z'))fail(400,'Fecha de nacimiento inválida');}
+    const password=b.password||null;if(password){if(password.length<6)fail(400,'La contraseña debe tener al menos 6 caracteres');let valid=false;if(b.currentPassword)try{valid=await bcrypt.compare(b.currentPassword,u!.password);}catch{/* invalid hash */}if(!valid)fail(403,'Tu contraseña actual no es correcta');}
+    if(!username&&!birth&&!password&&b.telefono==null)fail(400,'No hay campos válidos para actualizar');const data:Prisma.UsuarioUncheckedUpdateInput={};let changed=false;
+    if(username&&username!==u!.username){if(!/^[a-z0-9_.-]{3,20}$/.test(username))fail(400,'Tu usuario: 3-20 caracteres (letras, números, _ . -)');const next=nextUsername(u!.usernameCambiadoEn);if(next)throw new HttpException({error:`Podrás cambiar tu usuario el ${String(next.getUTCDate()).padStart(2,'0')}/${String(next.getUTCMonth()+1).padStart(2,'0')}/${next.getUTCFullYear()}`,proximoCambio:plain(next)},409);if(await this.store.db.usuario.findFirst({where:{id:{not:a.id},username}}))fail(409,'Ese usuario ya está en uso');data.username=username;data.usernameCambiadoEn=new Date();changed=true;}
+    if(birth)data.fechaNacimiento=birth;
+    if(b.telefono!=null){const v=b.telefono.trim();if(!v)data.telefono=null;else{const count=(v.match(/\p{Nd}/gu)||[]).length;if(v.length<7||v.length>20||! /^[+\p{Nd}][\p{Nd}\s().-]*$/u.test(v)||count<7||count>15)fail(400,'Teléfono inválido (7-15 dígitos)');data.telefono=v;}}
+    if(password){data.password=await bcrypt.hash(password,10);data.tokenVersion={increment:1};}
+    let updated;try{updated=await this.store.db.usuario.update({where:{id:a.id},data});}catch(e){if(databaseError(e,'P2002'))fail(409,'Ese usuario ya está en uso');throw e;}
+    const next=nextUsername(updated.usernameCambiadoEn);return {ok:true,sesionCerrada:Boolean(password),usuario:{id:updated.id,nombre:updated.nombre,email:updated.email,fechaNacimiento:updated.fechaNacimiento?day(updated.fechaNacimiento):null,username:updated.username,telefono:updated.telefono,fotoUrl:updated.fotoUrl,proximoCambioUsername:next?(changed?utc(next):plain(next)):null}};
+  }
+  async photo(b:{url?:string},r:FastifyRequest){const a=await this.access.actor(r);if(!base())fail(503,'La subida de imágenes no está configurada');const u=await this.store.db.usuario.findUnique({where:{id:a.id}});if(!u)fail(401,'Sesión inválida');const url=mediaUrl(b.url,b.url?.trim()===u!.fotoUrl?undefined:ownPrefix('perfil',a,false));if(!url)fail(400,'URL de imagen inválida');await this.store.db.usuario.update({where:{id:a.id},data:{fotoUrl:url}});if(u!.fotoUrl!==url)await this.media.remove(u!.fotoUrl,'perfil');return {ok:true,fotoUrl:url};}
+  async upload(r:FastifyRequest,res:FastifyReply){const a=await this.access.actor(r);res.header('Deprecation','true');const u=await this.store.db.usuario.findUnique({where:{id:a.id}});if(!u)fail(401,'Sesión inválida');const url=await this.media.upload(r,'perfiles',a.id);await this.store.db.usuario.update({where:{id:a.id},data:{fotoUrl:url}});await this.media.remove(u!.fotoUrl,'perfil');return {ok:true,fotoUrl:url};}
+  async delete(id:string,r:FastifyRequest){const a=await this.access.actor(r,['TECNICO']);if(a.id===id)fail(400,'No puedes eliminarte a ti mismo');if(!await this.store.db.usuario.findUnique({where:{id}}))fail(404,'Usuario no encontrado');if(await this.store.db.reserva.count({where:{usuarioId:id}}))fail(409,'No se puede eliminar: el usuario tiene reservas asociadas. Desactívalo en su lugar.');try{await this.store.db.usuario.delete({where:{id}});}catch(e){if(foreignKeyError(e))fail(409,'No se puede eliminar: el usuario tiene reservas asociadas. Desactívalo en su lugar.');throw e;}return {ok:true};}
+}

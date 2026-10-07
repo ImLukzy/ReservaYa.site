@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdtempSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
@@ -88,4 +88,4 @@ try {
  console.log(`F2 parity ${rows.filter(r=>r.result==='PASS').length}/${rows.length}; per-route results saved`);
  if(rows.some(r=>r.result==='FAIL'))process.exitCode=1;
 } catch(error){console.error(safe(error?.stack||String(error)));process.exitCode=1;}
-finally{if(legacy){legacy.kill('SIGTERM');await new Promise(r=>{if(legacy.exitCode!==null)return r();legacy.once('exit',r);setTimeout(()=>{legacy.kill('SIGKILL');r();},5000);});}await app?.close();await db?.$disconnect();if(created){try{await admin.$executeRawUnsafe(`DROP DATABASE "${dbName}" WITH (FORCE)`);console.log('Disposable QA fixture database removed');}catch(error){console.error(safe(error));process.exitCode=1;}}await admin.$disconnect();}
+finally{if(legacy){legacy.kill('SIGTERM');await new Promise(r=>{if(legacy.exitCode!==null)return r();legacy.once('exit',r);setTimeout(()=>{legacy.kill('SIGKILL');r();},5000);});}await app?.close();await db?.$disconnect();if(created){try{await admin.$executeRawUnsafe(`DROP DATABASE "${dbName}" WITH (FORCE)`);console.log('Disposable QA fixture database removed');}catch(error){console.error(safe(error));process.exitCode=1;}}await admin.$disconnect();rmSync(scratch,{recursive:true,force:true});}

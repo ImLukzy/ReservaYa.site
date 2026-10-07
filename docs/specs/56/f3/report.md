@@ -1,6 +1,6 @@
 # F3 — autenticación Nest
 
-Estado: F3 integrada en `main` (`b25c728`), auditoría Kelly APTO según god. Correcciones posteriores de correo y caché implementadas; gates finales solicitados.
+Estado: F3 integrada en `main` (`b25c728`), auditoría Kelly APTO según god. Correcciones posteriores de correo y caché verificadas: god confirmó todos los gates PASS el 2026-10-07 a las 13:37 UTC; integración de estas correcciones a cargo de god.
 
 ## Alcance
 
@@ -10,13 +10,13 @@ Correcciones Kelly F2: identidad PERSONAL se degrada a USUARIO; promociones se l
 
 ## Pruebas
 
-- Build, tipos y lint Nest: PASS local. Vitest: 12/12 PASS, incluyendo firmas, expiración, separación de tokens pendientes, reset y límites.
+- Build, tipos y lint Nest: PASS con Node 22.20. Vitest: 29/29 PASS, incluyendo firmas, expiración, separación de tokens pendientes, reset, límites, correo y caché de claves.
 - Host `tests/legacy-auth-host`: build PASS; usa AuthController, JwtService, GoogleOAuth y autorización .NET reales sin modificar sus fuentes. Aviso NU1900: consulta de vulnerabilidades no disponible por red local.
 - `scripts/f3-parity.mjs --confirm-qa-migracion-ts`: PASS con Node 22.20: 39/39 casos, las diez rutas E005–E014 cubiertas. Crea una base vacía efímera dentro de QA, aplica baseline y datos ficticios; elimina la base al finalizar.
 - Primer gate Node 22.20: 29/31 casos de paridad y 6/6 escenarios cruzados PASS. Dos divergencias al borrar cookies OAuth (SameSite añadido por Fastify) corregidas; segunda ejecución 39/39 PASS.
 - Sesiones cruzadas, logout cruzado, reset cruzado de un solo uso y rate limit: 6/6 PASS en primer gate.
 - Google usa claves RSA ficticias y HTTP en memoria/local. Correo capturado. No se llama a Google ni Resend reales.
-- Regresión F2 Node 22.20: 38/38 PASS. Clon limpio de las correcciones posteriores: pendiente de confirmación de god.
+- Regresión F2 Node 22.20: 38/38 PASS. Clon limpio de las correcciones posteriores: PASS, confirmado por god.
 
 ## Límites
 
@@ -32,4 +32,4 @@ Google guarda las claves públicas JWKS en memoria según `Cache-Control: max-ag
 
 El límite de intentos permanece en memoria por proceso, igual que el legado: se pierde al reiniciar y no se comparte entre réplicas. Antes de escalar a varios procesos se necesitará almacenamiento compartido para conservar un límite global.
 
-Pruebas adicionales sin red: transporte Resend fake, selección de proveedor, fallos redactados, plantilla completa y caché JWKS (vigencia, expiración, Age, no-store/no-cache, concurrencia y fallo de renovación). Build, tipos, lint y 29/29 tests locales Node 22.20 PASS; gate final externo pendiente. No se inició F4.
+Pruebas adicionales sin red: transporte Resend fake, selección de proveedor, fallos redactados, plantilla completa y caché JWKS (vigencia, expiración, Age, no-store/no-cache, concurrencia y fallo de renovación). Build, tipos, lint y 29/29 tests locales Node 22.20 PASS; gate final externo PASS (god: API, host .NET, paridad F3 39/39, cruzadas 6/6, regresión F2 38/38 y clon limpio). No se inició F4.

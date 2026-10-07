@@ -31,7 +31,7 @@ public static class FixtureHost {
   b.Logging.ClearProviders();
   var url=new Uri(Environment.GetEnvironmentVariable("DATABASE_URL")!);var parts=url.UserInfo.Split(':',2);
   var cs=new NpgsqlConnectionStringBuilder {Host=url.Host,Port=url.Port>0?url.Port:5432,Database=url.AbsolutePath.TrimStart('/'),Username=Uri.UnescapeDataString(parts[0]),Password=Uri.UnescapeDataString(parts[1]),SslMode=SslMode.Require};
-  if(!cs.Database.StartsWith("f3_fixture_",StringComparison.Ordinal))throw new Exception("Only disposable F3 fixture databases allowed");
+  if(!cs.Database.StartsWith("f3_fixture_",StringComparison.Ordinal) && !(Environment.GetEnvironmentVariable("F4_QA_FIXTURE")=="true" && cs.Database.StartsWith("f4_fixture_",StringComparison.Ordinal)))throw new Exception("Only disposable F3 fixture databases allowed");
   var source=new NpgsqlDataSourceBuilder(cs.ConnectionString);
   source.MapEnum<Rol>("Rol",new NpgsqlNullNameTranslator());
   source.MapEnum<EstadoReserva>("EstadoReserva",new NpgsqlNullNameTranslator());
@@ -64,6 +64,7 @@ public static class FixtureHost {
   });options.EnableServiceProviderCaching(false);});
   var secret=Environment.GetEnvironmentVariable("JWT_SECRET")!;
   b.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly).AddJsonOptions(o=>{o.JsonSerializerOptions.PropertyNamingPolicy=JsonNamingPolicy.CamelCase;o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());o.JsonSerializerOptions.Converters.Add(new FlexibleDecimalConverter());});
+  b.Services.AddSingleton<AlmacenR2>();
   b.Services.AddSingleton(new JwtService(secret));
   b.Services.AddSingleton<IRateLimiter,MemoryRateLimiter>();
   b.Services.AddSingleton(new PasswordResetTokens(secret));
@@ -83,7 +84,25 @@ public static class FixtureHost {
    o.Events=new(){OnMessageReceived=c=>{c.Token=c.Request.Cookies["token"];return Task.CompletedTask;},OnChallenge=c=>{c.HandleResponse();c.Response.StatusCode=401;c.Response.ContentType="application/json";return c.Response.WriteAsync("{\"error\":\"No autenticado\"}");},OnForbidden=c=>{c.Response.StatusCode=403;c.Response.ContentType="application/json";return c.Response.WriteAsync("{\"error\":\"Sin permisos\"}");}};
   });
   b.Services.AddAuthorization(o=>o.DefaultPolicy=new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddRequirements(new ValidSessionRequirement()).Build());b.Services.AddScoped<IAuthorizationHandler,ValidSessionHandler>();
-  var app=b.Build();app.UseAuthentication();app.UseAuthorization();app.MapControllers();
+  Directory.CreateDirectory(Path.Combine(b.Environment.ContentRootPath,"wwwroot"));
+  b.Environment.WebRootPath=Path.Combine(b.Environment.ContentRootPath,"wwwroot");
+  var app=b.Build();app.UseAuthentication();app.UseAuthorization();
+  // Execute the original scope queries via reflection because legacy helpers are internal.
+  app.Use(async(context,next)=>{
+   var role=context.User.FindFirst("rol")?.Value??"USUARIO";var path=context.Request.Path.Value??"";
+   if(context.User.Identity?.IsAuthenticated==true && role!="USUARIO" && role!="TECNICO" && path.StartsWith("/api/",StringComparison.OrdinalIgnoreCase) && !path.StartsWith("/api/auth/",StringComparison.OrdinalIgnoreCase) && context.GetEndpoint()?.Metadata.GetMetadata<IAllowAnonymous>() is null){
+    var db=context.RequestServices.GetRequiredService<AppDbContext>();var assembly=typeof(AuthController).Assembly;
+    var access=assembly.GetType("ReservaFacil.Api.Security.ComplejoAccess")!;
+    var ids=await (Task<List<string>?>)access.GetMethod("IdsAsync")!.Invoke(null,new object[]{db,context.User,true})!;
+    var enabled=(IQueryable<string>)assembly.GetType("ReservaFacil.Api.Security.ConvenioPrueba")!.GetMethod("Habilitados")!.Invoke(null,new object[]{db})!;
+    if(ids?.Count>0 && !await enabled.AnyAsync(x=>ids.Contains(x))){context.Response.StatusCode=403;await context.Response.WriteAsJsonAsync(new{error="Suscríbete para reactivar tu cancha."});return;}
+   }
+   await next(context);
+  });
+  app.MapControllers();
+  var deleted=new System.Collections.Concurrent.ConcurrentQueue<string>();
+  app.MapDelete("/_s3/{bucket}/{**key}",(string bucket,string key)=>{deleted.Enqueue(key);return Results.NoContent();});
+  app.MapGet("/_test/deleted",()=>deleted.ToArray());
   app.MapGet("/_test/health",()=>new{ok=true});
   app.MapGet("/_test/emails",(CapturedMail mail)=>mail.Messages.ToArray());
   app.MapPost("/_test/google-enabled",(bool enabled)=>{google.Enabled=enabled;return new{ok=true};});
