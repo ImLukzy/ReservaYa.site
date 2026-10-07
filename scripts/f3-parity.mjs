@@ -1,3 +1,4 @@
+import {parityEnvironment} from './parity-environment.mjs';
 import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve} from 'node:path';
@@ -7,8 +8,9 @@ import {randomBytes} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 const root=process.cwd(),dbRequire=createRequire(resolve(root,'packages/db/package.json')),apiRequire=createRequire(resolve(root,'apps/api/package.json'));
 const {PrismaClient}=dbRequire('@prisma/client'),bcrypt=apiRequire('bcryptjs'),crypto=apiRequire('./dist/auth/crypto.js');
-const settings={};for(const line of readFileSync(resolve(root,'hive/qa.env'),'utf8').split('\n')){const m=line.match(/^(TEST_DATABASE_URL(?:_UNPOOLED)?)=(.*)$/);if(m)settings[m[1]]=m[2].trim().replace(/^(['"])(.*)\1$/,'$2');}
-if(process.argv[2]!=='--confirm-qa-migracion-ts'||!settings.TEST_DATABASE_URL_UNPOOLED)throw Error('QA connection and confirmation required');
+const ci=process.argv[2]==='--ci',dotnet=ci?'dotnet':'/home/lukzy/.dotnet/dotnet';
+const settings=parityEnvironment({root,ci});
+if((!ci&&process.argv[2]!=='--confirm-qa-migracion-ts')||!settings.TEST_DATABASE_URL_UNPOOLED)throw Error('QA connection and confirmation required');
 const safe=s=>String(s).replace(/postgres(?:ql)?:\/\/[^\s"']+/g,'[QA connection]').replace(/ep-[a-z0-9-]+(?:\.[a-z0-9.-]+)?/g,'[QA endpoint]');
 const admin=new PrismaClient({datasources:{db:{url:settings.TEST_DATABASE_URL_UNPOOLED}}}),dbName='f3_fixture_'+randomBytes(6).toString('hex'),scratch=mkdtempSync(resolve(tmpdir(),'rys-f3-'));
 const secret=randomBytes(32).toString('hex'),password='Ficticia123!',newPassword='Nueva123!',id='00000000000000000000000000000001',hash=await bcrypt.hash(password,10);
@@ -42,10 +44,10 @@ async function restore(){await db.usuario.deleteMany({where:{id:{not:id}}});awai
 async function compare(name,endpointId,path,options,prepare){const results=[];for(const backend of ['legacy','nest']){await restore();await prepare?.(backend);results.push(await request(backend,path,options));}const old=normalized(results[0]),next=normalized(results[1]),expected=f0.find(c=>c.id===name)?.expected.status,pass=isDeepStrictEqual(old,next)&&(expected===undefined||old.status===expected);rows.push({id:name,endpointId,path,result:pass?'PASS':'FAIL',...(pass?{status:old.status}:{legacy:old,nest:next})});}
 try{
  await admin.$executeRawUnsafe(`CREATE DATABASE "${dbName}"`);created=true;const url=new URL(settings.TEST_DATABASE_URL_UNPOOLED);url.pathname='/'+dbName;
- const env={PATH:process.env.PATH,HOME:process.env.HOME,DOTNET_ROOT:process.env.DOTNET_ROOT||'/home/lukzy/.dotnet',TZ:'UTC',JWT_SECRET:secret,DATABASE_URL:url.toString(),DATABASE_URL_UNPOOLED:url.toString(),COOKIE_SECURE:'false',PASSWORD_RESET_URL:'http://localhost:3100/restablecer',GOOGLE_CLIENT_ID:'fixture-client',GOOGLE_CLIENT_SECRET:'fixture-secret',GOOGLE_REDIRECT_URI:'http://localhost:3100/api/auth/google/callback',F3_QA_FIXTURE:'true',ASPNETCORE_ENVIRONMENT:'Production'};
+ const env={PARITY_CI:ci?'true':undefined,PATH:process.env.PATH,HOME:process.env.HOME,DOTNET_ROOT:process.env.DOTNET_ROOT||(ci?'/usr/share/dotnet':'/home/lukzy/.dotnet'),TZ:'UTC',JWT_SECRET:secret,DATABASE_URL:url.toString(),DATABASE_URL_UNPOOLED:url.toString(),COOKIE_SECURE:'false',PASSWORD_RESET_URL:'http://localhost:3100/restablecer',GOOGLE_CLIENT_ID:'fixture-client',GOOGLE_CLIENT_SECRET:'fixture-secret',GOOGLE_REDIRECT_URI:'http://localhost:3100/api/auth/google/callback',F3_QA_FIXTURE:'true',ASPNETCORE_ENVIRONMENT:'Production'};
  const migrate=spawnSync(process.execPath,[dbRequire.resolve('prisma/build/index.js'),'migrate','deploy','--schema',resolve(root,'packages/db/prisma/schema.prisma')],{env,encoding:'utf8'});if(migrate.status!==0)throw Error(safe(migrate.stderr||migrate.stdout));
  db=new PrismaClient({datasources:{db:{url:url.toString()}}});Object.assign(process.env,env);
- const content=resolve(scratch,'content');mkdirSync(content,{recursive:true});host=spawn('/home/lukzy/.dotnet/dotnet',[resolve(root,'tests/legacy-auth-host/bin/Release/net10.0/LegacyAuthHost.dll'),'--contentRoot',content,'--urls',origin],{env,cwd:content,stdio:['ignore','pipe','pipe']});let hostLogs='';host.stdout.on('data',b=>hostLogs+=safe(b));host.stderr.on('data',b=>hostLogs+=safe(b));
+ const content=resolve(scratch,'content');mkdirSync(content,{recursive:true});host=spawn(dotnet,[resolve(root,'tests/legacy-auth-host/bin/Release/net10.0/LegacyAuthHost.dll'),'--contentRoot',content,'--urls',origin],{env,cwd:content,stdio:['ignore','pipe','pipe']});let hostLogs='';host.stdout.on('data',b=>hostLogs+=safe(b));host.stderr.on('data',b=>hostLogs+=safe(b));
  for(let i=0;i<150;i++){try{if((await fetchLocal('/_test/health')).ok)break;}catch{}if(host.exitCode!==null)throw Error('Legacy fixture startup failed: '+hostLogs);await new Promise(r=>setTimeout(r,200));if(i===149)throw Error('Fixture startup timeout');}
  // Only mocked Google endpoints may be intercepted; all data comes from local fixture RSA keys.
  globalThis.fetch=async(input,options)=>{

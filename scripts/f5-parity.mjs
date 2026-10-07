@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {parityEnvironment} from './parity-environment.mjs';
 import {dropFixture} from './f5-cleanup.mjs';
 import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -14,8 +15,9 @@ const root=process.cwd(),dbRequire=createRequire(resolve(root,'packages/db/packa
 const PrismaClient=dbRequire('@prisma/client').PrismaClient;
 const bcrypt=apiRequire('bcryptjs'),crypto=apiRequire('./dist/auth/crypto.js');
 const smoke=process.argv[2]==='--smoke-sigterm';
-const settings={};for(const line of (smoke?'TEST_DATABASE_URL_UNPOOLED=postgresql://fixture:fixture@localhost/fixture':readFileSync(resolve(root,'hive/qa.env'),'utf8')).split('\n')){const m=line.match(/^(TEST_DATABASE_URL(?:_UNPOOLED)?)=(.*)$/);if(m)settings[m[1]]=m[2].trim().replace(/^(['"])(.*)\1$/,'$2');}
-if((!smoke&&process.argv[2]!=='--confirm-qa-migracion-ts')||!settings.TEST_DATABASE_URL_UNPOOLED)throw Error('QA confirmation and test connection required');
+const ci=process.argv[2]==='--ci',dotnet=ci?'dotnet':'/home/lukzy/.dotnet/dotnet';
+const settings=parityEnvironment({root,ci,smoke});
+if((!ci&&!smoke&&process.argv[2]!=='--confirm-qa-migracion-ts')||!settings.TEST_DATABASE_URL_UNPOOLED)throw Error('QA confirmation and test connection required');
 const safe=s=>String(s).replace(/postgres(?:ql)?:\/\/[^\s"']+/g,'[QA connection]').replace(/ep-[a-z0-9-]+(?:\.[a-z0-9.-]+)?/g,'[QA endpoint]');
 const admin=smoke?{async $executeRawUnsafe(sql){console.log('Smoke SQL '+sql.split(' ')[0]);return 0;},async $disconnect(){}}:new PrismaClient({datasources:{db:{url:settings.TEST_DATABASE_URL_UNPOOLED}}}),dbName='f5_fixture_'+randomBytes(6).toString('hex'),scratch=mkdtempSync(resolve(tmpdir(),'rys-f5-'));
 const secret=randomBytes(32).toString('hex'),password='Ficticia123!',hash=await bcrypt.hash(password,10),fixed=new Date('2026-01-01T00:00:00Z');
@@ -147,10 +149,10 @@ async function race(id,endpointId,prepare,makeRequests,count){
 async function run(){
  if(smoke){attempted=true;creating=admin.$executeRawUnsafe('CREATE DATABASE fixture');await creating;host=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'ignore'});console.log(JSON.stringify({smokeReady:true,pid:host.pid,scratch}));await bounded(new Promise(()=>{}),'Signal smoke',30000);return;}
  attempted=true;creating=admin.$executeRawUnsafe(`CREATE DATABASE "${dbName}"`);await bounded(creating,'QA create');stop.signal.throwIfAborted();const url=new URL(settings.TEST_DATABASE_URL_UNPOOLED);url.pathname='/'+dbName;url.searchParams.set('connection_limit','8');
- env={PATH:process.env.PATH,HOME:process.env.HOME,DOTNET_ROOT:process.env.DOTNET_ROOT||'/home/lukzy/.dotnet',TZ:'UTC',JWT_SECRET:secret,DATABASE_URL:url.toString(),DATABASE_URL_UNPOOLED:url.toString(),F3_QA_FIXTURE:'true',F5_QA_FIXTURE:'true',ASPNETCORE_ENVIRONMENT:'Production',COOKIE_SECURE:'false',MEDIA_PUBLIC_URL:mediaOrigin,PASSWORD_RESET_URL:'https://web.example.test/restablecer',R2_ENDPOINT:origin+'/_s3',R2_ACCESS_KEY_ID:'fixture-key',R2_SECRET_ACCESS_KEY:'fixture-secret',R2_BUCKET_NAME:'fixture-bucket',LEGACY_WEB_ROOT:resolve(scratch,'nest-webroot')};
+ env={PARITY_CI:ci?'true':undefined,PATH:process.env.PATH,HOME:process.env.HOME,DOTNET_ROOT:process.env.DOTNET_ROOT||(ci?'/usr/share/dotnet':'/home/lukzy/.dotnet'),TZ:'UTC',JWT_SECRET:secret,DATABASE_URL:url.toString(),DATABASE_URL_UNPOOLED:url.toString(),F3_QA_FIXTURE:'true',F5_QA_FIXTURE:'true',ASPNETCORE_ENVIRONMENT:'Production',COOKIE_SECURE:'false',MEDIA_PUBLIC_URL:mediaOrigin,PASSWORD_RESET_URL:'https://web.example.test/restablecer',R2_ENDPOINT:origin+'/_s3',R2_ACCESS_KEY_ID:'fixture-key',R2_SECRET_ACCESS_KEY:'fixture-secret',R2_BUCKET_NAME:'fixture-bucket',LEGACY_WEB_ROOT:resolve(scratch,'nest-webroot')};
  const migrate=spawnSync(process.execPath,[dbRequire.resolve('prisma/build/index.js'),'migrate','deploy','--schema',resolve(root,'packages/db/prisma/schema.prisma')],{env,encoding:'utf8',timeout:60000});if(migrate.status!==0)throw Error(safe(migrate.stderr||migrate.stdout));
  db=new PrismaClient({datasources:{db:{url:url.toString()}}});Object.assign(process.env,env);
- const content=resolve(scratch,'content');mkdirSync(content,{recursive:true});host=spawn('/home/lukzy/.dotnet/dotnet',[resolve(root,'tests/legacy-auth-host/bin/Release/net10.0/LegacyAuthHost.dll'),'--contentRoot',content,'--urls',origin],{env,cwd:content,stdio:['ignore','pipe','pipe']});let logs='';host.stdout.on('data',b=>logs+=safe(b));host.stderr.on('data',b=>logs+=safe(b));
+ const content=resolve(scratch,'content');mkdirSync(content,{recursive:true});host=spawn(dotnet,[resolve(root,'tests/legacy-auth-host/bin/Release/net10.0/LegacyAuthHost.dll'),'--contentRoot',content,'--urls',origin],{env,cwd:content,stdio:['ignore','pipe','pipe']});let logs='';host.stdout.on('data',b=>logs+=safe(b));host.stderr.on('data',b=>logs+=safe(b));
  for(let i=0;i<150;i++){stop.signal.throwIfAborted();try{if((await fetchLocal('/_test/health')).ok)break;}catch{}if(host.exitCode!==null)throw Error('Fixture startup failed: '+logs);await new Promise(r=>setTimeout(r,200));if(i===149)throw Error('Fixture startup timeout');}
  app=await bounded(apiRequire('./dist/app.js').createApp(),'Nest create');await bounded(app.init(),'Nest init');await bounded(app.getHttpAdapter().getInstance().ready(),'Fastify ready');
  // Mail is captured in memory on both sides; nothing reaches Resend.

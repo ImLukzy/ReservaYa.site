@@ -8,82 +8,175 @@ permissions:
   contents: read
 env:
   SHARP_IGNORE_GLOBAL_LIBVIPS: '1'
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+  DATABASE_URL: postgresql://fixture:fixture@127.0.0.1:5432/parity?sslmode=disable
+  DATABASE_URL_UNPOOLED: postgresql://fixture:fixture@127.0.0.1:5432/parity?sslmode=disable
+  JWT_SECRET: ci-only-fictitious-signing-key-32-characters
 jobs:
-  packages:
-    name: ${{ matrix.package }}
+  config:
+    name: config
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package: [config, shared, db, api, web]
-    env:
-      DATABASE_URL: postgresql://test:test@localhost:5432/test
-      DATABASE_URL_UNPOOLED: postgresql://test:test@localhost:5432/test
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.3
       - uses: actions/setup-node@v4
         with:
           node-version: '22.20.0'
-          cache: pnpm
+      - name: Activate pinned pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.18.3 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm db:generate
-      - run: pnpm exec turbo run build --filter=@reservaya/${{ matrix.package }}^...
-      - name: Build secret (temporary)
-        run: echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
-      - if: matrix.package == 'web'
-        run: pnpm --filter @reservaya/web exec next typegen
-      - run: pnpm --filter @reservaya/${{ matrix.package }} typecheck
-      - run: pnpm --filter @reservaya/${{ matrix.package }} lint
-      - if: matrix.package == 'shared' || matrix.package == 'api' || matrix.package == 'web'
-        run: pnpm --filter @reservaya/${{ matrix.package }} test
-      - if: matrix.package != 'config'
-        run: pnpm --filter @reservaya/${{ matrix.package }} build
-      - if: matrix.package == 'web'
-        run: node --test scripts/start-dev.test.mjs scripts/motion-tokens.test.mjs
-      - if: matrix.package == 'web'
-        run: node scripts/motion-tokens.mjs --check
+      - run: pnpm --filter @reservaya/config typecheck
+      - run: pnpm --filter @reservaya/config lint
+  shared:
+    name: shared
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - name: Activate pinned pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.18.3 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run build --filter=@reservaya/shared
+      - run: pnpm --filter @reservaya/shared typecheck
+      - run: pnpm --filter @reservaya/shared lint
+      - run: pnpm --filter @reservaya/shared test
+  db:
+    name: db
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - name: Activate pinned pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.18.3 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run build --filter=@reservaya/db
+      - run: pnpm --filter @reservaya/db typecheck
+      - run: pnpm --filter @reservaya/db lint
+      - run: pnpm --filter @reservaya/db validate
+  api:
+    name: api
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - name: Activate pinned pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.18.3 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run build --filter=@reservaya/api
+      - run: pnpm --filter @reservaya/api typecheck
+      - run: pnpm --filter @reservaya/api lint
+      - run: pnpm --filter @reservaya/api test
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+      - name: Activate pinned pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.18.3 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec turbo run build --filter=@reservaya/web
+      - run: pnpm --filter @reservaya/web exec next typegen
+      - run: pnpm --filter @reservaya/web typecheck
+      - run: pnpm --filter @reservaya/web lint
+      - run: pnpm --filter @reservaya/web test
+      - run: node --test scripts/start-dev.test.mjs scripts/motion-tokens.test.mjs
+      - run: node scripts/motion-tokens.mjs --check
   legacy:
     name: API .NET 10
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
       - run: dotnet build apps/api-dotnet/ReservaFacil.Api.csproj --configuration Release
-  baseline:
-    name: Baseline desde base vacía
+  parity:
+    name: PostgreSQL disposable parity F2-F7
+    needs: [config, shared, db, api, web, legacy]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     services:
       postgres:
-        image: postgres:17
+        image: postgres:16
         env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: baseline
+          POSTGRES_USER: fixture
+          POSTGRES_PASSWORD: fixture
+          POSTGRES_DB: parity
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
+          --health-cmd "pg_isready -U fixture -d parity"
+          --health-interval 5s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
     env:
-      DATABASE_URL: postgresql://test:test@localhost:5432/baseline
-      DATABASE_URL_UNPOOLED: postgresql://test:test@localhost:5432/baseline
+      PARITY_DATABASE_URL: postgresql://fixture:fixture@127.0.0.1:5432/parity?sslmode=disable
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.3
       - uses: actions/setup-node@v4
         with:
           node-version: '22.20.0'
-          cache: pnpm
+      - name: Activate pinned pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.18.3 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @reservaya/db exec prisma migrate deploy --schema prisma/schema.prisma
-      - run: pnpm --filter @reservaya/db exec prisma migrate status --schema prisma/schema.prisma
-      - run: pnpm --filter @reservaya/db exec prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --exit-code
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: pnpm exec turbo run build --filter=@reservaya/api
+      - name: Apply migrations to the disposable service
+        run: |
+          test -f packages/db/prisma/migrations/0_baseline/migration.sql
+          test -f packages/db/prisma/migrations/1_libro_reclamaciones/migration.sql
+          pnpm --filter @reservaya/db exec prisma migrate deploy --schema prisma/schema.prisma
+          pnpm --filter @reservaya/db exec prisma migrate status --schema prisma/schema.prisma
+          pnpm --filter @reservaya/db exec prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --exit-code
+      - run: dotnet build tests/legacy-auth-host/LegacyAuthHost.csproj --configuration Release
+      - run: node scripts/parity-environment.test.mjs
+      - name: Remove checked-in results before the current run
+        run: rm -f docs/specs/56/f{2,3,4,5,6,7}/parity-results.json
+      - name: F2 public routes
+        run: node scripts/f2-parity.mjs --ci
+      - name: F3 authentication
+        run: node scripts/f3-parity.mjs --ci
+      - name: F4 management
+        run: node scripts/f4-parity.mjs --ci
+      - name: F5 domains
+        run: node scripts/f5-parity.mjs --ci
+      - name: F6 finance and complaints
+        run: node scripts/f6-parity.mjs --ci
+      - name: F7 reservations and mixed concurrency
+        run: node scripts/f7-parity.mjs --ci
+      - name: Preserve parity results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-results
+          path: docs/specs/56/f[234567]/parity-results.json
+          if-no-files-found: ignore
+          retention-days: 7
