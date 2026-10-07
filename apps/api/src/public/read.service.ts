@@ -43,11 +43,19 @@ export class PublicReadService {
   }
   private async visibleIds() { return (await this.habilitados()).filter(c => c.publicado).map(c => c.id); }
   private async promos(canchas: Pick<Cancha, 'id' | 'complejoId'>[]) {
-    const promos = await this.db.promocion.findMany({ where: { activa: true, tipo: 'PRECIO_ESPECIAL', OR: [
+    const where: Prisma.PromocionWhereInput = { activa: true, tipo: 'PRECIO_ESPECIAL', OR: [
       { canchaId: { in: canchas.map(c => c.id) } },
       { complejoId: { in: canchas.flatMap(c => c.complejoId ? [c.complejoId] : []) } },
       { canchaId: null, complejoId: null },
-    ] }, orderBy: { creadoEn: 'desc' } });
+    ] };
+    const promos: Prisma.PromocionGetPayload<object>[] = [];
+    let cursor: string | undefined;
+    for (;;) {
+      const page = await this.db.promocion.findMany({ where, take: 200, orderBy: { id: 'asc' }, ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}) });
+      promos.push(...page);
+      if (page.length < 200) break;
+      cursor = page[page.length - 1].id;
+    }
     return promos.sort((a,b) => Number(b.canchaId !== null)-Number(a.canchaId !== null) || Number(b.complejoId !== null)-Number(a.complejoId !== null) || b.creadoEn.getTime()-a.creadoEn.getTime());
   }
   async guardCancha(user: { id: string; rol: string } | null) {

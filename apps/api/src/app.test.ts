@@ -22,7 +22,7 @@ describe('Health and F2 route boundaries', () => {
     expect(fastify.hasDecorator('multipartErrors')).toBe(true);
   });
   it('leaves private legacy routes unimplemented', async () => {
-    const login = await app.inject({ method: 'POST', url: '/api/auth/login', payload: {} });
+    const login = await app.inject({ method: 'POST', url: '/api/reservas', payload: {} });
     const complejos = await app.inject({ method: 'GET', url: '/api/complejos' });
     expect(login.statusCode).toBe(404);
     expect(complejos.statusCode).toBe(404);

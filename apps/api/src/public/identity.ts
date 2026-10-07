@@ -17,6 +17,6 @@ export function identity(request: FastifyRequest): { id: string; rol: string } |
     const claims = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
     const now = Date.now() / 1000;
     if (typeof claims.exp !== 'number' || claims.exp < now - 10 || (typeof claims.nbf === 'number' && claims.nbf > now + 10)) return null;
-    return { id: typeof claims.id === 'string' ? claims.id : '', rol: ['USUARIO','ADMIN','SUPERADMIN','TECNICO','PERSONAL'].includes(claims.rol) ? claims.rol : 'USUARIO' };
+    return { id: typeof claims.id === 'string' ? claims.id : '', rol: ['USUARIO','ADMIN','SUPERADMIN','TECNICO'].includes(claims.rol) ? claims.rol : 'USUARIO' };
   } catch { return null; }
 }

@@ -1,8 +1,9 @@
+import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { PublicReadController } from './public/read.controller';
 import { PublicReadService } from './public/read.service';
-import { DbService, Clock } from './public/db.service';
+import { DbModule } from './public/db.module';
 import { HealthController } from './health.controller';
 
-@Module({ controllers: [HealthController, PublicReadController], providers: [PublicReadService, DbService, Clock] })
+@Module({ imports: [DbModule, AuthModule], controllers: [HealthController, PublicReadController], providers: [PublicReadService] })
 export class AppModule {}

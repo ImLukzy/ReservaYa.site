@@ -1,0 +1,311 @@
+{
+  "runtime": "v22.20.0",
+  "basis": "Actual legacy AuthController/GoogleOAuth/ValidSessionHandler with captured mail and in-memory RSA Google HTTP provider, no external provider calls",
+  "normalization": [
+    "JWTs cryptographically verified; random nbf/exp omitted only after exact TTL check",
+    "New register IDs validated GUID N and mapped",
+    "OAuth state validated 32 bytes and mapped; pending JWT verified",
+    "Cookie attributes compared semantically without changing flags; traceId only random"
+  ],
+  "rows": [
+    {
+      "id": "E005-nominal",
+      "endpointId": "E005",
+      "path": "/api/auth/login",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E005-payload-invalido",
+      "endpointId": "E005",
+      "path": "/api/auth/login",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E005-credenciales-invalidas",
+      "endpointId": "E005",
+      "path": "/api/auth/login",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E006-nominal",
+      "endpointId": "E006",
+      "path": "/api/auth/register",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E006-payload-invalido",
+      "endpointId": "E006",
+      "path": "/api/auth/register",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E006-menor14",
+      "endpointId": "E006",
+      "path": "/api/auth/register",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E006-duplicate",
+      "endpointId": "E006",
+      "path": "/api/auth/register",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E007-nominal",
+      "endpointId": "E007",
+      "path": "/api/auth/logout",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E007-token-invalido",
+      "endpointId": "E007",
+      "path": "/api/auth/logout",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E008-nominal",
+      "endpointId": "E008",
+      "path": "/api/auth/forgot-password",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E008-payload-invalido",
+      "endpointId": "E008",
+      "path": "/api/auth/forgot-password",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E008-unknown",
+      "endpointId": "E008",
+      "path": "/api/auth/forgot-password",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E009-nominal",
+      "endpointId": "E009",
+      "path": "/api/auth/reset-password",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E009-payload-invalido",
+      "endpointId": "E009",
+      "path": "/api/auth/reset-password",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E010-nominal",
+      "endpointId": "E010",
+      "path": "/api/auth/refrescar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E010-sin-sesion",
+      "endpointId": "E010",
+      "path": "/api/auth/refrescar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E011-nominal",
+      "endpointId": "E011",
+      "path": "/api/auth/me",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E011-sin-sesion",
+      "endpointId": "E011",
+      "path": "/api/auth/me",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E014-nominal",
+      "endpointId": "E014",
+      "path": "/api/auth/google/completar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E014-payload-invalido",
+      "endpointId": "E014",
+      "path": "/api/auth/google/completar",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "session-me-revoked",
+      "endpointId": "E011",
+      "path": "/api/auth/me",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "session-me-inactive",
+      "endpointId": "E011",
+      "path": "/api/auth/me",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "session-refrescar-revoked",
+      "endpointId": "E010",
+      "path": "/api/auth/refrescar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "session-refrescar-inactive",
+      "endpointId": "E010",
+      "path": "/api/auth/refrescar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "google-21",
+      "endpointId": "E012",
+      "path": "/api/auth/google?returnUrl=%2Fdashboard",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "google-22",
+      "endpointId": "E012",
+      "path": "/api/auth/google?returnUrl=%2F%2Fevil.invalid",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "google-23",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "google-24",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback?code=new&state=wrong",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "google-callback-existing",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback?code=existing&state=fixed-state",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "google-callback-new",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback?code=new&state=fixed-state",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "google-callback-unverified",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback?code=unverified&state=fixed-state",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "E012-google-desactivado",
+      "endpointId": "E012",
+      "path": "/api/auth/google",
+      "result": "PASS",
+      "status": 503
+    },
+    {
+      "id": "E014-no-config",
+      "endpointId": "E014",
+      "path": "/api/auth/google/completar",
+      "result": "PASS",
+      "status": 503
+    },
+    {
+      "id": "E011-tv-revocado",
+      "endpointId": "E011",
+      "path": "/api/auth/me",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E010-tv-revocado",
+      "endpointId": "E010",
+      "path": "/api/auth/refrescar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E009-reset-usado",
+      "endpointId": "E009",
+      "path": "/api/auth/reset-password",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E012-nominal",
+      "endpointId": "E012",
+      "path": "/api/auth/google",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "E013-nominal",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback?code=new&state=fixed-state",
+      "result": "PASS",
+      "status": 302
+    },
+    {
+      "id": "E013-sin-code-state",
+      "endpointId": "E013",
+      "path": "/api/auth/google/callback",
+      "result": "PASS",
+      "status": 302
+    }
+  ],
+  "cross": [
+    {
+      "id": "session-legacy-to-nest",
+      "result": "PASS"
+    },
+    {
+      "id": "session-nest-to-legacy",
+      "result": "PASS"
+    },
+    {
+      "id": "reset-legacy-to-nest-one-use",
+      "result": "PASS"
+    },
+    {
+      "id": "reset-nest-to-legacy-one-use",
+      "result": "PASS"
+    },
+    {
+      "id": "rate-login-legacy",
+      "result": "PASS"
+    },
+    {
+      "id": "rate-login-nest",
+      "result": "PASS"
+    }
+  ]
+}
