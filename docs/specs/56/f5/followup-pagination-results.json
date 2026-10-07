@@ -1,0 +1,18 @@
+{
+  "runtime": "v22.20.0",
+  "result": "PASS",
+  "checks": [
+    "sanciones two pages",
+    "sanciones legacy shape",
+    "sanciones scope and bounds",
+    "sanciones roles",
+    "sanciones technical scope",
+    "torneos two pages",
+    "torneos legacy shape",
+    "torneos scope and bounds",
+    "torneos roles",
+    "torneos technical scope",
+    "sanction active filter",
+    "no database writes"
+  ]
+}

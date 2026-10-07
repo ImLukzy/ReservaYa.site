@@ -6,6 +6,7 @@ import { fail, utc } from '../public/format';
 import { bind } from '../public/binding';
 import { boolean, text, type Query as QueryValues } from '../public/read.service';
 import { newId } from '../auth/crypto';
+import { pagination } from './pagination';
 import { Access } from '../management/access';
 import { parseEnum } from '../management/legacy';
 type Sancion=Prisma.SancionGetPayload<object>&{complejoByComplejoId?:{nombre:string}|null;usuarioByUsuarioId?:{id:string;nombre:string;email:string}|null};
@@ -18,12 +19,13 @@ export class Sanciones {
   constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access){}
   private get db(){return this.store.db;}
   async list(q:QueryValues,r:FastifyRequest){
-    const a=await this.access.actor(r,roles);bind(q,[],['soloActivas']);const complejoId=text(q,'complejoId'),where:Prisma.SancionWhereInput={};
+    const a=await this.access.actor(r,roles),page=pagination(q.cursor,q.take);bind(q,[],['soloActivas']);const complejoId=text(q,'complejoId'),where:Prisma.SancionWhereInput={};
     if(complejoId?.trim()){if(!await this.access.member(a,complejoId))fail(403,'Sin permisos');where.complejoId=complejoId;}
     else if(a.rol!=='TECNICO')where.complejoId={in:(await this.access.ids(a,true,true))!};
     if(boolean(q,'soloActivas')===true)where.activa=true;
-    const rows=await this.db.sancion.findMany({where,include:{complejoByComplejoId:{select:{nombre:true}},usuarioByUsuarioId:{select:{id:true,nombre:true,email:true}}},orderBy:{creadoEn:'desc'},take:200});
-    return {ok:true,sanciones:rows.map(shape)};
+    if(page?.cursor&&!await this.db.sancion.findFirst({where:{...where,id:page.cursor},select:{id:true}}))fail(400,'Cursor inválido');
+    const rows=await this.db.sancion.findMany({where,include:{complejoByComplejoId:{select:{nombre:true}},usuarioByUsuarioId:{select:{id:true,nombre:true,email:true}}},orderBy:page?[{creadoEn:'desc'},{id:'asc'}]:{creadoEn:'desc'},take:page?page.take+1:200,...(page?.cursor?{cursor:{id:page.cursor},skip:1}:{})});
+    const items=page?rows.slice(0,page.take):rows;return {ok:true,...(page?{nextCursor:rows.length>page.take?items[items.length-1]!.id:null}:{}),sanciones:items.map(shape)};
   }
   async create(b:SancionBody,r:FastifyRequest){
     const a=await this.access.actor(r,roles);if(!b.complejoId?.trim()||!b.usuarioId?.trim()||!b.motivo?.trim())fail(400,'complejoId, usuarioId y motivo son requeridos');

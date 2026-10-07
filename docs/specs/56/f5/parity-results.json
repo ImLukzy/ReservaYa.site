@@ -2385,15 +2385,15 @@
       "id": "E055-concurrencia-legacy",
       "endpointId": "E055",
       "result": "INFO",
-      "withinCapacity": true,
+      "withinCapacity": false,
       "statuses": [
         200,
         200,
-        409,
-        409,
+        200,
+        200,
         409
       ],
-      "stored": 2,
+      "stored": 4,
       "capacity": 2
     },
     {

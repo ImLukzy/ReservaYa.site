@@ -4,6 +4,7 @@ import type { FastifyRequest } from 'fastify';
 import { DbService } from '../public/db.service';
 import { fail, money, utc } from '../public/format';
 import { newId } from '../auth/crypto';
+import { pagination } from '../sanciones/pagination';
 import { Access, managementRoles } from '../management/access';
 import { databaseError } from '../management/errors';
 import { courtTypes, parseEnum, parseNetDateTime, plain } from '../management/legacy';
@@ -24,12 +25,13 @@ const blank=(s?:string)=>!s?.trim();
 export class Torneos {
   constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access){}
   private get db(){return this.store.db;}
-  async list(complejoId:string|undefined,r:FastifyRequest){
-    const a=await this.access.actor(r,managementRoles),where:Prisma.TorneoWhereInput={};
+  async list(complejoId:string|undefined,r:FastifyRequest,params:{cursor?:unknown;take?:unknown}={}){
+    const a=await this.access.actor(r,managementRoles),page=pagination(params.cursor,params.take),where:Prisma.TorneoWhereInput={};
     if(complejoId?.trim()){if(!await this.access.member(a,complejoId))fail(403,'Sin permisos');where.complejoId=complejoId;}
-    else{const ids=await this.access.ids(a);if(ids!==null){if(!ids.length)return {ok:true,torneos:[]};where.complejoId={in:ids};}}
-    const rows=await this.db.torneo.findMany({where,orderBy:{creadoEn:'desc'},include:{_count:{select:{inscripcionTorneoByTorneoId:true,partidoTorneoByTorneoId:true}}}});
-    return {ok:true,torneos:rows.map(t=>({...torneoShape(t),_count:{inscripciones:t._count.inscripcionTorneoByTorneoId,partidos:t._count.partidoTorneoByTorneoId}}))};
+    else{const ids=await this.access.ids(a);if(ids!==null){if(!ids.length){if(page?.cursor)fail(400,'Cursor inválido');return {ok:true,...(page?{nextCursor:null}:{}),torneos:[]};}where.complejoId={in:ids};}}
+    if(page?.cursor&&!await this.db.torneo.findFirst({where:{...where,id:page.cursor},select:{id:true}}))fail(400,'Cursor inválido');
+    const rows=await this.db.torneo.findMany({where,orderBy:page?[{creadoEn:'desc'},{id:'asc'}]:{creadoEn:'desc'},...(page?{take:page.take+1,...(page.cursor?{cursor:{id:page.cursor},skip:1}:{})}:{}),include:{_count:{select:{inscripcionTorneoByTorneoId:true,partidoTorneoByTorneoId:true}}}});
+    const items=page?rows.slice(0,page.take):rows;return {ok:true,...(page?{nextCursor:rows.length>page.take?items[items.length-1]!.id:null}:{}),torneos:items.map(t=>({...torneoShape(t),_count:{inscripciones:t._count.inscripcionTorneoByTorneoId,partidos:t._count.partidoTorneoByTorneoId}}))};
   }
   async get(id:string,r:FastifyRequest){
     const a=await this.access.actor(r,managementRoles),t=await this.db.torneo.findUnique({where:{id},include:{inscripcionTorneoByTorneoId:{orderBy:{creadoEn:'asc'}},partidoTorneoByTorneoId:{orderBy:{fecha:'asc'}}}});
@@ -103,7 +105,7 @@ export class Torneos {
 @Controller('api/torneos')
 export class TorneosController {
   constructor(@Inject(Torneos)private service:Torneos){}
-  @Get() list(@Query('complejoId')id:string|undefined,@Req()r:FastifyRequest){return this.service.list(id,r);}
+  @Get() list(@Query('complejoId')id:string|undefined,@Req()r:FastifyRequest,@Query('cursor')cursor?:string,@Query('take')take?:string){return this.service.list(id,r,{cursor,take});}
   @Get(':id') get(@Param('id')id:string,@Req()r:FastifyRequest){return this.service.get(id,r);}
   @Post() @HttpCode(201) create(@Body()b:TorneoBody,@Req()r:FastifyRequest){return this.service.create(b??{},r);}
   @Put('partidos/:partidoId') updateMatch(@Param('partidoId')id:string,@Body()b:PartidoBody,@Req()r:FastifyRequest){return this.service.updateMatch(id,b??{},r);}

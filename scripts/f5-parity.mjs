@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import {dropFixture} from './f5-cleanup.mjs';
 import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -155,6 +156,23 @@ async function run(){
  // Mail is captured in memory on both sides; nothing reaches Resend.
  mail=app.get(apiRequire('./dist/auth/providers.js').MailProvider);mail.configured=()=>true;mail.deliver=async m=>{nestMails.push(m);};
  console.log('F5 disposable fixture initialized');
+ if(process.argv.includes('--check-pagination')){
+  await bounded(restore(),'Pagination fixture',45000);const before=await effect(),checks=[];
+  for(const [endpoint,key,foreign]of [['sanciones','sanciones','sanction-b'],['torneos','torneos','torneo-b']]){
+   const base='/api/'+endpoint,first=await request('nest',base+'?take=1');
+   assert.equal(first.status,200);assert.equal(first.body[key].length,1);assert.ok(first.body.nextCursor);
+   const second=await request('nest',base+'?take=1&cursor='+encodeURIComponent(first.body.nextCursor));
+   assert.equal(second.status,200);assert.equal(second.body[key].length,1);assert.equal(second.body.nextCursor,null);assert.notEqual(first.body[key][0].id,second.body[key][0].id);checks.push(endpoint+' two pages');
+   const unpaged=await request('nest',base);assert.equal(unpaged.status,200);assert.ok(!('nextCursor'in unpaged.body));assert.equal(unpaged.body[key].length,2);checks.push(endpoint+' legacy shape');
+   for(const query of ['cursor='+foreign,'cursor=absent','take=201','take=0','take=1.5'])assert.equal((await request('nest',base+'?'+query)).status,400);checks.push(endpoint+' scope and bounds');
+   assert.equal((await request('nest',base+'?take=1',{actor:'player'})).status,403);checks.push(endpoint+' roles');
+   const technical=await request('nest',base+'?take=200',{actor:'tech'});assert.equal(technical.status,200);assert.equal(technical.body[key].length,3);checks.push(endpoint+' technical scope');
+  }
+  assert.equal((await request('nest','/api/sanciones?soloActivas=true&cursor=sanction-a-off')).status,400);
+  const active=await request('nest','/api/sanciones?soloActivas=true&take=1');assert.equal(active.status,200);assert.equal(active.body.sanciones.length,1);assert.equal(active.body.nextCursor,null);checks.push('sanction active filter');
+  assert.deepEqual(await effect(),before);checks.push('no database writes');
+  writeFileSync(resolve(root,'docs/specs/56/f5/followup-pagination-results.json'),JSON.stringify({runtime:process.version,result:'PASS',checks},null,2)+'\n');console.log('F5 pagination PASS '+checks.length+' checks');return;
+ }
  const center={nombre:'Centro de prueba',direccion:'Dirección sintética 100',distrito:'cayma',ciudad:'Lima',telefono:' 900000001 ',email:'centro@example.test',descripcion:'Ficticio'};
  const court={nombre:'Cancha solicitada',tipo:'FUTBOL5',precioPorHora:'45.50',capacidad:10,techada:true,superficie:' Grass sintético '};
  const matchForm={titulo:'Partido de prueba',formato:'Fútbol 5',nivel:'Intermedio',cuposTotales:'10',fecha:futureDay,desde:'18:00',hasta:'19:30',distrito:'yanahuara',cancha:'Cancha libre',superficie:'Losa',precio:'15.50',descripcion:'Ficticio'};
