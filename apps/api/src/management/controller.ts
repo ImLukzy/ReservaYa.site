@@ -32,7 +32,7 @@ export class UsuariosController {
   constructor(@Inject(Usuarios)private service:Usuarios){}
   @Get('buscar') search(@Query('q')q:string|undefined,@Req()r:FastifyRequest){return this.service.search(q,r);}
   @Get() list(@Req()r:FastifyRequest){return this.service.list(r);}
-  @Get('clientes') clients(@Req()r:FastifyRequest){return this.service.clients(r);}
+  @Get('clientes') clients(@Req()r:FastifyRequest,@Query('cursor')cursor?:string,@Query('take')take?:string){return this.service.clients(r,{cursor,take});}
   @Get(':id/historial') history(@Param('id')id:string,@Req()r:FastifyRequest){return this.service.history(id,r);}
   @Patch('me') me(@Body()b:UserBody,@Req()r:FastifyRequest){return this.service.me(b,r);}
   @Patch(':id') patch(@Param('id')id:string,@Body()b:UserBody,@Req()r:FastifyRequest){return this.service.patch(id,b,r);}

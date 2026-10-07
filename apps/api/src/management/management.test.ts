@@ -91,3 +91,29 @@ describe('Reserved entities remain intact',()=>{
   expect(erase).not.toHaveBeenCalled();expect(remove).not.toHaveBeenCalled();
  });
 });
+
+describe('Client pagination',()=>{
+ function fixture(){
+  const rows=Array.from({length:202},(_,i)=>({id:'client-'+String(i).padStart(3,'0'),nombre:'Ficticio',email:'fixture@example.test',rol:'USUARIO',activo:true,creadoEn:new Date('2026-01-01Z'),reservaByUsuarioId:[],_count:{sancionByUsuarioId:0}}));
+  const access={actor:async()=>({id:'owner',rol:'SUPERADMIN'}),ids:async()=>['own-complex']};
+  const db={cancha:{findMany:async()=>[{id:'own-court'}]},usuario:{
+   findFirst:async({where}:{where:{id:string}})=>rows.find(row=>row.id===where.id)||null,
+   findMany:async({cursor,skip=0,take}:{cursor?:{id:string};skip?:number;take:number})=>rows.slice((cursor?rows.findIndex(row=>row.id===cursor.id):0)+skip,(cursor?rows.findIndex(row=>row.id===cursor.id):0)+skip+take),
+  }};
+  return new Usuarios({db} as unknown as DbService,access as unknown as Access,{} as Media,{} as never);
+ }
+ it('makes every client beyond 200 reachable without overlapping pages',async()=>{
+  const service=fixture(),first=await service.clients({} as FastifyRequest,{take:'200'});
+  expect(first.clientes).toHaveLength(200);expect(first.nextCursor).toBe('client-199');
+  const second=await service.clients({} as FastifyRequest,{cursor:first.nextCursor!,take:'200'});
+  expect(second.clientes.map(user=>user.id)).toEqual(['client-200','client-201']);expect(second.nextCursor).toBeNull();
+ });
+ it('preserves the legacy response without pagination parameters',async()=>{
+  const result=await fixture().clients({} as FastifyRequest);expect(Object.keys(result)).toEqual(['ok','clientes']);expect(result.clientes).toHaveLength(200);
+ });
+ it('rejects out of scope cursors and unbounded page sizes',async()=>{
+  const service=fixture();
+  await expect(service.clients({} as FastifyRequest,{cursor:'foreign-user'})).rejects.toMatchObject({status:400});
+  for(const take of ['0','201','1.5','-1','bad'])await expect(service.clients({} as FastifyRequest,{take})).rejects.toMatchObject({status:400});
+ });
+});

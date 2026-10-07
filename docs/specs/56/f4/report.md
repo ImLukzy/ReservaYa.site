@@ -1,6 +1,6 @@
 # F4 — gestión Nest
 
-Estado: veinte rutas implementadas; cuarto gate 125/142; correcciones aplicadas y reintento pendiente. No se declara F4 terminada.
+Estado: F4 integrada en main (852634c), con paridad estricta128/142 y14 divergencias de seguridad aprobadas, cero fallos; F2/F3 y clon limpio PASS según god. Seguimiento RYS-77 implementado, pendiente de gate externo.
 
 ## Alcance
 

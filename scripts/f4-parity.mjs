@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict';
+import {dropFixture} from './f4-cleanup.mjs';
 import {readFileSync,writeFileSync,mkdtempSync,mkdirSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve} from 'node:path';
@@ -124,6 +126,18 @@ async function run(){
  app=await bounded(apiRequire('./dist/app.js').createApp(),'Nest create');await bounded(app.init(),'Nest init');await bounded(app.getHttpAdapter().getInstance().ready(),'Fastify ready');
  // All R2 configuration above is fictional and points only to the local fake S3 server.
  console.log('F4 disposable fixture initialized');
+ if(process.argv.includes('--check-client-pagination')){
+  await bounded(restore(),'Pagination fixture',45000);const before=await effect();
+  const first=await request('nest','/api/usuarios/clientes?take=1',{actor:'tech'});
+  assert.equal(first.status,200);assert.equal(first.body.clientes.length,1);assert.ok(first.body.nextCursor);
+  const second=await request('nest','/api/usuarios/clientes?take=1&cursor='+encodeURIComponent(first.body.nextCursor),{actor:'tech'});
+  assert.equal(second.status,200);assert.equal(second.body.clientes.length,1);assert.equal(second.body.nextCursor,null);assert.notEqual(first.body.clientes[0].id,second.body.clientes[0].id);
+  const owned=await request('nest','/api/usuarios/clientes',{actor:'owner'});assert.equal(owned.status,200);assert.deepEqual(owned.body.clientes.map(user=>user.id),['client']);assert.ok(!('nextCursor'in owned.body));
+  assert.equal((await request('nest','/api/usuarios/clientes?cursor=other',{actor:'owner'})).status,400);
+  assert.equal((await request('nest','/api/usuarios/clientes?take=201',{actor:'tech'})).status,400);
+  assert.equal((await request('nest','/api/usuarios/clientes?take=1',{actor:'player'})).status,403);
+  assert.deepEqual(await effect(),before);console.log('F4 client pagination: PASS (two pages, scope, bounds, roles, legacy response, no writes)');return;
+ }
  if(process.argv.includes('--diagnose-fk')){
   await bounded(restore(),'Diagnostic fixture',45000);
   for(const [model,id]of [['cancha','court-a'],['usuario','client']]){
@@ -185,7 +199,7 @@ finally{
  clearTimeout(globalTimer);
  if(host){host.kill('SIGTERM');await new Promise(r=>{if(host.exitCode!==null)return r();host.once('exit',r);const timer=setTimeout(()=>{host.kill('SIGKILL');r();},3000);timer.unref();});}
  // Force-drop first: pending Nest/database requests must not prevent cleanup.
- if(attempted){try{if(creating)await bounded(creating.catch(()=>undefined),'Finish QA create',15000,false);await bounded(admin.$executeRawUnsafe(`DROP DATABASE IF EXISTS "${dbName}" WITH (FORCE)`),'QA drop',15000,false);console.log('Disposable F4 QA database removed');}catch(e){console.error(safe(e));process.exitCode=1;}}
+ if(attempted){try{if(creating)await bounded(creating.catch(()=>undefined),'Finish QA create',15000,false);await dropFixture({name:dbName,createClient:()=>smoke?admin:new PrismaClient({datasources:{db:{url:settings.TEST_DATABASE_URL_UNPOOLED}}}),bounded,log:console.error});console.log('Disposable F4 QA database removed');}catch(e){console.error(safe(e));process.exitCode=1;}}
  await Promise.allSettled([bounded(app?.close(),'Nest close',5000,false),bounded(db?.$disconnect(),'Fixture disconnect',5000,false),bounded(admin.$disconnect(),'Admin disconnect',5000,false)]);
  rmSync(scratch,{recursive:true,force:true});console.log('F4 scratch directory removed');for(const [signal,handler]of signalHandlers)process.removeListener(signal,handler);
 }
