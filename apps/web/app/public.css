@@ -918,7 +918,9 @@ html:has(.pantallas) {
   font-family: var(--font-display);
   font-weight: 850;
   font-variation-settings: "wdth" 62;
-  font-size: clamp(3rem, 14vw, 4.5rem);
+  /* Tamaño deseado (--gigante-fs, lo ajusta cada pantalla) con tope opcional (--gigante-tope). */
+  --gigante-fs: clamp(3rem, 14vw, 4.5rem);
+  font-size: min(var(--gigante-fs), var(--gigante-tope, 100vw));
   line-height: 0.88;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -936,7 +938,7 @@ html:has(.pantallas) {
 }
 .public-site .enlace-vivo:hover { text-decoration-thickness: 3px; }
 @media (min-width: 40rem) {
-  .public-site .gigante { font-size: clamp(4rem, 10vw, 6.5rem); }
+  .public-site .gigante { --gigante-fs: clamp(4rem, 10vw, 6.5rem); }
 }
 
 /* Alias calculados en .public-site: se repiten para que tomen los tokens de cada fondo. */
@@ -1104,10 +1106,10 @@ html:has(.pantallas) {
 
 /* Escritorio con encuadre: titulares limitados por ancho y alto. */
 @media (min-width: 64rem) and (min-height: 700px) {
-  .public-site .pantallas .gigante { font-size: min(8rem, 7.2vw, 13svh); }
-  .public-site .portada-busqueda .gigante { font-size: min(9rem, 8vw, 13.5svh); }
-  .public-site #como-funciona .gigante { font-size: min(11rem, 9.6vw, 15.5svh); }
-  .public-site .lado-a-lado .gigante { font-size: min(9rem, 7.4vw, 16svh); }
+  .public-site .pantallas .gigante { --gigante-fs: min(8rem, 7.2vw, 13svh); }
+  .public-site .portada-busqueda .gigante { --gigante-fs: min(9rem, 8vw, 13.5svh); }
+  .public-site #como-funciona .gigante { --gigante-fs: min(11rem, 9.6vw, 15.5svh); }
+  .public-site .lado-a-lado .gigante { --gigante-fs: min(9rem, 7.4vw, 16svh); }
   .public-site .pasos-marcador { margin-top: min(3rem, 5svh); }
   .public-site .pasos-marcador__num { font-size: min(12rem, 22svh); }
   .public-site .pasos-marcador--cinco .pasos-marcador__num { font-size: min(7rem, 12svh); }
@@ -1134,9 +1136,9 @@ html:has(.pantallas) {
 .public-site .pantallas-canchas .pantalla > section { padding-block: 0; }
 .public-site .pantallas-canchas .canchas-resultados { flex: 1 0 auto; }
 @media (min-width: 64rem) and (min-height: 700px) {
-  .public-site .pantallas .canchas-buscar .gigante { font-size: min(6rem, 6vw, 9.5svh); }
+  .public-site .pantallas .canchas-buscar .gigante { --gigante-fs: min(6rem, 6vw, 9.5svh); }
   .public-site .pantallas .lado-a-lado > .equipos-col > .card-tactil:first-child { margin-top: 0; }
-  .public-site .pantallas .torneos-titulo { font-size: min(12rem, 9.5vw, 24svh); }
+  .public-site .pantallas .torneos-titulo { --gigante-fs: min(12rem, 9.5vw, 24svh); }
 }
 
 /* Secciones a sangre: el relleno vertical lo pone la sección (2rem, 1.5rem en escritorio bajo). */
@@ -1144,7 +1146,7 @@ html:has(.pantallas) {
   .public-site .pantallas > :is(.fondo-verde, .fondo-sillar, .fondo-cesped, .fondo-noche) > div { padding-block: 0.5rem; }
   .public-site .pantallas-canchas .canchas-buscar > div { padding-block: 1rem 1.25rem; }
   .public-site .pantallas-canchas .canchas-resultados > div { padding-top: 0.75rem; padding-bottom: 2rem; }
-  .public-site .pantallas #partidos .gigante { font-size: min(7rem, 7vw, 10.5svh); }
+  .public-site .pantallas #partidos .gigante { --gigante-fs: min(7rem, 7vw, 10.5svh); }
   /* Planes: titular a la izquierda y bajada a la derecha, así las tres tarjetas caben debajo. */
   .public-site #planes > .revelar > div:first-child {
     display: grid;
@@ -1159,9 +1161,9 @@ html:has(.pantallas) {
 }
 /* Escritorio muy bajo (720 px): titulares y bajadas más contenidos para que cada pantalla quepa. */
 @media (min-width: 64rem) and (min-height: 700px) and (max-height: 46rem) {
-  .public-site .pantallas .gigante { font-size: min(8rem, 7.2vw, 10.5svh); }
-  .public-site .pantallas #partidos .gigante { font-size: min(7rem, 7vw, 8.5svh); }
-  .public-site .pantallas .canchas-buscar .gigante { font-size: min(6rem, 6vw, 8svh); }
+  .public-site .pantallas .gigante { --gigante-fs: min(8rem, 7.2vw, 10.5svh); }
+  .public-site .pantallas #partidos .gigante { --gigante-fs: min(7rem, 7vw, 8.5svh); }
+  .public-site .pantallas .canchas-buscar .gigante { --gigante-fs: min(6rem, 6vw, 8svh); }
   .public-site .pantallas .bajada-viva { margin-top: 0.75rem; font-size: var(--text-base); }
   .public-site .pantallas #partidos .card-tactil.mt-8 { margin-top: 0.75rem; }
   .public-site .pantallas-canchas .canchas-buscar > div { padding-block: 0.75rem 1rem; }
@@ -1172,15 +1174,22 @@ html:has(.pantallas) {
   .public-site .canchas-buscar > div > .grid:first-child { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
 }
 
-/* Preguntas frecuentes: el titular gigante se mide contra SU columna, no contra la ventana.
-   Con vw crecía más que la columna (max-w-page la topa) y en 1440+ «frecuentes» se metía bajo la
-   lista. La palabra más larga («frecuentes») mide 4,09 em en Anybody 62: con 23cqi siempre cabe
-   en la columna, y svh sigue limitando el alto para que la pantalla quepa entera. */
-.public-site .lado-a-lado:has(> .preguntas) > :first-child { container-type: inline-size; }
-.public-site .lado-a-lado:has(> .preguntas) .gigante { font-size: min(clamp(3rem, 14vw, 6.5rem), 23cqi); }
+/* Titular a la izquierda de .lado-a-lado (preguntas, sorteo, torneos): se mide contra SU columna,
+   no contra la ventana. Con vw crecía más que la columna (max-w-page la topa en 410 px) y en
+   pantallas anchas «frecuentes» o «Torneos» se metían bajo la tarjeta vecina. El tope es el ancho
+   de la columna (100cqi) entre --palabra: el ancho en em de la palabra más larga del titular en
+   Anybody 850 wdth 62, con ~2-6 % de holgura. «frecuentes» 4,09 em → 4,348 (por defecto, = 23cqi);
+   «equipos» 2,79 → 2,85; «Torneos» 2,94 → 3. Si cambia el texto, medir de nuevo su palabra más larga.
+   Mientras cabe, manda el tamaño deseado (--gigante-fs) de siempre. */
+.public-site .lado-a-lado > :first-child { container-type: inline-size; }
+.public-site .lado-a-lado .gigante { --gigante-tope: calc(100cqi / var(--palabra, 4.348)); }
+.public-site #sortear-titulo { --palabra: 2.85; }
+.public-site .torneos-titulo { --palabra: 3; }
+/* Preguntas frecuentes: algo más grandes que el resto de titulares gigantes. */
+.public-site .lado-a-lado:has(> .preguntas) .gigante { --gigante-fs: clamp(3rem, 14vw, 6.5rem); }
 @media (min-width: 64rem) and (min-height: 700px) {
-  .public-site .pantallas .lado-a-lado:has(> .preguntas) .gigante { font-size: min(9rem, 23cqi, 16svh); }
+  .public-site .pantallas .lado-a-lado:has(> .preguntas) .gigante { --gigante-fs: min(9rem, 16svh); }
 }
 @media (min-width: 64rem) and (min-height: 700px) and (max-height: 46rem) {
-  .public-site .pantallas .lado-a-lado:has(> .preguntas) .gigante { font-size: min(9rem, 23cqi, 10.5svh); }
+  .public-site .pantallas .lado-a-lado:has(> .preguntas) .gigante { --gigante-fs: min(9rem, 10.5svh); }
 }
