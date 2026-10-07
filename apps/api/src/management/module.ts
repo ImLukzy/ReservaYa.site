@@ -8,5 +8,5 @@ import { Horarios } from './horarios';
 import { Promociones } from './promociones';
 import { Usuarios } from './usuarios';
 import { CanchasWriteController, HorariosController, PromocionesController, UsuariosController } from './controller';
-@Module({imports:[DbModule,AuthModule],controllers:[CanchasWriteController,HorariosController,PromocionesController,UsuariosController],providers:[Access,Media,Canchas,Horarios,Promociones,Usuarios]})
+@Module({imports:[DbModule,AuthModule],controllers:[CanchasWriteController,HorariosController,PromocionesController,UsuariosController],providers:[Access,Media,Canchas,Horarios,Promociones,Usuarios],exports:[Access,Media]})
 export class ManagementModule {}

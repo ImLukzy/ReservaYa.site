@@ -23,8 +23,8 @@ describe('Health and F2 route boundaries', () => {
   });
   it('leaves private legacy routes unimplemented', async () => {
     const login = await app.inject({ method: 'POST', url: '/api/reservas', payload: {} });
-    const complejos = await app.inject({ method: 'GET', url: '/api/complejos' });
+    const caja = await app.inject({ method: 'GET', url: '/api/caja/hoy' });
     expect(login.statusCode).toBe(404);
-    expect(complejos.statusCode).toBe(404);
+    expect(caja.statusCode).toBe(404);
   });
 });

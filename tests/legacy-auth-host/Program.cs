@@ -31,7 +31,7 @@ public static class FixtureHost {
   b.Logging.ClearProviders();
   var url=new Uri(Environment.GetEnvironmentVariable("DATABASE_URL")!);var parts=url.UserInfo.Split(':',2);
   var cs=new NpgsqlConnectionStringBuilder {Host=url.Host,Port=url.Port>0?url.Port:5432,Database=url.AbsolutePath.TrimStart('/'),Username=Uri.UnescapeDataString(parts[0]),Password=Uri.UnescapeDataString(parts[1]),SslMode=SslMode.Require};
-  if(!cs.Database.StartsWith("f3_fixture_",StringComparison.Ordinal) && !(Environment.GetEnvironmentVariable("F4_QA_FIXTURE")=="true" && cs.Database.StartsWith("f4_fixture_",StringComparison.Ordinal)))throw new Exception("Only disposable F3 fixture databases allowed");
+  if(!cs.Database.StartsWith("f3_fixture_",StringComparison.Ordinal) && !(Environment.GetEnvironmentVariable("F4_QA_FIXTURE")=="true" && cs.Database.StartsWith("f4_fixture_",StringComparison.Ordinal)) && !(Environment.GetEnvironmentVariable("F5_QA_FIXTURE")=="true" && cs.Database.StartsWith("f5_fixture_",StringComparison.Ordinal)))throw new Exception("Only disposable F3 fixture databases allowed");
   var source=new NpgsqlDataSourceBuilder(cs.ConnectionString);
   source.MapEnum<Rol>("Rol",new NpgsqlNullNameTranslator());
   source.MapEnum<EstadoReserva>("EstadoReserva",new NpgsqlNullNameTranslator());
@@ -90,7 +90,7 @@ public static class FixtureHost {
   // Execute the original scope queries via reflection because legacy helpers are internal.
   app.Use(async(context,next)=>{
    var role=context.User.FindFirst("rol")?.Value??"USUARIO";var path=context.Request.Path.Value??"";
-   if(context.User.Identity?.IsAuthenticated==true && role!="USUARIO" && role!="TECNICO" && path.StartsWith("/api/",StringComparison.OrdinalIgnoreCase) && !path.StartsWith("/api/auth/",StringComparison.OrdinalIgnoreCase) && context.GetEndpoint()?.Metadata.GetMetadata<IAllowAnonymous>() is null){
+   if(context.User.Identity?.IsAuthenticated==true && role!="USUARIO" && role!="TECNICO" && path.StartsWith("/api/",StringComparison.OrdinalIgnoreCase) && !path.StartsWith("/api/auth/",StringComparison.OrdinalIgnoreCase) && !path.StartsWith("/api/suscripciones",StringComparison.OrdinalIgnoreCase) && context.GetEndpoint()?.Metadata.GetMetadata<IAllowAnonymous>() is null){
     var db=context.RequestServices.GetRequiredService<AppDbContext>();var assembly=typeof(AuthController).Assembly;
     var access=assembly.GetType("ReservaFacil.Api.Security.ComplejoAccess")!;
     var ids=await (Task<List<string>?>)access.GetMethod("IdsAsync")!.Invoke(null,new object[]{db,context.User,true})!;

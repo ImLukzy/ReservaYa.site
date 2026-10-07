@@ -41,7 +41,7 @@ export class GoogleProvider {
   }
 }
 // WebUtility.HtmlEncode escapes Latin-1 characters as numeric references as well.
-const htmlEncode=(value:string)=>value.replace(/[&<>"'\u00a0-\u00ff\uD800-\uDFFF\u{10000}-\u{10ffff}]/gu,c=>({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]||(c.length===1&&c.charCodeAt(0)>=0xd800&&c.charCodeAt(0)<=0xdfff?'\uFFFD':`&#${c.codePointAt(0)};`)));
+export const htmlEncode=(value:string)=>value.replace(/[&<>"'\u00a0-\u00ff\uD800-\uDFFF\u{10000}-\u{10ffff}]/gu,c=>({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]||(c.length===1&&c.charCodeAt(0)>=0xd800&&c.charCodeAt(0)<=0xdfff?'\uFFFD':`&#${c.codePointAt(0)};`)));
 export function passwordResetEmail(message:ResetMail) {
   const {nombre,email,link}=message;
   return {
@@ -55,32 +55,36 @@ export function passwordResetEmail(message:ResetMail) {
   };
 }
 export type ResetMail={nombre:string;email:string;link:string};
+export type EmailMessage={to:string;subject:string;text:string;html:string};
+const validResetUrl=()=>{try{return ['http:','https:'].includes(new URL(process.env.PASSWORD_RESET_URL?.trim()||'').protocol);}catch{return false;}};
 @Injectable()
 export class MailProvider {
   private pending=0;
   private readonly logger=new Logger(MailProvider.name);
-  enqueue(message:ResetMail){
+  enqueue(message:ResetMail){return this.background(()=>this.send(message),'No se pudo enviar el email de recuperación');}
+  // Legacy EmailQueue: bounded to 500, drops when full; delivery failures only log.
+  queue(message:EmailMessage){return this.background(()=>this.deliver(message),`No se pudo enviar el email «${message.subject}»`);}
+  private background(job:()=>Promise<void>,error:string){
     if(this.pending>=500)return false;
     this.pending++;
-    queueMicrotask(()=>{void this.send(message).catch(()=>{this.logger.error('No se pudo enviar el email de recuperación');}).finally(()=>{this.pending--;});});
+    queueMicrotask(()=>{void job().catch(()=>{this.logger.error(error);}).finally(()=>{this.pending--;});});
     return true;
   }
-  async send(message:ResetMail):Promise<void>{
+  // Mirrors the legacy registration: Resend only with a valid PASSWORD_RESET_URL.
+  configured(){const provider=(process.env.EMAIL_PROVIDER||'').trim().toLowerCase();return validResetUrl()&&provider==='resend'&&Boolean(process.env.RESEND_API_KEY?.trim()&&process.env.EMAIL_FROM?.trim());}
+  async send(message:ResetMail):Promise<void>{await this.deliver(passwordResetEmail(message));}
+  async deliver(email:EmailMessage):Promise<void>{
     const provider=(process.env.EMAIL_PROVIDER||'').trim().toLowerCase();
-    const key=process.env.RESEND_API_KEY,from=process.env.EMAIL_FROM;
-    let validResetUrl=false;
-    try{validResetUrl=['http:','https:'].includes(new URL(process.env.PASSWORD_RESET_URL?.trim()||'').protocol);}catch{/* disabled */}
-    const email=passwordResetEmail(message);
-    if(validResetUrl && provider==='resend' && key?.trim() && from?.trim()){
+    if(this.configured()){
       const response=await fetch('https://api.resend.com/emails',{
-        method:'POST',headers:{authorization:`Bearer ${key}`,'content-type':'application/json'},
-        body:JSON.stringify({from,to:[email.to],subject:email.subject,text:email.text,html:email.html}),
+        method:'POST',headers:{authorization:`Bearer ${process.env.RESEND_API_KEY}`,'content-type':'application/json'},
+        body:JSON.stringify({from:process.env.EMAIL_FROM,to:[email.to],subject:email.subject,text:email.text,html:email.html}),
         signal:AbortSignal.timeout(10000)
       });
       if(!response.ok)throw new Error(`Resend respondió ${response.status}`);
       return;
     }
-    if(validResetUrl && provider==='log' && (process.env.NODE_ENV==='development'||process.env.ASPNETCORE_ENVIRONMENT==='Development')){
+    if(validResetUrl() && provider==='log' && (process.env.NODE_ENV==='development'||process.env.ASPNETCORE_ENVIRONMENT==='Development')){
       this.logger.log(`[EMAIL_PROVIDER=log] Para: ${email.to} · ${email.subject}\n${email.text}`);
       return;
     }

@@ -41,8 +41,12 @@ export class Media implements OnModuleDestroy {
     for await(const part of r.parts()){if(part.type==='file'){const bytes=await part.toBuffer();if(part.fieldname==='archivo'&&!data)data=bytes;}}
     if(!data?.length)fail(400,'Archivo requerido');if(data!.length>3*1024*1024)fail(400,'La imagen no puede superar 3 MB');
     const ext=imageExtension(data!);if(!ext)fail(400,'Solo se aceptan imágenes JPG, PNG, WEBP o GIF');
+    return this.store(folder,id,data!,ext!);
+  }
+  // Versioned {id}-{unix}.{ext} legacy file; older versions of the same id are removed.
+  async store(folder:string,id:string,data:Buffer,ext:string){
     const dir=resolve(this.root(),'uploads',folder),name=`${id}-${Math.floor(Date.now()/1000)}${ext}`;
-    await mkdir(dir,{recursive:true});await writeFile(resolve(dir,name),data!);
+    await mkdir(dir,{recursive:true});await writeFile(resolve(dir,name),data);
     for(const old of await readdir(dir)){if(old.startsWith(id+'-')&&old!==name)try{await unlink(resolve(dir,old));}catch{/* best effort */}}
     return `/uploads/${folder}/${name}`;
   }

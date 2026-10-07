@@ -1,0 +1,2445 @@
+{
+  "runtime": "v22.20.0",
+  "basis": "Actual legacy controllers, disposable empty QA database, local fake S3 and captured mail with fictitious data only",
+  "normalization": [
+    "New IDs validated GUID N and mapped, also inside generated slugs and upload paths",
+    "Request timestamps mapped after a 120 s range check",
+    "ProblemDetails traceId mapped after W3C or Kestrel request-id format check",
+    "Legacy multipart version Unix seconds mapped, prefix and extension retained",
+    "Effects sorted after random generated IDs mapped; every column of thirteen tables compared"
+  ],
+  "complete": true,
+  "rows": [
+    {
+      "id": "E034-nominal",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E034-sin-sesion",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E035-nominal",
+      "endpointId": "E035",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E035-sin-sesion",
+      "endpointId": "E035",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E036-nominal",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E036-sin-sesion",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E037-nominal",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E037-sin-sesion",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E038-nominal",
+      "endpointId": "E038",
+      "path": "/api/complejos/trial",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E038-sin-sesion",
+      "endpointId": "E038",
+      "path": "/api/complejos/trial",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E039-nominal",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E039-sin-sesion",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E040-nominal",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 201,
+      "emails": 1
+    },
+    {
+      "id": "E040-sin-sesion",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E041-nominal",
+      "endpointId": "E041",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E041-sin-sesion",
+      "endpointId": "E041",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E042-nominal",
+      "endpointId": "E042",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E042-sin-sesion",
+      "endpointId": "E042",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E045-nominal",
+      "endpointId": "E045",
+      "path": "/api/invitaciones/mias",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E045-sin-sesion",
+      "endpointId": "E045",
+      "path": "/api/invitaciones/mias",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E046-nominal",
+      "endpointId": "E046",
+      "path": "/api/invitaciones/inv-a/aceptar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E046-sin-sesion",
+      "endpointId": "E046",
+      "path": "/api/invitaciones/inv-a/aceptar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E047-nominal",
+      "endpointId": "E047",
+      "path": "/api/invitaciones/inv-a/rechazar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E047-sin-sesion",
+      "endpointId": "E047",
+      "path": "/api/invitaciones/inv-a/rechazar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E053-nominal",
+      "endpointId": "E053",
+      "path": "/api/partidos/mios",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E053-sin-sesion",
+      "endpointId": "E053",
+      "path": "/api/partidos/mios",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E054-nominal",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E054-sin-sesion",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E055-nominal",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E055-sin-sesion",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E056-nominal",
+      "endpointId": "E056",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E056-sin-sesion",
+      "endpointId": "E056",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E057-nominal",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-a/foto",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E057-sin-sesion",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-a/foto",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E058-nominal",
+      "endpointId": "E058",
+      "path": "/api/partidos/match-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E058-sin-sesion",
+      "endpointId": "E058",
+      "path": "/api/partidos/match-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E067-nominal",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E067-sin-sesion",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E068-nominal",
+      "endpointId": "E068",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E068-sin-sesion",
+      "endpointId": "E068",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E069-nominal",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-a/responder",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E069-sin-sesion",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-a/responder",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E076-nominal",
+      "endpointId": "E076",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E076-sin-sesion",
+      "endpointId": "E076",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E077-nominal",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E077-sin-sesion",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E078-nominal",
+      "endpointId": "E078",
+      "path": "/api/sanciones/sanction-a/desactivar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E078-sin-sesion",
+      "endpointId": "E078",
+      "path": "/api/sanciones/sanction-a/desactivar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E079-nominal",
+      "endpointId": "E079",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E079-sin-sesion",
+      "endpointId": "E079",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E080-nominal",
+      "endpointId": "E080",
+      "path": "/api/solicitudes/mias",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E080-sin-sesion",
+      "endpointId": "E080",
+      "path": "/api/solicitudes/mias",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E081-nominal",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E081-sin-sesion",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E082-nominal",
+      "endpointId": "E082",
+      "path": "/api/solicitudes/pending/aprobar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E082-sin-sesion",
+      "endpointId": "E082",
+      "path": "/api/solicitudes/pending/aprobar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E083-nominal",
+      "endpointId": "E083",
+      "path": "/api/solicitudes/pending/rechazar",
+      "result": "PASS",
+      "status": 200,
+      "emails": 1
+    },
+    {
+      "id": "E083-sin-sesion",
+      "endpointId": "E083",
+      "path": "/api/solicitudes/pending/rechazar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E084-nominal",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E084-sin-sesion",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E085-nominal",
+      "endpointId": "E085",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E085-sin-sesion",
+      "endpointId": "E085",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E086-nominal",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E086-sin-sesion",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E087-nominal",
+      "endpointId": "E087",
+      "path": "/api/suscripciones/sub-req-a/aprobar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E087-sin-sesion",
+      "endpointId": "E087",
+      "path": "/api/suscripciones/sub-req-a/aprobar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E088-nominal",
+      "endpointId": "E088",
+      "path": "/api/suscripciones/sub-req-a/rechazar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E088-sin-sesion",
+      "endpointId": "E088",
+      "path": "/api/suscripciones/sub-req-a/rechazar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E089-nominal",
+      "endpointId": "E089",
+      "path": "/api/suscripciones/sub-req-a/cancelar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E089-sin-sesion",
+      "endpointId": "E089",
+      "path": "/api/suscripciones/sub-req-a/cancelar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E090-nominal",
+      "endpointId": "E090",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E090-sin-sesion",
+      "endpointId": "E090",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E091-nominal",
+      "endpointId": "E091",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E091-sin-sesion",
+      "endpointId": "E091",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E092-nominal",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E092-sin-sesion",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E093-nominal",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E093-sin-sesion",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E094-nominal",
+      "endpointId": "E094",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E094-sin-sesion",
+      "endpointId": "E094",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E095-nominal",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E095-sin-sesion",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E096-nominal",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E096-sin-sesion",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E097-nominal",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E097-sin-sesion",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E034-tv-revocado",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E035-tv-revocado",
+      "endpointId": "E035",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E036-tv-revocado",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E036-rol-no-permitido",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E037-tv-revocado",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E037-rol-no-permitido",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E038-tv-revocado",
+      "endpointId": "E038",
+      "path": "/api/complejos/trial",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E038-rol-no-permitido",
+      "endpointId": "E038",
+      "path": "/api/complejos/trial",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E039-tv-revocado",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E039-rol-no-permitido",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E040-tv-revocado",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 201,
+      "nestStatus": 403
+    },
+    {
+      "id": "E040-rol-no-permitido",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E041-tv-revocado",
+      "endpointId": "E041",
+      "path": "/api/equipo/member-a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E041-rol-no-permitido",
+      "endpointId": "E041",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E042-tv-revocado",
+      "endpointId": "E042",
+      "path": "/api/equipo/member-a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E042-rol-no-permitido",
+      "endpointId": "E042",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E045-tv-revocado",
+      "endpointId": "E045",
+      "path": "/api/invitaciones/mias",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E046-tv-revocado",
+      "endpointId": "E046",
+      "path": "/api/invitaciones/inv-a/aceptar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E047-tv-revocado",
+      "endpointId": "E047",
+      "path": "/api/invitaciones/inv-a/rechazar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E053-tv-revocado",
+      "endpointId": "E053",
+      "path": "/api/partidos/mios",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E054-tv-revocado",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E055-tv-revocado",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E056-tv-revocado",
+      "endpointId": "E056",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E057-tv-revocado",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-a/foto",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E058-tv-revocado",
+      "endpointId": "E058",
+      "path": "/api/partidos/match-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E067-tv-revocado",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E068-tv-revocado",
+      "endpointId": "E068",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E069-tv-revocado",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-a/responder",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E069-rol-no-permitido",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-a/responder",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E076-tv-revocado",
+      "endpointId": "E076",
+      "path": "/api/sanciones",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E076-rol-no-permitido",
+      "endpointId": "E076",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E077-tv-revocado",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 201,
+      "nestStatus": 403
+    },
+    {
+      "id": "E077-rol-no-permitido",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E078-tv-revocado",
+      "endpointId": "E078",
+      "path": "/api/sanciones/sanction-a/desactivar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E078-rol-no-permitido",
+      "endpointId": "E078",
+      "path": "/api/sanciones/sanction-a/desactivar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E079-tv-revocado",
+      "endpointId": "E079",
+      "path": "/api/solicitudes",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E079-rol-no-permitido",
+      "endpointId": "E079",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E080-tv-revocado",
+      "endpointId": "E080",
+      "path": "/api/solicitudes/mias",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E080-rol-no-permitido",
+      "endpointId": "E080",
+      "path": "/api/solicitudes/mias",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E081-tv-revocado",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E081-rol-no-permitido",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E082-tv-revocado",
+      "endpointId": "E082",
+      "path": "/api/solicitudes/pending/aprobar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E082-rol-no-permitido",
+      "endpointId": "E082",
+      "path": "/api/solicitudes/pending/aprobar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E083-tv-revocado",
+      "endpointId": "E083",
+      "path": "/api/solicitudes/pending/rechazar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E083-rol-no-permitido",
+      "endpointId": "E083",
+      "path": "/api/solicitudes/pending/rechazar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E084-tv-revocado",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E085-tv-revocado",
+      "endpointId": "E085",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E086-tv-revocado",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E086-rol-no-permitido",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E087-tv-revocado",
+      "endpointId": "E087",
+      "path": "/api/suscripciones/sub-req-a/aprobar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E087-rol-no-permitido",
+      "endpointId": "E087",
+      "path": "/api/suscripciones/sub-req-a/aprobar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E088-tv-revocado",
+      "endpointId": "E088",
+      "path": "/api/suscripciones/sub-req-a/rechazar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E088-rol-no-permitido",
+      "endpointId": "E088",
+      "path": "/api/suscripciones/sub-req-a/rechazar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E089-tv-revocado",
+      "endpointId": "E089",
+      "path": "/api/suscripciones/sub-req-a/cancelar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 403,
+      "nestStatus": 403
+    },
+    {
+      "id": "E089-rol-no-permitido",
+      "endpointId": "E089",
+      "path": "/api/suscripciones/sub-req-a/cancelar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E090-tv-revocado",
+      "endpointId": "E090",
+      "path": "/api/torneos",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E090-rol-no-permitido",
+      "endpointId": "E090",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E091-tv-revocado",
+      "endpointId": "E091",
+      "path": "/api/torneos/torneo-a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E091-rol-no-permitido",
+      "endpointId": "E091",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E092-tv-revocado",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 201,
+      "nestStatus": 403
+    },
+    {
+      "id": "E092-rol-no-permitido",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E093-tv-revocado",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E093-rol-no-permitido",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E094-tv-revocado",
+      "endpointId": "E094",
+      "path": "/api/torneos/torneo-a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E094-rol-no-permitido",
+      "endpointId": "E094",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E095-tv-revocado",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 201,
+      "nestStatus": 403
+    },
+    {
+      "id": "E095-rol-no-permitido",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E096-tv-revocado",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 201,
+      "nestStatus": 403
+    },
+    {
+      "id": "E096-rol-no-permitido",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E097-tv-revocado",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E097-rol-no-permitido",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E034-platform",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E034-player-empty",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E034-member",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E034-expired",
+      "endpointId": "E034",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E035-otra-sede",
+      "endpointId": "E035",
+      "path": "/api/complejos/b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E035-member",
+      "endpointId": "E035",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E035-missing",
+      "endpointId": "E035",
+      "path": "/api/complejos/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E035-platform-pending",
+      "endpointId": "E035",
+      "path": "/api/complejos/pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E036-invalid",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E036-district",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E036-slug-collision",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E036-trial-only",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E036-member-admin",
+      "endpointId": "E036",
+      "path": "/api/complejos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E037-otra-sede",
+      "endpointId": "E037",
+      "path": "/api/complejos/b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E037-publish-pending",
+      "endpointId": "E037",
+      "path": "/api/complejos/pending",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E037-district",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E037-clear-optional",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E037-member-denied",
+      "endpointId": "E037",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E038-reservas",
+      "endpointId": "E038",
+      "path": "/api/complejos/a",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E038-registros",
+      "endpointId": "E038",
+      "path": "/api/complejos/b",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E038-otra-sede",
+      "endpointId": "E038",
+      "path": "/api/complejos/b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E038-missing",
+      "endpointId": "E038",
+      "path": "/api/complejos/absent",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E039-missing-complex",
+      "endpointId": "E039",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E039-absent",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E039-member",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E039-otra-sede",
+      "endpointId": "E039",
+      "path": "/api/equipo?complejoId=b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E040-auto-invitacion",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 422
+    },
+    {
+      "id": "E040-sin-cuenta",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 404,
+      "emails": 1
+    },
+    {
+      "id": "E040-existente",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E040-activo",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E040-rol-sede",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E040-dueno-centro",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 422
+    },
+    {
+      "id": "E040-plataforma",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 422
+    },
+    {
+      "id": "E040-member-denied",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E040-missing-email",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E041-activo-no-editable",
+      "endpointId": "E041",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E041-otra-sede",
+      "endpointId": "E041",
+      "path": "/api/equipo/inv-b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E041-rol-invalido",
+      "endpointId": "E041",
+      "path": "/api/equipo/member-a",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E041-missing",
+      "endpointId": "E041",
+      "path": "/api/equipo/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E042-pending",
+      "endpointId": "E042",
+      "path": "/api/equipo/inv-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E042-otra-sede",
+      "endpointId": "E042",
+      "path": "/api/equipo/inv-b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E042-missing",
+      "endpointId": "E042",
+      "path": "/api/equipo/absent",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E045-invitee",
+      "endpointId": "E045",
+      "path": "/api/invitaciones/mias",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E045-expired",
+      "endpointId": "E045",
+      "path": "/api/invitaciones/mias",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E046-otra-sede",
+      "endpointId": "E046",
+      "path": "/api/invitaciones/inv-b/aceptar",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E046-admin-keeps-role",
+      "endpointId": "E046",
+      "path": "/api/invitaciones/inv-b/aceptar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E047-otra-sede",
+      "endpointId": "E047",
+      "path": "/api/invitaciones/inv-b/rechazar",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E053-client",
+      "endpointId": "E053",
+      "path": "/api/partidos/mios",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E053-empty",
+      "endpointId": "E053",
+      "path": "/api/partidos/mios",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E055-cupo-lleno",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-full/anotarse",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E055-duplicado",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E055-pasado",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-past/anotarse",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E055-hoy",
+      "endpointId": "E055",
+      "path": "/api/partidos/match-today/anotarse",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E055-missing",
+      "endpointId": "E055",
+      "path": "/api/partidos/absent/anotarse",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E056-no-anotado",
+      "endpointId": "E056",
+      "path": "/api/partidos/match-a/anotarse",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E057-otra-sede",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-full/foto",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E057-foreign-prefix",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-a/foto",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E057-same-url",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-a/foto",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E057-platform",
+      "endpointId": "E057",
+      "path": "/api/partidos/match-full/foto",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E057-missing",
+      "endpointId": "E057",
+      "path": "/api/partidos/absent/foto",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E058-otra-sede",
+      "endpointId": "E058",
+      "path": "/api/partidos/match-full",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E058-platform",
+      "endpointId": "E058",
+      "path": "/api/partidos/match-full",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E058-missing",
+      "endpointId": "E058",
+      "path": "/api/partidos/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E067-no-jugo-local",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E067-update-existing",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E067-invalid-score",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E067-missing-complex",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E068-player-empty",
+      "endpointId": "E068",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E068-platform",
+      "endpointId": "E068",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E068-otra-sede",
+      "endpointId": "E068",
+      "path": "/api/resenas?complejoId=b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E068-member",
+      "endpointId": "E068",
+      "path": "/api/resenas?complejoId=a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E069-otra-sede",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-b/responder",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E069-member-denied",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-a/responder",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E069-empty",
+      "endpointId": "E069",
+      "path": "/api/resenas/resena-a/responder",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E069-missing",
+      "endpointId": "E069",
+      "path": "/api/resenas/absent/responder",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E076-solo-activas",
+      "endpointId": "E076",
+      "path": "/api/sanciones?soloActivas=true",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E076-binding",
+      "endpointId": "E076",
+      "path": "/api/sanciones?soloActivas=quizas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E076-otra-sede",
+      "endpointId": "E076",
+      "path": "/api/sanciones?complejoId=b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E076-platform",
+      "endpointId": "E076",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E077-duplicada",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E077-nivel",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E077-motivo-corto",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E077-usuario",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E077-otra-sede",
+      "endpointId": "E077",
+      "path": "/api/sanciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E078-otra-sede",
+      "endpointId": "E078",
+      "path": "/api/sanciones/sanction-b/desactivar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E078-missing",
+      "endpointId": "E078",
+      "path": "/api/sanciones/absent/desactivar",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E080-empty",
+      "endpointId": "E080",
+      "path": "/api/solicitudes/mias",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E080-owner",
+      "endpointId": "E080",
+      "path": "/api/solicitudes/mias",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E081-convenio-falso",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E081-incompleta",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E081-duplicada",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E081-distrito",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E081-imagen-ajena",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E081-tipo-numerico",
+      "endpointId": "E081",
+      "path": "/api/solicitudes",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E082-ya-revisada",
+      "endpointId": "E082",
+      "path": "/api/solicitudes/a/aprobar",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E082-missing",
+      "endpointId": "E082",
+      "path": "/api/solicitudes/absent/aprobar",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E083-ya-revisada",
+      "endpointId": "E083",
+      "path": "/api/solicitudes/a/rechazar",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E083-sin-motivo",
+      "endpointId": "E083",
+      "path": "/api/solicitudes/pending/rechazar",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E084-expired",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E084-platform",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E084-trial",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E084-applicant",
+      "endpointId": "E084",
+      "path": "/api/suscripciones/estado",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E085-expired",
+      "endpointId": "E085",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E085-estado",
+      "endpointId": "E085",
+      "path": "/api/suscripciones?estado=pendiente",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E085-estado-invalido",
+      "endpointId": "E085",
+      "path": "/api/suscripciones?estado=otro",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E085-otra-sede",
+      "endpointId": "E085",
+      "path": "/api/suscripciones?complejoId=b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E085-member",
+      "endpointId": "E085",
+      "path": "/api/suscripciones?complejoId=a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E086-expired",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E086-plan",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E086-solicitud-pendiente",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E086-otra-sede",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E086-missing",
+      "endpointId": "E086",
+      "path": "/api/suscripciones",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E087-solicitud-centro-pendiente",
+      "endpointId": "E087",
+      "path": "/api/suscripciones/sub-req-pending/aprobar",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E087-no-pendiente",
+      "endpointId": "E087",
+      "path": "/api/suscripciones/sub-a/aprobar",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E088-no-pendiente",
+      "endpointId": "E088",
+      "path": "/api/suscripciones/sub-a/rechazar",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E089-otra-sede",
+      "endpointId": "E089",
+      "path": "/api/suscripciones/sub-req-b/cancelar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E089-missing",
+      "endpointId": "E089",
+      "path": "/api/suscripciones/absent/cancelar",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E090-platform",
+      "endpointId": "E090",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E090-member",
+      "endpointId": "E090",
+      "path": "/api/torneos?complejoId=a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E090-otra-sede",
+      "endpointId": "E090",
+      "path": "/api/torneos?complejoId=b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E091-otra-sede",
+      "endpointId": "E091",
+      "path": "/api/torneos/torneo-b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E091-missing",
+      "endpointId": "E091",
+      "path": "/api/torneos/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E092-fecha",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E092-fin-anterior",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E092-deporte",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E092-member-denied",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E092-missing-complex",
+      "endpointId": "E092",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E093-otra-sede",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E093-clear-end",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-small",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E093-estado",
+      "endpointId": "E093",
+      "path": "/api/torneos/torneo-a",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E094-otra-sede",
+      "endpointId": "E094",
+      "path": "/api/torneos/torneo-b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E094-missing",
+      "endpointId": "E094",
+      "path": "/api/torneos/absent",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E095-cupo",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-small/inscripciones",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E095-duplicado",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E095-member",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E095-capitan",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-a/inscripciones",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E095-otra-sede",
+      "endpointId": "E095",
+      "path": "/api/torneos/torneo-b/inscripciones",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E096-sin-zona",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E096-offset",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E096-iguales",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E096-fecha",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E096-cancha",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E096-goles",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E096-empate",
+      "endpointId": "E096",
+      "path": "/api/torneos/torneo-a/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E097-goles",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E097-sin-fecha",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E097-stored-date",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E097-keep-winner",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-a2",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E097-otra-sede",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/pt-b",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E097-missing",
+      "endpointId": "E097",
+      "path": "/api/torneos/partidos/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E054-cupos-invalido",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-binding",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-json-body",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-urlencoded",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E054-foto-url",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E054-foto-ajena",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-foto-legacy",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E054-foto-invalida",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-fecha-pasada",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-horario",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-hora-24",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-distrito",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-superficie",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-precio",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-titulo",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-formato",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-nivel",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E054-cancha",
+      "endpointId": "E054",
+      "path": "/api/partidos",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E040-sin-cuenta-tope",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 404,
+      "emails": 1
+    },
+    {
+      "id": "E040-sin-cuenta-tope-2",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 404,
+      "emails": 1
+    },
+    {
+      "id": "E040-sin-cuenta-tope-3",
+      "endpointId": "E040",
+      "path": "/api/equipo",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E067-expired",
+      "endpointId": "E067",
+      "path": "/api/resenas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E090-expired",
+      "endpointId": "E090",
+      "path": "/api/torneos",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E055-concurrencia-legacy",
+      "endpointId": "E055",
+      "result": "INFO",
+      "withinCapacity": true,
+      "statuses": [
+        200,
+        200,
+        409,
+        409,
+        409
+      ],
+      "stored": 2,
+      "capacity": 2
+    },
+    {
+      "id": "E055-concurrencia-nest",
+      "endpointId": "E055",
+      "result": "PASS",
+      "withinCapacity": true,
+      "statuses": [
+        200,
+        200,
+        409,
+        409,
+        409
+      ],
+      "stored": 2,
+      "capacity": 2
+    },
+    {
+      "id": "E095-concurrencia-legacy",
+      "endpointId": "E095",
+      "result": "INFO",
+      "withinCapacity": false,
+      "statuses": [
+        201,
+        201,
+        201,
+        201,
+        201
+      ],
+      "stored": 5,
+      "capacity": 2
+    },
+    {
+      "id": "E095-concurrencia-nest",
+      "endpointId": "E095",
+      "result": "PASS",
+      "withinCapacity": true,
+      "statuses": [
+        201,
+        201,
+        409,
+        409,
+        409
+      ],
+      "stored": 2,
+      "capacity": 2
+    }
+  ]
+}

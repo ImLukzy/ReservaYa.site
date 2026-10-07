@@ -83,7 +83,7 @@ try {
   const pass=headersPass&&old.status===next.statusCode&&(c.expected===undefined||old.status===c.expected)&&traceValid&&isDeepStrictEqual(oldBody,nextBody);
   rows.push({id:c.id,endpointId:c.endpointId,method:'GET',path:c.path,statusLegacy:old.status,statusNest:next.statusCode,headers:Object.fromEntries(headerPairs.map(([key,a,b])=>[key,{legacy:a,nest:b}])),result:pass?'PASS':'FAIL',...(pass?{}:{legacy:oldBody,nest:nextBody})});
  }
- for(const path of ['/api/complejos','/api/torneos','/api/partidos/mios','/api/resenas']){const response=await app.inject({method:'GET',url:path});if(response.statusCode!==404)throw Error('Out-of-scope route exposed: '+path);}
+ for(const path of ['/api/caja/hoy','/api/reservas','/api/abonos','/api/metas','/api/reportes/dashboard']){const response=await app.inject({method:'GET',url:path});if(response.statusCode!==404)throw Error('Out-of-scope route exposed: '+path);}
  writeFileSync(resolve(root,'docs/specs/56/f2/parity-results.json'),JSON.stringify({runtime:process.version,basis:'F0 cases + synthetic disposable QA fixture database shared by read-only .NET/Nest calls',normalization:['traceId only: validate shape, remove random request IDs; no business field normalization'],rows},null,2)+'\n');
  console.log(`F2 parity ${rows.filter(r=>r.result==='PASS').length}/${rows.length}; per-route results saved`);
  if(rows.some(r=>r.result==='FAIL'))process.exitCode=1;

@@ -12,9 +12,11 @@ export function bind(q: Query, ints: string[] = [], bools: string[] = []) {
     const valid = bools.includes(key) ? /^(true|false)$/i.test(v.trim()) : /^[+-]?\d+$/.test(v.trim()) && Number.isInteger(n) && n >= -2147483648 && n <= 2147483647;
     if (!valid) errors[key] = [`The value '${v}' is not valid.`];
   }
-  if (Object.keys(errors).length) throw new BindingError({ type:'https://tools.ietf.org/html/rfc9110#section-15.5.1', title:'One or more validation errors occurred.', status:400, errors, traceId:`00-${randomBytes(16).toString('hex')}-${randomBytes(8).toString('hex')}-01` },400);
+  if (Object.keys(errors).length) validation(errors);
 }
+const traceId = () => `00-${randomBytes(16).toString('hex')}-${randomBytes(8).toString('hex')}-01`;
+export const validation = (errors: Record<string,string[]>): never => { throw new BindingError({ type:'https://tools.ietf.org/html/rfc9110#section-15.5.1', title:'One or more validation errors occurred.', status:400, errors, traceId:traceId() },400); };
 @Catch(BindingError)
 export class BindingFilter implements ExceptionFilter {
-  catch(error: BindingError, host: ArgumentsHost) { host.switchToHttp().getResponse<FastifyReply>().status(400).type('application/problem+json').send(error.getResponse()); }
+  catch(error: BindingError, host: ArgumentsHost) { host.switchToHttp().getResponse<FastifyReply>().status(error.getStatus()).type('application/problem+json').send(error.getResponse()); }
 }
