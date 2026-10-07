@@ -21,6 +21,10 @@ using ReservaFacil.Api.Services;
 namespace LegacyAuthFixtures;
 public static class FixtureHost {
  public static void Main(string[] args) {
+  if(args.SequenceEqual(new[]{"--email-template"})){
+   Console.WriteLine(JsonSerializer.Serialize(PasswordResetEmail.Build("José <&\"'> Œ 😀","fixture@example.test","https://example.test/restablecer?x=1&y=\"dos\"#t=ficticio"),new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+   return;
+  }
   if(Environment.GetEnvironmentVariable("F3_QA_FIXTURE")!="true")throw new Exception("Fixture host only; explicit QA flag required");
   AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior",true);
   var b=WebApplication.CreateBuilder(args);
