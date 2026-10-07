@@ -1,0 +1,30 @@
+{
+  "name": "@reservaya/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "generate": "prisma generate --schema prisma/schema.prisma",
+    "build": "prisma generate --schema prisma/schema.prisma && tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint src eslint.config.mjs",
+    "validate": "prisma validate --schema prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3"
+  },
+  "devDependencies": {
+    "@reservaya/config": "workspace:*",
+    "prisma": "6.19.3",
+    "typescript": "5.9.3",
+    "@types/node": "22.15.32"
+  }
+}

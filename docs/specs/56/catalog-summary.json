@@ -1,0 +1,1338 @@
+{
+  "source": "hive/agents/jim-muvk1y3c/catalogo-neon.md",
+  "sourceSha256": "38809e33dc841e5f98214a85396d90a6cfb1c63ae6f809497d90ffafcb1cf9e1",
+  "provenance": "Jim performed SELECT; Michael read report only",
+  "businessTables": 19,
+  "enums": 13,
+  "foreignKeys": 34,
+  "indexes": 64,
+  "columnsReported": 211,
+  "tableMetadata": [
+    {
+      "table": "AnotacionPartido",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "partidoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "usuarioId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "CajaSesion",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "abiertaPorId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "cerradaPorId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "montoInicial",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "montoFinal",
+          "type": "numeric(10,2)",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "estado",
+          "type": "EstadoCaja",
+          "nullable": false,
+          "default": "'ABIERTA'::\"EstadoCaja\""
+        },
+        {
+          "name": "abiertaEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "cerradaEn",
+          "type": "timestamp",
+          "nullable": true,
+          "default": "—"
+        }
+      ]
+    },
+    {
+      "table": "Cancha",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nombre",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "tipo",
+          "type": "TipoCancha",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "descripcion",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "precioPorHora",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "capacidad",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "activa",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        },
+        {
+          "name": "imagen",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "techada",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false"
+        },
+        {
+          "name": "superficie",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "fotos",
+          "type": "text[]",
+          "nullable": true,
+          "default": "ARRAY[]::text[]"
+        }
+      ]
+    },
+    {
+      "table": "Complejo",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nombre",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "descripcion",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "direccion",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "distrito",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "ciudad",
+          "type": "text",
+          "nullable": false,
+          "default": "'Arequipa'::text"
+        },
+        {
+          "name": "telefono",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "fotos",
+          "type": "text[]",
+          "nullable": true,
+          "default": "ARRAY[]::text[]"
+        },
+        {
+          "name": "publicado",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false"
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "duenoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "actualizadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "—"
+        }
+      ]
+    },
+    {
+      "table": "ComplejoMiembro",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "usuarioId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "rolSede",
+          "type": "Rol",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "activo",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "Horario",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "canchaId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "diaSemana",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "aperturaMin",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "cierreMin",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "activo",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "InscripcionTorneo",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "torneoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "equipo",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "capitanId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "telefono",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "pagado",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "Meta",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "titulo",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "tipo",
+          "type": "TipoMeta",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "objetivo",
+          "type": "numeric(12,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "actual",
+          "type": "numeric(12,2)",
+          "nullable": false,
+          "default": "0"
+        },
+        {
+          "name": "periodoInicio",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "periodoFin",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        }
+      ]
+    },
+    {
+      "table": "MovimientoCaja",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "cajaId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "tipo",
+          "type": "TipoMovimiento",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "metodoPago",
+          "type": "MetodoPago",
+          "nullable": false,
+          "default": "'EFECTIVO'::\"MetodoPago\""
+        },
+        {
+          "name": "monto",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "descripcion",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "creadoPorId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "reservaId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "productoId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "PartidoAbierto",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "organizadorId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "titulo",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "descripcion",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "formato",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nivel",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "cuposTotales",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "distrito",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "cancha",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "superficie",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "precio",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "fecha",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "desdeMin",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "hastaMin",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "fotoUrl",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "PartidoTorneo",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "torneoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "fase",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "equipoA",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "equipoB",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "golesA",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "golesB",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "fecha",
+          "type": "timestamp",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "canchaId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "ganador",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        }
+      ]
+    },
+    {
+      "table": "Producto",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nombre",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "nullable": false,
+          "default": "'SNACK'::text"
+        },
+        {
+          "name": "precio",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "stock",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "activo",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        }
+      ]
+    },
+    {
+      "table": "Promocion",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "canchaId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "nombre",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "descripcion",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "tipo",
+          "type": "TipoDescuento",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "valor",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "horaDesde",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "horaHasta",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "diasSemana",
+          "type": "integer[]",
+          "nullable": true,
+          "default": "ARRAY[]::integer[]"
+        },
+        {
+          "name": "fechaInicio",
+          "type": "date",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "fechaFin",
+          "type": "date",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "codigo",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "usosMax",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "usosActuales",
+          "type": "integer",
+          "nullable": false,
+          "default": "0"
+        },
+        {
+          "name": "activa",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "inicioNoche",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "inicioTarde",
+          "type": "integer",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "precioDia",
+          "type": "numeric(10,2)",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "precioNoche",
+          "type": "numeric(10,2)",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "precioTarde",
+          "type": "numeric(10,2)",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "repetirAnual",
+          "type": "boolean",
+          "nullable": false,
+          "default": "false"
+        }
+      ]
+    },
+    {
+      "table": "Resena",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "usuarioId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "puntuacion",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "comentario",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "respuestaDueno",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "Reserva",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "usuarioId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "canchaId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "fecha",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "horaInicio",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "horaFin",
+          "type": "integer",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "estado",
+          "type": "EstadoReserva",
+          "nullable": false,
+          "default": "'PENDIENTE'::\"EstadoReserva\""
+        },
+        {
+          "name": "total",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "notas",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "codigo",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "estadoPago",
+          "type": "EstadoPago",
+          "nullable": false,
+          "default": "'PENDIENTE'::\"EstadoPago\""
+        },
+        {
+          "name": "metodoPago",
+          "type": "MetodoPago",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "montoPagado",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "0"
+        },
+        {
+          "name": "promocionId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "validadaEn",
+          "type": "timestamp",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "validadaPorId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        }
+      ]
+    },
+    {
+      "table": "Sancion",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "usuarioId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nivel",
+          "type": "NivelSancion",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "motivo",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "activa",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        },
+        {
+          "name": "creadoPorId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "Suscripcion",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "plan",
+          "type": "TipoPlan",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "estado",
+          "type": "EstadoSuscripcion",
+          "nullable": false,
+          "default": "'ACTIVA'::\"EstadoSuscripcion\""
+        },
+        {
+          "name": "fechaInicio",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "fechaFin",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "Torneo",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "complejoId",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nombre",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "deporte",
+          "type": "TipoCancha",
+          "nullable": false,
+          "default": "'FUTBOL7'::\"TipoCancha\""
+        },
+        {
+          "name": "fechaInicio",
+          "type": "date",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "fechaFin",
+          "type": "date",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "costoInscripcion",
+          "type": "numeric(10,2)",
+          "nullable": false,
+          "default": "0"
+        },
+        {
+          "name": "cupoMax",
+          "type": "integer",
+          "nullable": false,
+          "default": "16"
+        },
+        {
+          "name": "premio",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "reglamento",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "estado",
+          "type": "EstadoTorneo",
+          "nullable": false,
+          "default": "'BORRADOR'::\"EstadoTorneo\""
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "table": "Usuario",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "nombre",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "password",
+          "type": "text",
+          "nullable": false,
+          "default": "—"
+        },
+        {
+          "name": "rol",
+          "type": "Rol",
+          "nullable": false,
+          "default": "'USUARIO'::\"Rol\""
+        },
+        {
+          "name": "activo",
+          "type": "boolean",
+          "nullable": false,
+          "default": "true"
+        },
+        {
+          "name": "tokenVersion",
+          "type": "integer",
+          "nullable": false,
+          "default": "0"
+        },
+        {
+          "name": "creadoEn",
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "avatarUrl",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "fechaNacimiento",
+          "type": "date",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "fotoUrl",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "googleId",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "telefono",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "username",
+          "type": "text",
+          "nullable": true,
+          "default": "—"
+        },
+        {
+          "name": "usernameCambiadoEn",
+          "type": "timestamp",
+          "nullable": true,
+          "default": "—"
+        }
+      ]
+    }
+  ],
+  "presentMissingFromLocalPrisma": [
+    "PartidoAbierto",
+    "AnotacionPartido"
+  ],
+  "localModelMissingFromDatabase": [
+    "Reclamo"
+  ],
+  "existingMigrationHistory": "_prisma_migrations:8rows including same-name incomplete+finished b2b_convergencia; no __EFMigrationsHistory",
+  "baselineDecision": "Reconcile existing history/rolled_back_at/checksums before any resolve; no blind0_baseline application",
+  "rowDataCopied": false,
+  "parsedBusinessColumns": 203,
+  "columnsNote": "Jim confirmed:203business columns+8migration-history columns=211total.",
+  "migrationHistoryColumnsReported": 8
+}

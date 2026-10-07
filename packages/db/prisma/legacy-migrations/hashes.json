@@ -1,0 +1,8 @@
+{
+  "20260827220310_init/migration.sql": "f5226bc5fcae20ceefd5180e2fa63cfafaeedca21d8fa284f3b067124bb48770",
+  "20260906000000_reserva_codigo_backfill/migration.sql": "674863feaf9954bada28521b918c4e03c478a989ef9ac7a42e39732163dcf9cc",
+  "20260906010000_b2b_convergencia/migration.sql": "b128046d7a5e9c259076693b2d1beec4cac0e15dd9c493819b1a3baa5228095a",
+  "20260906020000_suscripciones_precios/migration.sql": "2cfd6952dc20683bd01089bf5df05332b7c13a91df082b5175593317b46011a7",
+  "20260906030000_roles_tecnico_sanciones/migration.sql": "d6ab12c12ba7cae7a488b3e1e751f1a22dae6512d317bf150ea1e103723cb57a",
+  "20260906040000_horario_operativo/migration.sql": "b7dc797d3b3c3abc399fd01b5f366501d85684101cf7e3775b0986786aaee961"
+}

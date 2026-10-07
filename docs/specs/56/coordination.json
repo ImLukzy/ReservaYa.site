@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-07",
+  "card": "RYS-64",
+  "specApprovedByHuman": true,
+  "dispatch": "conv-bcb2aa",
+  "isolatedBranch": "qa-migracion-ts",
+  "connectionLocation": "hive/qa.env (not read or copied)",
+  "provider": "Render",
+  "providerWorkspace": "same as reservaya-api",
+  "region": "pending confirmation",
+  "plan": "pending confirmation",
+  "testDatabaseOrigin": "production clone; use synthetic fixtures and do not export rows",
+  "allowedFutureOnIsolatedBranch": [
+    "baseline/resolve rehearsal",
+    "parity testing"
+  ],
+  "productionChanges": "prohibited without human confirmation",
+  "performedInF0": [
+    "documents",
+    "declarative fixtures",
+    "static checks"
+  ],
+  "notPerformed": [
+    "database connection",
+    "migrations",
+    "seed",
+    "runtime tests",
+    "dependency installation",
+    "code changes"
+  ]
+}

@@ -1,10 +1,10 @@
 # API ReservaYa (ASP.NET Core) — imagen de producción para Render (plan free).
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY apps/api/ReservaFacil.Api.csproj apps/api/
-RUN dotnet restore apps/api/ReservaFacil.Api.csproj
-COPY apps/api/ apps/api/
-RUN dotnet publish apps/api/ReservaFacil.Api.csproj -c Release -o /app/publish --no-restore
+COPY apps/api-dotnet/ReservaFacil.Api.csproj apps/api-dotnet/
+RUN dotnet restore apps/api-dotnet/ReservaFacil.Api.csproj
+COPY apps/api-dotnet/ apps/api-dotnet/
+RUN dotnet publish apps/api-dotnet/ReservaFacil.Api.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app

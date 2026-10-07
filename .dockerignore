@@ -8,3 +8,10 @@ node_modules/
 **/.astro/
 *.env
 .env
+
+hive/
+.claude/
+.turbo/
+.pnpm-store/
+apps/api/wwwroot/uploads/
+apps/api-dotnet/wwwroot/uploads/

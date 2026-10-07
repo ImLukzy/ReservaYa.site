@@ -7,7 +7,7 @@ Repositorio `ImLukzy/ReservaYa.site`, rama `main`: Next.js en Vercel (`apps/web`
 En el proyecto conectado a `ImLukzy/ReservaYa.site`:
 
 1. Settings → Build and Deployment: **Root Directory = `apps/web`**, Framework Preset = **Next.js**. Si apunta a la raíz, puede construir la web antigua.
-2. Production Branch = `main`. Usar instalación `npm ci`, build `npm run build` y Output Directory predeterminado de Next. Vercel gestiona el arranque; no configurar `npm run start` como paso de despliegue.
+2. Production Branch = `main`. Seleccionar Node22.x (local/CI22.20.0), agregar `ENABLE_EXPERIMENTAL_COREPACK=1` en Production/Preview y habilitar **Include source files outside of Root Directory in the Build Step**. El archivo `apps/web/vercel.json` fija instalación `corepack pnpm install --frozen-lockfile` y build con Turbo filtrado a web y Output Directory predeterminado de Next. Vercel gestiona el arranque; no configurar `npm run start` como paso de despliegue.
 3. Asociar `reservaya.site` al proyecto correcto en Domains. Comprobar que el deployment de producción corresponde al commit esperado.
 4. Guardar variables de Production (y Preview si se utiliza) y hacer un deployment nuevo. `BACKEND_URL` interviene en los rewrites durante el build; modificarlo sin reconstruir no cambia los destinos existentes.
 
@@ -34,9 +34,11 @@ El navegador llama a `/api/*` y `/uploads/*` en `reservaya.site`; Next los reenv
 
 Quitar las variables heredadas que el código actual no usa: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `NEXT_PUBLIC_PUBLIC_APP_URL`, `NEXT_PUBLIC_RESERVAYA_API_URL`, `NEXT_PUBLIC_RESERVAYA_APP_URL`, `API_PORT`, `API_PREFIX`, `JWT_ACCESS_*`, `JWT_REFRESH_*`, `WEB_ORIGIN`, `S3_*`, `STORAGE_DRIVER` y `DIRECT_DATABASE_URL`. Las conexiones `DATABASE_URL`/`DATABASE_URL_UNPOOLED`, las claves de Resend/Google y `FRONTEND_ORIGIN` pertenecen a Render; no hacen falta para ejecutar la web. Dejar `NODE_ENV` bajo el control de Next/Vercel.
 
+Corepack usa el packageManager raíz para fijar pnpm en monorepos: [documentación Vercel](https://vercel.com/changelog/improved-support-for-pnpm-corepack-and-monorepos).
+
 ## Render: API .NET
 
-Usar el servicio web Docker conectado a `https://github.com/ImLukzy/ReservaYa.site`, rama `main`, con Root Directory vacío (raíz del repo), Dockerfile `./Dockerfile`, contexto `.` y health check **`/healthz`**. El Dockerfile publica `apps/api/ReservaFacil.Api.csproj`, ejecuta `ReservaFacil.Api.dll` y usa `PORT` que Render inyecta. El runtime define `ASPNETCORE_ENVIRONMENT=Production` en la imagen; no es un servidor Node.
+Usar el servicio web Docker conectado a `https://github.com/ImLukzy/ReservaYa.site`, rama `main`, con Root Directory vacío (raíz del repo), Dockerfile `./Dockerfile`, contexto `.` y health check **`/healthz`**. El Dockerfile publica `apps/api-dotnet/ReservaFacil.Api.csproj`, ejecuta `ReservaFacil.Api.dll` y usa `PORT` que Render inyecta. El runtime define `ASPNETCORE_ENVIRONMENT=Production` en la imagen; no es un servidor Node.
 
 `render.yaml` contiene las siguientes variables de la API:
 
@@ -69,7 +71,7 @@ La migración existente es **`20261006133334_LibroReclamaciones`**. Su `Up()` cr
 
 Paso manual del humano, desde la raíz del repo y sobre la base correcta:
 
-1. Revisar `apps/api/Migrations/20261006133334_LibroReclamaciones.cs`. Comprobar en el historial de EF (`__EFMigrationsHistory`) que las migraciones anteriores ya están registradas y que esta aún no está aplicada. Si falta ese historial o hay divergencias, detenerse: `database update` también aplicaría migraciones anteriores pendientes, no solo esta tabla.
+1. Revisar `apps/api-dotnet/Migrations/20261006133334_LibroReclamaciones.cs`. Comprobar en el historial de EF (`__EFMigrationsHistory`) que las migraciones anteriores ya están registradas y que esta aún no está aplicada. Si falta ese historial o hay divergencias, detenerse: `database update` también aplicaría migraciones anteriores pendientes, no solo esta tabla.
 2. Preparar en el shell privado `JWT_SECRET` y `DATABASE_URL_UNPOOLED` con la conexión directa de Neon. No copiar valores a esta guía, al chat ni a comandos versionados. La API prioriza `DATABASE_URL`: para esta operación debe apuntar también a la conexión directa.
 3. Ejecutar manualmente el comando siguiente. **Escribe en Neon**; está documentado aquí, no ejecutado por este trabajo:
 
@@ -78,10 +80,10 @@ export DOTNET_ROOT="$HOME/.dotnet"
 export PATH="$DOTNET_ROOT:$PATH"
 export DATABASE_URL="$DATABASE_URL_UNPOOLED"
 hive/tools/dotnet-ef/dotnet-ef database update 20261006133334_LibroReclamaciones \
-  --project apps/api/ReservaFacil.Api.csproj
+  --project apps/api-dotnet/ReservaFacil.Api.csproj
 ```
 
-La herramienta de esa ruta es local del hive (no está versionada); requiere SDK .NET 10 y dotnet-ef 10.0.11. Si no existe en la máquina de despliegue, preparar la misma versión de la herramienta antes del paso. Confirmar después la entrada de la migración y la tabla `Reclamo`; devolver `DATABASE_URL` de Render a la conexión pooled de runtime. No usar `prisma migrate`, `db push`, seed ni un bundle que no haya sido revisado. [Aplicación de migraciones de EF Core](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying).
+La herramienta de esa ruta es local del hive (no está versionada); requiere SDK .NET 10 y dotnet-ef 10.0.11. Si no existe en la máquina de despliegue, preparar la misma versión de la herramienta antes del paso. Confirmar después la entrada de la migración y la tabla `Reclamo`; devolver `DATABASE_URL` de Render a la conexión pooled de runtime. Este procedimiento EF histórico necesita revisión antes de aplicarse: spec56 propone Prisma como dueño y no aplica Reclamo en F1. No ejecutar db push ni seed. [Aplicación de migraciones de EF Core](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying).
 
 ## Checklist final
 

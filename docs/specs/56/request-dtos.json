@@ -1,0 +1,1142 @@
+{
+  "AbonosController.AbonarRequest": {
+    "source": "apps/api/Controllers/AbonosController.cs",
+    "line": 32,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "monto",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "descripcion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "metodoPago",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class AbonarRequest\n    {\n        public string? ComplejoId { get; set; }\n        public decimal? Monto { get; set; }\n        public string? Descripcion { get; set; }\n        public string? MetodoPago { get; set; }\n    }"
+  },
+  "CajaController.AperturaRequest": {
+    "source": "apps/api/Controllers/CajaController.cs",
+    "line": 156,
+    "properties": [
+      {
+        "jsonName": "montoInicial",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class AperturaRequest\n    {\n        public decimal? MontoInicial { get; set; }\n    }"
+  },
+  "CajaController.CierreRequest": {
+    "source": "apps/api/Controllers/CajaController.cs",
+    "line": 191,
+    "properties": [
+      {
+        "jsonName": "montoFinal",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class CierreRequest\n    {\n        public decimal? MontoFinal { get; set; }\n    }"
+  },
+  "CajaController.ItemVenta": {
+    "source": "apps/api/Controllers/CajaController.cs",
+    "line": 234,
+    "properties": [
+      {
+        "jsonName": "productoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precio",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "cantidad",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "qty",
+        "csharpType": "int?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ItemVenta\n    {\n        public string? ProductoId { get; set; }\n        public string? Nombre { get; set; }\n        public decimal? Precio { get; set; }\n        public int? Cantidad { get; set; }\n        public int? Qty { get; set; }\n    }"
+  },
+  "CajaController.MovimientoRequest": {
+    "source": "apps/api/Controllers/CajaController.cs",
+    "line": 243,
+    "properties": [
+      {
+        "jsonName": "items",
+        "csharpType": "List<ItemVenta>?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "descripcion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "monto",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "tipo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "metodoPago",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class MovimientoRequest\n    {\n        public List<ItemVenta>? Items { get; set; }\n        public string? Descripcion { get; set; }\n        public decimal? Monto { get; set; }\n        public string? Tipo { get; set; }\n        public string? MetodoPago { get; set; }\n    }"
+  },
+  "CajaController.ProductoRequest": {
+    "source": "apps/api/Controllers/CajaController.cs",
+    "line": 370,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "categoria",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precio",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "stock",
+        "csharpType": "int?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ProductoRequest\n    {\n        public string? Nombre { get; set; }\n        public string? Categoria { get; set; }\n        public decimal? Precio { get; set; }\n        public int? Stock { get; set; }\n    }"
+  },
+  "ComplejosController.ComplejoRequest": {
+    "source": "apps/api/Controllers/ComplejosController.cs",
+    "line": 28,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "direccion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "distrito",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "ciudad",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "telefono",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "descripcion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "publicado",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ComplejoRequest\n    {\n        public string? Nombre { get; set; }\n        public string? Direccion { get; set; }\n        public string? Distrito { get; set; }\n        public string? Ciudad { get; set; }\n        public string? Telefono { get; set; }\n        public string? Descripcion { get; set; }\n        public string? Email { get; set; }\n        public bool? Publicado { get; set; }\n    }"
+  },
+  "EquipoController.MiembroRequest": {
+    "source": "apps/api/Controllers/EquipoController.cs",
+    "line": 36,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "rolSede",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "activo",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class MiembroRequest\n    {\n        public string? ComplejoId { get; set; }\n        public string? Email { get; set; }\n        public string? Nombre { get; set; }\n        public string? RolSede { get; set; }\n        public bool? Activo { get; set; }\n    }"
+  },
+  "HorariosController.DiaRequest": {
+    "source": "apps/api/Controllers/HorariosController.cs",
+    "line": 30,
+    "properties": [
+      {
+        "jsonName": "dia",
+        "csharpType": "int",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "apertura",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "cierre",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "activo",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class DiaRequest\n    {\n        public int Dia { get; set; }\n        public int? Apertura { get; set; }\n        public int? Cierre { get; set; }\n        public bool? Activo { get; set; }\n    }"
+  },
+  "HorariosController.HorarioRequest": {
+    "source": "apps/api/Controllers/HorariosController.cs",
+    "line": 38,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "canchaId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "dias",
+        "csharpType": "List<DiaRequest>?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class HorarioRequest\n    {\n        public string? ComplejoId { get; set; }\n        public string? CanchaId { get; set; }\n        public List<DiaRequest>? Dias { get; set; }\n    }"
+  },
+  "MetasController.MetaRequest": {
+    "source": "apps/api/Controllers/MetasController.cs",
+    "line": 65,
+    "properties": [
+      {
+        "jsonName": "titulo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "tipo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "objetivo",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "actual",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "periodoInicio",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "periodoFin",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class MetaRequest\n    {\n        public string? Titulo { get; set; }\n        public string? Tipo { get; set; }\n        public decimal? Objetivo { get; set; }\n        public decimal? Actual { get; set; }\n        public string? PeriodoInicio { get; set; }\n        public string? PeriodoFin { get; set; }\n    }"
+  },
+  "PartidosController.PartidoRequest": {
+    "source": "apps/api/Controllers/PartidosController.cs",
+    "line": 41,
+    "properties": [
+      {
+        "jsonName": "titulo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "descripcion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "formato",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "nivel",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "cuposTotales",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fecha",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "desde",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "hasta",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "distrito",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "cancha",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "superficie",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precio",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "foto",
+        "csharpType": "IFormFile?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fotoUrl",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class PartidoRequest\n    {\n        public string? Titulo { get; set; }\n        public string? Descripcion { get; set; }\n        public string? Formato { get; set; }\n        public string? Nivel { get; set; }\n        public int? CuposTotales { get; set; }\n        public string? Fecha { get; set; }\n        public string? Desde { get; set; }\n        public string? Hasta { get; set; }\n        public string? Distrito { get; set; }\n        public string? Cancha { get; set; }\n        public string? Superficie { get; set; }\n        public decimal? Precio { get; set; }\n        public IFormFile? Foto { get; set; }\n        // Foto ya subida a R2 por el navegador (alternativa a Foto multipart).\n        public string? FotoUrl { get; set; }\n    }"
+  },
+  "PromocionesController.PromocionRequest": {
+    "source": "apps/api/Controllers/PromocionesController.cs",
+    "line": 25,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "canchaId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "codigo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "tipo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "valor",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "horaDesde",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "horaHasta",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "usosMax",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaInicio",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaFin",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "descripcion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "activa",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precioDia",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precioTarde",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precioNoche",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "inicioTarde",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "inicioNoche",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "repetirAnual",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "desde",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "hasta",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class PromocionRequest\n    {\n        public string? ComplejoId { get; set; }\n        public string? CanchaId { get; set; }\n        public string? Nombre { get; set; }\n        public string? Codigo { get; set; }\n        public string? Tipo { get; set; }\n        public decimal? Valor { get; set; }\n        public int? HoraDesde { get; set; }\n        public int? HoraHasta { get; set; }\n        public int? UsosMax { get; set; }\n        public string? FechaInicio { get; set; }\n        public string? FechaFin { get; set; }\n        public string? Descripcion { get; set; }\n        public bool? Activa { get; set; }\n        // Franjas día/tarde/noche (panel Precios especiales).\n        public decimal? PrecioDia { get; set; }\n        public decimal? PrecioTarde { get; set; }\n        public decimal? PrecioNoche { get; set; }\n        public string? InicioTarde { get; set; }\n        public string? InicioNoche { get; set; }\n        public bool? RepetirAnual { get; set; }\n        // Compatibilidad: el panel viejo mandaba desde/hasta.\n        public string? Desde { get; set; }\n        public string? Hasta { get; set; }\n    }"
+  },
+  "ReclamosController.CrearReclamoDto": {
+    "source": "apps/api/Controllers/ReclamosController.cs",
+    "line": 13,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(200, MinimumLength = 3)]"
+      },
+      {
+        "jsonName": "email",
+        "csharpType": "string",
+        "validationAttributes": "[Required, EmailAddress, StringLength(254)]"
+      },
+      {
+        "jsonName": "documentoTipo",
+        "csharpType": "string",
+        "validationAttributes": "[Required, RegularExpression(\"^(DNI|CE)$\")]"
+      },
+      {
+        "jsonName": "documento",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(20, MinimumLength = 6)]"
+      },
+      {
+        "jsonName": "domicilio",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(500)]"
+      },
+      {
+        "jsonName": "telefono",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(30, MinimumLength = 6)]"
+      },
+      {
+        "jsonName": "menor",
+        "csharpType": "bool",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "apoderado",
+        "csharpType": "string?",
+        "validationAttributes": "[StringLength(200)]"
+      },
+      {
+        "jsonName": "apoderadoDocumento",
+        "csharpType": "string?",
+        "validationAttributes": "[StringLength(20, MinimumLength = 6)]"
+      },
+      {
+        "jsonName": "apoderadoDomicilio",
+        "csharpType": "string?",
+        "validationAttributes": "[StringLength(500)]"
+      },
+      {
+        "jsonName": "apoderadoTelefono",
+        "csharpType": "string?",
+        "validationAttributes": "[StringLength(30, MinimumLength = 6)]"
+      },
+      {
+        "jsonName": "bienTipo",
+        "csharpType": "string",
+        "validationAttributes": "[Required, RegularExpression(\"^(Servicio|Producto)$\")]"
+      },
+      {
+        "jsonName": "bienDescripcion",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(2000)]"
+      },
+      {
+        "jsonName": "monto",
+        "csharpType": "decimal?",
+        "validationAttributes": "[Range(typeof(decimal), \"0\", \"9999999999.99\")]"
+      },
+      {
+        "jsonName": "tipo",
+        "csharpType": "string",
+        "validationAttributes": "[Required, RegularExpression(\"^(RECLAMO|QUEJA)$\")]"
+      },
+      {
+        "jsonName": "detalle",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(10000, MinimumLength = 10)]"
+      },
+      {
+        "jsonName": "pedido",
+        "csharpType": "string",
+        "validationAttributes": "[Required, StringLength(10000, MinimumLength = 5)]"
+      },
+      {
+        "jsonName": "medioRespuesta",
+        "csharpType": "string",
+        "validationAttributes": "[Required, RegularExpression(\"^(Correo electrónico|Carta al domicilio)$\")]"
+      }
+    ],
+    "csharpDeclaration": "class CrearReclamoDto\n{\n    [Required, StringLength(200, MinimumLength = 3)] public string Nombre { get; set; } = \"\";\n    [Required, EmailAddress, StringLength(254)] public string Email { get; set; } = \"\";\n    [Required, RegularExpression(\"^(DNI|CE)$\")] public string DocumentoTipo { get; set; } = \"\";\n    [Required, StringLength(20, MinimumLength = 6)] public string Documento { get; set; } = \"\";\n    [Required, StringLength(500)] public string Domicilio { get; set; } = \"\";\n    [Required, StringLength(30, MinimumLength = 6)] public string Telefono { get; set; } = \"\";\n    public bool Menor { get; set; }\n    [StringLength(200)] public string? Apoderado { get; set; }\n    [StringLength(20, MinimumLength = 6)] public string? ApoderadoDocumento { get; set; }\n    [StringLength(500)] public string? ApoderadoDomicilio { get; set; }\n    [StringLength(30, MinimumLength = 6)] public string? ApoderadoTelefono { get; set; }\n    [Required, RegularExpression(\"^(Servicio|Producto)$\")] public string BienTipo { get; set; } = \"\";\n    [Required, StringLength(2000)] public string BienDescripcion { get; set; } = \"\";\n    [Range(typeof(decimal), \"0\", \"9999999999.99\")] public decimal? Monto { get; set; }\n    [Required, RegularExpression(\"^(RECLAMO|QUEJA)$\")] public string Tipo { get; set; } = \"\";\n    [Required, StringLength(10000, MinimumLength = 10)] public string Detalle { get; set; } = \"\";\n    [Required, StringLength(10000, MinimumLength = 5)] public string Pedido { get; set; } = \"\";\n    [Required, RegularExpression(\"^(Correo electrónico|Carta al domicilio)$\")] public string MedioRespuesta { get; set; } = \"\";\n}"
+  },
+  "ResenasController.RespuestaRequest": {
+    "source": "apps/api/Controllers/ResenasController.cs",
+    "line": 24,
+    "properties": [
+      {
+        "jsonName": "respuesta",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class RespuestaRequest\n    {\n        public string? Respuesta { get; set; }\n    }"
+  },
+  "ResenasController.ResenaRequest": {
+    "source": "apps/api/Controllers/ResenasController.cs",
+    "line": 29,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "puntuacion",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "comentario",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ResenaRequest\n    {\n        public string? ComplejoId { get; set; }\n        public int? Puntuacion { get; set; }\n        public string? Comentario { get; set; }\n    }"
+  },
+  "SancionesController.SancionRequest": {
+    "source": "apps/api/Controllers/SancionesController.cs",
+    "line": 27,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "usuarioId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "nivel",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "motivo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class SancionRequest\n    {\n        public string? ComplejoId { get; set; }\n        public string? UsuarioId { get; set; }\n        public string? Nivel { get; set; }\n        public string? Motivo { get; set; }\n    }"
+  },
+  "SolicitudesController.SolicitudRequest": {
+    "source": "apps/api/Controllers/SolicitudesController.cs",
+    "line": 20,
+    "properties": [
+      {
+        "jsonName": "complejo",
+        "csharpType": "ComplejosController.ComplejoRequest?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "cancha",
+        "csharpType": "CanchaRequest?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "aceptaConvenio",
+        "csharpType": "bool",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class SolicitudRequest\n    {\n        public ComplejosController.ComplejoRequest? Complejo { get; set; }\n        public CanchaRequest? Cancha { get; set; }\n        public bool AceptaConvenio { get; set; }\n    }"
+  },
+  "SolicitudesController.RechazoRequest": {
+    "source": "apps/api/Controllers/SolicitudesController.cs",
+    "line": 26,
+    "properties": [
+      {
+        "jsonName": "motivo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class RechazoRequest { public string? Motivo { get; set; } }"
+  },
+  "SuscripcionesController.SuscripcionRequest": {
+    "source": "apps/api/Controllers/SuscripcionesController.cs",
+    "line": 34,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "plan",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class SuscripcionRequest\n    {\n        public string? ComplejoId { get; set; }\n        public string? Plan { get; set; }\n    }"
+  },
+  "TorneosController.TorneoRequest": {
+    "source": "apps/api/Controllers/TorneosController.cs",
+    "line": 26,
+    "properties": [
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "deporte",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaInicio",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaFin",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "costoInscripcion",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "cupoMax",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "premio",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "reglamento",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "estado",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class TorneoRequest\n    {\n        public string? ComplejoId { get; set; }\n        public string? Nombre { get; set; }\n        public string? Deporte { get; set; }\n        public string? FechaInicio { get; set; }\n        public string? FechaFin { get; set; }\n        public decimal? CostoInscripcion { get; set; }\n        public int? CupoMax { get; set; }\n        public string? Premio { get; set; }\n        public string? Reglamento { get; set; }\n        public string? Estado { get; set; }\n    }"
+  },
+  "TorneosController.InscripcionRequest": {
+    "source": "apps/api/Controllers/TorneosController.cs",
+    "line": 40,
+    "properties": [
+      {
+        "jsonName": "equipo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "capitanId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "telefono",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "pagado",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class InscripcionRequest\n    {\n        public string? Equipo { get; set; }\n        public string? CapitanId { get; set; }\n        public string? Telefono { get; set; }\n        public bool? Pagado { get; set; }\n    }"
+  },
+  "TorneosController.PartidoRequest": {
+    "source": "apps/api/Controllers/TorneosController.cs",
+    "line": 48,
+    "properties": [
+      {
+        "jsonName": "fase",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "equipoA",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "equipoB",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fecha",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "canchaId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "golesA",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "golesB",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "ganador",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class PartidoRequest\n    {\n        public string? Fase { get; set; }\n        public string? EquipoA { get; set; }\n        public string? EquipoB { get; set; }\n        public string? Fecha { get; set; }\n        public string? CanchaId { get; set; }\n        public int? GolesA { get; set; }\n        public int? GolesB { get; set; }\n        public string? Ganador { get; set; }\n    }"
+  },
+  "Dtos.LoginRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 6,
+    "properties": [
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "password",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class LoginRequest\n{\n    public string? Email { get; set; }\n    public string? Password { get; set; }\n}"
+  },
+  "Dtos.ForgotPasswordRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 12,
+    "properties": [
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ForgotPasswordRequest\n{\n    public string? Email { get; set; }\n}"
+  },
+  "Dtos.ResetPasswordRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 17,
+    "properties": [
+      {
+        "jsonName": "token",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "password",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ResetPasswordRequest\n{\n    public string? Token { get; set; }\n    public string? Password { get; set; }\n}"
+  },
+  "Dtos.RegisterRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 23,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "password",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaNacimiento",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "username",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class RegisterRequest\n{\n    public string? Nombre { get; set; }\n    public string? Email { get; set; }\n    public string? Password { get; set; }\n    public string? FechaNacimiento { get; set; }\n    public string? Username { get; set; }\n}"
+  },
+  "Dtos.GoogleCompleteRegisterRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 32,
+    "properties": [
+      {
+        "jsonName": "t",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaNacimiento",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "username",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class GoogleCompleteRegisterRequest\n{\n    public string? T { get; set; }\n    public string? FechaNacimiento { get; set; }\n    public string? Username { get; set; }\n}"
+  },
+  "Dtos.CanchaRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 39,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "tipo",
+        "csharpType": "TipoCancha?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "descripcion",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "precioPorHora",
+        "csharpType": "decimal?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "capacidad",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "activa",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "complejoId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "techada",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "superficie",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "imagen",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class CanchaRequest\n{\n    public string? Nombre { get; set; }\n    public TipoCancha? Tipo { get; set; }\n    public string? Descripcion { get; set; }\n    public decimal? PrecioPorHora { get; set; }\n    public int? Capacidad { get; set; }\n    public bool? Activa { get; set; }\n    public string? ComplejoId { get; set; }\n    public bool? Techada { get; set; }\n    public string? Superficie { get; set; }\n    public string? Imagen { get; set; }\n}"
+  },
+  "Dtos.ReservaRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 53,
+    "properties": [
+      {
+        "jsonName": "canchaId",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fecha",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "horaInicio",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "horaFin",
+        "csharpType": "int?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "notas",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ReservaRequest\n{\n    public string? CanchaId { get; set; }\n    public string? Fecha { get; set; }\n    public int? HoraInicio { get; set; }\n    public int? HoraFin { get; set; }\n    public string? Notas { get; set; }\n}"
+  },
+  "Dtos.ReservaPatchRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 62,
+    "properties": [
+      {
+        "jsonName": "estado",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "notas",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ReservaPatchRequest\n{\n    public string? Estado { get; set; }\n    public string? Notas { get; set; }\n}"
+  },
+  "Dtos.ReservaValidarRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 68,
+    "properties": [
+      {
+        "jsonName": "codigo",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class ReservaValidarRequest\n{\n    public string? Codigo { get; set; }\n}"
+  },
+  "Dtos.UsuarioPatchRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 73,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "rol",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "activo",
+        "csharpType": "bool?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "password",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class UsuarioPatchRequest\n{\n    public string? Nombre { get; set; }\n    public string? Email { get; set; }\n    public string? Rol { get; set; }\n    public bool? Activo { get; set; }\n    public string? Password { get; set; }\n}"
+  },
+  "Dtos.MiPerfilPatchRequest": {
+    "source": "apps/api/Dtos/Dtos.cs",
+    "line": 84,
+    "properties": [
+      {
+        "jsonName": "nombre",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "email",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "username",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "fechaNacimiento",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "password",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "currentPassword",
+        "csharpType": "string?",
+        "validationAttributes": null
+      },
+      {
+        "jsonName": "telefono",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class MiPerfilPatchRequest\n{\n    public string? Nombre { get; set; }\n    public string? Email { get; set; }\n    public string? Username { get; set; }\n    public string? FechaNacimiento { get; set; }\n    public string? Password { get; set; }\n    public string? CurrentPassword { get; set; }\n    public string? Telefono { get; set; }\n}"
+  },
+  "MediaPublica.UrlRequest": {
+    "source": "apps/api/Services/MediaPublica.cs",
+    "line": 88,
+    "properties": [
+      {
+        "jsonName": "url",
+        "csharpType": "string?",
+        "validationAttributes": null
+      }
+    ],
+    "csharpDeclaration": "class UrlRequest\n    {\n        public string? Url { get; set; }\n    }"
+  }
+}

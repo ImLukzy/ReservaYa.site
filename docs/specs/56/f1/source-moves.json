@@ -1,0 +1,407 @@
+[
+  {
+    "from": "apps/api/Controllers/AbonosController.cs",
+    "to": "apps/api-dotnet/Controllers/AbonosController.cs",
+    "sha256": "0526a63e2e2cd41ea54516f755b634c41c990990b7bbf4c6d5e87c2318873c2a"
+  },
+  {
+    "from": "apps/api/Controllers/AuthController.cs",
+    "to": "apps/api-dotnet/Controllers/AuthController.cs",
+    "sha256": "1e34b54075733f06afa17a8ccc6a90f2b861e95bbb779455ff884550b1d568a4"
+  },
+  {
+    "from": "apps/api/Controllers/CajaController.cs",
+    "to": "apps/api-dotnet/Controllers/CajaController.cs",
+    "sha256": "080e71e700dca7ea67319e74532d1e8f01a31284c81c35edbb3fb401b02942c9"
+  },
+  {
+    "from": "apps/api/Controllers/CanchasController.cs",
+    "to": "apps/api-dotnet/Controllers/CanchasController.cs",
+    "sha256": "ec9286e8819a5f95795753faab4d759d2774a5ec3b5c454fe9e41b404ee620e8"
+  },
+  {
+    "from": "apps/api/Controllers/ComplejosController.cs",
+    "to": "apps/api-dotnet/Controllers/ComplejosController.cs",
+    "sha256": "1e845acf0372a6b1e7aa4cec5f47d31a0aa3d4dca9dfb313f3027944ab989d9a"
+  },
+  {
+    "from": "apps/api/Controllers/EquipoController.cs",
+    "to": "apps/api-dotnet/Controllers/EquipoController.cs",
+    "sha256": "1037895a37ab9e7ce2e36da55aafea972757aac0abb7457499c31a9b7a17eae0"
+  },
+  {
+    "from": "apps/api/Controllers/HorariosController.cs",
+    "to": "apps/api-dotnet/Controllers/HorariosController.cs",
+    "sha256": "8500a446795bd873b753842ffa47faee0eb32644abe2b4285592b1b2d52b8a09"
+  },
+  {
+    "from": "apps/api/Controllers/InvitacionesController.cs",
+    "to": "apps/api-dotnet/Controllers/InvitacionesController.cs",
+    "sha256": "e1ccb37e3258bb852f3ca1df6afaf590acff0ee9f777e3f23f9b78c25e58851b"
+  },
+  {
+    "from": "apps/api/Controllers/MetasController.cs",
+    "to": "apps/api-dotnet/Controllers/MetasController.cs",
+    "sha256": "4773f3bf1bd4bc019b35a60114e5b89315bcab980422b9ef09e895e7d3fa9be7"
+  },
+  {
+    "from": "apps/api/Controllers/PartidosController.cs",
+    "to": "apps/api-dotnet/Controllers/PartidosController.cs",
+    "sha256": "a04e12af6089654edf0944854427fa3b167c5487572639b0b8f0849f4390a541"
+  },
+  {
+    "from": "apps/api/Controllers/PromocionesController.cs",
+    "to": "apps/api-dotnet/Controllers/PromocionesController.cs",
+    "sha256": "c801c5fe1ea2f483478398d563b0431c7a27ba1fc7da67cd61c0dbf302bb2cc4"
+  },
+  {
+    "from": "apps/api/Controllers/ReclamosController.cs",
+    "to": "apps/api-dotnet/Controllers/ReclamosController.cs",
+    "sha256": "d02387f2f28eb4822a60bf0e1bc02b123ff0fed1b873524cb1cf48e5097ca862"
+  },
+  {
+    "from": "apps/api/Controllers/ReportesController.cs",
+    "to": "apps/api-dotnet/Controllers/ReportesController.cs",
+    "sha256": "ca9bd821d0d9ccb32d9331e8dfc15d40dc7c14671335856a7db75d4cc10cc3a9"
+  },
+  {
+    "from": "apps/api/Controllers/ResenasController.cs",
+    "to": "apps/api-dotnet/Controllers/ResenasController.cs",
+    "sha256": "16a7b21f6279b8fa9f71ba215798cbcf88fc60b54a483991da3db2bd8dbe09eb"
+  },
+  {
+    "from": "apps/api/Controllers/ReservasController.cs",
+    "to": "apps/api-dotnet/Controllers/ReservasController.cs",
+    "sha256": "8da6ad807e97535cb9b0bf76ee090c86ce324c808cb40feeec68e3cbe98cb2d7"
+  },
+  {
+    "from": "apps/api/Controllers/SancionesController.cs",
+    "to": "apps/api-dotnet/Controllers/SancionesController.cs",
+    "sha256": "d1a58e7e8b851e9dc52d95a2f50b6e52277a838a15a79bcb07e075bb98975271"
+  },
+  {
+    "from": "apps/api/Controllers/SolicitudesController.cs",
+    "to": "apps/api-dotnet/Controllers/SolicitudesController.cs",
+    "sha256": "8d736b16cf07f1b13bba3093daf4aacb5973e6c9521584b358c5606c525427b3"
+  },
+  {
+    "from": "apps/api/Controllers/SuscripcionesController.cs",
+    "to": "apps/api-dotnet/Controllers/SuscripcionesController.cs",
+    "sha256": "0be97e8de398e254d859a07f8cff389229ff5f5dfdf7fc3f4dd7930c33cbec33"
+  },
+  {
+    "from": "apps/api/Controllers/TorneosController.cs",
+    "to": "apps/api-dotnet/Controllers/TorneosController.cs",
+    "sha256": "ca0be500658e6990bdafdc9d4576ace0479e1a40de2b07c754e1831410e49432"
+  },
+  {
+    "from": "apps/api/Controllers/UsuariosController.cs",
+    "to": "apps/api-dotnet/Controllers/UsuariosController.cs",
+    "sha256": "fc7f6521a101baf8ec18cc775d77b6a25416bca6ff8e1b5f98e3c77f2ea90ce7"
+  },
+  {
+    "from": "apps/api/Data/AppDbContext.cs",
+    "to": "apps/api-dotnet/Data/AppDbContext.cs",
+    "sha256": "4469c9fa7bbdaa9b90652849503c9a24ffa5b78b628ab76b27863d1d81aeb352"
+  },
+  {
+    "from": "apps/api/Dtos/DtoFormat.cs",
+    "to": "apps/api-dotnet/Dtos/DtoFormat.cs",
+    "sha256": "2c02ca35750160e854ef6fb307e3346c7d7b564968b6f48ee1f5fb1d57dcb98d"
+  },
+  {
+    "from": "apps/api/Dtos/Dtos.cs",
+    "to": "apps/api-dotnet/Dtos/Dtos.cs",
+    "sha256": "24846671eeca405b08581efe604cc66a5788f11ec77fec0a54ba0a6d34a7d588"
+  },
+  {
+    "from": "apps/api/Dtos/ReportesDtos.cs",
+    "to": "apps/api-dotnet/Dtos/ReportesDtos.cs",
+    "sha256": "4bfe8d8fb8d15d3f2d4ac25211fe419451d3621cacccc177df17e165b8d65a7c"
+  },
+  {
+    "from": "apps/api/Migrations/20260905010642_Baseline.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260905010642_Baseline.Designer.cs",
+    "sha256": "b2e2b609690ace2a8169917d73df9139486a6a7390e709f3a2d9b2f6838e524c"
+  },
+  {
+    "from": "apps/api/Migrations/20260905010642_Baseline.cs",
+    "to": "apps/api-dotnet/Migrations/20260905010642_Baseline.cs",
+    "sha256": "18f8d533394a06c80faa59173dea095614b20cb24c354833c325978bb3a30203"
+  },
+  {
+    "from": "apps/api/Migrations/20260905164638_MapeoCorrecto.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260905164638_MapeoCorrecto.Designer.cs",
+    "sha256": "29f8cfd0ce74eb8d3f7431dc9b035dd9252a3a67bc7a2f3c88c1cddbfed08b9e"
+  },
+  {
+    "from": "apps/api/Migrations/20260905164638_MapeoCorrecto.cs",
+    "to": "apps/api-dotnet/Migrations/20260905164638_MapeoCorrecto.cs",
+    "sha256": "92942c945133cff830c1789e25ef42bee56f517ea3b9fc4705a30f29e2596a12"
+  },
+  {
+    "from": "apps/api/Migrations/20260905174640_SuscripcionesYPrecios.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260905174640_SuscripcionesYPrecios.Designer.cs",
+    "sha256": "8649e3886feb97fc5fd1ad8b1aae4a5c3c83530baca3004b52d94caf14db6209"
+  },
+  {
+    "from": "apps/api/Migrations/20260905174640_SuscripcionesYPrecios.cs",
+    "to": "apps/api-dotnet/Migrations/20260905174640_SuscripcionesYPrecios.cs",
+    "sha256": "2b47599affbe6d605c85395250be3313574c01a1b4efc3bc56111d7652308faf"
+  },
+  {
+    "from": "apps/api/Migrations/20260905202641_MapeoMovimientosCreados.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260905202641_MapeoMovimientosCreados.Designer.cs",
+    "sha256": "1b76194511594c1a01f63691223824b9ba48973da992dfb63dd3133f797a9beb"
+  },
+  {
+    "from": "apps/api/Migrations/20260905202641_MapeoMovimientosCreados.cs",
+    "to": "apps/api-dotnet/Migrations/20260905202641_MapeoMovimientosCreados.cs",
+    "sha256": "83a563eb189c618e2c340765e01642b371c7dae3ad7ba9e4758413e8669e1e9a"
+  },
+  {
+    "from": "apps/api/Migrations/20260905211313_RolesTecnicoYSanciones.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260905211313_RolesTecnicoYSanciones.Designer.cs",
+    "sha256": "3cd8b57a5fbe062a8b874d0d30c7b909f801c4c25b45835e4eb3389f1e91ced6"
+  },
+  {
+    "from": "apps/api/Migrations/20260905211313_RolesTecnicoYSanciones.cs",
+    "to": "apps/api-dotnet/Migrations/20260905211313_RolesTecnicoYSanciones.cs",
+    "sha256": "e68a260694879114e9482f13f45055ab966911dbd983dbf7c43ee489b850ba61"
+  },
+  {
+    "from": "apps/api/Migrations/20260905221406_HorarioOperativo.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260905221406_HorarioOperativo.Designer.cs",
+    "sha256": "642f5ab1983ffa87dfe227b141d2d7916b265832250c818bb544aeadaa4c6646"
+  },
+  {
+    "from": "apps/api/Migrations/20260905221406_HorarioOperativo.cs",
+    "to": "apps/api-dotnet/Migrations/20260905221406_HorarioOperativo.cs",
+    "sha256": "3cb04b3ebd3297b46b3d965436fe4576b3eee04faae0bc7af0acc8491b5550d6"
+  },
+  {
+    "from": "apps/api/Migrations/20260906004531_PerfilJugador.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260906004531_PerfilJugador.Designer.cs",
+    "sha256": "8480753fea2e28e47095ba90854e2ff4e4de12af380a6b21cb6562e29f7c2f03"
+  },
+  {
+    "from": "apps/api/Migrations/20260906004531_PerfilJugador.cs",
+    "to": "apps/api-dotnet/Migrations/20260906004531_PerfilJugador.cs",
+    "sha256": "e7bee74bb08cc1f0c085601bfc79044e22a50d92204f67e9237d5b3ac135b973"
+  },
+  {
+    "from": "apps/api/Migrations/20260906020317_PerfilTelefonoFoto.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260906020317_PerfilTelefonoFoto.Designer.cs",
+    "sha256": "8e6eb2f0908f80da64b222933f80600394af1756986e4c418c118fd325e0e352"
+  },
+  {
+    "from": "apps/api/Migrations/20260906020317_PerfilTelefonoFoto.cs",
+    "to": "apps/api-dotnet/Migrations/20260906020317_PerfilTelefonoFoto.cs",
+    "sha256": "58e4c2fc375a05e3bf98aa47fa1cd0d09525dc57475490f9e4819e3e5a3db486"
+  },
+  {
+    "from": "apps/api/Migrations/20260906155229_PartidosAbiertos.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260906155229_PartidosAbiertos.Designer.cs",
+    "sha256": "776cabf898c2ef58e7d77efbea3a4f016b58a025bd576cb88b98e9f7057dbe40"
+  },
+  {
+    "from": "apps/api/Migrations/20260906155229_PartidosAbiertos.cs",
+    "to": "apps/api-dotnet/Migrations/20260906155229_PartidosAbiertos.cs",
+    "sha256": "4cf8af5b3c4c20fd156868bae6af236f4a3ef757930a789c23a1e332d6b429c3"
+  },
+  {
+    "from": "apps/api/Migrations/20260930142543_GoogleLogin.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20260930142543_GoogleLogin.Designer.cs",
+    "sha256": "44956f99bb9ee6f4a01a517e16565805972c2d22a70cfd94ec5d14860cbeb2b8"
+  },
+  {
+    "from": "apps/api/Migrations/20260930142543_GoogleLogin.cs",
+    "to": "apps/api-dotnet/Migrations/20260930142543_GoogleLogin.cs",
+    "sha256": "46cbae285ba41186106902eb6c3f7abfeafdceaad20a22d81ea1b05f22b43759"
+  },
+  {
+    "from": "apps/api/Migrations/20261006133334_LibroReclamaciones.Designer.cs",
+    "to": "apps/api-dotnet/Migrations/20261006133334_LibroReclamaciones.Designer.cs",
+    "sha256": "c1a82dfff200c455201d1f9eb44d2faa96dae08e6c9d0d17165fc58154f45d3e"
+  },
+  {
+    "from": "apps/api/Migrations/20261006133334_LibroReclamaciones.cs",
+    "to": "apps/api-dotnet/Migrations/20261006133334_LibroReclamaciones.cs",
+    "sha256": "ed12055ad1afbdb13843dc92d93c53c2415009e51e97fe5dd5d4ccc05745854e"
+  },
+  {
+    "from": "apps/api/Migrations/AppDbContextModelSnapshot.cs",
+    "to": "apps/api-dotnet/Migrations/AppDbContextModelSnapshot.cs",
+    "sha256": "98ec75f54914132f2bbe83685b3680adb96cce60dc082947dbcaaf5ddfd69a54"
+  },
+  {
+    "from": "apps/api/Models/Entities.cs",
+    "to": "apps/api-dotnet/Models/Entities.cs",
+    "sha256": "ff39b21b094b457675d89d6721bd1c2494907e57cf0d546a01f97570169d3158"
+  },
+  {
+    "from": "apps/api/Models/Enums.cs",
+    "to": "apps/api-dotnet/Models/Enums.cs",
+    "sha256": "cf165e4c5b0433281aa2284e4e5bdb0911b5792f295033312f1014832c8325cc"
+  },
+  {
+    "from": "apps/api/Program.cs",
+    "to": "apps/api-dotnet/Program.cs",
+    "sha256": "1f6da8a655ae6bffed9bfd3322b528a55ceb5145e0bf1db918b2aba39bcaa009"
+  },
+  {
+    "from": "apps/api/Properties/launchSettings.json",
+    "to": "apps/api-dotnet/Properties/launchSettings.json",
+    "sha256": "080dcb76e78825f8d6183847bb359ff607be12b9360c8db10e98b7098b7e3451"
+  },
+  {
+    "from": "apps/api/ReservaFacil.Api.csproj",
+    "to": "apps/api-dotnet/ReservaFacil.Api.csproj",
+    "sha256": "53731edee58307c5fe195ab6a91bccd3fb8582e2e4f0703f2e848bfce2aa3252"
+  },
+  {
+    "from": "apps/api/Security/ComplejoAccess.cs",
+    "to": "apps/api-dotnet/Security/ComplejoAccess.cs",
+    "sha256": "66e95cd7097a6634eb593be02848f72e707379a8e00c5f628b36e5888b14e52d"
+  },
+  {
+    "from": "apps/api/Security/ConvenioPrueba.cs",
+    "to": "apps/api-dotnet/Security/ConvenioPrueba.cs",
+    "sha256": "23bef6a7864dde154803ca774987d1213e3a7cf4b78be567cbfc937adf6c5ccb"
+  },
+  {
+    "from": "apps/api/Security/FlexibleDecimalConverter.cs",
+    "to": "apps/api-dotnet/Security/FlexibleDecimalConverter.cs",
+    "sha256": "998d1755baaab5ae4b312e074c49b77ce1fa2d969519a1be08626b428469f47b"
+  },
+  {
+    "from": "apps/api/Security/IRateLimiter.cs",
+    "to": "apps/api-dotnet/Security/IRateLimiter.cs",
+    "sha256": "245f3148e6de4608f732f9bdde473f66d9ecaadcc99eec2417fb6ceae9316da0"
+  },
+  {
+    "from": "apps/api/Security/PerfilReglas.cs",
+    "to": "apps/api-dotnet/Security/PerfilReglas.cs",
+    "sha256": "ff9348e9e21b550ac5ac34d1e52210e12ee2b3f8e5c29cdd11da82d637ccf1a9"
+  },
+  {
+    "from": "apps/api/Security/ValidSessionAuthorization.cs",
+    "to": "apps/api-dotnet/Security/ValidSessionAuthorization.cs",
+    "sha256": "0ce3d74b78429b7e488ceede403713d22df8816e80f634caac10b74af247d43d"
+  },
+  {
+    "from": "apps/api/Services/AlmacenR2.cs",
+    "to": "apps/api-dotnet/Services/AlmacenR2.cs",
+    "sha256": "4b80a73d1440a18dd3239c62c645f7a8d1f4056dfb0c0d774275e958ed9cad03"
+  },
+  {
+    "from": "apps/api/Services/EmailSender.cs",
+    "to": "apps/api-dotnet/Services/EmailSender.cs",
+    "sha256": "bbb946084a47270b2eae7567b1a1f644a997b03992df89afd359477821451162"
+  },
+  {
+    "from": "apps/api/Services/EnvLoader.cs",
+    "to": "apps/api-dotnet/Services/EnvLoader.cs",
+    "sha256": "f64ea8e5f9e6fdf23e4fef982fa769c11de0def00d42b151013770eb7a0136f5"
+  },
+  {
+    "from": "apps/api/Services/GoogleOAuth.cs",
+    "to": "apps/api-dotnet/Services/GoogleOAuth.cs",
+    "sha256": "ad7268a70be737391aba66cd265f770a68be719df88e2ccc7b51f6acea51be1a"
+  },
+  {
+    "from": "apps/api/Services/ImagenArchivo.cs",
+    "to": "apps/api-dotnet/Services/ImagenArchivo.cs",
+    "sha256": "6a652c5670288ff83616c29e90aeac0d675a8c574f8b07cbfd26f497055a2d75"
+  },
+  {
+    "from": "apps/api/Services/InvitacionEmail.cs",
+    "to": "apps/api-dotnet/Services/InvitacionEmail.cs",
+    "sha256": "5eeb97aa06a147345bdc27ac5e7a763ebc7e7a965ca8c93c8214f2dce4a3a1b2"
+  },
+  {
+    "from": "apps/api/Services/JwtService.cs",
+    "to": "apps/api-dotnet/Services/JwtService.cs",
+    "sha256": "a9ee759c8d9c838577a73990a2eb23150201e4f7221503413abe22c61dbf4f8c"
+  },
+  {
+    "from": "apps/api/Services/MediaPublica.cs",
+    "to": "apps/api-dotnet/Services/MediaPublica.cs",
+    "sha256": "18856ab53e10de96c0b0cbb98a2491b35645a58873b6412355ecb0a1ad5acb5c"
+  },
+  {
+    "from": "apps/api/Services/PasswordResetTokens.cs",
+    "to": "apps/api-dotnet/Services/PasswordResetTokens.cs",
+    "sha256": "1bec018ec5f596279d65be2f97520b74fa788bb3e68441b9c7420106a1045b76"
+  },
+  {
+    "from": "apps/api/Services/PrecioCancha.cs",
+    "to": "apps/api-dotnet/Services/PrecioCancha.cs",
+    "sha256": "1259e58918c1c48dd6de7112a8837ae2512a9f52c6fd8cdfa2c96feb2beef991"
+  },
+  {
+    "from": "apps/api/appsettings.Development.json",
+    "to": "apps/api-dotnet/appsettings.Development.json",
+    "sha256": "817db0bf2ecca78364c41dbaf7949bf2504cf47a1c3d0d54f3be8178fefc030b"
+  },
+  {
+    "from": "apps/api/appsettings.json",
+    "to": "apps/api-dotnet/appsettings.json",
+    "sha256": "2d8bb40059df22089b94c025be8baad5a869b72d4d755d199c872f03bfe6f225"
+  },
+  {
+    "from": "apps/api/wwwroot/uploads/canchas/.gitkeep",
+    "to": "apps/api-dotnet/wwwroot/uploads/canchas/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "from": "apps/api/wwwroot/uploads/perfiles/.gitkeep",
+    "to": "apps/api-dotnet/wwwroot/uploads/perfiles/.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "from": "apps/web/prisma/migrations/20260827220310_init/migration.sql",
+    "to": "packages/db/prisma/migrations/20260827220310_init/migration.sql",
+    "sha256": "f5226bc5fcae20ceefd5180e2fa63cfafaeedca21d8fa284f3b067124bb48770"
+  },
+  {
+    "from": "apps/web/prisma/migrations/20260906000000_reserva_codigo_backfill/migration.sql",
+    "to": "packages/db/prisma/migrations/20260906000000_reserva_codigo_backfill/migration.sql",
+    "sha256": "674863feaf9954bada28521b918c4e03c478a989ef9ac7a42e39732163dcf9cc"
+  },
+  {
+    "from": "apps/web/prisma/migrations/20260906010000_b2b_convergencia/migration.sql",
+    "to": "packages/db/prisma/migrations/20260906010000_b2b_convergencia/migration.sql",
+    "sha256": "b128046d7a5e9c259076693b2d1beec4cac0e15dd9c493819b1a3baa5228095a"
+  },
+  {
+    "from": "apps/web/prisma/migrations/20260906020000_suscripciones_precios/migration.sql",
+    "to": "packages/db/prisma/migrations/20260906020000_suscripciones_precios/migration.sql",
+    "sha256": "2cfd6952dc20683bd01089bf5df05332b7c13a91df082b5175593317b46011a7"
+  },
+  {
+    "from": "apps/web/prisma/migrations/20260906030000_roles_tecnico_sanciones/migration.sql",
+    "to": "packages/db/prisma/migrations/20260906030000_roles_tecnico_sanciones/migration.sql",
+    "sha256": "d6ab12c12ba7cae7a488b3e1e751f1a22dae6512d317bf150ea1e103723cb57a"
+  },
+  {
+    "from": "apps/web/prisma/migrations/20260906040000_horario_operativo/migration.sql",
+    "to": "packages/db/prisma/migrations/20260906040000_horario_operativo/migration.sql",
+    "sha256": "b7dc797d3b3c3abc399fd01b5f366501d85684101cf7e3775b0986786aaee961"
+  },
+  {
+    "from": "apps/web/prisma/migrations/migration_lock.toml",
+    "to": "packages/db/prisma/migrations/migration_lock.toml",
+    "sha256": "99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900"
+  },
+  {
+    "from": "apps/web/prisma/schema.prisma",
+    "to": "packages/db/prisma/schema.prisma",
+    "sha256": "f83bde7e752de0024759b117a3e49397a4b8aecf7076d481eb70d9dbacbc2f0e"
+  },
+  {
+    "from": "apps/web/prisma/seed.ts",
+    "to": "packages/db/prisma/seed.ts",
+    "sha256": "039a304ca5666c718a6393089e2a3133f5ee68077c5e6fe5805855d4b5b35468"
+  }
+]

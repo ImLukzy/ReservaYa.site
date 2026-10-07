@@ -1,0 +1,246 @@
+{
+  "formatVersion": 1,
+  "purpose": "Declarative isolated fixtures, not seed and not captured production data",
+  "actors": {
+    "jugadorA": {
+      "rol": "USUARIO",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "jugador-a@example.test"
+    },
+    "jugadorB": {
+      "rol": "USUARIO",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "jugador-b@example.test"
+    },
+    "duenoA": {
+      "rol": "SUPERADMIN",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "dueno-a@example.test"
+    },
+    "duenoB": {
+      "rol": "SUPERADMIN",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "dueno-b@example.test"
+    },
+    "duenoNuevo": {
+      "rol": "SUPERADMIN",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "dueno-nuevo@example.test",
+      "ownsNoComplex": true
+    },
+    "adminA": {
+      "rol": "ADMIN",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "admin-a@example.test",
+      "membership": "complejoA:activo"
+    },
+    "adminB": {
+      "rol": "ADMIN",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "admin-b@example.test",
+      "membership": "complejoB:activo"
+    },
+    "invitadoA": {
+      "rol": "USUARIO",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "invitado@example.test",
+      "membership": "complejoA:pendiente"
+    },
+    "organizadorA": {
+      "rol": "USUARIO",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "organizador@example.test"
+    },
+    "jugadorSolicitante": {
+      "rol": "USUARIO",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "solicitante@example.test",
+      "ownsPendingComplex": true
+    },
+    "personalLegacy": {
+      "rol": "PERSONAL",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "personal@example.test"
+    },
+    "inactivo": {
+      "rol": "USUARIO",
+      "activo": false,
+      "tokenVersion": 0,
+      "email": "inactivo@example.test"
+    },
+    "tecnico": {
+      "rol": "TECNICO",
+      "activo": true,
+      "tokenVersion": 0,
+      "email": "tecnico@example.test"
+    },
+    "anonymous": {
+      "cookie": null
+    },
+    "invalidToken": {
+      "cookie": "generated invalid signature, not a saved JWT"
+    },
+    "revokedToken": {
+      "cookie": "valid signed JWT for jugadorA tv0; dataset usuario.tokenVersion=1"
+    }
+  },
+  "ids": {
+    "jugadorA": "00000000000000000000000000000001",
+    "jugadorB": "00000000000000000000000000000002",
+    "duenoA": "00000000000000000000000000000003",
+    "duenoB": "00000000000000000000000000000004",
+    "adminA": "00000000000000000000000000000005",
+    "adminB": "00000000000000000000000000000006",
+    "tecnico": "00000000000000000000000000000007",
+    "invitadoA": "00000000000000000000000000000008",
+    "organizadorA": "00000000000000000000000000000009",
+    "complejoA": "0000000000000000000000000000000a",
+    "complejoB": "0000000000000000000000000000000b",
+    "canchaA": "0000000000000000000000000000000c",
+    "canchaB": "0000000000000000000000000000000d",
+    "canchaLegacy": "0000000000000000000000000000000e",
+    "canchaInactiva": "0000000000000000000000000000000f",
+    "miembroA": "00000000000000000000000000000010",
+    "invitacionA": "00000000000000000000000000000011",
+    "metaA": "00000000000000000000000000000012",
+    "partidoA": "00000000000000000000000000000013",
+    "promocionA": "00000000000000000000000000000014",
+    "reservaA": "00000000000000000000000000000015",
+    "sancionA": "00000000000000000000000000000016",
+    "solicitudA": "00000000000000000000000000000017",
+    "suscripcionPendienteA": "00000000000000000000000000000018",
+    "torneoA": "00000000000000000000000000000019",
+    "partidoTorneoA": "0000000000000000000000000000001a",
+    "productoA": "0000000000000000000000000000001b",
+    "suscripcionActivaA": "0000000000000000000000000000001c",
+    "resenaA": "0000000000000000000000000000001d",
+    "nonexistent": "ffffffffffffffffffffffffffffffff",
+    "reservaCodigo": "RF-TEST1"
+  },
+  "clock": {
+    "civilTimezone": "America/Lima",
+    "referenceUtc": "2030-10-07T17:00:00.000Z",
+    "instruction": "Harness later binds dates/clock consistently on both backends. Legacy DateTime.Today uses host timezone; record and align TZ without changing product."
+  },
+  "dates": {
+    "futureDay": "2030-10-08",
+    "futureInstant": "2030-10-08T23:00:00.000Z",
+    "periodStart": "2030-10-01",
+    "periodEnd": "2030-10-31",
+    "youngerThan14": "2017-10-07"
+  },
+  "credentials": {
+    "jugadorA.password": "generate per isolated run; store no real credentials",
+    "newPassword": "generate per isolated run; >=6 chars"
+  },
+  "tokens": {
+    "resetJugadorA": "generate legacy-compatible HMAC reset fixture in isolated harness",
+    "googlePending": "generate legacy-compatible pending JWT using test secret only"
+  },
+  "oauth": {
+    "code": "stub authorization code",
+    "state": "stub-cookie-state-must-match"
+  },
+  "origins": {
+    "web": "http://127.0.0.1:3100",
+    "dotnet": "http://127.0.0.1:5100",
+    "typescript": "http://127.0.0.1:5200"
+  },
+  "media": {
+    "publicOrigin": "https://media.example.test",
+    "ownUrl": "bind uploads/<tipo>/<requestpersona.id>/synthetic.png based on cancha/perfil/partido action",
+    "instruction": "Mock R2 deletion/presigning; never use realbucket or send emails."
+  },
+  "states": {
+    "dominio-base-habilitado": "Dos centros A/B publicados, dueños independientes, suscripciónACTIVA vigente y una cancha activa por centro. AdminA solo miembro activoA. Añadir las entidades de recurso indicadas por cada acción, sin FKs ajenas. No incluir Reclamo salvo decisión de esquema separada.",
+    "sin-centro-y-sin-usuario-nuevo": "Para E006/E014 email+username nuevos sin cuenta. E081 jugadorA no tiene centro. E036 duenoNuevo sin centro ni suscripción; técnico/roles válidos según escenario. MantenercentroB ajeno.",
+    "caja-cerrada": "ComplejoA habilitado, ninguna CajaSesionABIERTA; última caja cerrada opcional.",
+    "caja-abierta": "ComplejoA habilitado, CajaSesionABIERTA con montoInicial100; sin movimientos para cierre nominal.",
+    "usuario-invitado-sin-membresia": "invitadoA activo USUARIO, sin centro ni membresía conA; propietario duenoA.",
+    "invitacion-pendiente-propia": "invitacionA es ComplejoMiembro usuario=invitadoA, complejoA, activo=false, rolSedeADMIN. CentroA habilitado.",
+    "solicitud-jugador-una-cancha-inactiva": "solicitudA centro propio de jugadorSolicitante USUARIO, publicado=false, única cancha inactiva y sin FKs que impidan rechazo. Otros centros pertenecen a otros actores.",
+    "suscripcion-pendiente-centro-aprobado": "suscripcionPendienteA de centroA, PENDIENTE, dueñoSUPERADMIN. No aprobar centro de jugador pendiente.",
+    "suscripcion-activa-propia": "Binding suscripcionPendienteA→suscripcionActivaA para caso cancelación; estadoACTIVA y acceso propio.",
+    "reserva-completada-jugadorA-centroA": "Reserva previaCOMPLETADA de jugadorA en centroA para calificación; ningunaResena previa para nominal de crear.",
+    "reserva-confirmada-hoy-no-validada": "reservaA CONFIRMADA para hoy civil en horaPerú, códigoRF-TEST1, validadaEnnull. Verificar ventana exacta de regla de validación y clock del harness.",
+    "slot-libre-local-habilitado": "canchaA activa, local publicado/vigente, horario cubre1080–1140, jugadorA sin sanciónBLOQUEO; ningúnCONFIRMADO cruza slot. ReservasPENDIENTE y adyacentes en casos separados.",
+    "recurso-propio-eliminable-sin-fks-bloqueantes": "Binding por dominio propio; no hay registros dependientes que provocan409. DELETEequipo retira pendiente/activo en casos separados; canchas/complejos sin reservas.",
+    "partido-futuro-cupos-disponibles-no-anotado": "partidoA organizado por organizadorA, fecha=hoy+1, total10, sin anotaciónjugadorA.",
+    "partido-futuro-ya-anotado": "partidoA futuro con AnotacionPartido jugadorA, binding fijo.",
+    "sin-recurso": "Nonexistent no está en ninguna tabla de negocio.",
+    "local-no-publicado-o-partido-pasado": "Opciones: agregarcentro no publicado y vencido con cancha activa para probar exclusión. Partidos: agregar ayer/hoy/mañana, mantenerq sin filtros de exclusión involuntarios.",
+    "payload-vacio": "Enviar bodyvacío con tipo correcto; paraReclamos camposRequired disparanProblemDetails antes del controlador.",
+    "google-config": "Provider stub aislado configurado, tokens inválidos no llaman Google real.",
+    "sin-google-config": "Runtimeaislado sinGOOGLE_*; no modificar secretos del humano.",
+    "google-config-sin-code-state": "Provider stub configurado; ausencia dequery/cookies debe redirigir login?error=google.",
+    "search-rate-limit-exhausted": "IRateLimiter de prueba daIsLimitedtrue para buscar porIP. No bombardearproducción.",
+    "usuario-activo-token-tv-distinto-db": "Firmar cookieJugadorA contv0, usuarioactivo entestDBtv1. Identidad autenticada, fallaValidSessionHandler→403.",
+    "token-firma-invalida": "Cookie token firmada con clave equivocada solo en harness, usuariosBD intactos.",
+    "otra-sede-o-organizador": "Bind foreignIds to equivalent resource inB; personaA has no owner/member access toB. For partidos organizerB; invitations invitedB. Never use TECNICO for cross-owner negative.",
+    "credenciales-invalidas": "Email no existe; wrongpassword. BCrypt dummy still evaluated.",
+    "menor14": "Legacy reference clock minus13years; dates.youngerThan14 bound at runtime. Future date and exactly14 are separate variants.",
+    "reset-usado": "First valid reset committed in isolated scenario; second identicaltoken must fail and not update again.",
+    "caja-ya-abierta": "CentroA already hasABIERTA.",
+    "segunda-cancha-prueba": "OwnerA has fresh30day trial without ACTIVA subscription and one cancha already; attempted2nd.",
+    "auto-invitacion": "duenoA invites own email; ownership verified first.",
+    "activo-no-editable": "MiembroA own; attemptfalse activo rather than delete.",
+    "cupos-invalido": "Otherwise valid multipart party, cupos1.",
+    "cupo-lleno": "Existingparty already has cuposTotales annotations, actorA not yet joined.",
+    "promo-global-dueno": "Ownedcenter enabled but request global null/null; callerSUPERADMIN notTECNICO.",
+    "menor-sin-representante": "ValidRequired reclamo fields; menortrue, apoderado fields omitted.",
+    "monto-tres-decimales": "All required valid; monto1.234 within Range yet manual decimal check rejects.",
+    "no-jugo-local": "PlayerA lacks any qualifying priorreservation incenterA.",
+    "codigo-invalido": "Shortcode x, no DBlookup needed after auth.",
+    "slot-ocupado": "CONFIRMADAexisting overlaps1080–1140.",
+    "jugador-confirma": "Own reservation but jugadorA may only cancel.",
+    "convenio-falso": "Player no complex, request otherwise valid nestedfields.",
+    "ya-revisada": "SolicitudA already approved or no longer pendingUSUARIO.",
+    "solicitud-centro-pendiente": "PENDIENTEsubscription associated with unpublishedcenter whose owner remainsUSUARIO.",
+    "q-corto": "Publicsearch q=x, limiter permits; returns emptyusers.",
+    "nombre-inmutable": "Existingnombre differs from attemptedpatch; even with valid phone, request rejected.",
+    "tipo-invalido": "Querytipo=NO_EXISTE, resto omitido; guardEnumrechaza400."
+  },
+  "isolation": "Each case starts from fresh equivalent snapshots in two disposable databases; state overrides are applied only by future authorized fixture harness.",
+  "foreignIds": {
+    "jugadorA": "bind comparable jugadorA owned by actorB",
+    "jugadorB": "bind comparable jugadorB owned by actorB",
+    "duenoA": "bind comparable duenoA owned by actorB",
+    "duenoB": "bind comparable duenoB owned by actorB",
+    "adminA": "bind comparable adminA owned by actorB",
+    "adminB": "bind comparable adminB owned by actorB",
+    "tecnico": "bind comparable tecnico owned by actorB",
+    "invitadoA": "bind comparable invitadoA owned by actorB",
+    "organizadorA": "bind comparable organizadorA owned by actorB",
+    "complejoA": "bind comparable complejoA owned by actorB",
+    "complejoB": "bind comparable complejoB owned by actorB",
+    "canchaA": "bind comparable canchaA owned by actorB",
+    "canchaB": "bind comparable canchaB owned by actorB",
+    "canchaLegacy": "bind comparable canchaLegacy owned by actorB",
+    "canchaInactiva": "bind comparable canchaInactiva owned by actorB",
+    "miembroA": "bind comparable miembroA owned by actorB",
+    "invitacionA": "bind comparable invitacionA owned by actorB",
+    "metaA": "bind comparable metaA owned by actorB",
+    "partidoA": "bind comparable partidoA owned by actorB",
+    "promocionA": "bind comparable promocionA owned by actorB",
+    "reservaA": "bind comparable reservaA owned by actorB",
+    "sancionA": "bind comparable sancionA owned by actorB",
+    "solicitudA": "bind comparable solicitudA owned by actorB",
+    "suscripcionPendienteA": "bind comparable suscripcionPendienteA owned by actorB",
+    "torneoA": "bind comparable torneoA owned by actorB",
+    "partidoTorneoA": "bind comparable partidoTorneoA owned by actorB",
+    "productoA": "bind comparable productoA owned by actorB",
+    "suscripcionActivaA": "bind comparable suscripcionActivaA owned by actorB",
+    "resenaA": "bind comparable resenaA owned by actorB"
+  }
+}

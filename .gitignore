@@ -24,10 +24,10 @@ next-env.d.ts
 
 # Uploads de usuarios (fotos de canchas) — no versionar, sí la carpeta
 # (se ignora el contenido pero no los directorios, para que el !.gitkeep aplique)
-apps/api/wwwroot/uploads/*
-!apps/api/wwwroot/uploads/*/
-apps/api/wwwroot/uploads/*/*
-!apps/api/wwwroot/uploads/*/.gitkeep
+apps/api-dotnet/wwwroot/uploads/*
+!apps/api-dotnet/wwwroot/uploads/*/
+apps/api-dotnet/wwwroot/uploads/*/*
+!apps/api-dotnet/wwwroot/uploads/*/.gitkeep
 
 # OS / editor
 .DS_Store
@@ -46,3 +46,11 @@ roster-backups/
 
 # Estado local del harness de agentes; no es producto
 restore-gate.json
+
+# pnpm/Turborepo
+.turbo/
+.pnpm-store/
+packages/db/prisma/generated/
+
+# Artefactos/uploads de servicios legacy todavía en ejecución
+apps/api/wwwroot/uploads/

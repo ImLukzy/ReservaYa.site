@@ -1,0 +1,517 @@
+// Canonical Prisma model: actual catalogue from Jim, 2026-10-07.
+// No Reclamo table in the source database; F1 never creates it.
+// IDs are application-generated; database has no cuid()/uuid() defaults.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum EstadoCaja {
+  ABIERTA
+  CERRADA
+}
+
+enum EstadoPago {
+  PENDIENTE
+  PAGADO
+  PARCIAL
+  REEMBOLSADO
+}
+
+enum EstadoReserva {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+enum EstadoSuscripcion {
+  PENDIENTE
+  ACTIVA
+  VENCIDA
+  CANCELADA
+  RECHAZADA
+}
+
+enum EstadoTorneo {
+  BORRADOR
+  INSCRIPCIONES_ABIERTAS
+  EN_CURSO
+  FINALIZADO
+  CANCELADO
+}
+
+enum MetodoPago {
+  EFECTIVO
+  YAPE
+  CULQI
+  TARJETA
+  TRANSFERENCIA
+}
+
+enum NivelSancion {
+  ADVERTENCIA
+  BLOQUEO
+}
+
+enum Rol {
+  USUARIO
+  ADMIN
+  SUPERADMIN
+  PERSONAL
+  TECNICO
+}
+
+enum TipoCancha {
+  FUTBOL
+  TENIS
+  BASQUET
+  VOLLEYBALL
+  FUTBOL5
+  FUTBOL7
+  PADEL
+  LOZA
+}
+
+enum TipoDescuento {
+  PORCENTAJE
+  MONTO_FIJO
+  PRECIO_ESPECIAL
+}
+
+enum TipoMeta {
+  INGRESOS
+  OCUPACION
+  RESERVAS
+}
+
+enum TipoMovimiento {
+  RESERVA
+  SNACK
+  ALQUILER
+  ABONO
+  EGRESO
+  AJUSTE
+}
+
+enum TipoPlan {
+  MENSUAL
+  TRIMESTRAL
+  ANUAL
+}
+
+model AnotacionPartido {
+  id String @id(map: "AnotacionPartido_pkey")
+  partidoId String
+  usuarioId String
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  partidoAbiertoByPartidoId PartidoAbierto @relation("AnotacionPartido_partidoId_fkey", fields: [partidoId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "AnotacionPartido_partidoId_fkey")
+  usuarioByUsuarioId Usuario @relation("AnotacionPartido_usuarioId_fkey", fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "AnotacionPartido_usuarioId_fkey")
+
+  @@index([partidoId], map: "AnotacionPartido_partidoId_idx")
+  @@unique([partidoId, usuarioId], map: "AnotacionPartido_partidoId_usuarioId_key")
+  @@index([usuarioId], map: "IX_AnotacionPartido_usuarioId")
+}
+
+model CajaSesion {
+  id String @id(map: "CajaSesion_pkey")
+  complejoId String
+  abiertaPorId String
+  cerradaPorId String?
+  montoInicial Decimal @db.Decimal(10, 2)
+  montoFinal Decimal? @db.Decimal(10, 2)
+  estado EstadoCaja @default(ABIERTA)
+  abiertaEn DateTime @db.Timestamp(3) @default(now())
+  cerradaEn DateTime? @db.Timestamp(3)
+
+  usuarioByAbiertaPorId Usuario @relation("CajaSesion_abiertaPorId_fkey", fields: [abiertaPorId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "CajaSesion_abiertaPorId_fkey")
+  complejoByComplejoId Complejo @relation("CajaSesion_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "CajaSesion_complejoId_fkey")
+  movimientoCajaByCajaId MovimientoCaja[] @relation("MovimientoCaja_cajaId_fkey")
+
+  @@index([complejoId, estado], map: "CajaSesion_complejoId_estado_idx")
+}
+
+model Cancha {
+  id String @id(map: "Cancha_pkey")
+  nombre String
+  tipo TipoCancha
+  descripcion String?
+  precioPorHora Decimal @db.Decimal(10, 2)
+  capacidad Int
+  activa Boolean @default(true)
+  imagen String?
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+  techada Boolean @default(false)
+  superficie String?
+  complejoId String?
+  fotos String[] @default([])
+
+  complejoByComplejoId Complejo? @relation("Cancha_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Cancha_complejoId_fkey")
+  partidoTorneoByCanchaId PartidoTorneo[] @relation("PartidoTorneo_canchaId_fkey")
+  promocionByCanchaId Promocion[] @relation("Promocion_canchaId_fkey")
+  reservaByCanchaId Reserva[] @relation("Reserva_canchaId_fkey")
+
+  @@index([activa], map: "Cancha_activa_idx")
+  @@index([complejoId], map: "Cancha_complejoId_idx")
+  @@index([tipo], map: "Cancha_tipo_idx")
+}
+
+model Complejo {
+  id String @id(map: "Complejo_pkey")
+  nombre String
+  descripcion String?
+  direccion String
+  distrito String
+  ciudad String @default("Arequipa")
+  telefono String?
+  email String?
+  fotos String[] @default([])
+  publicado Boolean @default(false)
+  slug String
+  duenoId String
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+  actualizadoEn DateTime @db.Timestamp(3)
+
+  cajaSesionByComplejoId CajaSesion[] @relation("CajaSesion_complejoId_fkey")
+  canchaByComplejoId Cancha[] @relation("Cancha_complejoId_fkey")
+  usuarioByDuenoId Usuario @relation("Complejo_duenoId_fkey", fields: [duenoId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Complejo_duenoId_fkey")
+  complejoMiembroByComplejoId ComplejoMiembro[] @relation("ComplejoMiembro_complejoId_fkey")
+  horarioByComplejoId HorarioOperativo[] @relation("Horario_complejoId_fkey")
+  metaByComplejoId Meta[] @relation("Meta_complejoId_fkey")
+  movimientoCajaByComplejoId MovimientoCaja[] @relation("MovimientoCaja_complejoId_fkey")
+  productoByComplejoId Producto[] @relation("Producto_complejoId_fkey")
+  promocionByComplejoId Promocion[] @relation("Promocion_complejoId_fkey")
+  resenaByComplejoId Resena[] @relation("Resena_complejoId_fkey")
+  reservaByComplejoId Reserva[] @relation("Reserva_complejoId_fkey")
+  sancionByComplejoId Sancion[] @relation("Sancion_complejoId_fkey")
+  suscripcionByComplejoId Suscripcion[] @relation("Suscripcion_complejoId_fkey")
+  torneoByComplejoId Torneo[] @relation("Torneo_complejoId_fkey")
+
+  @@index([distrito], map: "Complejo_distrito_idx")
+  @@index([duenoId], map: "Complejo_duenoId_idx")
+  @@index([publicado], map: "Complejo_publicado_idx")
+  @@unique([slug], map: "Complejo_slug_key")
+}
+
+model ComplejoMiembro {
+  id String @id(map: "ComplejoMiembro_pkey")
+  usuarioId String
+  complejoId String
+  rolSede Rol
+  activo Boolean @default(true)
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  complejoByComplejoId Complejo @relation("ComplejoMiembro_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "ComplejoMiembro_complejoId_fkey")
+  usuarioByUsuarioId Usuario @relation("ComplejoMiembro_usuarioId_fkey", fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "ComplejoMiembro_usuarioId_fkey")
+
+  @@index([complejoId], map: "ComplejoMiembro_complejoId_idx")
+  @@unique([usuarioId, complejoId], map: "ComplejoMiembro_usuarioId_complejoId_key")
+}
+
+model HorarioOperativo {
+  id String @id(map: "Horario_pkey")
+  complejoId String
+  canchaId String?
+  diaSemana Int
+  aperturaMin Int
+  cierreMin Int
+  activo Boolean @default(true)
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  complejoByComplejoId Complejo @relation("Horario_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Horario_complejoId_fkey")
+
+  @@index([complejoId, canchaId, diaSemana], map: "Horario_alcance_dia_idx")
+  @@index([complejoId, canchaId, diaSemana], map: "Horario_complejoId_canchaId_diaSemana_idx")
+  @@index([complejoId], map: "Horario_complejoId_idx")
+  @@map("Horario")
+}
+
+model InscripcionTorneo {
+  id String @id(map: "InscripcionTorneo_pkey")
+  torneoId String
+  equipo String
+  capitanId String
+  telefono String?
+  pagado Boolean @default(false)
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  usuarioByCapitanId Usuario @relation("InscripcionTorneo_capitanId_fkey", fields: [capitanId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "InscripcionTorneo_capitanId_fkey")
+  torneoByTorneoId Torneo @relation("InscripcionTorneo_torneoId_fkey", fields: [torneoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "InscripcionTorneo_torneoId_fkey")
+
+  @@unique([torneoId, equipo], map: "InscripcionTorneo_torneoId_equipo_key")
+  @@index([torneoId], map: "InscripcionTorneo_torneoId_idx")
+}
+
+model Meta {
+  id String @id(map: "Meta_pkey")
+  complejoId String
+  titulo String
+  tipo TipoMeta
+  objetivo Decimal @db.Decimal(12, 2)
+  actual Decimal @db.Decimal(12, 2) @default(0)
+  periodoInicio DateTime @db.Date
+  periodoFin DateTime @db.Date
+
+  complejoByComplejoId Complejo @relation("Meta_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Meta_complejoId_fkey")
+
+  @@index([complejoId], map: "Meta_complejoId_idx")
+}
+
+model MovimientoCaja {
+  id String @id(map: "MovimientoCaja_pkey")
+  complejoId String
+  cajaId String
+  tipo TipoMovimiento
+  metodoPago MetodoPago @default(EFECTIVO)
+  monto Decimal @db.Decimal(10, 2)
+  descripcion String
+  creadoPorId String
+  reservaId String?
+  productoId String?
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  cajaSesionByCajaId CajaSesion @relation("MovimientoCaja_cajaId_fkey", fields: [cajaId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "MovimientoCaja_cajaId_fkey")
+  complejoByComplejoId Complejo @relation("MovimientoCaja_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "MovimientoCaja_complejoId_fkey")
+  usuarioByCreadoPorId Usuario @relation("MovimientoCaja_creadoPorId_fkey", fields: [creadoPorId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "MovimientoCaja_creadoPorId_fkey")
+  productoByProductoId Producto? @relation("MovimientoCaja_productoId_fkey", fields: [productoId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "MovimientoCaja_productoId_fkey")
+  reservaByReservaId Reserva? @relation("MovimientoCaja_reservaId_fkey", fields: [reservaId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "MovimientoCaja_reservaId_fkey")
+
+  @@index([cajaId], map: "MovimientoCaja_cajaId_idx")
+  @@index([complejoId, creadoEn], map: "MovimientoCaja_complejoId_creadoEn_idx")
+  @@index([tipo], map: "MovimientoCaja_tipo_idx")
+}
+
+model PartidoAbierto {
+  id String @id(map: "PartidoAbierto_pkey")
+  organizadorId String
+  titulo String
+  descripcion String?
+  formato String
+  nivel String
+  cuposTotales Int
+  distrito String
+  cancha String
+  superficie String?
+  precio Decimal @db.Decimal(10, 2)
+  fecha DateTime @db.Date
+  desdeMin Int
+  hastaMin Int
+  fotoUrl String?
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  anotacionPartidoByPartidoId AnotacionPartido[] @relation("AnotacionPartido_partidoId_fkey")
+  usuarioByOrganizadorId Usuario @relation("PartidoAbierto_organizadorId_fkey", fields: [organizadorId], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "PartidoAbierto_organizadorId_fkey")
+
+  @@index([organizadorId], map: "IX_PartidoAbierto_organizadorId")
+  @@index([distrito], map: "PartidoAbierto_distrito_idx")
+  @@index([fecha], map: "PartidoAbierto_fecha_idx")
+}
+
+model PartidoTorneo {
+  id String @id(map: "PartidoTorneo_pkey")
+  torneoId String
+  fase String
+  equipoA String
+  equipoB String
+  golesA Int?
+  golesB Int?
+  fecha DateTime? @db.Timestamp(3)
+  canchaId String?
+  ganador String?
+
+  canchaByCanchaId Cancha? @relation("PartidoTorneo_canchaId_fkey", fields: [canchaId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "PartidoTorneo_canchaId_fkey")
+  torneoByTorneoId Torneo @relation("PartidoTorneo_torneoId_fkey", fields: [torneoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "PartidoTorneo_torneoId_fkey")
+
+  @@index([torneoId, fase], map: "PartidoTorneo_torneoId_fase_idx")
+}
+
+model Producto {
+  id String @id(map: "Producto_pkey")
+  complejoId String
+  nombre String
+  categoria String @default("SNACK")
+  precio Decimal @db.Decimal(10, 2)
+  stock Int?
+  activo Boolean @default(true)
+
+  movimientoCajaByProductoId MovimientoCaja[] @relation("MovimientoCaja_productoId_fkey")
+  complejoByComplejoId Complejo @relation("Producto_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Producto_complejoId_fkey")
+
+  @@index([complejoId, activo], map: "Producto_complejoId_activo_idx")
+}
+
+model Promocion {
+  id String @id(map: "Promocion_pkey")
+  complejoId String?
+  canchaId String?
+  nombre String
+  descripcion String?
+  tipo TipoDescuento
+  valor Decimal @db.Decimal(10, 2)
+  horaDesde Int?
+  horaHasta Int?
+  diasSemana Int[] @default([])
+  fechaInicio DateTime? @db.Date
+  fechaFin DateTime? @db.Date
+  codigo String?
+  usosMax Int?
+  usosActuales Int @default(0)
+  activa Boolean @default(true)
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+  inicioNoche Int?
+  inicioTarde Int?
+  precioDia Decimal? @db.Decimal(10, 2)
+  precioNoche Decimal? @db.Decimal(10, 2)
+  precioTarde Decimal? @db.Decimal(10, 2)
+  repetirAnual Boolean @default(false)
+
+  canchaByCanchaId Cancha? @relation("Promocion_canchaId_fkey", fields: [canchaId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Promocion_canchaId_fkey")
+  complejoByComplejoId Complejo? @relation("Promocion_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Promocion_complejoId_fkey")
+  reservaByPromocionId Reserva[] @relation("Reserva_promocionId_fkey")
+
+  @@unique([codigo], map: "Promocion_codigo_key")
+  @@index([complejoId, activa], map: "Promocion_complejoId_activa_idx")
+}
+
+model Resena {
+  id String @id(map: "Resena_pkey")
+  complejoId String
+  usuarioId String
+  puntuacion Int
+  comentario String?
+  respuestaDueno String?
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  complejoByComplejoId Complejo @relation("Resena_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Resena_complejoId_fkey")
+  usuarioByUsuarioId Usuario @relation("Resena_usuarioId_fkey", fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Resena_usuarioId_fkey")
+
+  @@index([complejoId], map: "Resena_complejoId_idx")
+  @@unique([complejoId, usuarioId], map: "Resena_complejoId_usuarioId_key")
+}
+
+model Reserva {
+  id String @id(map: "Reserva_pkey")
+  usuarioId String
+  canchaId String
+  fecha DateTime @db.Date
+  horaInicio Int
+  horaFin Int
+  estado EstadoReserva @default(PENDIENTE)
+  total Decimal @db.Decimal(10, 2)
+  notas String?
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+  codigo String
+  complejoId String?
+  estadoPago EstadoPago @default(PENDIENTE)
+  metodoPago MetodoPago?
+  montoPagado Decimal @db.Decimal(10, 2) @default(0)
+  promocionId String?
+  validadaEn DateTime? @db.Timestamp(3)
+  validadaPorId String?
+
+  movimientoCajaByReservaId MovimientoCaja[] @relation("MovimientoCaja_reservaId_fkey")
+  canchaByCanchaId Cancha @relation("Reserva_canchaId_fkey", fields: [canchaId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Reserva_canchaId_fkey")
+  complejoByComplejoId Complejo? @relation("Reserva_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Reserva_complejoId_fkey")
+  promocionByPromocionId Promocion? @relation("Reserva_promocionId_fkey", fields: [promocionId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Reserva_promocionId_fkey")
+  usuarioByUsuarioId Usuario @relation("Reserva_usuarioId_fkey", fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Reserva_usuarioId_fkey")
+  usuarioByValidadaPorId Usuario? @relation("Reserva_validadaPorId_fkey", fields: [validadaPorId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Reserva_validadaPorId_fkey")
+
+  @@index([canchaId, fecha], map: "Reserva_canchaId_fecha_idx")
+  @@unique([codigo], map: "Reserva_codigo_idx")
+  @@index([complejoId, fecha], map: "Reserva_complejoId_fecha_idx")
+  @@index([estado], map: "Reserva_estado_idx")
+  @@index([usuarioId], map: "Reserva_usuarioId_idx")
+}
+
+model Sancion {
+  id String @id(map: "Sancion_pkey")
+  complejoId String
+  usuarioId String
+  nivel NivelSancion
+  motivo String
+  activa Boolean @default(true)
+  creadoPorId String
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  complejoByComplejoId Complejo @relation("Sancion_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Sancion_complejoId_fkey")
+  usuarioByUsuarioId Usuario @relation("Sancion_usuarioId_fkey", fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Sancion_usuarioId_fkey")
+
+  @@index([complejoId], map: "Sancion_complejoId_idx")
+  @@index([usuarioId], map: "Sancion_usuarioId_idx")
+}
+
+model Suscripcion {
+  id String @id(map: "Suscripcion_pkey")
+  complejoId String
+  plan TipoPlan
+  estado EstadoSuscripcion @default(ACTIVA)
+  fechaInicio DateTime @db.Date
+  fechaFin DateTime @db.Date
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  complejoByComplejoId Complejo @relation("Suscripcion_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Suscripcion_complejoId_fkey")
+
+  @@index([complejoId], map: "Suscripcion_complejoId_idx")
+}
+
+model Torneo {
+  id String @id(map: "Torneo_pkey")
+  complejoId String
+  nombre String
+  deporte TipoCancha @default(FUTBOL7)
+  fechaInicio DateTime @db.Date
+  fechaFin DateTime? @db.Date
+  costoInscripcion Decimal @db.Decimal(10, 2) @default(0)
+  cupoMax Int @default(16)
+  premio String?
+  reglamento String?
+  estado EstadoTorneo @default(BORRADOR)
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+
+  inscripcionTorneoByTorneoId InscripcionTorneo[] @relation("InscripcionTorneo_torneoId_fkey")
+  partidoTorneoByTorneoId PartidoTorneo[] @relation("PartidoTorneo_torneoId_fkey")
+  complejoByComplejoId Complejo @relation("Torneo_complejoId_fkey", fields: [complejoId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Torneo_complejoId_fkey")
+
+  @@index([complejoId, estado], map: "Torneo_complejoId_estado_idx")
+}
+
+model Usuario {
+  id String @id(map: "Usuario_pkey")
+  nombre String
+  email String
+  password String
+  rol Rol @default(USUARIO)
+  activo Boolean @default(true)
+  tokenVersion Int @default(0)
+  creadoEn DateTime @db.Timestamp(3) @default(now())
+  avatarUrl String?
+  fechaNacimiento DateTime? @db.Date
+  fotoUrl String?
+  googleId String?
+  telefono String?
+  username String?
+  usernameCambiadoEn DateTime? @db.Timestamp(3)
+
+  anotacionPartidoByUsuarioId AnotacionPartido[] @relation("AnotacionPartido_usuarioId_fkey")
+  cajaSesionByAbiertaPorId CajaSesion[] @relation("CajaSesion_abiertaPorId_fkey")
+  complejoByDuenoId Complejo[] @relation("Complejo_duenoId_fkey")
+  complejoMiembroByUsuarioId ComplejoMiembro[] @relation("ComplejoMiembro_usuarioId_fkey")
+  inscripcionTorneoByCapitanId InscripcionTorneo[] @relation("InscripcionTorneo_capitanId_fkey")
+  movimientoCajaByCreadoPorId MovimientoCaja[] @relation("MovimientoCaja_creadoPorId_fkey")
+  partidoAbiertoByOrganizadorId PartidoAbierto[] @relation("PartidoAbierto_organizadorId_fkey")
+  resenaByUsuarioId Resena[] @relation("Resena_usuarioId_fkey")
+  reservaByUsuarioId Reserva[] @relation("Reserva_usuarioId_fkey")
+  reservaByValidadaPorId Reserva[] @relation("Reserva_validadaPorId_fkey")
+  sancionByUsuarioId Sancion[] @relation("Sancion_usuarioId_fkey")
+
+  @@unique([email], map: "Usuario_email_key")
+  @@unique([googleId], map: "Usuario_googleId_key")
+  @@index([rol], map: "Usuario_rol_idx")
+  @@unique([username], map: "Usuario_username_key")
+}

@@ -1,0 +1,979 @@
+{
+  "meaning": "Literal route mentions with route boundary; not complete method coverage or validation PASS.",
+  "items": [
+    {
+      "endpointId": "E001",
+      "method": "GET",
+      "path": "/api/abonos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AbonosController.cs:40"
+    },
+    {
+      "endpointId": "E002",
+      "method": "POST",
+      "path": "/api/abonos/abonar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AbonosController.cs:96"
+    },
+    {
+      "endpointId": "E003",
+      "method": "GET",
+      "path": "/api/abonos/cuenta",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AbonosController.cs:163"
+    },
+    {
+      "endpointId": "E004",
+      "method": "POST",
+      "path": "/api/abonos/cuenta",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AbonosController.cs:171"
+    },
+    {
+      "endpointId": "E005",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "pathMentionLines": [
+        19
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:51"
+    },
+    {
+      "endpointId": "E006",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "pathMentionLines": [
+        19,
+        70
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:92"
+    },
+    {
+      "endpointId": "E007",
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "pathMentionLines": [
+        19
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:165"
+    },
+    {
+      "endpointId": "E008",
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "pathMentionLines": [
+        21
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:191"
+    },
+    {
+      "endpointId": "E009",
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "pathMentionLines": [
+        22
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:216"
+    },
+    {
+      "endpointId": "E010",
+      "method": "POST",
+      "path": "/api/auth/refrescar",
+      "pathMentionLines": [
+        99,
+        122
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:251"
+    },
+    {
+      "endpointId": "E011",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "pathMentionLines": [
+        20
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:261"
+    },
+    {
+      "endpointId": "E012",
+      "method": "GET",
+      "path": "/api/auth/google",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:291"
+    },
+    {
+      "endpointId": "E013",
+      "method": "GET",
+      "path": "/api/auth/google/callback",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:332"
+    },
+    {
+      "endpointId": "E014",
+      "method": "POST",
+      "path": "/api/auth/google/completar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/AuthController.cs:380"
+    },
+    {
+      "endpointId": "E015",
+      "method": "GET",
+      "path": "/api/caja/hoy",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:88"
+    },
+    {
+      "endpointId": "E016",
+      "method": "GET",
+      "path": "/api/caja/sesion",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:114"
+    },
+    {
+      "endpointId": "E017",
+      "method": "POST",
+      "path": "/api/caja/apertura",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:162"
+    },
+    {
+      "endpointId": "E018",
+      "method": "POST",
+      "path": "/api/caja/cierre",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:197"
+    },
+    {
+      "endpointId": "E019",
+      "method": "POST",
+      "path": "/api/caja/movimientos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:253"
+    },
+    {
+      "endpointId": "E020",
+      "method": "GET",
+      "path": "/api/caja/productos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:355"
+    },
+    {
+      "endpointId": "E021",
+      "method": "POST",
+      "path": "/api/caja/productos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:379"
+    },
+    {
+      "endpointId": "E022",
+      "method": "PUT",
+      "path": "/api/caja/productos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:412"
+    },
+    {
+      "endpointId": "E023",
+      "method": "DELETE",
+      "path": "/api/caja/productos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CajaController.cs:448"
+    },
+    {
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "pathMentionLines": [
+        49,
+        72
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:30"
+    },
+    {
+      "endpointId": "E025",
+      "method": "GET",
+      "path": "/api/canchas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:59"
+    },
+    {
+      "endpointId": "E026",
+      "method": "POST",
+      "path": "/api/canchas",
+      "pathMentionLines": [
+        49,
+        72
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:70"
+    },
+    {
+      "endpointId": "E027",
+      "method": "PUT",
+      "path": "/api/canchas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:146"
+    },
+    {
+      "endpointId": "E028",
+      "method": "DELETE",
+      "path": "/api/canchas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:244"
+    },
+    {
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "pathMentionLines": [
+        23
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:298"
+    },
+    {
+      "endpointId": "E030",
+      "method": "GET",
+      "path": "/api/canchas/opciones",
+      "pathMentionLines": [
+        23
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:421"
+    },
+    {
+      "endpointId": "E031",
+      "method": "GET",
+      "path": "/api/canchas/{id}/cotizar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:452"
+    },
+    {
+      "endpointId": "E032",
+      "method": "POST",
+      "path": "/api/canchas/{id}/imagen",
+      "pathMentionLines": [
+        42,
+        49,
+        51
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:483"
+    },
+    {
+      "endpointId": "E033",
+      "method": "PUT",
+      "path": "/api/canchas/{id}/imagen",
+      "pathMentionLines": [
+        42,
+        49,
+        51
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/CanchasController.cs:523"
+    },
+    {
+      "endpointId": "E034",
+      "method": "GET",
+      "path": "/api/complejos",
+      "pathMentionLines": [
+        71
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/ComplejosController.cs:65"
+    },
+    {
+      "endpointId": "E035",
+      "method": "GET",
+      "path": "/api/complejos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ComplejosController.cs:92"
+    },
+    {
+      "endpointId": "E036",
+      "method": "POST",
+      "path": "/api/complejos",
+      "pathMentionLines": [
+        71
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/ComplejosController.cs:120"
+    },
+    {
+      "endpointId": "E037",
+      "method": "PUT",
+      "path": "/api/complejos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ComplejosController.cs:183"
+    },
+    {
+      "endpointId": "E038",
+      "method": "DELETE",
+      "path": "/api/complejos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ComplejosController.cs:221"
+    },
+    {
+      "endpointId": "E039",
+      "method": "GET",
+      "path": "/api/equipo",
+      "pathMentionLines": [
+        117,
+        118
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/EquipoController.cs:45"
+    },
+    {
+      "endpointId": "E040",
+      "method": "POST",
+      "path": "/api/equipo",
+      "pathMentionLines": [
+        117,
+        118
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/EquipoController.cs:69"
+    },
+    {
+      "endpointId": "E041",
+      "method": "PUT",
+      "path": "/api/equipo/{id}",
+      "pathMentionLines": [
+        119,
+        120
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/EquipoController.cs:163"
+    },
+    {
+      "endpointId": "E042",
+      "method": "DELETE",
+      "path": "/api/equipo/{id}",
+      "pathMentionLines": [
+        119,
+        120
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/EquipoController.cs:190"
+    },
+    {
+      "endpointId": "E043",
+      "method": "GET",
+      "path": "/api/horarios",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/HorariosController.cs:45"
+    },
+    {
+      "endpointId": "E044",
+      "method": "PUT",
+      "path": "/api/horarios",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/HorariosController.cs:78"
+    },
+    {
+      "endpointId": "E045",
+      "method": "GET",
+      "path": "/api/invitaciones/mias",
+      "pathMentionLines": [
+        121
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/InvitacionesController.cs:19"
+    },
+    {
+      "endpointId": "E046",
+      "method": "POST",
+      "path": "/api/invitaciones/{id}/aceptar",
+      "pathMentionLines": [
+        122
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/InvitacionesController.cs:48"
+    },
+    {
+      "endpointId": "E047",
+      "method": "POST",
+      "path": "/api/invitaciones/{id}/rechazar",
+      "pathMentionLines": [
+        123
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/InvitacionesController.cs:81"
+    },
+    {
+      "endpointId": "E048",
+      "method": "GET",
+      "path": "/api/metas",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/MetasController.cs:50"
+    },
+    {
+      "endpointId": "E049",
+      "method": "POST",
+      "path": "/api/metas",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/MetasController.cs:76"
+    },
+    {
+      "endpointId": "E050",
+      "method": "PATCH",
+      "path": "/api/metas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/MetasController.cs:114"
+    },
+    {
+      "endpointId": "E051",
+      "method": "DELETE",
+      "path": "/api/metas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/MetasController.cs:165"
+    },
+    {
+      "endpointId": "E052",
+      "method": "GET",
+      "path": "/api/partidos",
+      "pathMentionLines": [
+        30,
+        45,
+        49,
+        51,
+        56
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:61"
+    },
+    {
+      "endpointId": "E053",
+      "method": "GET",
+      "path": "/api/partidos/mios",
+      "pathMentionLines": [
+        31
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:115"
+    },
+    {
+      "endpointId": "E054",
+      "method": "POST",
+      "path": "/api/partidos",
+      "pathMentionLines": [
+        30,
+        45,
+        49,
+        51,
+        56
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:152"
+    },
+    {
+      "endpointId": "E055",
+      "method": "POST",
+      "path": "/api/partidos/{id}/anotarse",
+      "pathMentionLines": [
+        32
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:256"
+    },
+    {
+      "endpointId": "E056",
+      "method": "DELETE",
+      "path": "/api/partidos/{id}/anotarse",
+      "pathMentionLines": [
+        32
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:292"
+    },
+    {
+      "endpointId": "E057",
+      "method": "PUT",
+      "path": "/api/partidos/{id}/foto",
+      "pathMentionLines": [
+        44,
+        49
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:307"
+    },
+    {
+      "endpointId": "E058",
+      "method": "DELETE",
+      "path": "/api/partidos/{id}",
+      "pathMentionLines": [
+        33
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/PartidosController.cs:334"
+    },
+    {
+      "endpointId": "E059",
+      "method": "GET",
+      "path": "/api/promociones",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/PromocionesController.cs:52"
+    },
+    {
+      "endpointId": "E060",
+      "method": "POST",
+      "path": "/api/promociones",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/PromocionesController.cs:93"
+    },
+    {
+      "endpointId": "E061",
+      "method": "PUT",
+      "path": "/api/promociones/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/PromocionesController.cs:210"
+    },
+    {
+      "endpointId": "E062",
+      "method": "DELETE",
+      "path": "/api/promociones/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/PromocionesController.cs:299"
+    },
+    {
+      "endpointId": "E063",
+      "method": "POST",
+      "path": "/api/reclamos",
+      "pathMentionLines": [
+        79
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/ReclamosController.cs:40"
+    },
+    {
+      "endpointId": "E064",
+      "method": "GET",
+      "path": "/api/reportes/dashboard",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ReportesController.cs:25"
+    },
+    {
+      "endpointId": "E065",
+      "method": "GET",
+      "path": "/api/reportes/global",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ReportesController.cs:38"
+    },
+    {
+      "endpointId": "E066",
+      "method": "GET",
+      "path": "/api/resenas/publicas",
+      "pathMentionLines": [
+        24
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/ResenasController.cs:38"
+    },
+    {
+      "endpointId": "E067",
+      "method": "POST",
+      "path": "/api/resenas",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ResenasController.cs:63"
+    },
+    {
+      "endpointId": "E068",
+      "method": "GET",
+      "path": "/api/resenas",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ResenasController.cs:109"
+    },
+    {
+      "endpointId": "E069",
+      "method": "POST",
+      "path": "/api/resenas/{id}/responder",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ResenasController.cs:140"
+    },
+    {
+      "endpointId": "E070",
+      "method": "GET",
+      "path": "/api/reservas",
+      "pathMentionLines": [
+        25
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/ReservasController.cs:26"
+    },
+    {
+      "endpointId": "E071",
+      "method": "GET",
+      "path": "/api/reservas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ReservasController.cs:66"
+    },
+    {
+      "endpointId": "E072",
+      "method": "POST",
+      "path": "/api/reservas/validar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ReservasController.cs:86"
+    },
+    {
+      "endpointId": "E073",
+      "method": "POST",
+      "path": "/api/reservas",
+      "pathMentionLines": [
+        25
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/ReservasController.cs:152"
+    },
+    {
+      "endpointId": "E074",
+      "method": "PATCH",
+      "path": "/api/reservas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ReservasController.cs:283"
+    },
+    {
+      "endpointId": "E075",
+      "method": "DELETE",
+      "path": "/api/reservas/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/ReservasController.cs:365"
+    },
+    {
+      "endpointId": "E076",
+      "method": "GET",
+      "path": "/api/sanciones",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/SancionesController.cs:35"
+    },
+    {
+      "endpointId": "E077",
+      "method": "POST",
+      "path": "/api/sanciones",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/SancionesController.cs:60"
+    },
+    {
+      "endpointId": "E078",
+      "method": "PATCH",
+      "path": "/api/sanciones/{id}/desactivar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/SancionesController.cs:101"
+    },
+    {
+      "endpointId": "E079",
+      "method": "GET",
+      "path": "/api/solicitudes",
+      "pathMentionLines": [
+        49,
+        94,
+        96
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SolicitudesController.cs:30"
+    },
+    {
+      "endpointId": "E080",
+      "method": "GET",
+      "path": "/api/solicitudes/mias",
+      "pathMentionLines": [
+        95
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SolicitudesController.cs:39"
+    },
+    {
+      "endpointId": "E081",
+      "method": "POST",
+      "path": "/api/solicitudes",
+      "pathMentionLines": [
+        49,
+        94,
+        96
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SolicitudesController.cs:49"
+    },
+    {
+      "endpointId": "E082",
+      "method": "PATCH",
+      "path": "/api/solicitudes/{id}/aprobar",
+      "pathMentionLines": [
+        97
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SolicitudesController.cs:92"
+    },
+    {
+      "endpointId": "E083",
+      "method": "PATCH",
+      "path": "/api/solicitudes/{id}/rechazar",
+      "pathMentionLines": [
+        98
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SolicitudesController.cs:120"
+    },
+    {
+      "endpointId": "E084",
+      "method": "GET",
+      "path": "/api/suscripciones/estado",
+      "pathMentionLines": [
+        73,
+        107
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SuscripcionesController.cs:40"
+    },
+    {
+      "endpointId": "E085",
+      "method": "GET",
+      "path": "/api/suscripciones",
+      "pathMentionLines": [
+        74
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SuscripcionesController.cs:72"
+    },
+    {
+      "endpointId": "E086",
+      "method": "POST",
+      "path": "/api/suscripciones",
+      "pathMentionLines": [
+        74
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SuscripcionesController.cs:100"
+    },
+    {
+      "endpointId": "E087",
+      "method": "PATCH",
+      "path": "/api/suscripciones/{id}/aprobar",
+      "pathMentionLines": [
+        74
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/SuscripcionesController.cs:136"
+    },
+    {
+      "endpointId": "E088",
+      "method": "PATCH",
+      "path": "/api/suscripciones/{id}/rechazar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/SuscripcionesController.cs:165"
+    },
+    {
+      "endpointId": "E089",
+      "method": "PATCH",
+      "path": "/api/suscripciones/{id}/cancelar",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/SuscripcionesController.cs:180"
+    },
+    {
+      "endpointId": "E090",
+      "method": "GET",
+      "path": "/api/torneos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:60"
+    },
+    {
+      "endpointId": "E091",
+      "method": "GET",
+      "path": "/api/torneos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:124"
+    },
+    {
+      "endpointId": "E092",
+      "method": "POST",
+      "path": "/api/torneos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:145"
+    },
+    {
+      "endpointId": "E093",
+      "method": "PUT",
+      "path": "/api/torneos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:204"
+    },
+    {
+      "endpointId": "E094",
+      "method": "DELETE",
+      "path": "/api/torneos/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:269"
+    },
+    {
+      "endpointId": "E095",
+      "method": "POST",
+      "path": "/api/torneos/{id}/inscripciones",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:283"
+    },
+    {
+      "endpointId": "E096",
+      "method": "POST",
+      "path": "/api/torneos/{id}/partidos",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:334"
+    },
+    {
+      "endpointId": "E097",
+      "method": "PUT",
+      "path": "/api/torneos/partidos/{partidoId}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/TorneosController.cs:393"
+    },
+    {
+      "endpointId": "E098",
+      "method": "GET",
+      "path": "/api/usuarios/buscar",
+      "pathMentionLines": [
+        29
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:36"
+    },
+    {
+      "endpointId": "E099",
+      "method": "GET",
+      "path": "/api/usuarios",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:67"
+    },
+    {
+      "endpointId": "E100",
+      "method": "GET",
+      "path": "/api/usuarios/clientes",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:93"
+    },
+    {
+      "endpointId": "E101",
+      "method": "GET",
+      "path": "/api/usuarios/{id}/historial",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:140"
+    },
+    {
+      "endpointId": "E102",
+      "method": "PATCH",
+      "path": "/api/usuarios/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:210"
+    },
+    {
+      "endpointId": "E103",
+      "method": "PATCH",
+      "path": "/api/usuarios/me",
+      "pathMentionLines": [
+        26
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:283"
+    },
+    {
+      "endpointId": "E104",
+      "method": "POST",
+      "path": "/api/usuarios/me/foto",
+      "pathMentionLines": [
+        27,
+        28,
+        43,
+        49,
+        51
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:389"
+    },
+    {
+      "endpointId": "E105",
+      "method": "PUT",
+      "path": "/api/usuarios/me/foto",
+      "pathMentionLines": [
+        27,
+        28,
+        43,
+        49,
+        51
+      ],
+      "classification": "path-mentioned-not-full-method-contract",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:417"
+    },
+    {
+      "endpointId": "E106",
+      "method": "DELETE",
+      "path": "/api/usuarios/{id}",
+      "pathMentionLines": [],
+      "classification": "path-absent",
+      "sourceAuthority": "apps/api/Controllers/UsuariosController.cs:452"
+    }
+  ]
+}

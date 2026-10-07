@@ -13,7 +13,7 @@ const SERVICES = [
 ];
 
 export function launchCommand(service, platform) {
-  if (service.name === 'API') return { command: 'dotnet', args: ['run', '--project', 'apps/api/ReservaFacil.Api.csproj', '--launch-profile', 'http'], shell: false };
+  if (service.name === 'API') return { command: 'dotnet', args: ['run', '--project', 'apps/api-dotnet/ReservaFacil.Api.csproj', '--launch-profile', 'http'], shell: false };
   // Todos los argumentos son constantes: cmd solo se usa para ejecutar el .cmd de npm.
   return { command: platform === 'win32' ? 'npm.cmd' : 'npm', args: ['--prefix', 'apps/web', 'run', 'dev', '--', '--port', '3000'], shell: platform === 'win32' };
 }

@@ -1,13 +1,30 @@
 {
   "name": "reservaya",
   "private": true,
+  "packageManager": "pnpm@10.18.3",
+  "engines": {
+    "node": ">=22.20.0 <23",
+    "pnpm": "10.18.3"
+  },
   "scripts": {
-    "dev": "npm --prefix apps/web run dev",
+    "dev": "pnpm --filter @reservaya/web dev",
     "dev:all": "node scripts/start-dev.mjs",
-    "dev:api": "dotnet run --project apps/api/ReservaFacil.Api.csproj --launch-profile http",
-    "build": "npm --prefix apps/web run build",
-    "preview": "npm --prefix apps/web run start",
-    "dev:next": "npm --prefix apps/web run dev",
-    "build:next": "npm --prefix apps/web run build"
+    "dev:api": "dotnet run --project apps/api-dotnet/ReservaFacil.Api.csproj --launch-profile http",
+    "dev:api:ts": "pnpm --filter @reservaya/api dev",
+    "dev:next": "pnpm --filter @reservaya/web dev",
+    "build": "turbo run build",
+    "build:next": "turbo run build --filter=@reservaya/web",
+    "preview": "pnpm --filter @reservaya/web start",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "db:generate": "pnpm --filter @reservaya/db generate",
+    "db:qa": "node scripts/db-qa.mjs",
+    "check:motion": "node scripts/motion-tokens.mjs --check"
+  },
+  "devDependencies": {
+    "turbo": "2.5.8",
+    "typescript": "5.9.3",
+    "eslint": "9.39.4"
   }
 }

@@ -1,0 +1,22 @@
+{
+  "name": "@reservaya/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./tsconfig.base.json",
+    "./node": "./tsconfig.node.json",
+    "./eslint": "./eslint-base.mjs",
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.node.json": "./tsconfig.node.json"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "node --check eslint-base.mjs"
+  },
+  "dependencies": {
+    "eslint": "9.39.4",
+    "@eslint/js": "9.39.4",
+    "typescript-eslint": "8.61.1"
+  }
+}

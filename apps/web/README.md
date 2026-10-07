@@ -23,14 +23,14 @@ Las instrucciones antiguas de cambios de esquema se conservan solo como historia
 ## Desarrollo local
 
 ```powershell
-npm ci
+corepack pnpm install --frozen-lockfile
 Copy-Item .env.example .env   # pide DATABASE_URL de Neon
-npm run dev                   # panel en http://localhost:3000
+corepack pnpm --filter @reservaya/web dev                   # panel en http://localhost:3000
 ```
 
-La API corre en `http://localhost:5000` (desde la raíz: `npm run dev:api`;
-el proyecto es `apps/api/ReservaFacil.Api.csproj`, nombre conservado a propósito) y Next proxya `/api/*`.
-Desde la raíz: `npm run dev:all` levanta API + web pública/panel.
+La API corre en `http://localhost:5000` (desde la raíz: `corepack pnpm --filter @reservaya/web dev:api`;
+el proyecto es `apps/api-dotnet/ReservaFacil.Api.csproj`, nombre conservado a propósito) y Next proxya `/api/*`.
+Desde la raíz: `corepack pnpm --filter @reservaya/web dev:all` levanta API + web pública/panel.
 
 ## Marketplace: suscripción, buscador y precios por franja
 
@@ -92,4 +92,4 @@ Desde la raíz: `npm run dev:all` levanta API + web pública/panel.
 
 ## Proyecto unificado
 
-Web pública y panel usan el mismo origen y la misma UI en `components/ui`; API .NET en `../api`. Los comandos completos y el runner multiplataforma están en [README raíz](../../README.md). Desde la raíz, `npm run dev:all` inicia API y web; desde esta carpeta, `npm run dev` conserva webpack. No leer JWT cliente ni editar secretos.
+Web pública y panel usan el mismo origen y la misma UI en `components/ui`; API .NET en `../api`. Los comandos completos y el runner multiplataforma están en [README raíz](../../README.md). Desde la raíz, `corepack pnpm --filter @reservaya/web dev:all` inicia API y web; desde esta carpeta, `corepack pnpm --filter @reservaya/web dev` conserva webpack. No leer JWT cliente ni editar secretos.

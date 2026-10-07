@@ -1,0 +1,227 @@
+{
+  "formatVersion": 1,
+  "mode": "declarative-spec-not-runner",
+  "scenarios": [
+    {
+      "id": "reservas-mixto-solape",
+      "endpoints": [
+        "E073",
+        "E074"
+      ],
+      "setup": "canchaA habilitada, mismo día; dos actores diferentes; freshisolatedDB",
+      "steps": [
+        "Lanzar20POST concurrentes alternando.NET/TS para1080–1140",
+        "Leer ocupantes y resultados tras commit",
+        "Repetir conPENDIENTE/CONFIRMADA y PATCHconfirmar segúnlegacy"
+      ],
+      "assertions": [
+        "No más de unaCONFIRMADA solapada; conservar comportamientoPENDIENTE actual, no asumirPOSTconfirma",
+        "Conflictos409 y rollback íntegro, sin doble movimiento"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "reservas-adyacentes",
+      "endpoints": [
+        "E029",
+        "E031",
+        "E073"
+      ],
+      "steps": [
+        "CrearCONFIRMADA1080–1140",
+        "Consultar/cotizar/reservar1140–1200 y solape1139–1200"
+      ],
+      "assertions": [
+        "Adyacente permitido, solape ocupado; predicado estrictomenor/mayor"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "reclamos-correlativo",
+      "endpoints": [
+        "E063"
+      ],
+      "setup": "TablaReclamo solo enBDdesprendible bajo decisiónseparada",
+      "steps": [
+        "Enviar20reclamos válidos concurrentes conreloj de mismo añoUTC",
+        "Provocar40001/23505 eníndicescorrelativo y agotar5intentos",
+        "Cruzar31dicUTC→1eneUTC"
+      ],
+      "assertions": [
+        "Numero anual único;201solo despuéscommit;503al agotar;no filasparciales"
+      ],
+      "execution": "blocked-schema-decision"
+    },
+    {
+      "id": "auth-cruzada",
+      "endpoints": [
+        "E005",
+        "E007",
+        "E009",
+        "E010",
+        "E011"
+      ],
+      "steps": [
+        "Login.NET→GETmeTS y loginTS→GETme.NET",
+        "Logout enunbackend, usarcookieprevia enelotro",
+        "Reset válido enunbackend, reutilizartokenreset enelotro"
+      ],
+      "assertions": [
+        "JWT HS256 mismosclaims/cookie; logout/reset revocantv;tokenresetunuso"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "roles-promocion",
+      "endpoints": [
+        "E046",
+        "E079",
+        "E080",
+        "E082",
+        "E010",
+        "E042"
+      ],
+      "steps": [
+        "Aprobarjugadorsolicitante aSUPERADMIN, consultarmias conJWTUSRprevio",
+        "Aceptar invitaciónUSR→ADMIN",
+        "Refrescar, accederpanel y retirarúltimamembresía"
+      ],
+      "assertions": [
+        "Promociones noincrementantv; refrescarleerolBD; bajaúltimasede rebajarol/incrementatv"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "trial-suscripcion",
+      "endpoints": [
+        "E026",
+        "E036",
+        "E084",
+        "E086",
+        "E087"
+      ],
+      "steps": [
+        "DueñosinACTIVA intenta2cancha/2centro concurrentes",
+        "Consultarprueba enCreadoEn+29/+30/+31días",
+        "SolicitarPENDIENTE y aprobarTECNICO"
+      ],
+      "assertions": [
+        "Prueba1cancha;bloqueo derivado reversible;PENDIENTEnodesbloquea;vigenciadesdeaprobación"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "dinero-caja-stock",
+      "endpoints": [
+        "E017",
+        "E018",
+        "E019",
+        "E021",
+        "E002",
+        "E065"
+      ],
+      "steps": [
+        "Abrircaja100, registrarventa2×3.50 y egreso5",
+        "Cerrar102 ycompararesperado/diferencia",
+        "Abonarycompararreporteentresedes; caso cantidades/stockinsuficiente"
+      ],
+      "assertions": [
+        "Moneystrings2decimales;redondeoawayfromzero legacy;scopeporcentro;nodobleventa"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "rate-limits",
+      "endpoints": [
+        "E005",
+        "E006",
+        "E008",
+        "E009",
+        "E040",
+        "E054",
+        "E055",
+        "E063",
+        "E098"
+      ],
+      "steps": [
+        "Inyectarlimiterpermitido/bloqueadosegúnkeyIP/email/usuario de cadafuente",
+        "Loginexitosoreiniciacontadordeintentosfallidos",
+        "Probarbackendcutovermantienelímiteefectivo"
+      ],
+      "assertions": [
+        "Mismosumbrales/mensajes429, no filtrarexistenciacuenta"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "r2-propiedad",
+      "endpoints": [
+        "E033",
+        "E057",
+        "E105",
+        "E054",
+        "E081"
+      ],
+      "steps": [
+        "URLnuevadecarpetaotroactor→rechazo",
+        "ReenviarURLpersistida→mantenercompatibilidad",
+        "GuardarURLpropia ysimularfalloborradoR2postcommit"
+      ],
+      "assertions": [
+        "400porURLajena;503sinconfigdondeactual;BDconfirmada aunqueborradofalló;tipoentidadcorrecto"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "uploads-legacy",
+      "endpoints": [
+        "E032",
+        "E104",
+        "E054"
+      ],
+      "steps": [
+        "EnviarPNG1px válido, falsoPNGconbytesincorrectos y tamaño>3MB",
+        "LeerDeprecation yURL/uploads",
+        "Compararemisiónmagicbytesycabeceras conFastify"
+      ],
+      "assertions": [
+        "No convertirlos a410 duranteport;lecturaarchivospersistida;erroresiguales"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "google-compatibilidad",
+      "endpoints": [
+        "E012",
+        "E013",
+        "E014"
+      ],
+      "steps": [
+        "Probarstateausente/distinto, returnUrlexterno, cuentavinculada/desactivada, perfilnuevo",
+        "CompletarconpendingJWTderivadoyedad14frontera"
+      ],
+      "assertions": [
+        "Redirect/cookies/claims iguales;pendingJWTnuncavalidacomosesión"
+      ],
+      "execution": "not-run"
+    },
+    {
+      "id": "routing-rollback",
+      "endpoints": [
+        "E024",
+        "E026",
+        "E070",
+        "E073"
+      ],
+      "steps": [
+        "GETcanchaTSyPOSTcancha.NETmismaURL porverbo",
+        "CompararbrowserySSRdestino/cookie",
+        "Volverregistrolegacy ymedirtiempodesdeseñal hastahealth+flujoOK"
+      ],
+      "assertions": [
+        "Un escritorporrequest; uploadsNextmantieneprioridad;rollback≤15minsinrestaurarBD"
+      ],
+      "execution": "not-run"
+    }
+  ]
+}

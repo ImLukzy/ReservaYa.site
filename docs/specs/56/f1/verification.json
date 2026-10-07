@@ -1,0 +1,34 @@
+{
+  "state": "in-progress",
+  "runtimeLocal": "26.10.0",
+  "runtimeRequired": "22.20.0",
+  "checks": {
+    "prismaValidate": "PASS",
+    "baselineGeneratedOffline": "PASS",
+    "sourceMoveHashes": "PASS 80 unchanged, canonical schema intentionally replaced",
+    "runnerMotionTests": "PASS 2/2",
+    "dotnetRelease": "PASS 0 errors; NU1900 offline vulnerability lookup warning",
+    "sharedBuild": "PASS",
+    "apiBuild": "PASS",
+    "sharedTests": "PASS 1/1",
+    "apiTests": "PASS 3/3",
+    "configSharedApiLint": "PASS",
+    "pnpmOfflineInstall": "PASS",
+    "webBuild": "PASS 18 pages (god Node26); .next removed",
+    "workspaceGates": "pending",
+    "qaHistoryReconcile": "Pending retry ::text fix applied",
+    "qaDrift": "PASS prior to reconciliation (god)",
+    "ephemeralRecreation": "PASS empty temporary database in QA, deploy/status/diff0, deleted afterward",
+    "workspaceBuild": "PASS api/shared/db 4/4 (god Node26)",
+    "workspaceTypecheck": "PASS 8/8 (god Node26)",
+    "workspaceLint": "PASS 5/5 (god Node26)",
+    "workspaceTest": "PASS 6/6 tasks (god Node26)",
+    "runtimeRequiredGates": "PASS Node22.20.0 actual: frozeninstall/typecheck8/lint5/test6/buildNext18 via god",
+    "dbBuildRuntime": "Nested pnpm removed; Node22 retry pending"
+  },
+  "baselineSha256": "48d75bf6f465e683e2d56989702cb891651a5e1e1b5c27c90c4e132072578814",
+  "productionTouched": false,
+  "retiredLocks": {
+    "apps/web/package-lock.json": "6699126de19f409c7572ed272e600d804e7c6e9fccb4f02cebf4d0e256212dcb"
+  }
+}
