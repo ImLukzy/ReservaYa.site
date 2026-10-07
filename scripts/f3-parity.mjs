@@ -62,7 +62,7 @@ try{
  const calls=[
  ['E005-nominal','E005','login',{email:base.email,password}],['E005-payload-invalido','E005','login',{}],['E005-credenciales-invalidas','E005','login',{email:base.email,password:'wrong'}],
  ['E006-nominal','E006','register',{nombre:'Jugador Nuevo',email:'nuevo@example.test',password:newPassword,fechaNacimiento:'2000-01-01',username:'jugador_nuevo'}],['E006-payload-invalido','E006','register',{}],['E006-menor14','E006','register',{nombre:'Niño',email:'child@example.test',password:newPassword,fechaNacimiento:new Date(Date.now()-365*86400000).toISOString().slice(0,10),username:'child_name'}],['E006-duplicate','E006','register',{nombre:'Duplicado',email:base.email,password:newPassword,fechaNacimiento:'2000-01-01',username:'jugador_a'}],
- ['E007-nominal','E007','logout',undefined,auth],['E007-token-invalido','E007','logout',undefined,{cookie:'token=invalid'}],
+ ['E007-nominal','E007','logout',undefined,auth],['E007-json-empty','E007','logout',undefined,{...auth,'content-type':'application/json'}],['E007-token-invalido','E007','logout',undefined,{cookie:'token=invalid'}],
  ['E008-nominal','E008','forgot-password',{email:base.email}],['E008-payload-invalido','E008','forgot-password',{}],['E008-unknown','E008','forgot-password',{email:'missing@example.test'}],
  ['E009-nominal','E009','reset-password',{token:reset,password:newPassword}],['E009-payload-invalido','E009','reset-password',{token:'invalid',password:newPassword}],
  ['E010-nominal','E010','refrescar',undefined,auth],['E010-sin-sesion','E010','refrescar'],['E011-nominal','E011','me',undefined,auth],['E011-sin-sesion','E011','me'],
