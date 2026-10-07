@@ -1,0 +1,883 @@
+{
+  "runtime": "v22.20.0",
+  "basis": "F0 cases + synthetic disposable QA fixture database shared by read-only .NET/Nest calls",
+  "normalization": [
+    "traceId only: validate shape, remove random request IDs; no business field normalization"
+  ],
+  "rows": [
+    {
+      "id": "E024-nominal",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E024-propias-anonimo",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 401,
+      "statusNest": 401,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E025-nominal",
+      "endpointId": "E025",
+      "method": "GET",
+      "path": "/api/canchas/0000000000000000000000000000000c",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E025-inexistente",
+      "endpointId": "E025",
+      "method": "GET",
+      "path": "/api/canchas/ffffffffffffffffffffffffffffffff",
+      "statusLegacy": 404,
+      "statusNest": 404,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E029-nominal",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E029-tipo-invalido",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E030-nominal",
+      "endpointId": "E030",
+      "method": "GET",
+      "path": "/api/canchas/opciones",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E030-exclusion",
+      "endpointId": "E030",
+      "method": "GET",
+      "path": "/api/canchas/opciones",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E031-nominal",
+      "endpointId": "E031",
+      "method": "GET",
+      "path": "/api/canchas/0000000000000000000000000000000c/cotizar",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E031-inexistente",
+      "endpointId": "E031",
+      "method": "GET",
+      "path": "/api/canchas/ffffffffffffffffffffffffffffffff/cotizar",
+      "statusLegacy": 404,
+      "statusNest": 404,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E052-nominal",
+      "endpointId": "E052",
+      "method": "GET",
+      "path": "/api/partidos",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E052-exclusion",
+      "endpointId": "E052",
+      "method": "GET",
+      "path": "/api/partidos",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E066-nominal",
+      "endpointId": "E066",
+      "method": "GET",
+      "path": "/api/resenas/publicas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E066-sin-complejo",
+      "endpointId": "E066",
+      "method": "GET",
+      "path": "/api/resenas/publicas",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "E029-tipo-invalido-dominio",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "expired-owner-list",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 403,
+      "statusNest": 403,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "expired-owner-get",
+      "endpointId": "E025",
+      "method": "GET",
+      "path": "/api/canchas/0000000000000000000000000000000c",
+      "statusLegacy": 403,
+      "statusNest": 403,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "list-all",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "list-inactive",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "list-own-owner",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "list-own-member",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "list-own-platform",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "limit-10",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "slot-occupied",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "filter-city-legacy",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "invalid-slot",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "invalid-date",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "invalid-integer",
+      "endpointId": "E029",
+      "method": "GET",
+      "path": "/api/canchas/disponibles",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/problem+json",
+          "nest": "application/problem+json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "invalid-bool",
+      "endpointId": "E024",
+      "method": "GET",
+      "path": "/api/canchas",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/problem+json",
+          "nest": "application/problem+json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "quote-required",
+      "endpointId": "E031",
+      "method": "GET",
+      "path": "/api/canchas/0000000000000000000000000000000c/cotizar",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "quote-inactive",
+      "endpointId": "E031",
+      "method": "GET",
+      "path": "/api/canchas/inactive-court/cotizar",
+      "statusLegacy": 400,
+      "statusNest": 400,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "quote-partial",
+      "endpointId": "E031",
+      "method": "GET",
+      "path": "/api/canchas/0000000000000000000000000000000c/cotizar",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "reviews-hidden",
+      "endpointId": "E066",
+      "method": "GET",
+      "path": "/api/resenas/publicas",
+      "statusLegacy": 404,
+      "statusNest": 404,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "reviews-expired",
+      "endpointId": "E066",
+      "method": "GET",
+      "path": "/api/resenas/publicas",
+      "statusLegacy": 404,
+      "statusNest": 404,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "reviews-empty",
+      "endpointId": "E066",
+      "method": "GET",
+      "path": "/api/resenas/publicas",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "partidos-personalized",
+      "endpointId": "E052",
+      "method": "GET",
+      "path": "/api/partidos",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "partidos-ignore-level",
+      "endpointId": "E052",
+      "method": "GET",
+      "path": "/api/partidos",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "partidos-literal-wildcard",
+      "endpointId": "E052",
+      "method": "GET",
+      "path": "/api/partidos",
+      "statusLegacy": 200,
+      "statusNest": 200,
+      "headers": {
+        "content-type": {
+          "legacy": "application/json",
+          "nest": "application/json"
+        },
+        "cache-control": {
+          "legacy": null,
+          "nest": null
+        },
+        "set-cookie": {
+          "legacy": null,
+          "nest": null
+        }
+      },
+      "result": "PASS"
+    }
+  ]
+}

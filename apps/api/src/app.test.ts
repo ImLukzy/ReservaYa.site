@@ -3,7 +3,7 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { healthResponseSchema } from '@reservaya/shared';
 import { createApp } from './app';
 
-describe('F1 health-only API', () => {
+describe('Health and F2 route boundaries', () => {
   let app: NestFastifyApplication;
   beforeAll(async () => {
     app = await createApp();
@@ -21,10 +21,10 @@ describe('F1 health-only API', () => {
     expect(fastify.hasDecorator('serializeCookie')).toBe(true);
     expect(fastify.hasDecorator('multipartErrors')).toBe(true);
   });
-  it('does not capture legacy business routes', async () => {
+  it('leaves private legacy routes unimplemented', async () => {
     const login = await app.inject({ method: 'POST', url: '/api/auth/login', payload: {} });
-    const canchas = await app.inject({ method: 'GET', url: '/api/canchas' });
+    const complejos = await app.inject({ method: 'GET', url: '/api/complejos' });
     expect(login.statusCode).toBe(404);
-    expect(canchas.statusCode).toBe(404);
+    expect(complejos.statusCode).toBe(404);
   });
 });

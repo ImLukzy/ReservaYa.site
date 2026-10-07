@@ -52,4 +52,4 @@ try {
     if (result.status !== 0) throw new Error(`Drift: código ${result.status}`);
     console.log('QA drift 0');
   }
-} catch (error) { console.error(redact(error.message)); process.exitCode = 1; }
+} catch (error) { console.error(redact(error?.stack || error?.message || String(error))); process.exitCode = 1; }

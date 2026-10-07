@@ -54,3 +54,10 @@ packages/db/prisma/generated/
 
 # Artefactos/uploads de servicios legacy todavía en ejecución
 apps/api/wwwroot/uploads/
+
+# QA y secretos de cualquier carpeta
+*.env
+qa.env
+.qa-env
+!.env.example
+!**/.env.example
