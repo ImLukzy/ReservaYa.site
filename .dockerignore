@@ -15,3 +15,6 @@ hive/
 .pnpm-store/
 apps/api/wwwroot/uploads/
 apps/api-dotnet/wwwroot/uploads/
+
+**/.env*
+!**/.env.example

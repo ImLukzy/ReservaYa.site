@@ -1,3 +1,5 @@
+import { backendRewrites } from './lib/backend-routing.mjs';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Sin Turbopack en Windows: `next dev --webpack` (ver package.json).
@@ -15,16 +17,7 @@ const nextConfig = {
     ];
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL ?? 'http://localhost:5000'}/api/:path*`,
-      },
-      {
-        source: '/uploads/:path*',
-        destination: `${process.env.BACKEND_URL ?? 'http://localhost:5000'}/uploads/:path*`,
-      },
-    ];
+    return backendRewrites();
   },
   async headers() {
     return [

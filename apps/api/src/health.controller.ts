@@ -3,7 +3,7 @@ import type { HealthResponse } from '@reservaya/shared';
 
 @Controller()
 export class HealthController {
-  @Get('health')
+  @Get(['health', 'healthz'])
   health(): HealthResponse {
     return { ok: true };
   }

@@ -2,6 +2,7 @@ import 'server-only'
 import { cookies } from 'next/headers'
 import { config } from './config'
 import { ApiError } from './api-types'
+import { backendForPath } from './backend-routing.mjs'
 
 export interface ServerFetchInit extends RequestInit {
   next?: {
@@ -10,7 +11,7 @@ export interface ServerFetchInit extends RequestInit {
   }
 }
 
-// Único fetch de servidor: llama directo a la API .NET (BACKEND_URL) reenviando
+// Único fetch de servidor: selecciona el backend por ruta reenviando
 // la cookie de sesión. Lo usan lib/api.ts y lib/b2b-api.ts.
 export async function serverFetch(path: string, init?: ServerFetchInit): Promise<Response> {
   const cookieStore = await cookies()
@@ -20,7 +21,7 @@ export async function serverFetch(path: string, init?: ServerFetchInit): Promise
   const hasRevalidate = init?.next?.revalidate !== undefined
   if (token && !hasRevalidate) headers.set('Cookie', `${config.jwtCookieName}=${token}`)
 
-  const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:5000'
+  const backendUrl = backendForPath(path)
   const cache = init?.cache ?? (hasRevalidate ? undefined : 'no-store')
 
   return fetch(`${backendUrl}${path}`, {

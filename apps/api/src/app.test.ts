@@ -16,6 +16,11 @@ describe('Health and F2 route boundaries', () => {
     expect(response.statusCode).toBe(200);
     expect(healthResponseSchema.parse(response.json())).toEqual({ ok: true });
   });
+  it('serves healthz without a database or session', async () => {
+    const response = await app.inject({ method: 'GET', url: '/healthz' });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({ ok: true });
+  });
   it('loads compatible cookie and multipart plugins', () => {
     const fastify = app.getHttpAdapter().getInstance();
     expect(fastify.hasDecorator('serializeCookie')).toBe(true);
