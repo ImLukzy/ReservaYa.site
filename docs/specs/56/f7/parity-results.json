@@ -1,0 +1,431 @@
+{
+  "runtime": "v22.20.0",
+  "complete": true,
+  "basis": "Real legacy controllers; disposable empty QA database; fictional fixture only",
+  "normalization": [
+    "Generated GUID N and RF-4hex QR codes mapped after format checks",
+    "Request timestamps mapped with trailing Z retained",
+    "Every column of fixture tables compared"
+  ],
+  "rows": [
+    {
+      "id": "E070-nominal",
+      "endpointId": "E070",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E070-sin-sesion",
+      "endpointId": "E070",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E070-tv-revocado",
+      "endpointId": "E070",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E071-nominal",
+      "endpointId": "E071",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E071-sin-sesion",
+      "endpointId": "E071",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E071-tv-revocado",
+      "endpointId": "E071",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E072-nominal",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E072-sin-sesion",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E072-tv-revocado",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E073-nominal",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E073-sin-sesion",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E073-tv-revocado",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E074-nominal",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E074-sin-sesion",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E074-tv-revocado",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E075-nominal",
+      "endpointId": "E075",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E075-sin-sesion",
+      "endpointId": "E075",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 401
+    },
+    {
+      "id": "E075-tv-revocado",
+      "endpointId": "E075",
+      "path": "/api/reservas/f7-pending",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad aceptada: Nest rechaza sesión revocada; legado omite ValidSession con Roles",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E070-staff",
+      "endpointId": "E070",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E070-platform",
+      "endpointId": "E070",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E070-no-scope",
+      "endpointId": "E070",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E071-missing",
+      "endpointId": "E071",
+      "path": "/api/reservas/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E071-otra-sede",
+      "endpointId": "E071",
+      "path": "/api/reservas/f7-other",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E071-wrong-user",
+      "endpointId": "E071",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E072-pending",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E072-invalid",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E072-missing",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E072-otra-sede",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E072-rol-no-permitido",
+      "endpointId": "E072",
+      "path": "/api/reservas/validar",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E073-missing-fields",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E073-wrong-date",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E073-wrong-hours",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E073-missing-court",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E073-otra-sede",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E073-conflict",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E073-adjacent",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E074-confirm",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E074-jugador-confirma",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E074-otra-sede",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-other",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E074-wrong-user",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E074-invalid-state",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E074-missing",
+      "endpointId": "E074",
+      "path": "/api/reservas/absent",
+      "result": "PASS",
+      "status": 404
+    },
+    {
+      "id": "E074-notes",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E075-otra-sede",
+      "endpointId": "E075",
+      "path": "/api/reservas/f7-other",
+      "result": "SECURITY_DIVERGENCE",
+      "classification": "divergencia intencional de seguridad autorizada: DELETE legado carga reserva sin Cancha y con complejoId null, interpreta sede ajena como sin dueño; Nest resuelve la cancha y rechaza",
+      "legacyStatus": 200,
+      "nestStatus": 403
+    },
+    {
+      "id": "E075-missing",
+      "endpointId": "E075",
+      "path": "/api/reservas/absent",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E075-rol-no-permitido",
+      "endpointId": "E075",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E073-blocked",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 403
+    },
+    {
+      "id": "E073-closed",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 400
+    },
+    {
+      "id": "E073-price",
+      "endpointId": "E073",
+      "path": "/api/reservas",
+      "result": "PASS",
+      "status": 201
+    },
+    {
+      "id": "E074-overlap",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 409
+    },
+    {
+      "id": "E074-cancels-other-pending",
+      "endpointId": "E074",
+      "path": "/api/reservas/f7-pending",
+      "result": "PASS",
+      "status": 200
+    },
+    {
+      "id": "E074-mixed-race-0",
+      "endpointId": "E074",
+      "result": "PASS",
+      "classification": "mixed concurrent Nest and legacy fixture: confirmed reservations must not overlap; pending requests may coexist by contract",
+      "createdStatuses": [
+        201,
+        500,
+        201,
+        500
+      ],
+      "supplementalStatuses": [],
+      "confirmationStatuses": [
+        409,
+        200
+      ],
+      "confirmed": 1
+    },
+    {
+      "id": "E074-mixed-race-1",
+      "endpointId": "E074",
+      "result": "PASS",
+      "classification": "mixed concurrent Nest and legacy fixture: confirmed reservations must not overlap; pending requests may coexist by contract",
+      "createdStatuses": [
+        201,
+        500,
+        201,
+        500
+      ],
+      "supplementalStatuses": [],
+      "confirmationStatuses": [
+        409,
+        200
+      ],
+      "confirmed": 1
+    },
+    {
+      "id": "E074-mixed-race-2",
+      "endpointId": "E074",
+      "result": "PASS",
+      "classification": "mixed concurrent Nest and legacy fixture: confirmed reservations must not overlap; pending requests may coexist by contract",
+      "createdStatuses": [
+        409,
+        500,
+        201,
+        500
+      ],
+      "supplementalStatuses": [
+        201
+      ],
+      "confirmationStatuses": [
+        409,
+        200
+      ],
+      "confirmed": 1
+    }
+  ]
+}

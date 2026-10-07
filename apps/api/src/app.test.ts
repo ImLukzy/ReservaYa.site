@@ -21,10 +21,10 @@ describe('Health and F2 route boundaries', () => {
     expect(fastify.hasDecorator('serializeCookie')).toBe(true);
     expect(fastify.hasDecorator('multipartErrors')).toBe(true);
   });
-  it('leaves private legacy routes unimplemented', async () => {
+  it('requires authentication for reservation routes', async () => {
     const login = await app.inject({ method: 'POST', url: '/api/reservas', payload: {} });
-    const caja = await app.inject({ method: 'GET', url: '/api/caja/hoy' });
-    expect(login.statusCode).toBe(404);
-    expect(caja.statusCode).toBe(404);
+    const reserva = await app.inject({ method: 'GET', url: '/api/reservas/fixture-id' });
+    expect(login.statusCode).toBe(401);
+    expect(reserva.statusCode).toBe(401);
   });
 });
