@@ -21,6 +21,26 @@ using ReservaFacil.Api.Services;
 namespace LegacyAuthFixtures;
 public static class FixtureHost {
  public static void Main(string[] args) {
+  if(args.SequenceEqual(new[]{"--security-convention-check"})){
+   var model=new Microsoft.AspNetCore.Mvc.ApplicationModels.ApplicationModel();
+   foreach(var type in typeof(AuthController).Assembly.GetTypes().Where(t=>t.IsClass&&!t.IsAbstract&&typeof(Microsoft.AspNetCore.Mvc.ControllerBase).IsAssignableFrom(t))){
+    var controller=new Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerModel(type.GetTypeInfo(),type.GetCustomAttributes(true).ToArray());model.Controllers.Add(controller);
+    foreach(var method in type.GetMethods(BindingFlags.Public|BindingFlags.Instance|BindingFlags.DeclaredOnly)){
+     if(method.IsDefined(typeof(Microsoft.AspNetCore.Mvc.NonActionAttribute),true))continue;
+     var action=new Microsoft.AspNetCore.Mvc.ApplicationModels.ActionModel(method,method.GetCustomAttributes(true).ToArray()){Controller=controller};controller.Actions.Add(action);
+    }
+   }
+   new ValidSessionConvention().Apply(model);var protectedActions=0;var anonymousActions=0;var roleActions=0;
+   foreach(var controller in model.Controllers)foreach(var action in controller.Actions){
+    var attrs=controller.Attributes.Concat(action.Attributes).ToArray();var anonymous=attrs.OfType<IAllowAnonymous>().Any();var authorized=attrs.OfType<IAuthorizeData>().Any();
+    var filters=action.Filters.OfType<Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter>().ToArray();
+    if(anonymous||!authorized){if(filters.Length!=0)throw new Exception("Public action received a session filter");anonymousActions++;continue;}
+    if(filters.Length!=1||!filters[0].Policy!.Requirements.OfType<ValidSessionRequirement>().Any()||!filters[0].Policy!.Requirements.OfType<Microsoft.AspNetCore.Authorization.Infrastructure.DenyAnonymousAuthorizationRequirement>().Any())throw new Exception("Missing mandatory session policy");
+    protectedActions++;if(attrs.OfType<IAuthorizeData>().Any(a=>!string.IsNullOrEmpty(a.Roles)))roleActions++;
+   }
+   if(roleActions==0||anonymousActions==0)throw new Exception("Insufficient security regression coverage");
+   Console.WriteLine($"Security convention PASS: {protectedActions} protected actions, {roleActions} role actions, {anonymousActions} public/anonymous actions");return;
+  }
   if(args.SequenceEqual(new[]{"--email-template"})){
    Console.WriteLine(JsonSerializer.Serialize(PasswordResetEmail.Build("José <&\"'> Œ 😀","fixture@example.test","https://example.test/restablecer?x=1&y=\"dos\"#t=ficticio"),new JsonSerializerOptions(JsonSerializerDefaults.Web)));
    return;
@@ -63,7 +83,7 @@ public static class FixtureHost {
    p.MapEnum<NivelSancion>("NivelSancion","public",new NpgsqlNullNameTranslator());
   });options.EnableServiceProviderCaching(false);});
   var secret=Environment.GetEnvironmentVariable("JWT_SECRET")!;
-  b.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly).AddJsonOptions(o=>{o.JsonSerializerOptions.PropertyNamingPolicy=JsonNamingPolicy.CamelCase;o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());o.JsonSerializerOptions.Converters.Add(new FlexibleDecimalConverter());});
+  b.Services.AddControllers(o => o.Conventions.Add(new ValidSessionConvention())).AddApplicationPart(typeof(AuthController).Assembly).AddJsonOptions(o=>{o.JsonSerializerOptions.PropertyNamingPolicy=JsonNamingPolicy.CamelCase;o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());o.JsonSerializerOptions.Converters.Add(new FlexibleDecimalConverter());});
   b.Services.AddSingleton<AlmacenR2>();
   b.Services.AddSingleton(new JwtService(secret));
   b.Services.AddSingleton<IRateLimiter,MemoryRateLimiter>();

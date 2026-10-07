@@ -49,7 +49,7 @@ if (builder.Environment.IsDevelopment())
     Console.WriteLine($"[DEBUG] Database: {parsedConnection.Database}, sslmode={parsedConnection.SslMode}");
 }
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(o => o.Conventions.Add(new ValidSessionConvention()))
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;

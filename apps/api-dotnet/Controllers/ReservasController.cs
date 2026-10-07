@@ -366,7 +366,7 @@ public class ReservasController : ControllerBase
     [Authorize(Roles = "ADMIN,SUPERADMIN,TECNICO")]
     public async Task<IActionResult> Delete(string id)
     {
-        var reserva = await _db.Reservas.FirstOrDefaultAsync(r => r.Id == id);
+        var reserva = await _db.Reservas.Include(r => r.Cancha).FirstOrDefaultAsync(r => r.Id == id);
         if (reserva is null)
             return Ok(new { ok = true });
         if (!await AlcanceReservaOkAsync(reserva))
