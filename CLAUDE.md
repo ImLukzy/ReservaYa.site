@@ -1,6 +1,6 @@
 # CLAUDE.md — ReservaYa
 
-Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web pública y panel Next.js 16 en `apps/web`; API .NET 10 en `apps/api-dotnet`; API TS en `apps/api` (/health y siete GET F2; todavía sin tráfico productivo); Neon conserva su esquema existente.
+Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web pública y panel Next.js 16 en `apps/web`; API vigente NestJS en `apps/api`; .NET en `apps/api-dotnet` solo rollback hasta 2026-10-21; Neon conserva su esquema existente.
 
 ## Trabajo
 
@@ -19,8 +19,8 @@ apps/web/                  Next 16 :3000 — público y /dashboard /admin /tecni
   components/ui            UI compartida público/panel
   lib                      server-fetch→api/b2b-api; http→api-client/b2b-client; public/*
   proxy.ts                 verifica JWT/rol solo en rutas protegidas
-apps/api-dotnet/           .NET 10 :5000 — negocio vigente
-apps/api/                  NestJS + Fastify :5200 — /health y GET F2 públicos; routing productivo aún .NET
+apps/api-dotnet/           .NET 10 :5000 — rollback, se retira ≥2026-10-21
+apps/api/                  NestJS + Fastify :5200 — API de producción (todas las rutas)
 packages/db/               Prisma canónico y baseline; historial legado archivado
 packages/shared/           contratos zod
 packages/config/           TypeScript y ESLint compartidos

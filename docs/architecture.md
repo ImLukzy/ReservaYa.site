@@ -1,14 +1,15 @@
 # Arquitectura
 
-La web pública y el panel comparten Next.js 16 (:3000). El navegador llama a `/api/*` y `/uploads/*` en ese mismo origen; Next los reenvía a la API .NET (:5000). La API controla datos, disponibilidad, permisos y sesión HttpOnly; EF Core sigue siendo dueño del esquema en Neon.
+La web pública y el panel comparten Next.js 16 (:3000). El navegador llama a `/api/*` en ese mismo origen; Next lo reenvía a la API NestJS (:5200). Las imágenes van a R2 vía `apps/web/app/api/upload/route.ts`. La API controla datos, disponibilidad, permisos y sesión HttpOnly; Neon conserva su esquema existente.
 
-## Árbol vigente tras F4
+## Árbol vigente tras el corte (F8)
 
 - `apps/web/app/(public)`: web pública; sin guarda de sesión en su layout.
 - `apps/web/app/(dashboard)`: zonas protegidas `/dashboard`, `/admin`, `/tecnico` (las mismas que protege `apps/web/proxy.ts`).
 - `apps/web/components/ui`: componentes compartidos con props de apariencia pública/panel.
 - `apps/web/lib`: cliente/servidor API y utilidades públicas; contrato en [api.md](./api.md).
-- `apps/api`: API existente, mismo código y namespace; archivos protegidos trasladados sin cambios de bytes.
+- `apps/api`: API NestJS de producción (todas las rutas).
+- `apps/api-dotnet`: API .NET solo rollback hasta 2026-10-21.
 
 ## Rutas vigentes
 
