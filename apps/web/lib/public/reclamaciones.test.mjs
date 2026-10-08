@@ -23,7 +23,7 @@ test('constancia conserva número, fecha, representante, detalle y plazo', () =>
     bienDescripcion: 'Servicio de reserva', detalle: 'Detalle de prueba completo',
     pedido: 'Respuesta de prueba', fecha: '2026-10-06T13:40:00.000Z' };
   const copia = textoReclamacion(datos, { ok: true, numero: '2026-000001', fecha: datos.fecha, plazoRespuestaDiasHabiles: 15 });
-  for (const texto of ['Constancia', '2026-000001', datos.fecha, datos.nombre,
+  for (const texto of ['Constancia', '2026-000001', datos.nombre,
     datos.apoderado, datos.apoderadoDocumento, datos.detalle, datos.pedido, '15 días hábiles']) assert.ok(copia.includes(texto), texto);
   assert.equal(/\[(RAZÓN SOCIAL|RUC|DOMICILIO)\]/.test(copia), false);
 });
@@ -36,7 +36,15 @@ test('una solicitud sin registro confirmado no inventa constancia ni número', (
 test('formatter retains every label, newline, default and exact decimal', () => {
   const text=textoReclamacion({nombre:'Consumidor',menor:'Sí',apoderado:'Representante',monto:'89.90'}, {ok:true,numero:'2026-000001',fecha:'2026-10-07T00:00:00Z',plazoRespuestaDiasHabiles:15});
   assert.equal(text, [
-    'Constancia — Libro de reclamaciones de ReservaYa','Número de registro: 2026-000001','Fecha de recepción (UTC): 2026-10-07T00:00:00Z','Plazo máximo de respuesta: 15 días hábiles improrrogables.',
+    'Constancia — Libro de reclamaciones de ReservaYa','Número de registro: 2026-000001','Fecha de recepción: 06/10/2026 19:00 (hora de Perú)','Plazo máximo de respuesta: 15 días hábiles improrrogables.',
     'Fecha: No indicado','Consumidor: Consumidor','Tipo de documento: No indicado','Documento: No indicado','Domicilio: No indicado','Teléfono: No indicado','Correo: No indicado','Menor de edad: Sí','Representante: Representante','Documento del representante: No indicado','Domicilio del representante: No indicado','Teléfono del representante: No indicado','Bien contratado: No indicado','Descripción del bien: No indicado','Monto reclamado (S/): 89.90','Queja o reclamo: No indicado','Detalle: No indicado','Pedido: No indicado','Medio de respuesta: No indicado',
   ].join('\n'));
+});
+
+test('seven-digit UTC fractions display the previous day in Peru in both date rows', () => {
+  const fecha='2026-10-08T00:47:16.9780000Z';
+  const copy=textoReclamacion({fecha}, {ok:true,numero:'2026-000001',fecha,plazoRespuestaDiasHabiles:15});
+  assert.ok(copy.includes('Fecha de recepción: 07/10/2026 19:47 (hora de Perú)'));
+  assert.ok(copy.includes('Fecha: 07/10/2026 19:47 (hora de Perú)'));
+  assert.ok(textoReclamacion({fecha:'no parseable'}).includes('Fecha: no parseable'));
 });

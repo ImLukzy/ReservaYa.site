@@ -134,7 +134,7 @@ describe('Complaint receipt after commit',()=>{
       expect(queue).toHaveBeenCalledTimes(2);expect(queue.mock.calls.map(args=>(args as unknown as [{to:string}])[0].to)).toEqual(['reclamo@example.test','office@example.test']);
       const messages=queue.mock.calls as unknown as [{text:string;html:string},string][];
       expect(messages[0][0].text).toBe(messages[1][0].text);expect(messages[0][0].text).toContain(result.numero);
-      expect(messages[0][0].text).toContain('Medio de respuesta: Carta al domicilio');expect(messages[0][0].text).toContain(`Fecha: ${result.fecha}`);
+      expect(messages[0][0].text).toContain('Medio de respuesta: Carta al domicilio');expect(messages[0][0].text).toMatch(/Fecha: \d{2}\/\d{2}\/\d{4} \d{2}:\d{2} \(hora de Perú\)/);expect(result.fecha).toMatch(/Z$/);
     }finally{vi.unstubAllEnvs();}
   });
   it.each(['','bad address'])('omits invalid internal destination %s and preserves consumer delivery',async(value)=>{
