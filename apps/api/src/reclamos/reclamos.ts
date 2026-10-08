@@ -1,4 +1,6 @@
-import { Controller, HttpCode, Inject, Injectable, Post, Req } from '@nestjs/common';
+import { Controller, HttpCode, Inject, Injectable, Logger, Post, Req } from '@nestjs/common';
+import { textoReclamacion, type ConstanciaReclamo } from '@reservaya/shared';
+import { MailProvider } from '../auth/providers';
 import { Prisma } from '@reservaya/db';
 import type { FastifyRequest } from 'fastify';
 import { randomUUID } from 'node:crypto';
@@ -53,7 +55,18 @@ const conflict=(e:unknown)=>{if(typeof e!=='object'||e===null)return false;const
 const pad=(n:number)=>String(n).padStart(6,'0');
 @Injectable()
 export class ReclamosService {
-  constructor(@Inject(DbService)private store:DbService,@Inject(RateLimiter)private rate:RateLimiter){}
+  constructor(@Inject(DbService)private store:DbService,@Inject(RateLimiter)private rate:RateLimiter,@Inject(MailProvider)private mail:MailProvider){}
+  private readonly logger=new Logger(ReclamosService.name);
+  private notify(d:Reclamo,result:ConstanciaReclamo){
+    const datos:Record<string,unknown>={};
+    for(const [key,value] of Object.entries(d)) datos[key[0].toLowerCase()+key.slice(1)]=value instanceof Prisma.Decimal?value.toString():typeof value==='string'?value.trim():value;
+    if(!d.Menor)for(const key of ['apoderado','apoderadoDocumento','apoderadoDomicilio','apoderadoTelefono'])datos[key]=null;
+    datos.fecha=result.fecha;datos.menor=d.Menor?'Sí':'No';datos.tipo=d.Tipo==='QUEJA'?'Queja':'Reclamo';datos.respuesta=d.MedioRespuesta;
+    const text=textoReclamacion(datos,result),internal=process.env.RECLAMOS_EMAIL?.trim();
+    const recipients=[{to:String(d.Email).trim(),subject:`Constancia de reclamación — ${result.numero}`}];
+    if(internal&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(internal))recipients.push({to:internal,subject:`Nuevo reclamo — ${result.numero}`});
+    for(const recipient of recipients){try{if(!this.mail.queueReclamo({...recipient,text,html:`<pre>${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}</pre>`},result.numero))this.logger.error(`Cola de correo no disponible para reclamo ${result.numero}`);}catch{this.logger.error(`No se pudo encolar correo del reclamo ${result.numero}`);}}
+  }
   async crear(r:FastifyRequest){
     const d=bindReclamo(body(r)),t=(k:string)=>(d[k] as string|null)?.trim()??null;
     if(this.rate.limited(`reclamos:${ip(r)}`,10,3600000))fail(429,'Demasiados envíos. Inténtalo dentro de una hora.');
@@ -64,14 +77,16 @@ export class ReclamosService {
     // MAX+1 is only confirmed with the row; a rollback consumes no number. Conflicts on the first number of a year retry.
     for(let attempt=0;attempt<5;attempt++){
       try{
-        return await this.store.db.$transaction(async tx=>{
+        const result=await this.store.db.$transaction(async tx=>{
           const fecha=new Date(),anio=fecha.getUTCFullYear();
           const [{max}]=await tx.$queryRaw<{max:number|null}[]>`SELECT MAX(correlativo)::int AS max FROM "Reclamo" WHERE anio=${anio}`;
           const correlativo=(max??0)+1,numero=`${anio}-${pad(correlativo)}`;
           await tx.$executeRaw`INSERT INTO "Reclamo" (id,numero,anio,correlativo,tipo,nombre,"documentoTipo",documento,domicilio,telefono,email,menor,apoderado,"apoderadoDocumento","apoderadoDomicilio","apoderadoTelefono","bienTipo","bienDescripcion",monto,detalle,pedido,"medioRespuesta","creadoEn",estado)
             VALUES (${randomUUID()},${numero},${anio},${correlativo},${d.Tipo},${t('Nombre')},${d.DocumentoTipo},${t('Documento')},${t('Domicilio')},${t('Telefono')},${t('Email')},${menor},${menor?t('Apoderado'):null},${menor?t('ApoderadoDocumento'):null},${menor?t('ApoderadoDomicilio'):null},${menor?t('ApoderadoTelefono'):null},${d.BienTipo},${t('BienDescripcion')},${monto},${t('Detalle')},${t('Pedido')},${d.MedioRespuesta},${fecha},'RECIBIDO')`;
-          return {ok:true,numero,fecha:fecha.toISOString().replace('Z','0000Z'),plazoRespuestaDiasHabiles:15};
+          return {ok:true as const,numero,fecha:fecha.toISOString().replace('Z','0000Z'),plazoRespuestaDiasHabiles:15 as const};
         },{isolationLevel:'Serializable',maxWait:10000,timeout:20000});
+        try{this.notify(d,result);}catch{this.logger.error(`No se pudo preparar correo del reclamo ${result.numero}`);}
+        return result;
       }catch(e){if(!conflict(e))throw e;if(attempt<4)await new Promise(res=>setTimeout(res,25*(attempt+1)));}
     }
     return fail(503,'No se pudo confirmar el registro. Inténtalo nuevamente.');

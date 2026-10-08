@@ -32,3 +32,11 @@ test('una solicitud sin registro confirmado no inventa constancia ni número', (
   assert.ok(copia.startsWith('Solicitud'));
   assert.equal(copia.includes('Número de registro:'), false);
 });
+
+test('formatter retains every label, newline, default and exact decimal', () => {
+  const text=textoReclamacion({nombre:'Consumidor',menor:'Sí',apoderado:'Representante',monto:'89.90'}, {ok:true,numero:'2026-000001',fecha:'2026-10-07T00:00:00Z',plazoRespuestaDiasHabiles:15});
+  assert.equal(text, [
+    'Constancia — Libro de reclamaciones de ReservaYa','Número de registro: 2026-000001','Fecha de recepción (UTC): 2026-10-07T00:00:00Z','Plazo máximo de respuesta: 15 días hábiles improrrogables.',
+    'Fecha: No indicado','Consumidor: Consumidor','Tipo de documento: No indicado','Documento: No indicado','Domicilio: No indicado','Teléfono: No indicado','Correo: No indicado','Menor de edad: Sí','Representante: Representante','Documento del representante: No indicado','Domicilio del representante: No indicado','Teléfono del representante: No indicado','Bien contratado: No indicado','Descripción del bien: No indicado','Monto reclamado (S/): 89.90','Queja o reclamo: No indicado','Detalle: No indicado','Pedido: No indicado','Medio de respuesta: No indicado',
+  ].join('\n'));
+});

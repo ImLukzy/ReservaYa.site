@@ -86,3 +86,27 @@ describe('Google public key cache without network',()=>{
     expect(await new GoogleProvider().exchange('code','state','other')).toBeNull();expect(fetch).not.toHaveBeenCalled();
   });
 });
+
+describe('Complaint mail uses the shared transport without password reset configuration',()=>{
+  const email={to:'consumer@example.test',subject:'Constancia',text:'private content',html:'<pre>private content</pre>'};
+  it('delivers without reset URL while password reset remains disabled',async()=>{
+    vi.stubEnv('PASSWORD_RESET_URL','');const fake=vi.fn().mockResolvedValue(new Response('{}'));vi.stubGlobal('fetch',fake);
+    const provider=new MailProvider();expect(provider.configured()).toBe(false);
+    expect(provider.queueReclamo(email,'2026-000001')).toBe(true);
+    await new Promise(resolve=>setTimeout(resolve,0));expect(fake).toHaveBeenCalledTimes(1);
+    await provider.send(fixture);expect(fake).toHaveBeenCalledTimes(1);
+  });
+  it.each(['timeout','http'])('logs %s without complaint content or recipient',async(kind)=>{
+    const fake=kind==='timeout'?vi.fn().mockRejectedValue(Error('private content')):vi.fn().mockResolvedValue(new Response('private content',{status:503}));vi.stubGlobal('fetch',fake);
+    expect(new MailProvider().queueReclamo(email,'2026-000002')).toBe(true);
+    await new Promise(resolve=>setTimeout(resolve,0));
+    const logs=vi.mocked(Logger.prototype.error).mock.calls.flat().join(' ');
+    expect(logs).toContain('2026-000002');expect(logs).not.toContain(email.to);expect(logs).not.toContain(email.text);
+  });
+  it('never logs complaint contents through development log transport and bounds the queue',async()=>{
+    vi.stubEnv('EMAIL_PROVIDER','log');vi.stubEnv('NODE_ENV','development');
+    const provider=new MailProvider();for(let n=0;n<500;n++)expect(provider.queueReclamo(email,'2026-000003')).toBe(true);
+    expect(provider.queueReclamo(email,'2026-000003')).toBe(false);
+    await new Promise(resolve=>setTimeout(resolve,0));expect(fetch).not.toHaveBeenCalled();expect(Logger.prototype.log).not.toHaveBeenCalled();
+  });
+});

@@ -64,6 +64,9 @@ export class MailProvider {
   enqueue(message:ResetMail){return this.background(()=>this.send(message),'No se pudo enviar el email de recuperación');}
   // Legacy EmailQueue: bounded to 500, drops when full; delivery failures only log.
   queue(message:EmailMessage){return this.background(()=>this.deliver(message),`No se pudo enviar el email «${message.subject}»`);}
+  queueReclamo(message:EmailMessage,numero:string){
+    return this.background(()=>this.deliver(message,true),`No se pudo enviar el correo del reclamo ${numero}`);
+  }
   private background(job:()=>Promise<void>,error:string){
     if(this.pending>=500)return false;
     this.pending++;
@@ -71,11 +74,12 @@ export class MailProvider {
     return true;
   }
   // Mirrors the legacy registration: Resend only with a valid PASSWORD_RESET_URL.
+  transportConfigured(){return (process.env.EMAIL_PROVIDER||'').trim().toLowerCase()==='resend'&&Boolean(process.env.RESEND_API_KEY?.trim()&&process.env.EMAIL_FROM?.trim());}
   configured(){const provider=(process.env.EMAIL_PROVIDER||'').trim().toLowerCase();return validResetUrl()&&provider==='resend'&&Boolean(process.env.RESEND_API_KEY?.trim()&&process.env.EMAIL_FROM?.trim());}
   async send(message:ResetMail):Promise<void>{await this.deliver(passwordResetEmail(message));}
-  async deliver(email:EmailMessage):Promise<void>{
+  async deliver(email:EmailMessage,reclamo=false):Promise<void>{
     const provider=(process.env.EMAIL_PROVIDER||'').trim().toLowerCase();
-    if(this.configured()){
+    if(reclamo?this.transportConfigured():this.configured()){
       const response=await fetch('https://api.resend.com/emails',{
         method:'POST',headers:{authorization:`Bearer ${process.env.RESEND_API_KEY}`,'content-type':'application/json'},
         body:JSON.stringify({from:process.env.EMAIL_FROM,to:[email.to],subject:email.subject,text:email.text,html:email.html}),
@@ -84,10 +88,11 @@ export class MailProvider {
       if(!response.ok)throw new Error(`Resend respondió ${response.status}`);
       return;
     }
-    if(validResetUrl() && provider==='log' && (process.env.NODE_ENV==='development'||process.env.ASPNETCORE_ENVIRONMENT==='Development')){
+    if(!reclamo && validResetUrl() && provider==='log' && (process.env.NODE_ENV==='development'||process.env.ASPNETCORE_ENVIRONMENT==='Development')){
       this.logger.log(`[EMAIL_PROVIDER=log] Para: ${email.to} · ${email.subject}\n${email.text}`);
       return;
     }
+    if(reclamo)throw new Error('Transporte de correo no configurado');
     this.logger.error('Email no enviado: no hay proveedor configurado (EMAIL_PROVIDER, RESEND_API_KEY, EMAIL_FROM, PASSWORD_RESET_URL)');
   }
 }

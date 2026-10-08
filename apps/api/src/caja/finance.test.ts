@@ -4,8 +4,10 @@ import type { FastifyRequest } from 'fastify';
 import { Prisma } from '@reservaya/db';
 import { createApp } from '../app';
 import { BindingError } from '../public/binding';
+import { Logger } from '@nestjs/common';
+import { MailProvider } from '../auth/providers';
 import { RateLimiter } from '../auth/rate';
-import type { DbService } from '../public/db.service';
+import { DbService } from '../public/db.service';
 import type { Access } from '../management/access';
 import { Num, decimal, int, round2 } from './money';
 import { CajaService, startOfPeruDay } from './caja';
@@ -75,7 +77,7 @@ describe('Complaints book',()=>{
       expect(options).toMatchObject({isolationLevel:'Serializable'});const error=fail(attempt++);if(error)throw error;
       return fn({$queryRaw:async()=>[{max:41}],$executeRaw:async(strings:TemplateStringsArray)=>{sql.push(strings.join('?'));return 1;}});
     })};
-    return {svc:new ReclamosService({db} as unknown as DbService,new RateLimiter()),db,sql};
+    return {svc:new ReclamosService({db} as unknown as DbService,new RateLimiter(),{queueReclamo:()=>true} as unknown as MailProvider),db,sql};
   }
   const req=(payload:unknown)=>({body:payload,headers:{'x-forwarded-for':'203.0.113.9'},ip:'127.0.0.1'} as unknown as FastifyRequest);
   it('assigns the next yearly number and retries serialization or numbering conflicts',async()=>{
@@ -110,5 +112,60 @@ describe('Raw JSON body wiring',()=>{
     const payload=JSON.stringify(valid).replace(/}$/,',"monto":10.0000000000000000001}');
     const r=await app.inject({method:'POST',url:'/api/reclamos',headers:{'content-type':'application/json'},payload});
     expect(r.statusCode).toBe(400);expect(r.json()).toEqual({error:'El monto admite hasta dos decimales.'});
+  });
+});
+
+describe('Complaint receipt after commit',()=>{
+  const request={body:valid,headers:{},ip:'192.0.2.1'} as unknown as FastifyRequest;
+  function setup(mail:MailProvider,transaction?: (fn:(tx:unknown)=>unknown)=>Promise<unknown>){
+    const tx={$queryRaw:async()=>[{max:0}],$executeRaw:vi.fn(async()=>1)};
+    const db={$transaction:vi.fn(transaction??(async(fn)=>fn(tx)))};
+    return {service:new ReclamosService({db} as unknown as DbService,new RateLimiter(),mail),db,tx};
+  }
+  it('queues nothing before commit and queues two independently after commit',async()=>{
+    const queue=vi.fn(()=>true);let commit!:()=>void;
+    const {service,tx}=setup({queueReclamo:queue} as unknown as MailProvider,async fn=>{
+      const result=await fn(tx);await new Promise<void>(resolve=>{commit=resolve;});return result;
+    });
+    vi.stubEnv('RECLAMOS_EMAIL','office@example.test');
+    try{
+      const pending=service.crear(request);await vi.waitFor(()=>expect(commit).toBeTypeOf('function'));
+      expect(queue).not.toHaveBeenCalled();commit();const result=await pending;
+      expect(queue).toHaveBeenCalledTimes(2);expect(queue.mock.calls.map(args=>(args as unknown as [{to:string}])[0].to)).toEqual(['reclamo@example.test','office@example.test']);
+      const messages=queue.mock.calls as unknown as [{text:string;html:string},string][];
+      expect(messages[0][0].text).toBe(messages[1][0].text);expect(messages[0][0].text).toContain(result.numero);
+      expect(messages[0][0].text).toContain('Medio de respuesta: Carta al domicilio');expect(messages[0][0].text).toContain(`Fecha: ${result.fecha}`);
+    }finally{vi.unstubAllEnvs();}
+  });
+  it.each(['','bad address'])('omits invalid internal destination %s and preserves consumer delivery',async(value)=>{
+    vi.stubEnv('RECLAMOS_EMAIL',value);const queue=vi.fn(()=>true);
+    try{await setup({queueReclamo:queue} as unknown as MailProvider).service.crear(request);expect(queue).toHaveBeenCalledTimes(1);}finally{vi.unstubAllEnvs();}
+  });
+  it('never queues on rollback and queues only once per recipient after a retry',async()=>{
+    const queue=vi.fn(()=>true),mail={queueReclamo:queue} as unknown as MailProvider;
+    const rollback=setup(mail,async()=>{throw Error('rollback');});await expect(rollback.service.crear(request)).rejects.toThrow('rollback');expect(queue).not.toHaveBeenCalled();
+    let attempt=0;const retry=setup(mail,async fn=>{if(attempt++===0)throw Object.assign(Error('serialization'),{code:'P2034'});return fn(retry.tx);});
+    vi.stubEnv('RECLAMOS_EMAIL','office@example.test');
+    try{await retry.service.crear(request);expect(retry.db.$transaction).toHaveBeenCalledTimes(2);expect(queue).toHaveBeenCalledTimes(2);}finally{vi.unstubAllEnvs();}
+  });
+  it.each(['throw','full'])('keeps confirmed result and second delivery when first enqueue is %s',async(kind)=>{
+    vi.stubEnv('RECLAMOS_EMAIL','office@example.test');const log=vi.spyOn(console,'error').mockImplementation(()=>undefined);
+    const queue=vi.fn().mockImplementationOnce(()=>{if(kind==='throw')throw Error('private data');return false;}).mockReturnValue(true);
+    try{const {service,tx}=setup({queueReclamo:queue} as unknown as MailProvider);expect(await service.crear(request)).toMatchObject({ok:true});expect(tx.$executeRaw).toHaveBeenCalledTimes(1);expect(queue).toHaveBeenCalledTimes(2);}finally{log.mockRestore();vi.unstubAllEnvs();}
+  });
+});
+
+describe('Complaint mail failure keeps HTTP 201',()=>{
+  it.each(['full','throw'])('keeps the inserted row when enqueue is %s',async(kind)=>{
+    const app=await createApp();await app.init();await app.getHttpAdapter().getInstance().ready();
+    const inserted=vi.fn(async()=>1),tx={$queryRaw:async()=>[{max:0}],$executeRaw:inserted};
+    const db=vi.spyOn(app.get(DbService),'db','get').mockReturnValue({$transaction:async(fn:(value:unknown)=>unknown)=>fn(tx)} as never);
+    const mail=vi.spyOn(app.get(MailProvider),'queueReclamo').mockImplementation(()=>{if(kind==='throw')throw Error('private recipient');return false;});
+    const log=vi.spyOn(Logger.prototype,'error').mockImplementation(()=>undefined);
+    try{
+      const response=await app.inject({method:'POST',url:'/api/reclamos',payload:valid});
+      expect(response.statusCode).toBe(201);expect(response.json()).toMatchObject({ok:true});expect(inserted).toHaveBeenCalledTimes(1);
+      expect(log.mock.calls.flat().join(' ')).not.toContain(valid.email);
+    }finally{db.mockRestore();mail.mockRestore();log.mockRestore();await app.close();}
   });
 });
