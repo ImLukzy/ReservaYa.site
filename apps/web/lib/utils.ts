@@ -19,21 +19,9 @@ export function formatFecha(fecha: string): string {
   return `${day}/${month}/${year}`
 }
 
-export function formatFechaHoraSolicitud(fecha: string): string {
-  return new Date(fecha).toLocaleString('es-PE', {
-    timeZone: 'America/Lima',
-    dateStyle: 'short',
-    timeStyle: 'short',
-  })
-}
-
-export function codigoReserva(id: string): string {
-  return id.slice(-6).toUpperCase()
-}
-
 // Código a mostrar: el QR real si llegó del backend, si no el derivado del id.
 export function codigoMostrado(reserva: { codigo?: string | null; id: string }): string {
-  return reserva.codigo?.trim() || codigoReserva(reserva.id)
+  return reserva.codigo?.trim() || reserva.id.slice(-6).toUpperCase()
 }
 
 export function fechaFinReservaEnMs(fecha: string, minutos: number): number {

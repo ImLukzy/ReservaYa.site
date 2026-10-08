@@ -7,11 +7,8 @@ import type {
   Cancha,
   CanchaDisponible,
   ClienteResumen,
-  Cotizacion,
   OpcionesBusqueda,
   Reserva,
-  Rol,
-  Sancion,
   Suscripcion,
   UsuarioResumen,
   UsuarioSesion,
@@ -39,7 +36,6 @@ export type {
   DashboardAdmin,
   ReporteGlobal,
 } from './api-types'
-export { ApiError } from './api-types'
 
 // Sesión: valida contra el backend (activo + tokenVersion) vía /api/auth/me.
 // Devuelve null si la sesión no es válida.
@@ -90,15 +86,6 @@ export async function getOpcionesBusqueda(): Promise<OpcionesBusqueda> {
   }
 }
 
-export async function cotizarCancha(
-  id: string, fecha: string, horaInicio: number, horaFin: number
-): Promise<Cotizacion> {
-  const data = await getJson<Cotizacion>(
-    `/api/canchas/${id}/cotizar?fecha=${fecha}&horaInicio=${horaInicio}&horaFin=${horaFin}`
-  )
-  return data
-}
-
 export async function getReservas(): Promise<Reserva[]> {
   const data = await getJson<{ reservas: Reserva[] }>('/api/reservas')
   return data.reservas
@@ -140,30 +127,6 @@ export async function getSuscripciones(complejoId?: string, estado?: string): Pr
 export async function getClientes(): Promise<ClienteResumen[]> {
   const data = await getJson<{ clientes: ClienteResumen[] }>('/api/usuarios/clientes')
   return data.clientes ?? []
-}
-
-export async function getHistorial(id: string): Promise<{
-  usuario: { id: string; nombre: string; email: string; rol: Rol; activo: boolean };
-  stats: { reservas: number; confirmadas: number; canceladas: number; sancionesActivas: number };
-  reservas: Reserva[];
-  sanciones: Sancion[];
-}> {
-  const data = await getJson<{
-    usuario: { id: string; nombre: string; email: string; rol: Rol; activo: boolean };
-    stats: { reservas: number; confirmadas: number; canceladas: number; sancionesActivas: number };
-    reservas: Reserva[];
-    sanciones: Sancion[];
-  }>(`/api/usuarios/${id}/historial`)
-  return data
-}
-
-export async function getSanciones(complejoId?: string, soloActivas?: boolean): Promise<Sancion[]> {
-  const params = new URLSearchParams()
-  if (complejoId) params.set('complejoId', complejoId)
-  if (soloActivas) params.set('soloActivas', 'true')
-  const qs = params.toString()
-  const data = await getJson<{ sanciones: Sancion[] }>(`/api/sanciones${qs ? `?${qs}` : ''}`)
-  return data.sanciones ?? []
 }
 
 // Spec 55 — solicitud del jugador (null = nunca envió o fue rechazada; el motivo va por email).

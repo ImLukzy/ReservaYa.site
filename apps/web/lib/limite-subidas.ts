@@ -1,10 +1,7 @@
 // Límite de firmas de subida por usuario (ventana deslizante, en memoria).
 // Es por instancia: cada función/servidor de Next lleva su propio conteo y se
 // reinicia al arrancar, así que frena bucles abusivos, no es un tope global.
-export const SUBIDAS_MAX = 20
-export const SUBIDAS_VENTANA_MS = 10 * 60 * 1000
-
-export function crearLimite(max = SUBIDAS_MAX, ventanaMs = SUBIDAS_VENTANA_MS) {
+export function crearLimite(max = 20, ventanaMs = 10 * 60 * 1000) {
   const marcas = new Map<string, number[]>()
   return {
     /** Registra un intento; devuelve false si el usuario ya agotó la ventana. */

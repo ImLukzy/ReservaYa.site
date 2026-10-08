@@ -31,8 +31,6 @@ export interface ComplejoCard {
   suscripcion?: SuscripcionCard | null
 }
 
-export { DISTRITOS_AREQUIPA, CIUDAD_UNICA } from '@/lib/distritos';
-
 function normalizar(raw: Record<string, unknown>, i: number): ComplejoCard {
   const canchasRaw = raw.canchas ?? raw.totalCanchas ?? (raw._count as Record<string, unknown> | undefined)?.canchas;
   const canchas = Array.isArray(canchasRaw)

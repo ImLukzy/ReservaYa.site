@@ -12,11 +12,9 @@ export const TIPOS_IMAGEN = {
 
 export const TOPE_IMAGEN_BYTES = 3 * 1024 * 1024
 
-// Host público del bucket (se inlina en el build). Sin barra final.
-export const MEDIA_URL = (process.env.NEXT_PUBLIC_MEDIA_URL ?? '').replace(/\/+$/, '')
-
 /** Imagen propia: subida histórica en disco de la API (/uploads/...) o en R2. */
 export function esImagenPropia(url: string | null | undefined): url is string {
   if (!url) return false
-  return url.startsWith('/uploads/') || (MEDIA_URL !== '' && url.startsWith(`${MEDIA_URL}/`))
+  const mediaUrl = (process.env.NEXT_PUBLIC_MEDIA_URL ?? '').replace(/\/+$/, '')
+  return url.startsWith('/uploads/') || (mediaUrl !== '' && url.startsWith(`${mediaUrl}/`))
 }
