@@ -9,6 +9,7 @@ export class PublicReadController {
   @Get('canchas') async list(@Query() q: QueryValues, @Req() r: FastifyRequest) { await this.reads.guardCancha(identity(r)); bind(q, [], ['activas','propias']); return this.reads.list(q, identity(r)); }
   @Get('canchas/disponibles') disponibles(@Query() q: QueryValues) { bind(q,['horaInicio','horaFin']); return this.reads.disponibles(q); }
   @Get('canchas/opciones') opciones() { return this.reads.opciones(); }
+  @Get('canchas/:id/agenda') agenda(@Param('id') id: string, @Query() q: QueryValues) { return this.reads.agenda(id,q); }
   @Get('canchas/:id/cotizar') cotizar(@Param('id') id: string, @Query() q: QueryValues) { bind(q,['horaInicio','horaFin']); return this.reads.cotizar(id,q); }
   @Get('canchas/:id') async get(@Param('id') id: string, @Req() r: FastifyRequest) { await this.reads.guardCancha(identity(r)); return this.reads.get(id); }
   @Get('partidos') partidos(@Query() q: QueryValues, @Req() r: FastifyRequest) { return this.reads.partidos(q, identity(r)); }

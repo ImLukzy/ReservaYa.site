@@ -180,3 +180,13 @@ Sin cambios en endpoints ni respuestas. Tras el commit, la API encola correos (R
 - Recordatorio: cada 5 min (en proceso, solo con transporte configurado) las reservas `CONFIRMADA` que empiezan en ≤ 2 h y aún no empezaron reciben uno; `Reserva.recordatorioEnviadoEn` (migración `3_recordatorio_reserva`) lo hace único. Si la API estuvo dormida y el partido ya empezó, no se envía.
 
 Contenido: complejo, cancha, fecha y hora de Perú, total, código, estado, enlace al panel y «Cómo llegar» si el complejo tiene coordenadas. Un fallo de correo no cambia la respuesta y el log solo lleva el código de reserva.
+
+## Agenda pública y reserva en la ficha (spec 63)
+
+GET `/api/canchas/:id/agenda?fecha=AAAA-MM-DD` es anónimo tras protección de origen. Solo cancha activa y complejo visible; devuelve404 si no es pública y400 para fecha inválida. Respuesta `{canchaId,fecha,anticipacionMinMin,franjas:[{inicio,fin,estado,precio}]}`. Intervalos completos de30min alineados al reloj, dentro del horario de cancha o, si no tiene, del complejo; día ausente/inactivo con calendario guardado → lista vacía; sin calendario →08:00–21:00. Estados LIBRE/OCUPADA/PASADA/ANTICIPACION; solo CONFIRMADA ocupa, igual que POST. Selección DB únicamente horaInicio/horaFin, sin nombres, códigos ni datos de jugadores. Pasado y anticipación calculados en hora peruana.
+
+**Decisión humana 2026-10-08:** sustituir cobro por hora iniciada por prorrateo por media hora (90min aS/80/h=S/120). `quote()` es la única implementación usada por cotizar/agenda/crear. Respeta promociones, bandas, días y fechas. Redondea diferencias de importes acumulados a céntimos en cada corte de30min/promoción; así la suma de los precios de franjas coincide con POST incluso con tarifa horaria de céntimos impares. No se acepta total enviado por cliente.
+
+`ReservaWidget` en `/c/[slug]`: cancha,14días de Perú, franjas contiguas de1–3h, total y POST existente con `{canchaId,fecha,horaInicio,horaFin}`. Muestra código/estado/total devueltos. Sin sesión o401, vuelve vía `/login?returnUrl=...` al perfil con `cancha,fecha,inicio,fin` y `#reservar`; revalida selección contra agenda recién cargada y nunca envía POST automáticamente.409 avisa, limpia selección y recarga agenda. Hoja inferior móvil y aside fijo en escritorio; bloque agenda de384px reservado durante carga.
+
+La regla de anticipación del complejo se integra en spec69 (hasta entonces cero). Las reservas PENDIENTE siguen sin bloquear otras solicitudes; una repetición produce409 cuando ya existe una CONFIRMADA. E2E con conflicto real necesita confirmarla primero o simular409 para verificar la interfaz.

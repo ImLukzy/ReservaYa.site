@@ -18,9 +18,9 @@ function fixture(){
 }
 describe('Reservation transactions',()=>{
  it('checks strict overlap bounds so adjoining slots remain valid',()=>{expect(overlaps(600,660)).toEqual({horaInicio:{lt:660},horaFin:{gt:600}});});
- it('quotes using legacy started-hour charging and ignores a caller-supplied total',async()=>{
+ it('quotes using proportional half-hour charging and ignores a caller-supplied total',async()=>{
   const f=fixture();const result=await f.service.create({canchaId:'court',fecha:'2026-11-01',horaInicio:600,horaFin:690,notas:'  Ficticio  ',...{total:1}},req);
-  expect(result.reserva.total).toBe('160.00');expect(result.reserva.notas).toBe('Ficticio');expect(result.reserva.estado).toBe('PENDIENTE');expect(result.reserva.usuario).toBeNull();
+  expect(result.reserva.total).toBe('120.00');expect(result.reserva.notas).toBe('Ficticio');expect(result.reserva.estado).toBe('PENDIENTE');expect(result.reserva.usuario).toBeNull();
   expect(f.transaction.mock.calls[0]?.[1]).toEqual({isolationLevel:'Serializable',timeout:15000});expect(f.tx.$queryRaw).toHaveBeenCalled();
  });
  it('rejects confirmed overlap before creating a reservation',async()=>{const f=fixture();f.tx.reserva.findFirst.mockResolvedValue({id:'confirmed'});await expect(f.service.create({canchaId:'court',fecha:'2026-11-01',horaInicio:600,horaFin:660},req)).rejects.toMatchObject({status:409});expect(f.tx.reserva.create).not.toHaveBeenCalled();});

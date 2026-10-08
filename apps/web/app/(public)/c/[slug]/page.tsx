@@ -3,6 +3,9 @@ import { GaleriaComplejo } from '@/components/complejos/GaleriaComplejo'
 import { MapaUbicacion } from '@/components/complejos/MapaUbicacion'
 import { AccionesPerfil } from '@/components/complejos/AccionesPerfil'
 import { CanchasPerfil } from '@/components/complejos/CanchasPerfil'
+import { ReservaWidget } from '@/components/public/reserva/ReservaWidget'
+import { fechasReserva } from '@/lib/public/reserva'
+import { getSession } from '@/lib/session'
 import { linkPublico } from '@/lib/public/sitio'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -12,13 +15,13 @@ import { serverFetch } from '@/lib/server-fetch'
 import { ApiError } from '@/lib/api-types'
 import { publicMetadata } from '@/lib/public/metadata'
 import { soles } from '@/lib/public/horario'
-import { reservaPublicaHref, type ComplejoPublico } from '@/lib/public/complejo-publico'
+import { type ComplejoPublico } from '@/lib/public/complejo-publico'
 import { tipoCanchaLabel } from '@/components/features/etiquetasJugador'
 import { whatsappUrl } from '@/lib/whatsapp'
 import { Button } from '@/components/ui/Button'
 import { ResenasSeccion } from '@/components/public/resenas/ResenasSeccion'
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }
 const perfil = cache(async (slug: string): Promise<ComplejoPublico> => {
   const response = await serverFetch(`/api/complejos/publico/${encodeURIComponent(slug)}`, { next: { revalidate: 60 } })
   if (response.status === 404) notFound()
@@ -37,9 +40,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   return metadata
 }
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { slug } = await params
-  const datos = await perfil(slug)
+  const [datos, sesion, query] = await Promise.all([perfil(slug), getSession(), searchParams])
+  const valor = (key: string) => typeof query[key] === 'string' ? query[key] as string : undefined
+  const minuto = (key: string) => { const v = valor(key); return v && /^\d+$/.test(v) ? Number(v) : undefined }
+  const inicial = { cancha: valor('cancha'), fecha: valor('fecha'), inicio: minuto('inicio'), fin: minuto('fin') }
   const { complejo, canchas, valoracion } = datos
   const telefono = complejo.telefono?.replace(/[^\d+]/g, '')
   const whatsapp = telefono ? whatsappUrl(`Hola, quiero reservar una cancha en ${complejo.nombre}.`, telefono) : null
@@ -48,7 +54,6 @@ export default async function Page({ params }: Props) {
   const superficies = [...new Set(canchas.flatMap(c => c.superficie ? [c.superficie] : []))]
   const desde = canchas.length ? Math.min(...canchas.map(c => Number(c.precioPorHora))) : null
   const precio = desde === null ? 'Consultar precio' : `desde ${soles(desde)}`
-  const reserva = canchas[0] ? reservaPublicaHref(canchas[0].nombre, complejo.distrito, canchas[0].tipo) : '/canchas'
   const punto = complejo.latitud !== null && complejo.longitud !== null ? { latitud: complejo.latitud, longitud: complejo.longitud } : null
   const detalles = [
     { Icono: CircleDot, titulo: 'Deportes', texto: deportes.join(', ') || 'Por confirmar' },
@@ -87,11 +92,12 @@ export default async function Page({ params }: Props) {
         <section id="fotos" className="scroll-mt-24 rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="fotos-titulo"><h2 id="fotos-titulo" className="mb-4 text-xl font-semibold">Fotos de {complejo.nombre} ({fotos.length})</h2><GaleriaComplejo fotos={fotos} nombre={complejo.nombre} /></section>
         <section className="rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="ubicacion-titulo"><h2 id="ubicacion-titulo" className="mb-4 text-xl font-semibold">Ubicación</h2>{punto ? <><MapaUbicacion punto={punto} /><Button apariencia="publica" variante="secundario" href={`https://www.google.com/maps/dir/?api=1&destination=${punto.latitud},${punto.longitud}`} target="_blank" rel="noopener noreferrer"><MapPin size={18} />Cómo llegar · Abrir en Maps</Button></> : <p className="text-pizarra">El complejo aún no ha marcado su ubicación en el mapa.</p>}<p className="my-3 break-words text-pizarra">{complejo.direccion}</p><AccionesPerfil direccion={complejo.direccion} url={linkPublico(complejo.slug)} /></section>
         <section className="rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="contacto-titulo"><h2 id="contacto-titulo" className="flex items-center gap-2 text-xl font-semibold"><Phone size={22} />¿Un problema con tu reserva?</h2><p className="my-3 text-pizarra">Contacta directamente con {complejo.nombre}.</p><div className="mb-2 flex flex-wrap gap-2">{whatsapp && <Button apariencia="publica" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</Button>}{telefono && <Button apariencia="publica" variante="secundario" href={`tel:${telefono}`}><Phone size={18} />{complejo.telefono}</Button>}</div>{telefono ? <AccionesPerfil telefono={complejo.telefono ?? telefono} /> : <p className="text-pizarra">Este complejo aún no tiene teléfono público.</p>}</section>
+        <section aria-labelledby="canchas-titulo" className="rounded-surface border border-cal bg-tiza p-4 sm:p-6"><h2 id="canchas-titulo" className="mb-4 text-xl font-semibold">Canchas de este complejo</h2><CanchasPerfil datos={datos} /></section>
         <ResenasSeccion slug={complejo.slug} complejoNombre={complejo.nombre} />
       </div>
-      <aside id="reservar" className="min-w-0 rounded-surface border border-cal bg-tiza p-4 lg:sticky lg:top-24" aria-labelledby="reservar-titulo"><h2 id="reservar-titulo" className="mb-3 flex items-center gap-2 text-xl font-semibold"><CalendarDays size={22} />Reservar horario</h2><p className="mb-4 text-sm text-pizarra">Canchas de este complejo. Elige una cancha y continúa para consultar sus horarios.</p>{canchas.length ? <CanchasPerfil datos={datos} /> : <p className="text-pizarra">Aún no hay canchas activas.</p>}</aside>
+      <aside id="reservar" className="min-w-0 rounded-surface border border-cal bg-tiza p-4 lg:sticky lg:top-24" aria-labelledby="reservar-titulo"><h2 id="reservar-titulo" className="mb-3 flex items-center gap-2 text-xl font-semibold"><CalendarDays size={22} />Reservar horario</h2><ReservaWidget slug={complejo.slug} canchas={canchas} dias={fechasReserva()} sesion={Boolean(sesion)} inicial={inicial} /></aside>
     </div>
-    {canchas.length > 0 && <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-3 border-t border-cal bg-tiza px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 lg:hidden"><p className="min-w-0 font-semibold">{precio}<span className="block text-xs text-pizarra">por 60 min</span></p><Button apariencia="publica" href={reserva}>Reservar</Button></div>}
+
   </div>
 }
 function Estrellas({ promedio }: { promedio: number }) {

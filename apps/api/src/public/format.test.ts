@@ -3,9 +3,16 @@ import { Prisma } from '@reservaya/db';
 import { parseDay, quote, slot, utc } from './format';
 import { bind } from './binding';
 const promo = (fields: Partial<Prisma.PromocionGetPayload<object>> = {}): Prisma.PromocionGetPayload<object> => ({id:'promo',complejoId:null,canchaId:null,nombre:'Precio prueba',descripcion:null,tipo:'PRECIO_ESPECIAL',valor:new Prisma.Decimal(50),horaDesde:null,horaHasta:null,diasSemana:[],fechaInicio:null,fechaFin:null,codigo:null,usosMax:null,usosActuales:0,activa:true,creadoEn:new Date('2026-01-01Z'),inicioNoche:null,inicioTarde:null,precioDia:null,precioNoche:null,precioTarde:null,repetirAnual:false,...fields});
-describe('Legacy public price/calendar contracts', () => {
-  it('preserves decimal money and legacy charging of partial hours', () => {
-    expect(quote(new Prisma.Decimal('50.10'),[],new Date('2026-10-10Z'),1080,1141)).toEqual({total:'100.20',regla:null});
+describe('Public price/calendar contracts', () => {
+  it('prorates partial hours and preserves decimal money', () => {
+    expect(quote(new Prisma.Decimal('50.10'),[],new Date('2026-10-10Z'),1080,1141)).toEqual({total:'50.94',regla:null});
+  });
+  it('keeps half-hour cents additive across bands and odd cent hourly prices', () => {
+    const date=new Date('2026-10-10Z'),base=new Prisma.Decimal('80.01');
+    const a=Number(quote(base,[],date,600,630).total),b=Number(quote(base,[],date,630,660).total);
+    expect((a+b).toFixed(2)).toBe(quote(base,[],date,600,660).total);
+    const p=promo({precioDia:new Prisma.Decimal(80),precioTarde:new Prisma.Decimal(60),inicioTarde:1020});
+    expect(quote(base,[p],date,990,1050).total).toBe('70.00');
   });
   it('falls through unset afternoon band to the next applicable price', () => {
     const band = promo({precioDia:new Prisma.Decimal(10),precioNoche:new Prisma.Decimal(20)});

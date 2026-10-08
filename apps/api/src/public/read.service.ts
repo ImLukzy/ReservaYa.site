@@ -1,8 +1,9 @@
+import { agendaFranjas } from './agenda';
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma } from '@reservaya/db';
 type Cancha = Prisma.CanchaGetPayload<object>;
 import { Clock, DbService } from './db.service';
-import { day, fail, quote, slot, utc, money } from './format';
+import { day, fail, parseDay, quote, slot, utc, money } from './format';
 import { districts } from './districts';
 import { limite, orden, pagina, resumen } from '../resenas/publico';
 export type Query = Record<string, string | string[] | undefined>;
@@ -119,6 +120,23 @@ export class PublicReadService {
     const canchas = await this.db.cancha.findMany({ where: { activa: true, OR: [{ complejoId: null }, { complejoId: { in: visible } }] }, select: { nombre: true }, orderBy: { nombre: 'asc' } });
     const duenos = [...new Map(complejos.map(c => [c.usuarioByDuenoId.id, c.usuarioByDuenoId])).values()].sort((a,b) => compare(a.nombre,b.nombre));
     return { ok: true, distritos: districts, ciudades: ['Arequipa'], duenos, complejos: complejos.map(c => ({ id: c.id, nombre: c.nombre, distrito: c.distrito, ciudad: c.ciudad })), sugerencias: [...new Set([...complejos.map(c => c.nombre), ...canchas.map(c => c.nombre)])].sort(compare) };
+  }
+  async agenda(id: string, q: Query) {
+    const raw = text(q, 'fecha');
+    if (!raw || !/^\d{4}-\d{2}-\d{2}$/.test(raw) || !parseDay(raw)) fail(400, 'Fecha inválida (AAAA-MM-DD)');
+    const fecha = parseDay(raw)!;
+    const cancha = await this.db.cancha.findUnique({ where: { id }, include: canchaInclude });
+    if (!cancha?.activa || (cancha.complejoId && !(await this.visibleIds()).includes(cancha.complejoId))) fail(404, 'Cancha no disponible');
+    let horarios = cancha!.complejoId ? await this.db.horarioOperativo.findMany({ where: { complejoId: cancha!.complejoId, canchaId: id } }) : [];
+    if (!horarios.length && cancha!.complejoId) horarios = await this.db.horarioOperativo.findMany({ where: { complejoId: cancha!.complejoId, canchaId: null } });
+    // Igual que Reservas.slot: si existe calendario, un día ausente es cerrado.
+    const horario = horarios.find(h => h.diaSemana === fecha.getUTCDay());
+    if (horarios.length && !horario?.activo) return { fecha: raw, canchaId: id, anticipacionMinMin: 0, franjas: [] };
+    const reservas = await this.db.reserva.findMany({ where: { canchaId: id, fecha, estado: 'CONFIRMADA' }, select: { horaInicio: true, horaFin: true } });
+    const anticipacion = (cancha!.complejoByComplejoId as { anticipacionMinMin?: number } | null)?.anticipacionMinMin ?? 0;
+    return { fecha: raw, canchaId: id, anticipacionMinMin: anticipacion,
+      franjas: agendaFranjas({ fecha, apertura: horario?.aperturaMin ?? 480, cierre: horario?.cierreMin ?? 1260,
+        reservas, ahora: this.clock.now(), anticipacion, base: cancha!.precioPorHora, promos: await this.promos([cancha!]) }) };
   }
   async cotizar(id: string, q: Query) {
     // Binding runs before the action; action validates cancha before slot.

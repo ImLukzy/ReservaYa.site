@@ -29,7 +29,11 @@ export function slot(fecha: string | undefined, inicio: number | null, fin: numb
 }
 export function quote(base: Prisma.Decimal, promos: Promocion[], fecha: Date, inicio: number, fin: number) {
   let total = new Prisma.Decimal(0), regla: string | null = null;
-  for (let h = inicio; h < fin; h += 60) {
+  // Spec63: prorrateo aprobado por media hora. Cortes de promo conservan
+  // las bandas y el redondeo acumulado hace aditivos los céntimos por franja.
+  const cortes = promos.flatMap(p => [p.horaDesde, p.horaHasta, p.inicioTarde ?? 1020, p.inicioNoche ?? 1200]).filter((n): n is number => n !== null);
+  for (let h = inicio; h < fin;) {
+    const hasta = Math.min(fin, (Math.floor(h / 30) + 1) * 30, ...cortes.filter(n => n > h));
     let price = base;
     for (const p of promos) {
       if (p.diasSemana?.length && !p.diasSemana.includes(fecha.getUTCDay())) continue;
@@ -45,7 +49,9 @@ export function quote(base: Prisma.Decimal, promos: Promocion[], fecha: Date, in
       if (candidate === null) continue;
       price = candidate; regla ??= p.nombre; break;
     }
-    total = total.plus(price);
+    const acumulado = (minuto: number) => price.mul(minuto).div(60).toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_UP);
+    total = total.plus(acumulado(hasta).minus(acumulado(h)));
+    h = hasta;
   }
   return { total: total.toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_UP).toFixed(2), regla };
 }
