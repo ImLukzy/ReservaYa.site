@@ -460,3 +460,7 @@ details > summary::marker {
   }
 }
 
+
+/* Mapas de complejo: controles táctiles y contenedor de altura reservada. */
+.leaflet-control-zoom a { min-width: 44px; min-height: 44px; line-height: 44px; }
+.leaflet-control-attribution a { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; }

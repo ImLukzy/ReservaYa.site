@@ -173,6 +173,8 @@ model Complejo {
   telefono String?
   email String?
   fotos String[] @default([])
+  latitud Float?
+  longitud Float?
   publicado Boolean @default(false)
   slug String
   duenoId String

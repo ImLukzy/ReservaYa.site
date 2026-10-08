@@ -13,7 +13,7 @@ type FullCancha = Prisma.CanchaGetPayload<{ include: typeof canchaInclude }>;
 const compare = new Intl.Collator('en').compare;
 function canchaDto(c: FullCancha) {
   const x = c.complejoByComplejoId;
-  return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad }, dueno: x?.usuarioByDuenoId ?? null };
+  return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad, fotos: x.fotos }, dueno: x?.usuarioByDuenoId ?? null };
 }
 // ApiController nullable binding: empty query values mean null.
 function integer(q: Query, key: string): number | null {
@@ -133,7 +133,7 @@ export class PublicReadService {
     const visible = await this.visibleIds();
     const complejo = await this.db.complejo.findFirst({
       where: { slug, publicado: true, id: { in: visible } },
-      select: { id: true, slug: true, nombre: true, direccion: true, distrito: true, ciudad: true, telefono: true, descripcion: true, fotos: true },
+      select: { id: true, slug: true, nombre: true, direccion: true, distrito: true, ciudad: true, telefono: true, descripcion: true, fotos: true, latitud: true, longitud: true },
     });
     if (!complejo) return fail(404, 'No encontrado');
     const [canchas, valoracion] = await Promise.all([
@@ -146,6 +146,7 @@ export class PublicReadService {
     return {
       complejo: { slug: complejo.slug, nombre: complejo.nombre, direccion: complejo.direccion, distrito: complejo.distrito,
         ciudad: complejo.ciudad, telefono: complejo.telefono, descripcion: complejo.descripcion,
+        fotos: complejo.fotos, latitud: complejo.latitud, longitud: complejo.longitud,
         imagen: complejo.fotos[0] ?? canchas.find(c => c.imagen)?.imagen ?? null },
       canchas: canchas.map(c => ({ id: c.id, nombre: c.nombre, tipo: c.tipo, precioPorHora: money(c.precioPorHora),
         imagen: c.imagen, techada: c.techada, superficie: c.superficie, capacidad: c.capacidad })),

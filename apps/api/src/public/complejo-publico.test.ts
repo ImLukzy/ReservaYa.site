@@ -3,7 +3,7 @@ import { Prisma } from '@reservaya/db';
 import { createApp } from '../app';
 import { DbService, Clock } from './db.service';
 const now = new Date('2026-10-08T12:00:00Z');
-const complejo = { id: 'internal-complex', slug: 'centro-fixture', nombre: 'Centro fixture', direccion: 'Dirección fixture', distrito: 'Cayma', ciudad: 'Arequipa', telefono: '987654321', descripcion: null, fotos: ['https://media.example.com/fixture.webp'], publicado: true, creadoEn: new Date('2026-01-01'), duenoId: 'private-owner', email: 'private@example.invalid', rol: 'ADMIN' };
+const complejo = { id: 'internal-complex', slug: 'centro-fixture', nombre: 'Centro fixture', direccion: 'Dirección fixture', distrito: 'Cayma', ciudad: 'Arequipa', telefono: '987654321', descripcion: null, latitud: -16.4, longitud: -71.53, fotos: ['https://media.example.com/fixture.webp'], publicado: true, creadoEn: new Date('2026-01-01'), duenoId: 'private-owner', email: 'private@example.invalid', rol: 'ADMIN' };
 const cancha = { id: 'fixture-cancha', nombre: 'Cancha fixture', tipo: 'FUTBOL', precioPorHora: new Prisma.Decimal('40.10'), imagen: null, techada: true, superficie: 'Sintética', capacidad: 10, activa: true, complejoId: complejo.id, creadoEn: now };
 afterEach(() => vi.unstubAllEnvs());
 async function fixture(options: { exists?: boolean; published?: boolean; subscription?: 'active' | 'expired' | 'absent'; created?: Date; role?: string; photo?: boolean; courts?: boolean } = {}) {
@@ -35,9 +35,11 @@ describe('GET /api/complejos/publico/:slug', () => {
       expect(response.statusCode).toBe(200);
       const body = response.json();
       expect(Object.keys(body).sort()).toEqual(['canchas', 'complejo', 'valoracion']);
-      expect(Object.keys(body.complejo).sort()).toEqual(['ciudad', 'descripcion', 'direccion', 'distrito', 'imagen', 'nombre', 'slug', 'telefono']);
+      expect(Object.keys(body.complejo).sort()).toEqual(['ciudad', 'descripcion', 'direccion', 'distrito', 'fotos', 'imagen', 'latitud', 'longitud', 'nombre', 'slug', 'telefono']);
       expect(Object.keys(body.canchas[0]).sort()).toEqual(['capacidad', 'id', 'imagen', 'nombre', 'precioPorHora', 'superficie', 'techada', 'tipo']);
       expect(body.canchas[0].precioPorHora).toBe('40.10');
+      expect(body.complejo.fotos).toEqual(complejo.fotos);
+      expect(body.complejo.latitud).toBe(-16.4); expect(body.complejo.longitud).toBe(-71.53);
       expect(body.valoracion).toEqual({ promedio: 4.3, total: 2 });
       expect(JSON.stringify(body)).not.toMatch(/private-owner|private@example|internal-complex/);
       expect(db.cancha.findMany.mock.calls[0][0]).toMatchObject({ where: { complejoId: complejo.id, activa: true } });

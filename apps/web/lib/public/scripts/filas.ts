@@ -14,7 +14,7 @@ export interface CanchaApi {
   techada?: boolean;
   superficie?: string | null;
   complejoId: string | null;
-  complejo: { id: string; nombre: string; distrito: string; ciudad: string } | null;
+  complejo: { id: string; nombre: string; distrito: string; ciudad: string; fotos?: string[] } | null;
 }
 
 export interface ItemDisponible {

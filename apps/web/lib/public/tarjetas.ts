@@ -8,7 +8,7 @@ export interface CanchaAgrupable {
     tipo: string;
     imagen: string | null;
     complejoId: string | null;
-    complejo: { id: string; nombre: string; distrito: string } | null;
+    complejo: { id: string; nombre: string; distrito: string; fotos?: string[] } | null;
   };
 }
 
@@ -63,6 +63,8 @@ export function ordenarGrupos<T extends CanchaAgrupable>(grupos: GrupoComplejo<T
 
 /** Primera foto disponible entre las canchas del grupo, según el criterio de imagen propia. */
 export function fotoDeGrupo<T extends CanchaAgrupable>(grupo: GrupoComplejo<T>, valida: (url: string | null) => boolean): string | null {
+  const portada = grupo.items[0]?.cancha.complejo?.fotos?.[0] ?? null;
+  if (valida(portada)) return portada;
   return grupo.items.find((it) => valida(it.cancha.imagen))?.cancha.imagen ?? null;
 }
 

@@ -17,6 +17,7 @@ export const dynamic = 'force-dynamic'
 // cancha la vuelve a decidir la API al persistir la URL.
 const ROLES_POR_TIPO: Record<MediaTipo, readonly string[] | null> = {
   cancha: ['ADMIN', 'SUPERADMIN', 'TECNICO'],
+  complejo: ['ADMIN', 'SUPERADMIN', 'TECNICO'],
   perfil: null,
   partido: null,
 }

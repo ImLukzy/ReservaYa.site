@@ -64,3 +64,13 @@ test('texto de conteo con singular y plural', () => {
   assert.equal(textoConteo(1, 1), '1 complejo · 1 cancha')
   assert.equal(textoConteo(3, 9), '3 complejos · 9 canchas')
 })
+
+test('prefiere portada propia del complejo y conserva respaldo de cancha', () => {
+  const row = item('1', 40, 'a', 'FUTBOL', '/uploads/cancha.webp')
+  row.cancha.complejo.fotos = ['/uploads/portada.webp', '/uploads/otra.webp']
+  const [grupo] = agruparPorComplejo([row], precio)
+  const valida = u => Boolean(u?.startsWith('/uploads/'))
+  assert.equal(fotoDeGrupo(grupo, valida), '/uploads/portada.webp')
+  row.cancha.complejo.fotos = ['https://outside.example/photo.webp']
+  assert.equal(fotoDeGrupo(grupo, valida), '/uploads/cancha.webp')
+})

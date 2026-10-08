@@ -1,6 +1,6 @@
 // Reglas de imágenes compartidas por la firma R2 (servidor) y la subida (cliente).
 // Mismo criterio que la API .NET (Services/ImagenArchivo): JPG/PNG/WEBP/GIF, tope 3 MB.
-export const MEDIA_TIPOS = ['cancha', 'perfil', 'partido'] as const
+export const MEDIA_TIPOS = ['cancha', 'perfil', 'partido', 'complejo'] as const
 export type MediaTipo = (typeof MEDIA_TIPOS)[number]
 
 export const TIPOS_IMAGEN = {

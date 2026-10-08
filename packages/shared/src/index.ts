@@ -5,3 +5,5 @@ export const healthResponseSchema = z.object({ ok: z.literal(true) }).strict();
 export type HealthResponse = z.infer<typeof healthResponseSchema>;
 
 export { textoReclamacion, type ConstanciaReclamo } from './reclamaciones';
+
+export { AREA_AREQUIPA, puntoEnArequipa, type Punto } from './ubicacion';

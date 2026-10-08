@@ -1,4 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Inject, Injectable, Param, Post, Put, Req } from '@nestjs/common';
+import { puntoEnArequipa } from '@reservaya/shared';
+import { mediaUrl } from '../management/media';
 import { Prisma } from '@reservaya/db';
 import type { FastifyRequest } from 'fastify';
 import { Clock, DbService } from '../public/db.service';
@@ -10,11 +12,25 @@ import { databaseError, foreignKeyError } from '../management/errors';
 import { clean, district, roundEven, utcToday } from '../management/legacy';
 import { subscriptionShape } from '../suscripciones/suscripciones';
 type Complejo=Prisma.ComplejoGetPayload<object>;
-export type ComplejoBody={nombre?:string;direccion?:string;distrito?:string;ciudad?:string;telefono?:string;descripcion?:string;email?:string;publicado?:boolean};
+export type ComplejoBody={nombre?:string;direccion?:string;distrito?:string;ciudad?:string;telefono?:string;descripcion?:string;email?:string;publicado?:boolean;fotos?:string[];latitud?:number|null;longitud?:number|null};
 type Stats={canchas:number;proximas:number;ocupacion:number};
-const shape=(c:Complejo,canchas:number,proximas:number,ocupacion:number,suscripcion:unknown=null)=>({id:c.id,nombre:c.nombre,slug:c.slug,direccion:c.direccion,distrito:c.distrito,ciudad:c.ciudad,telefono:c.telefono,email:c.email,descripcion:c.descripcion,publicado:c.publicado,duenoId:c.duenoId,totalCanchas:canchas,reservasProximas:proximas,ocupacion,suscripcion,creadoEn:utc(c.creadoEn)});
+const shape=(c:Complejo,canchas:number,proximas:number,ocupacion:number,suscripcion:unknown=null)=>({id:c.id,nombre:c.nombre,slug:c.slug,direccion:c.direccion,distrito:c.distrito,ciudad:c.ciudad,telefono:c.telefono,email:c.email,descripcion:c.descripcion,publicado:c.publicado,fotos:c.fotos,latitud:c.latitud,longitud:c.longitud,duenoId:c.duenoId,totalCanchas:canchas,reservasProximas:proximas,ocupacion,suscripcion,creadoEn:utc(c.creadoEn)});
 // Legacy slug: lowercase, strip combining marks and collapse every other run into '-'.
 export const slugify=(nombre:string)=>nombre.trim().toLowerCase().normalize('NFD').replace(/\p{Mn}/gu,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'complejo';
+function medios(b:ComplejoBody, anterior?:{latitud:number|null;longitud:number|null}) {
+  const data:{fotos?:string[];latitud?:number|null;longitud?:number|null}={};
+  if(b.fotos!==undefined){
+    if(!Array.isArray(b.fotos)||b.fotos.length>6)fail(400,'Admite hasta 6 fotos');
+    if(b.fotos.some(f=>typeof f!=='string'||!mediaUrl(f)||!/\.(jpg|png|webp)$/i.test(f)))fail(400,'Las fotos deben pertenecer al bucket propio (JPG, PNG o WebP)');
+    data.fotos=b.fotos;
+  }
+  if(b.latitud!==undefined||b.longitud!==undefined){
+    const lat=b.latitud===undefined?anterior?.latitud:b.latitud,lng=b.longitud===undefined?anterior?.longitud:b.longitud;
+    if(lat===null&&lng===null){data.latitud=null;data.longitud=null;}
+    else {if(!puntoEnArequipa(lat,lng))fail(400,'La ubicación debe estar dentro del área de Arequipa');data.latitud=lat;data.longitud=lng;}
+  }
+  return data;
+}
 const race='Otra solicitud cambió tus complejos. Revisa la lista antes de reintentar.';
 @Injectable()
 export class Complejos {
@@ -49,14 +65,14 @@ export class Complejos {
     return {ok:true,complejo:shape(c!,canchas.length,s.proximas,s.ocupacion,subs.get(id)??null),canchas:canchas.map(canchaShape)};
   }
   async create(b:ComplejoBody,r:FastifyRequest){
-    const a=await this.access.actor(r,managementRoles);
+    const a=await this.access.actor(r,managementRoles),extra=medios(b);
     try{return await this.db.$transaction(async tx=>{
       if(!clean(b.nombre)||!clean(b.direccion)||!clean(b.distrito))fail(400,'Nombre, dirección y distrito son requeridos');
       const distrito=district(b.distrito);if(!distrito)fail(400,'Distrito inválido: debe ser un distrito de Arequipa');
       const today=utcToday(this.clock.now()),propios=await tx.complejo.findMany({where:{duenoId:a.id},select:{id:true,suscripcionByComplejoId:{where:{estado:'ACTIVA',fechaInicio:{lte:today},fechaFin:{gte:today}},select:{id:true},take:1}}});
       if(propios.length&&!propios.some(p=>p.suscripcionByComplejoId.length))fail(409,'La prueba permite un complejo con una cancha. Suscríbete antes de crear otro complejo.');
       const base=slugify(b.nombre!);let slug=base;for(let i=2;await tx.complejo.findUnique({where:{slug},select:{id:true}});i++)slug=`${base}-${i}`;
-      const now=new Date(),c=await tx.complejo.create({data:{id:newId(),nombre:b.nombre!.trim(),direccion:b.direccion!.trim(),distrito:distrito!,ciudad:'Arequipa',telefono:clean(b.telefono),descripcion:clean(b.descripcion),email:clean(b.email),slug,publicado:true,duenoId:a.id,creadoEn:now,actualizadoEn:now}});
+      const now=new Date(),c=await tx.complejo.create({data:{...extra,id:newId(),nombre:b.nombre!.trim(),direccion:b.direccion!.trim(),distrito:distrito!,ciudad:'Arequipa',telefono:clean(b.telefono),descripcion:clean(b.descripcion),email:clean(b.email),slug,publicado:true,duenoId:a.id,creadoEn:now,actualizadoEn:now}});
       return {ok:true,complejo:shape(c,0,0,0)};
     },{isolationLevel:'Serializable'});}
     catch(e){if(databaseError(e,'P2002'))fail(409,'Ya existe un complejo con ese nombre');if(databaseError(e,'P2034'))fail(409,race);throw e;}
@@ -64,7 +80,7 @@ export class Complejos {
   async update(id:string,b:ComplejoBody,r:FastifyRequest){
     const a=await this.access.actor(r,managementRoles),c=await this.db.complejo.findUnique({where:{id},include:{usuarioByDuenoId:{select:{rol:true}}}});if(!c)fail(404,'No encontrado');
     if(a.rol!=='TECNICO'&&c!.duenoId!==a.id)fail(403,'Sin permisos');
-    const data:Prisma.ComplejoUncheckedUpdateInput={};if(clean(b.nombre))data.nombre=b.nombre!.trim();if(clean(b.direccion))data.direccion=b.direccion!.trim();
+    const data:Prisma.ComplejoUncheckedUpdateInput=medios(b,c!);if(clean(b.nombre))data.nombre=b.nombre!.trim();if(clean(b.direccion))data.direccion=b.direccion!.trim();
     if(clean(b.distrito)){const d=district(b.distrito);if(!d)fail(400,'Distrito inválido: debe ser un distrito de Arequipa');data.distrito=d!;}
     data.ciudad='Arequipa';for(const k of ['telefono','descripcion','email'] as const)if(b[k]!=null)data[k]=clean(b[k]);
     if(b.publicado===true&&c!.usuarioByDuenoId.rol==='USUARIO')fail(409,'Aprueba la solicitud del jugador desde Solicitudes.');

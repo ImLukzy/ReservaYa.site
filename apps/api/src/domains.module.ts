@@ -1,3 +1,4 @@
+import { Ubicacion, UbicacionController } from './complejos/ubicacion';
 import { Reservas, ReservasController } from './reservas/reservas';
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
@@ -18,5 +19,5 @@ import { ReclamosController, ReclamosService } from './reclamos/reclamos';
 import { ReportesController, ReportesService } from './reportes/reportes';
 // Spec 56 F5: team, requests, subscriptions, sanctions and the remaining complex/match/review/tournament routes.
 // Spec 56 F6: cash desk, deposits, goals, reports and the complaints book.
-@Module({imports:[DbModule,AuthModule,ManagementModule],controllers:[ReservasController,ComplejosController,EquipoController,InvitacionesController,PartidosController,ResenasController,SancionesController,SolicitudesController,SuscripcionesController,TorneosController,AbonosController,CajaController,MetasController,ReclamosController,ReportesController],providers:[Reservas,Complejos,Equipo,Invitaciones,Partidos,Resenas,Sanciones,Solicitudes,Suscripciones,Torneos,AbonosService,CajaService,MetasService,ReclamosService,ReportesService]})
+@Module({imports:[DbModule,AuthModule,ManagementModule],controllers:[UbicacionController,ReservasController,ComplejosController,EquipoController,InvitacionesController,PartidosController,ResenasController,SancionesController,SolicitudesController,SuscripcionesController,TorneosController,AbonosController,CajaController,MetasController,ReclamosController,ReportesController],providers:[Ubicacion,Reservas,Complejos,Equipo,Invitaciones,Partidos,Resenas,Sanciones,Solicitudes,Suscripciones,Torneos,AbonosService,CajaService,MetasService,ReclamosService,ReportesService]})
 export class DomainsModule {}

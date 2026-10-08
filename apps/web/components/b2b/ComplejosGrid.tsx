@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { DISTRITOS_AREQUIPA, CIUDAD_UNICA } from '@/lib/distritos';
 import { Building2, ExternalLink, MapPin, Pencil, Phone, Plus, Share2, Copy, Check, X, Trash2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -8,6 +8,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 import { solicitarSuscripcion } from '@/lib/suscripciones-client';
+import { FotosEditor } from '@/components/complejos/FotosEditor';
+import { UbicacionEditor } from '@/components/complejos/UbicacionEditor';
 import { linkPublico } from '@/lib/public/sitio';
 
 interface SuscripcionCard {
@@ -26,6 +28,9 @@ export interface ComplejoCard {
   slug: string;
   canchas: number;
   imagen?: string;
+  fotos?: string[];
+  latitud?: number | null;
+  longitud?: number | null;
   telefono?: string;
   direccion?: string;
   publicado?: boolean;
@@ -48,7 +53,10 @@ function normalizar(raw: Record<string, unknown>, i: number): ComplejoCard {
     ciudad: String(raw.ciudad ?? raw.city ?? ''),
     slug: String(raw.slug ?? raw.id ?? nombre.toLowerCase().replace(/\s+/g, '-')),
     canchas,
-    imagen: raw.imagen != null && raw.imagen !== '' ? String(raw.imagen) : undefined,
+    fotos: Array.isArray(raw.fotos) ? raw.fotos.filter((f): f is string => typeof f === 'string') : [],
+    latitud: typeof raw.latitud === 'number' ? raw.latitud : null,
+    longitud: typeof raw.longitud === 'number' ? raw.longitud : null,
+    imagen: Array.isArray(raw.fotos) && raw.fotos[0] ? String(raw.fotos[0]) : raw.imagen != null && raw.imagen !== '' ? String(raw.imagen) : undefined,
     telefono: raw.telefono != null && raw.telefono !== '' ? String(raw.telefono) : undefined,
     direccion: raw.direccion != null && raw.direccion !== '' ? String(raw.direccion) : undefined,
     publicado: raw.publicado === true,
@@ -71,9 +79,12 @@ interface FormState {
   ciudad: string;
   telefono: string;
   publicado: boolean;
+  fotos: string[];
+  latitud: number | null;
+  longitud: number | null;
 }
 
-const FORM_VACIO: FormState = { nombre: '', direccion: '', distrito: '', ciudad: CIUDAD_UNICA, telefono: '', publicado: true };
+const FORM_VACIO: FormState = { nombre: '', direccion: '', distrito: '', ciudad: CIUDAD_UNICA, telefono: '', publicado: true, fotos: [], latitud: null, longitud: null };
 
 export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
   const [lista, setLista] = useState<ComplejoCard[]>(complejos);
@@ -143,7 +154,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
   }
 
   function abrirEditar(c: ComplejoCard) {
-    setForm({ nombre: c.nombre, direccion: c.direccion ?? '', distrito: c.distrito, ciudad: c.ciudad ?? CIUDAD_UNICA, telefono: c.telefono ?? '', publicado: c.publicado ?? false });
+    setForm({ nombre: c.nombre, direccion: c.direccion ?? '', distrito: c.distrito, ciudad: c.ciudad ?? CIUDAD_UNICA, telefono: c.telefono ?? '', publicado: c.publicado ?? false, fotos: c.fotos ?? [], latitud: c.latitud ?? null, longitud: c.longitud ?? null });
     setErrorForm(null);
     setModal({ modo: 'editar', id: c.id });
   }
@@ -167,6 +178,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
         ciudad: CIUDAD_UNICA,
         telefono: form.telefono.trim(),
         publicado: form.publicado,
+        fotos: form.fotos, latitud: form.latitud, longitud: form.longitud,
       };
       if (modal?.modo === 'editar') {
         const id = modal.id;
@@ -182,7 +194,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
         setLista((prev) =>
           prev.map((c) =>
             c.id === id
-              ? { ...actualizado, nombre: actualizado.nombre !== 'Sin nombre' ? actualizado.nombre : payload.nombre, canchas: c.canchas, imagen: c.imagen ?? actualizado.imagen }
+              ? { ...actualizado, nombre: actualizado.nombre !== 'Sin nombre' ? actualizado.nombre : payload.nombre, canchas: c.canchas, imagen: actualizado.imagen }
               : c
           )
         );
@@ -528,12 +540,13 @@ function ModalComplejo({
 }: {
   titulo: string;
   form: FormState;
-  setForm: (f: FormState) => void;
+  setForm: Dispatch<SetStateAction<FormState>>;
   error: string | null;
   guardando: boolean;
   onCerrar: () => void;
   onGuardar: () => void;
 }) {
+  const [subiendo, setSubiendo] = useState(false);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-velo p-4 backdrop-blur-sm"
@@ -543,7 +556,7 @@ function ModalComplejo({
       aria-label={titulo}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-cal bg-tiza p-6 shadow-suave-lg"
+        className="max-h-[90svh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-cal bg-tiza p-6 shadow-suave-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between">
@@ -603,7 +616,7 @@ function ModalComplejo({
                 className={`${inputCls} bg-sillar text-pizarra`}
               />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label htmlFor="complejo-telefono" className={labelCls}>Teléfono</label>
               <input
                 id="complejo-telefono"
@@ -615,6 +628,9 @@ function ModalComplejo({
               />
             </div>
           </div>
+          <FotosEditor fotos={form.fotos} onBusy={setSubiendo} onChange={fotos => setForm(prev => ({ ...prev, fotos }))} />
+          <UbicacionEditor direccion={form.direccion} punto={form.latitud !== null && form.longitud !== null ? { latitud: form.latitud, longitud: form.longitud } : null} onChange={p => setForm(prev => ({ ...prev, latitud: p?.latitud ?? null, longitud: p?.longitud ?? null }))} onDistrito={distrito => setForm(prev => ({ ...prev, distrito }))} />
+          {(!form.fotos.length || form.latitud === null) && <p className="text-sm text-pizarra">Completa fotos y ubicación para mejorar tu perfil. Puedes publicar sin ellas.</p>}
           <p className="mt-2 text-xs text-pizarra">Elige tu distrito de Arequipa: así te encuentran en el buscador.</p>
           <label className="mt-3 flex cursor-pointer items-center gap-2.5 rounded-xl border border-cal bg-tiza px-3 py-2.5">
             <input
@@ -637,7 +653,7 @@ function ModalComplejo({
         <button
           type="button"
           onClick={onGuardar}
-          disabled={guardando}
+          disabled={guardando || subiendo}
           className={cn(btnPrimary, 'mt-4 w-full py-3 disabled:opacity-50')}
         >
           {guardando ? 'Guardando…' : titulo}

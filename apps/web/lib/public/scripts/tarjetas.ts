@@ -121,7 +121,7 @@ function pie(precio: string, unidad: string, accion: HTMLAnchorElement): HTMLDiv
 }
 
 interface OpcionesTarjeta {
-  hora: number;
+  hora?: number;
   reservarHref: string;
   valoracion?: Valoracion;
   onValoracion?: () => void;
@@ -130,7 +130,7 @@ interface OpcionesTarjeta {
 export function tarjetaCancha(item: ItemDisponible, op: OpcionesTarjeta): HTMLLIElement {
   const { cancha } = item;
   const lugar = cancha.complejo?.nombre ?? cancha.nombre;
-  const hora = etiquetaHora(op.hora);
+  const hora = op.hora === undefined ? null : etiquetaHora(op.hora);
   const li = el("li", CLASE_TARJETA);
   li.dataset.deporte = cancha.tipo;
 
@@ -153,7 +153,7 @@ export function tarjetaCancha(item: ItemDisponible, op: OpcionesTarjeta): HTMLLI
 
   const reservar = el("a", `${BOTON.primario} shrink-0 px-4`);
   reservar.href = op.reservarHref;
-  reservar.setAttribute("aria-label", `Reservar ${cancha.nombre} en ${lugar} a las ${hora}`);
+  reservar.setAttribute("aria-label", `Reservar ${cancha.nombre} en ${lugar} ${hora ? `a las ${hora}` : ''}`);
   reservar.append(icono(TRAZO_CALENDARIO, "h-4 w-4"), "Reservar");
   cuerpo.append(pie(soles(precioDe(item)), "/60 min", reservar));
   li.append(cuerpo);
