@@ -44,7 +44,7 @@ export const ORDENES: { valor: OrdenResenas; etiqueta: string }[] = [
 ];
 
 export const MAX_TEXTO = 500;
-export const POR_PAGINA = 5;
+const POR_PAGINA = 5;
 
 /** Traduce la respuesta de GET /api/resenas/mia (o su estado HTTP de error) al estado de la UI. */
 export function estadoCalificar(r: { status: number; body?: MiResena | null }): EstadoCalificar {

@@ -24,8 +24,6 @@ export interface GrupoComplejo<T extends CanchaAgrupable> {
   tipos: string[];
 }
 
-export type OrdenResultados = "precio" | "precio-desc" | "valoracion" | "cerca";
-
 /** Menor distancia del grupo (spec 68); null si ningún item la trae. */
 export function distanciaDeGrupo<T extends { distanciaKm?: number | null }>(grupo: { items: T[] }): number | null {
   let min: number | null = null;

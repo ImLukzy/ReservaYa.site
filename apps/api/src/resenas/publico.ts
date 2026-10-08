@@ -3,7 +3,7 @@ import { fail, utc } from '../public/format';
 // Lectura pública de reseñas (spec 64): una sola fuente para el resumen de /canchas y del perfil.
 export type Orden = 'recientes' | 'mejor' | 'peor';
 export type Distribucion = Record<'1' | '2' | '3' | '4' | '5', number>;
-export const LIMITE_MAX = 20;
+const LIMITE_MAX = 20;
 const ordenes: Record<Orden, Prisma.ResenaOrderByWithRelationInput[]> = {
   recientes: [{ creadoEn: 'desc' }, { id: 'desc' }],
   mejor: [{ puntuacion: 'desc' }, { creadoEn: 'desc' }, { id: 'desc' }],
@@ -43,7 +43,7 @@ export async function resumen(db: Db, complejoId: string) {
 }
 const autorSelect = { usuarioByUsuarioId: { select: { nombre: true } } } as const;
 type ConAutor = Prisma.ResenaGetPayload<{ include: typeof autorSelect }>;
-export const publica = (r: ConAutor) => ({
+const publica = (r: ConAutor) => ({
   id: r.id, puntuacion: r.puntuacion, comentario: r.comentario, respuestaDueno: r.respuestaDueno,
   creadoEn: utc(r.creadoEn), autor: autorCorto(r.usuarioByUsuarioId?.nombre),
 });
