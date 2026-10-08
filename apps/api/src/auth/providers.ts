@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { createPublicKey, verify as verifySignature, timingSafeEqual } from 'node:crypto';
 type GoogleKey={kid:string;kty:string;n:string;e:string};
-export type GoogleProfile={sub:string;email:string;name:string;picture:string|null};
+type GoogleProfile={sub:string;email:string;name:string;picture:string|null};
 @Injectable()
 export class GoogleProvider {
   private cachedKeys?:{keys:GoogleKey[];expires:number};
@@ -54,7 +54,7 @@ export function passwordResetEmail(message:ResetMail) {
       '<p style="font-size:13px;color:#5B6660">El enlace vence en 30 minutos y sirve una sola vez. Si no fuiste tú, ignora este correo: tu contraseña no cambia.</p></div>'
   };
 }
-export type ResetMail={nombre:string;email:string;link:string};
+type ResetMail={nombre:string;email:string;link:string};
 export type EmailMessage={to:string;subject:string;text:string;html:string};
 const validResetUrl=()=>{try{return ['http:','https:'].includes(new URL(process.env.PASSWORD_RESET_URL?.trim()||'').protocol);}catch{return false;}};
 @Injectable()

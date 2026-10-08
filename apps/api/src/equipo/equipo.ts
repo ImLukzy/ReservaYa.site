@@ -10,7 +10,7 @@ import { Access, managementRoles } from '../management/access';
 import { databaseError } from '../management/errors';
 import { netRoles, parseEnum } from '../management/legacy';
 type Miembro=Prisma.ComplejoMiembroGetPayload<object>&{usuarioByUsuarioId?:Prisma.UsuarioGetPayload<object>|null};
-export type MiembroBody={complejoId?:string;email?:string;nombre?:string;rolSede?:string;activo?:boolean};
+type MiembroBody={complejoId?:string;email?:string;nombre?:string;rolSede?:string;activo?:boolean};
 const shape=(m:Miembro)=>{const u=m.usuarioByUsuarioId;return {id:m.id,complejoId:m.complejoId,rolSede:m.rolSede,activo:m.activo,estado:m.activo?'ACTIVO':'PENDIENTE',creadoEn:utc(m.creadoEn),usuario:u?{id:u.id,nombre:u.nombre,email:u.email,rol:u.rol,activo:u.activo}:null};};
 const invalidRole='rolSede inválido (solo ADMIN: el equipo opera con rol admin)';
 // Public web origin from PASSWORD_RESET_URL, as Uri.GetLeftPart(Authority).

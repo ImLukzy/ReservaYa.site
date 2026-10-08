@@ -4,7 +4,7 @@ import { validation } from '../public/binding';
 import type { Actor } from '../management/access';
 // Money never goes through binary floating point: JSON numbers keep their source literal.
 export class Num { constructor(readonly n:number,readonly s:string){} }
-export type Json=Record<string,unknown>;
+type Json=Record<string,unknown>;
 const lossless=(text:string)=>JSON.parse(text,(_k,v:unknown,c?:{source?:string})=>typeof v==='number'?new Num(v,c?.source??String(v)):v) as unknown;
 /** Request body as the legacy System.Text.Json binder sees it: numbers keep their literal text. */
 export function body(r:FastifyRequest):Json{

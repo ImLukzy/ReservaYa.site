@@ -19,7 +19,7 @@ export function sumarDias(fecha: string, dias: number): string {
   return new Date(t).toISOString().slice(0, 10);
 }
 
-export interface Franjas {
+interface Franjas {
   fecha: string;
   dia: "hoy" | "manana";
   horas: number[];

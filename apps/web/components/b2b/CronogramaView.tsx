@@ -21,15 +21,15 @@ import { EmptyState } from '@/components/ui/EmptyState';
 type Vista = 'dia' | 'semana' | 'mes' | 'horarios';
 type FiltroEstado = 'TODOS' | EstadoReserva;
 
-export type CanchaCronograma = Pick<Cancha, 'id' | 'nombre' | 'precioPorHora' | 'complejoId'>;
-export type ReservaCronograma = Pick<
+type CanchaCronograma = Pick<Cancha, 'id' | 'nombre' | 'precioPorHora' | 'complejoId'>;
+type ReservaCronograma = Pick<
   Reserva,
   'id' | 'codigo' | 'canchaId' | 'fecha' | 'horaInicio' | 'horaFin' | 'estado' | 'total' | 'notas'
 > & {
   cancha: Pick<Cancha, 'nombre'>;
   usuario: Pick<UsuarioReserva, 'nombre'> | null;
 };
-export type ComplejoCronograma = Pick<ComplejoResumen, 'id' | 'nombre'>;
+type ComplejoCronograma = Pick<ComplejoResumen, 'id' | 'nombre'>;
 
 const ESTADOS: { id: FiltroEstado; label: string }[] = [
   { id: 'TODOS', label: 'Todos' },

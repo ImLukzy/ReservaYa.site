@@ -19,7 +19,7 @@ const TIPOS = ['FUTBOL', 'FUTBOL5', 'FUTBOL7', 'PADEL', 'TENIS', 'BASQUET', 'VOL
 
 const SUPERFICIES = ['', 'Sintético', 'Natural', 'Arcilla', 'Loza', 'Parquet', 'Cemento']
 
-export interface ComplejoOpcion {
+interface ComplejoOpcion {
   id: string
   nombre: string
 }

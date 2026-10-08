@@ -13,7 +13,7 @@ import { courtTypes, district } from '../management/legacy';
 import type { ComplejoBody } from '../complejos/complejos';
 const full={usuarioByDuenoId:true,canchaByComplejoId:{orderBy:{id:'asc'}}} as const;
 type Centro=Prisma.ComplejoGetPayload<{include:typeof full}>;
-export type SolicitudBody={complejo?:ComplejoBody;cancha?:CanchaBody;aceptaConvenio?:boolean};
+type SolicitudBody={complejo?:ComplejoBody;cancha?:CanchaBody;aceptaConvenio?:boolean};
 // Included courts carry their complex and owner, as the legacy include fix-up does.
 function shape(c:Centro,solicitante=false){
   const cancha=c.canchaByComplejoId[0],u=c.usuarioByDuenoId;

@@ -10,7 +10,7 @@ export const PASOS_GUIA = [
   { titulo: 'Comparte tu página', texto: 'Copia el enlace de tu centro y envíalo por WhatsApp a tus clientes.', href: '/admin/complejos', accion: 'Copiar enlace' },
 ] as const
 
-export interface OnboardingDatos {
+interface OnboardingDatos {
   complejos: readonly { id: string }[]
   canchas: readonly { complejoId: string | null; activa: boolean; imagen: string | null }[]
   /** Filas de `GET /api/horarios` por complejo; `null` = no se pudo cargar. */

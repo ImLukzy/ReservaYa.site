@@ -1,4 +1,4 @@
-export type CookieDecision = 'accepted' | 'rejected' | null
+type CookieDecision = 'accepted' | 'rejected' | null
 export const COOKIE_KEY = 'reservaya-analytics-consent-v1'
 export const COOKIE_OPEN = 'reservaya-cookie-preferences'
 const COOKIE_CHANGE = 'reservaya-cookie-change'

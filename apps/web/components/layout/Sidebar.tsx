@@ -37,7 +37,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-export type RolSidebar = 'USUARIO' | 'ADMIN' | 'SUPERADMIN' | 'TECNICO';
+type RolSidebar = 'USUARIO' | 'ADMIN' | 'SUPERADMIN' | 'TECNICO';
 
 interface SidebarProps {
   rol: RolSidebar;

@@ -42,7 +42,7 @@ import {
   type TipoMovimiento,
 } from '@/lib/b2b-client';
 
-export interface CanchaPOS {
+interface CanchaPOS {
   id: string;
   nombre: string;
   tipo: string;

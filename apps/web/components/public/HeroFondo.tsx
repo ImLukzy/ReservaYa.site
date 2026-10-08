@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 // Escena del hero (spec 54): fotos con gente jugando, fundido cruzado lento con acercamiento,
 // velo de noche de cancha solo donde va el texto. Decorativa: el hero se entiende sin ella.
-export interface FotoEscena {
+interface FotoEscena {
   archivo: string
   rotulo: string
   /** object-position para que el recorte en celular no corte la jugada. */

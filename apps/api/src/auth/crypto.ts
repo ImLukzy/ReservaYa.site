@@ -3,7 +3,7 @@ export const newId = () => randomUUID().replace(/-/g, '');
 const secret = () => { const value = process.env.JWT_SECRET; if (!value || value.length < 32) throw new Error('JWT_SECRET no configurado'); return Buffer.from(value); };
 const key = (purpose?: string) => purpose ? createHmac('sha256',secret()).update(purpose).digest() : secret();
 const equal = (a: Buffer,b: Buffer) => a.length === b.length && timingSafeEqual(a,b);
-export type Claims = Record<string, unknown>;
+type Claims = Record<string, unknown>;
 export function sign(claims: Claims, ttl: number, purpose?: string) {
   const now=Math.floor(Date.now()/1000), head=Buffer.from(JSON.stringify({alg:'HS256',typ:'JWT'})).toString('base64url');
   const body=Buffer.from(JSON.stringify({...claims,nbf:now,exp:now+ttl})).toString('base64url');

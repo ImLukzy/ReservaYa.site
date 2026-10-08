@@ -10,7 +10,7 @@ import { pagination } from './pagination';
 import { Access } from '../management/access';
 import { parseEnum } from '../management/legacy';
 type Sancion=Prisma.SancionGetPayload<object>&{complejoByComplejoId?:{nombre:string}|null;usuarioByUsuarioId?:{id:string;nombre:string;email:string}|null};
-export type SancionBody={complejoId?:string;usuarioId?:string;nivel?:string;motivo?:string};
+type SancionBody={complejoId?:string;usuarioId?:string;nivel?:string;motivo?:string};
 const roles=['SUPERADMIN','TECNICO'],levels=['ADVERTENCIA','BLOQUEO'] as const;
 // Navigations are only present when legacy loaded them (lists); writes return empty names.
 const shape=(s:Sancion)=>({id:s.id,complejoId:s.complejoId,complejo:s.complejoByComplejoId?.nombre??'',usuarioId:s.usuarioId,usuario:s.usuarioByUsuarioId?{id:s.usuarioByUsuarioId.id,nombre:s.usuarioByUsuarioId.nombre,email:s.usuarioByUsuarioId.email}:null,nivel:s.nivel,motivo:s.motivo,activa:s.activa,creadoEn:utc(s.creadoEn)});

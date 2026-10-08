@@ -4,7 +4,7 @@ import { config } from './config'
 import { ApiError } from './api-types'
 import { backendForPath } from './backend-routing.mjs'
 
-export interface ServerFetchInit extends RequestInit {
+interface ServerFetchInit extends RequestInit {
   next?: {
     revalidate?: number | false
     tags?: string[]

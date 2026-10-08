@@ -11,21 +11,12 @@ export interface ComplejoResumen {
   publicado: boolean;
 }
 
-export interface HorarioFila {
+interface HorarioFila {
   id: string;
   complejoId: string;
   canchaId: string | null;
   diaSemana: number;
   activo: boolean;
-}
-
-export interface MovimientoResumen {
-  id: string;
-  descripcion: string;
-  monto: string;
-  metodoPago: string;
-  tipo: string;
-  creadoEn: string;
 }
 
 export interface EquipoMiembroResumen {
@@ -60,7 +51,7 @@ export async function getHorarios(complejoId: string): Promise<HorarioFila[]> {
   return data.horarios ?? [];
 }
 
-export interface MetaResumen {
+interface MetaResumen {
   id: string;
   titulo: string;
   tipo: string;

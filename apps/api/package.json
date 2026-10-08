@@ -32,10 +32,6 @@
     "typescript": "5.9.3",
     "@types/node": "22.15.32",
     "vitest": "3.2.4",
-    "vite": "6.1.0",
-    "@nestjs/testing": "11.1.6",
-    "@reservaya/config": "workspace:*",
-    "supertest": "7.1.4",
-    "@types/supertest": "6.0.3"
+    "@reservaya/config": "workspace:*"
   }
 }

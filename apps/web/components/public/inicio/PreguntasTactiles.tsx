@@ -5,7 +5,7 @@ import Icon from "../ui/Icon";
 const CABEZA = "flex min-h-16 items-center gap-4 px-5 py-4";
 const RESPUESTA = "px-5 pb-5 leading-relaxed sm:pl-15";
 
-export interface Pregunta {
+interface Pregunta {
   categoria: string;
   icono: ComponentProps<typeof Icon>["nombre"];
   pregunta: string;

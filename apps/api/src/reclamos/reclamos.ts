@@ -22,7 +22,7 @@ const rules:Rule[]=[
 ];
 const order=['Nombre','Email','DocumentoTipo','Documento','Domicilio','Telefono','Menor','Apoderado','ApoderadoDocumento','ApoderadoDomicilio','ApoderadoTelefono','BienTipo','BienDescripcion','Monto','Tipo','Detalle','Pedido','MedioRespuesta'];
 const maxMonto=new Prisma.Decimal('9999999999.99');
-export type Reclamo={[k:string]:string|boolean|Prisma.Decimal|null};
+type Reclamo={[k:string]:string|boolean|Prisma.Decimal|null};
 /** Model binding + validation of the legacy DTO; values stay untrimmed like the .NET model. */
 export function bindReclamo(b:unknown):Reclamo{
   const errors:Record<string,string[]>={},values:Reclamo={};
