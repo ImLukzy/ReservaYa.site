@@ -17,6 +17,10 @@ const orden = [
     { valor: "precio-desc", etiqueta: "Mayor precio" },
     { valor: "valoracion", etiqueta: "Mejor valoradas" },
 ];
+const vistas = [
+    { valor: "canchas", etiqueta: "Por canchas" },
+    { valor: "complejos", etiqueta: "Por complejos" },
+];
 import { iniciarCanchas } from "@/lib/public/scripts/canchas";
 export default function PublicContent() {
     useEffect(() => iniciarCanchas(), []);
@@ -66,22 +70,26 @@ export default function PublicContent() {
 
   <section className="fondo-noche canchas-resultados" aria-labelledby="resumen">
   <div className="mx-auto max-w-page px-4 pb-16 pt-6 md:px-6">
-    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-      <p className="eyebrow">Resultados y horarios libres</p>
-      <div className="flex items-center justify-end">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <p id="conteo" className="min-h-6 text-sm font-bold text-basalto tabular-nums">Buscando…</p>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div role="group" aria-label="Vista de resultados" className="inline-flex rounded-full border border-borde bg-tiza p-0.5">
+          {vistas.map((v) => (<button key={v.valor} type="button" data-vista={v.valor} aria-pressed={v.valor === "canchas"} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-pizarra transition-colors hover:text-basalto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped aria-pressed:bg-cesped aria-pressed:text-tiza">
+              {v.etiqueta}
+            </button>))}
+        </div>
         <Select apariencia="publica" id="f-orden" etiqueta="Ordenar por" opciones={orden} className="flex items-center gap-2 [&_label]:mb-0 [&_label]:text-xs [&_label]:font-bold [&_label]:text-pizarra"/>
       </div>
     </div>
-    <div className="card-tactil overflow-hidden p-0 shadow-suave">
-      <div className="hidden h-12 grid-cols-[4rem_4rem_minmax(0,1.2fr)_minmax(0,1fr)_4.5rem_6.5rem] items-center gap-x-4 border-b border-cal bg-piedra px-6 eyebrow text-basalto sm:grid" aria-hidden="true">
-        <span></span><span>Hora</span><span>Complejo y cancha</span><span>Deporte y distrito</span><span className="text-right">Precio</span><span></span>
-      </div>
-      <ul id="resultados" aria-live="polite" aria-busy="true" className="[counter-reset:cancha]">
-        {[0, 1, 2, 3].map((index) => (<li className="grid h-24 grid-cols-[3.5rem_minmax(0,1fr)_5rem] items-center gap-x-3 border-b border-cal px-4 sm:h-16 sm:grid-cols-[4rem_3.5rem_minmax(0,1fr)_5rem] sm:gap-x-4 sm:px-6" aria-hidden="true" key={index}>
-            <span className="esqueleto hidden h-9 w-16 rounded-full sm:block"></span><span className="esqueleto h-6 w-12"></span><span className="esqueleto h-5 w-3/4"></span><span className="esqueleto h-9 w-20 justify-self-end"></span>
-          </li>))}
-      </ul>
-    </div>
+    <ul id="resultados" aria-live="polite" aria-busy="true" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {[0, 1, 2, 3, 4, 5].map((index) => (<li className="card-tactil flex min-w-0 flex-col overflow-hidden p-0" aria-hidden="true" key={index}>
+          <div className="esqueleto relative aspect-[16/10] w-full shrink-0 rounded-none"></div>
+          <div className="flex flex-1 flex-col gap-2 p-4">
+            <span className="esqueleto h-5 w-3/4"></span><span className="esqueleto h-4 w-1/2"></span><span className="esqueleto h-4 w-1/3"></span><span className="esqueleto my-3.5 h-4 w-2/5"></span>
+            <div className="mt-auto flex items-center justify-between border-t border-cal pt-3"><span className="esqueleto h-7 w-20"></span><span className="esqueleto h-11 w-28 rounded-full"></span></div>
+          </div>
+        </li>))}
+    </ul>
   </div>
   </section>
   </div>

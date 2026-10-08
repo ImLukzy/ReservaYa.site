@@ -11,6 +11,8 @@ export interface CanchaApi {
   tipo: string;
   precioPorHora: string;
   imagen: string | null;
+  techada?: boolean;
+  superficie?: string | null;
   complejoId: string | null;
   complejo: { id: string; nombre: string; distrito: string; ciudad: string } | null;
 }

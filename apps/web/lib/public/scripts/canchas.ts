@@ -1,10 +1,12 @@
 import { API, APP } from "../entorno";
 import { APERTURA, ULTIMA, diasProximos, etiquetaHora, franjasProximas, nombreDia, resolverFecha } from "../horario";
-import { avisoTablero, filaCancha, filasEsqueleto, precioDe, urlReservar, type ItemDisponible, type Valoracion } from "./filas";
+import { avisoTablero, precioDe, urlReservar, type ItemDisponible, type Valoracion } from "./filas";
+import { tarjetaCancha, tarjetaComplejo, tarjetaPromo, tarjetasEsqueleto } from "./tarjetas";
+import { agruparPorComplejo, intercalarPromos, ordenarGrupos, textoConteo, type Celda } from "../tarjetas";
 import { createScriptScope } from "../runtime";
 export function iniciarCanchas() {
 const scope = createScriptScope(); const listen = scope.listen; const fetch = scope.request;
-// /canchas: tablero de canchas libres con filtros en la URL (?q&distrito&tipo&fecha&hora&orden).
+// /canchas: cuadrícula de canchas libres (spec 60) con filtros en la URL (?q&distrito&tipo&fecha&hora&orden&vista).
 
 
 
@@ -23,6 +25,10 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const form = $<HTMLFormElement>("filtros");
 const lista = $<HTMLUListElement>("resultados");
 const resumen = $("resumen");
+const conteo = $("conteo");
+const botonesVista = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-vista]"));
+type Vista = "canchas" | "complejos";
+let vista: Vista = "canchas";
 const q = $<HTMLInputElement>("f-q");
 const selects = {
     distrito: $<HTMLSelectElement>("f-distrito"),
@@ -46,6 +52,7 @@ function iniciarFiltros() {
         hora.value = String(h >= APERTURA && h <= ULTIMA ? h : proximas.horas[0]);
     if (q)
         q.value = url.get("q") ?? "";
+    marcarVista(url.get("vista") === "complejos" ? "complejos" : "canchas");
     for (const campo of ["distrito", "tipo", "orden"] as const) {
         const sel = selects[campo];
         const v = url.get(campo);
@@ -76,6 +83,8 @@ function guardarEnUrl() {
     url.set("hora", String(f.hora));
     if (f.orden !== "precio")
         url.set("orden", f.orden);
+    if (vista !== "canchas")
+        url.set("vista", vista);
     history.replaceState(null, "", `${location.pathname}?${url.toString()}`);
 }
 function valoracion(complejoId: string): Promise<RespuestaResenas | null> {
@@ -95,7 +104,9 @@ async function cargar() {
     const mio = ++pedido;
     guardarEnUrl();
     lista?.setAttribute("aria-busy", "true");
-    lista?.replaceChildren(...filasEsqueleto(4));
+    lista?.replaceChildren(...tarjetasEsqueleto(6));
+    if (conteo)
+        conteo.textContent = "Buscando…";
     const params = new URLSearchParams({ fecha, horaInicio: String(f.hora * 60), horaFin: String((f.hora + 1) * 60) });
     if (f.q)
         params.set("q", f.q);
@@ -120,15 +131,30 @@ async function cargar() {
             return;
         const nota = (it: ItemDisponible) => (it.cancha.complejoId ? notas.get(it.cancha.complejoId) : undefined);
         libres.sort((a, b) => f.orden === "precio-desc" ? precioDe(b) - precioDe(a) : f.orden === "valoracion" ? (nota(b)?.promedio ?? 0) - (nota(a)?.promedio ?? 0) : precioDe(a) - precioDe(b));
+        const grupos = agruparPorComplejo(libres, precioDe);
+        if (conteo)
+            conteo.textContent = textoConteo(grupos.length, libres.length);
         if (resumen)
             resumen.textContent = libres.length ? `${libres.length} ${libres.length === 1 ? "cancha libre" : "canchas libres"} ${cuando}` : `Sin canchas libres ${cuando}`;
         if (libres.length === 0) {
             const vacio = document.createElement("li");
+            vacio.className = "col-span-full card-tactil";
             vacio.append(avisoTablero(`No hay canchas libres ${cuando}`, "Prueba otra hora u otro día, o quita algún filtro.", { etiqueta: "Quitar filtros", alPulsar: quitarFiltros }));
             lista?.replaceChildren(vacio);
             return;
         }
-        lista?.replaceChildren(...libres.map((it) => filaCancha(it, {
+        const pintar = <T,>(celdas: Celda<T>[], tarjeta: (x: T) => HTMLLIElement) => celdas.map((c) => (c.tipo === "promo" ? tarjetaPromo(c.indice) : tarjeta(c.item)));
+        if (vista === "complejos") {
+            const ordenados = ordenarGrupos(grupos, f.orden, (g) => nota(g.items[0])?.promedio ?? 0);
+            lista?.replaceChildren(...pintar(intercalarPromos(ordenados), (g) => tarjetaComplejo(g, {
+                valoracion: nota(g.items[0]),
+                onValoracion: () => abrirOpiniones(g.items[0]),
+                verHref: urlVerComplejo(g.nombre),
+                onVer: () => verComplejo(g.nombre),
+            })));
+            return;
+        }
+        lista?.replaceChildren(...pintar(intercalarPromos(libres), (it) => tarjetaCancha(it, {
             hora: f.hora,
             reservarHref: urlReservar(APP, it.cancha, fecha, f.hora),
             valoracion: nota(it),
@@ -140,7 +166,10 @@ async function cargar() {
             return;
         if (resumen)
             resumen.textContent = "No pudimos cargar las canchas";
+        if (conteo)
+            conteo.textContent = "";
         const error = document.createElement("li");
+        error.className = "col-span-full card-tactil";
         error.append(avisoTablero("No pudimos cargar las canchas", "Revisa tu conexión e inténtalo otra vez.", { etiqueta: "Reintentar", alPulsar: cargar }));
         lista?.replaceChildren(error);
     }
@@ -148,6 +177,23 @@ async function cargar() {
         if (mio === pedido)
             lista?.setAttribute("aria-busy", "false");
     }
+}
+function marcarVista(v: Vista) {
+    vista = v;
+    botonesVista.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.vista === v)));
+}
+function urlVerComplejo(nombre: string) {
+    const url = new URLSearchParams(location.search);
+    url.set("q", nombre);
+    url.delete("vista");
+    return `${location.pathname}?${url.toString()}`;
+}
+function verComplejo(nombre: string) {
+    if (q)
+        q.value = nombre;
+    marcarVista("canchas");
+    cargar();
+    lista?.closest("section")?.scrollIntoView({ block: "start" });
 }
 function quitarFiltros() {
     if (q)
@@ -232,6 +278,13 @@ listen(q, "input", () => {
     espera = window.setTimeout(cargar, 400);
 });
 Object.values(selects).forEach((s) => listen(s, "change", cargar));
+botonesVista.forEach((b) => listen(b, "click", () => {
+    const v: Vista = b.dataset.vista === "complejos" ? "complejos" : "canchas";
+    if (v === vista)
+        return;
+    marcarVista(v);
+    cargar();
+}));
 iniciarFiltros();
 cargar();
 
