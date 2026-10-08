@@ -23,7 +23,7 @@ Revisión del 2026-10-07 sobre HEAD `0e3811bbab4c9655d5b4e2bdade65aab1cb7b88d`. 
 
 ## Catálogo real recibido de Jim
 
-Fuente: [catalogo-neon.md](../../../hive/agents/jim-muvk1y3c/catalogo-neon.md). Jim ejecutó SELECT de metadatos; Michael leyó el informe y no conectó a Neon. Se reportan 19 tablas de negocio más `_prisma_migrations`, 13 enums, 34 claves externas y 64 índices.
+Fuente: [catalogo-neon.md](../../../../hive/agents/jim-muvk1y3c/catalogo-neon.md). Jim ejecutó SELECT de metadatos; Michael leyó el informe y no conectó a Neon. Se reportan 19 tablas de negocio más `_prisma_migrations`, 13 enums, 34 claves externas y 64 índices.
 
 - `PartidoAbierto` y `AnotacionPartido` **ya existen**. Incorporarlas al futuro modelo Prisma no autoriza ejecutar CREATE TABLE. Jim confirmó la fe de erratas: el catálogo contiene 16 columnas de PartidoAbierto y 4 de AnotacionPartido; el 18 del mensaje inicial era incorrecto.
 - `Reclamo` **no existe en producción**. El modelo local y el POST público esperan esa tabla. Un baseline sin cambios de negocio no puede incluir su creación. El positivo 201 y la prueba de correlativos requieren una decisión de esquema separada y un entorno aislado. No se llamó al POST de producción para confirmar un fallo.

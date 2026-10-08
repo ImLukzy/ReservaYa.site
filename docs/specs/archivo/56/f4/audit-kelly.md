@@ -3,7 +3,7 @@
 - **Auditor:** Kelly-Auditor (`kelly-muvkk07m`)
 - **Fecha:** 2026-10-07
 - **Fase auditada:** Spec 56 F4 — Endpoints de Gestión y Mutaciones (Canchas, Horarios, Promociones, Usuarios, Media)
-- **Alcance del diff:** `apps/api/src/management/**`, `apps/api/src/app.module.ts`, `apps/api/src/auth/auth.module.ts`, `apps/api/package.json`, `scripts/f4-parity.mjs`, `tests/legacy-auth-host/Program.cs`, `docs/specs/56/f4/**`.
+- **Alcance del diff:** `apps/api/src/management/**`, `apps/api/src/app.module.ts`, `apps/api/src/auth/auth.module.ts`, `apps/api/package.json`, `scripts/f4-parity.mjs`, `tests/legacy-auth-host/Program.cs`, `docs/specs/archivo/56/f4/**`.
 - **Dictamen:** **APTO para integrar a `main`**
 
 ---
@@ -66,7 +66,7 @@ Las **14 divergencias de paridad detectadas** (donde NestJS retorna `403 Forbidd
 
 ## 3. Divergencias de Paridad Analizadas
 
-En el reporte de paridad (`docs/specs/56/f4/parity-results.json`), de 142 casos ejecutados:
+En el reporte de paridad (`docs/specs/archivo/56/f4/parity-results.json`), de 142 casos ejecutados:
 - **128 casos:** Paridad estricta **PASS** (100% idénticos en status, headers y body).
 - **14 casos:** Catalogados como `SECURITY_DIVERGENCE`.
 - **0 fallos.**

@@ -3,7 +3,7 @@
 ## 1. Objetivo
 **Problema:** `apps/api/src/reclamos/reclamos.ts:71–72` persiste el reclamo y devuelve la constancia sin enviar correo.
 **Resultado esperado:** tras confirmar el registro, enviar la constancia al consumidor y un aviso separado a ReservaYa. La respuesta 201 y el registro permanecen válidos aunque falle cualquier envío.
-**Estado:** aprobada por el humano el 2026-10-08.
+**Estado:** completada 2026-10-08 (6d0a602, fecha Perú bec58f0).
 
 ## 2. Fuera de alcance
 Cambiar la respuesta HTTP, correlativos, validación, plazo de respuesta, esquema DB o implementación .NET; despliegues, configurar secretos, envío real en pruebas, cola persistente y reintentos de entrega.

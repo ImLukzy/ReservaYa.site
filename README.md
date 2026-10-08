@@ -7,7 +7,7 @@ Reservas de canchas deportivas en Arequipa. Una web Next.js 16.2.9 / React 19.2.
 - `apps/web`: Next, componentes públicos/panel, cliente de API, assets.
 - `apps/api`: NestJS + Fastify, API de producción (:5200).
 - `packages/db`, `packages/shared`, `packages/config`: Prisma, contratos zod y configuración común.
-- `docs`: arquitectura, contrato de API, spec vigente ([56 — migración TypeScript](docs/specs/56-migracion-typescript.md), rama `main`) y archivo histórico.
+- `docs`: arquitectura, contrato de API e historia en `docs/specs/archivo` ([56 — migración TypeScript](docs/specs/archivo/56-migracion-typescript.md), última [57 — correo de reclamos](docs/specs/archivo/57-reclamos-correo.md)).
 - `scripts`: arranque Node web/API y checker de motion.
 
 Rollback: `git revert` o redeploy de un commit anterior en Render; no revertir la base automáticamente.
@@ -38,7 +38,7 @@ El runner carga el entorno local de `apps/web/.env` en el proceso, sin imprimirl
 | `pnpm --filter @reservaya/api build` | Compilar API |
 | `npm --prefix apps/web run db:check` | Comprobación de BD de solo lectura |
 
-`pnpm db:generate` genera el cliente Prisma sin conectarse a una base. `pnpm db:qa drift` utiliza exclusivamente TEST_DATABASE_URL* de `hive/qa.env`. CI valida cada paquete; no consume credenciales de producción. Ver [baseline y rollback](docs/specs/56/f1/baseline-runbook.md).
+`pnpm db:generate` genera el cliente Prisma sin conectarse a una base. `pnpm db:qa drift` utiliza exclusivamente TEST_DATABASE_URL* de `hive/qa.env`. CI valida cada paquete; no consume credenciales de producción. Ver [baseline y rollback](docs/specs/archivo/56/f1/baseline-runbook.md).
 
 CI genera tipos con `next typegen` antes de typecheck. Para un checkout sin tipos generados, ejecutar ese comando dentro de `apps/web` mediante `npm exec -- next typegen`.
 

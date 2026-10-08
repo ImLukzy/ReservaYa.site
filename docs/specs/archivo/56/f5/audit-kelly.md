@@ -76,7 +76,7 @@ Las **28 divergencias de sesión revocada** y las **divergencias de endurecimien
 
 ## 3. Análisis de Divergencias de Paridad
 
-En el reporte de paridad (`docs/specs/56/f5/parity-results.json`), sobre un total de 334 casos evaluados:
+En el reporte de paridad (`docs/specs/archivo/56/f5/parity-results.json`), sobre un total de 334 casos evaluados:
 - **304 casos:** Paridad estricta **PASS** (100% idénticos en status, headers, body y efectos en BD).
 - **28 casos:** Clasificados como `SECURITY_DIVERGENCE`.
 - **2 casos:** Clasificados como `INFO` (concurrencia legacy).

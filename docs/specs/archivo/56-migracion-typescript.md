@@ -2,7 +2,7 @@
 
 ## 1. Objetivo
 
-**Estado:** propuesta para revisión humana; este encargo autoriza únicamente redactar el documento. Fecha: 2026-10-07. No autoriza implementar, desplegar ni ejecutar comandos de base de datos.
+**Estado:** completada 2026-10-08. Corte a NestJS 2026-10-07 23:14 UTC; .NET retirado en 83cdb63; historial de migraciones de producción reconciliado 2026-10-08 (0_baseline + 1_libro_reclamaciones).
 
 **Problema:** `apps/api/Controllers` contiene 20 controladores C# y 106 acciones HTTP; `apps/web` usa Next.js 16.2.9/React 19 y npm. `docs/architecture.md` aún describe EF Core como dueño del esquema y rutas públicas anteriores a `/jugar`. El espejo `apps/web/prisma/schema.prisma` tiene 18 modelos y omite `PartidoAbierto` y `AnotacionPartido`, presentes en `apps/api/Data/AppDbContext.cs`. Su enum Rol incluye PERSONAL heredado: no convertir automáticamente ese dato en un rol permitido. El espejo no prueba cuál es el esquema desplegado ni si Reclamo está aplicado.
 

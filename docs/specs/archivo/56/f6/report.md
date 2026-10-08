@@ -60,7 +60,7 @@ Cambios en código compartido (mínimos y aditivos):
 - `packages/db/prisma/schema.prisma`: modelo `Reclamo` idéntico a `Migrations/20261006133334_LibroReclamaciones.cs` + Designer (26 columnas, `numeric(12,2)`, `timestamp(3)`, pk `Reclamo_pkey`, únicos `Reclamo_numero_key` y `Reclamo_anio_correlativo_key`, sin defaults).
 - `packages/db/prisma/migrations/1_libro_reclamaciones/migration.sql`: generado con `prisma migrate diff` desde el schema de HEAD; revisado contra el SQL de EF.
 - Aplicada en `qa-migracion-ts` con `node scripts/db-qa.mjs deploy --confirm-qa-migracion-ts`: «All migrations have been successfully applied», status «Database schema is up to date!», `db-qa drift` → «No difference detected. QA drift 0».
-- **Producción: pendiente**, con aprobación humana aparte (nota en `docs/specs/56/f1/baseline-runbook.md`). No se tocó `apps/api-dotnet/Migrations` ni se ejecutó seed.
+- **Producción: pendiente**, con aprobación humana aparte (nota en `docs/specs/archivo/56/f1/baseline-runbook.md`). No se tocó `apps/api-dotnet/Migrations` ni se ejecutó seed.
 - El host legado .NET lee y escribe la tabla: los casos 201 de E063 pasan en ambos backends.
 
 ## Verificación (Node 22.20.0, pnpm 10.18.3, dotnet 10.0.401)
@@ -78,7 +78,7 @@ node scripts/db-qa.mjs drift                              QA drift 0
 
 El conteo de tests incluye los de reservas que Michael (F7) está escribiendo en paralelo en el mismo árbol. La regresión completa F2–F5 la ejecuta god, por orden del humano. Primer intento de F2 con la guarda anterior: falló porque `/api/reservas` ya existe (F7); la guarda ya está corregida.
 
-`docs/specs/56/f6/parity-results.json` guarda cada caso: 20 endpoints × (nominal, sin sesión, tv revocado y rol no permitido si la ruta tiene roles), casos negativos de propiedad entre sedes y de miembro/plataforma, validación, bloqueo por vencimiento, literales decimales exactos, límite de reclamos por IP (11 envíos) y concurrencia. Cada comparación incluye status, cuerpo, `content-type` y todas las columnas de 11 tablas (el dinero se compara como texto exacto). Normalización: GUID N/D nuevos, marcas de tiempo de la petición (±120 s) y `traceId`.
+`docs/specs/archivo/56/f6/parity-results.json` guarda cada caso: 20 endpoints × (nominal, sin sesión, tv revocado y rol no permitido si la ruta tiene roles), casos negativos de propiedad entre sedes y de miembro/plataforma, validación, bloqueo por vencimiento, literales decimales exactos, límite de reclamos por IP (11 envíos) y concurrencia. Cada comparación incluye status, cuerpo, `content-type` y todas las columnas de 11 tablas (el dinero se compara como texto exacto). Normalización: GUID N/D nuevos, marcas de tiempo de la petición (±120 s) y `traceId`.
 
 El runner crea `f6_fixture_<12hex>` en la rama QA, aplica `0_baseline` y `1_libro_reclamaciones`, siembra datos ficticios una vez y restaura con `f6_seed.restore()`. Borra la base con `DROP … WITH (FORCE)` (tres intentos, cliente nuevo en cada uno, guarda de nombre) y también al recibir SIGINT/SIGTERM. Opción `--only=E019,…` para iterar.
 

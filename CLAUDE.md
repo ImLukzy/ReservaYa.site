@@ -5,7 +5,7 @@ Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web públic
 ## Trabajo
 
 - Español. Entregar resultado verificable, archivos cambiados y comandos/salidas. No commit/push/tag sin instrucción explícita.
-- Implementar desde spec aprobada en `docs/specs`; plantilla `_TEMPLATE.md`, spec vigente [56 — migración TypeScript](docs/specs/56-migracion-typescript.md) (rama `main`) e historia en `archivo`. En la oficina god asigna cards y Pam registra §7.
+- Implementar desde una nueva spec aprobada en `docs/specs`, creada desde `_TEMPLATE.md`; sin spec vigente. Historia en `archivo`, última [57 — correo de reclamos](docs/specs/archivo/57-reclamos-correo.md). En la oficina god asigna cards y Pam registra §7.
 - Antes de frontend leer `docs/skills/panel-next.md`. Contrato API: `docs/api.md`; arquitectura: `docs/architecture.md`; deploy: `DEPLOY_GRATIS.md`.
 - BLOQUEO-API: endpoint, payload y respuesta; no parchear ausencia de datos o permisos.
 - Spec, exploración y revisión describen trabajos del equipo; no asumir slash commands ni aliases de agentes instalados. Seguir las herramientas/skills realmente disponibles en la sesión.
@@ -41,7 +41,7 @@ scripts/                   runner Node y checker/tests motion
 
 Variables de ejemplo en apps/web/.env.example. Públicas: NEXT_PUBLIC_GA_ID, NEXT_PUBLIC_INBOXMEJIKAI_ENDPOINT, NEXT_PUBLIC_WHATSAPP_NUMBER. Privadas: DATABASE_URL, DATABASE_URL_UNPOOLED, JWT_SECRET (≥32), BACKEND_URL; API además FRONTEND_ORIGIN, COOKIE_SECURE y configuración de correo. Nunca editar/versionar .env real ni artefactos node_modules/.next/dist.
 
-Spec 56 aprobada: Prisma pasa a ser dueño del esquema. F1 autoriza reconciliar historial y baseline únicamente en la rama Neon `qa-migracion-ts`, usando TEST_DATABASE_URL* de hive/qa.env. Producción prohibida sin aprobación humana posterior. No ejecutar seed. Historial/rollback: docs/specs/56/f1/baseline-runbook.md.
+Prisma es dueño del esquema; producción y QA tienen el mismo historial (`0_baseline`, `1_libro_reclamaciones`). Cambios de esquema: nueva migración en `packages/db/prisma/migrations`, probar en `qa-migracion-ts` y `prisma migrate deploy` en producción solo con aprobación humana. No ejecutar seed (ya no existe).
 
 Cookie HttpOnly token emitida por API; cliente no lee JWT. Roles USUARIO, ADMIN, SUPERADMIN y TECNICO. Multitenancy y 403 cross-owner los decide la API. Requests y uploads del navegador usan el mismo origen web.
 
