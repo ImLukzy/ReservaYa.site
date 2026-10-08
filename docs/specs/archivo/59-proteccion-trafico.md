@@ -1,6 +1,6 @@
 # Especificación: 59 - Protección de tráfico: origen, límite global e IP fiable
 
-Estado: aprobada 2026-10-08 (humano: "arranca, haz todo lo que se puede hacer sin coste").
+Estado: completada 2026-10-08.
 
 ## 1. Objetivo
 **Problema:**
@@ -52,7 +52,7 @@ Estado: aprobada 2026-10-08 (humano: "arranca, haz todo lo que se puede hacer si
 - [x] T3: límite global por IP.
 - [x] T4: web envía secreto e IP en rewrite y fetch de servidor.
 - [x] T5: tests y docs.
-- [ ] T6: despliegue en orden (API → variables Render/Vercel → redeploy web) y A6.
+- [x] T6: despliegue en orden (API → variables Render/Vercel → redeploy web) y A6.
 
 ## 7. Registro de verificación
 | Fecha | Criterio | Resultado | Evidencia |
@@ -62,7 +62,8 @@ Estado: aprobada 2026-10-08 (humano: "arranca, haz todo lo que se puede hacer si
 | 2026-10-08 | A4 | Pasa | 300 lecturas/min y 60 escrituras/min; exceso → 429 con Retry-After: 60; otra IP y healthz siguen disponibles. |
 | 2026-10-08 | A5 | Pasa | Purga de vencidas y máximo 10.000 claves; a capacidad se rechaza una nueva clave sin expulsar contadores activos. |
 | 2026-10-08 | Tipos / lint / tests | Pasa | `pnpm exec turbo run typecheck lint test --force`: 16/16 tareas; API 118 tests. Web + runner + motion en proceso único: 85/85 tests. Knip sin hallazgos. Logs privados de Michael: spec59-checks.log y spec59-web-tests.log. |
-| 2026-10-08 | A1 / A6 | Pendiente god | Gate con build y pruebas de producción fuera del sandbox; no se modificaron variables reales ni se desplegó. |
+| 2026-10-08 | A1 | Pasa | god fuera del sandbox: `pnpm exec turbo run build typecheck lint test --force` → 18/18 (API 118). E2E local con `ORIGIN_SECRET`: directo 403, healthz 200, web/SSR/login/panel 200, 310 peticiones → 429 con `Retry-After: 60`. |
+| 2026-10-08 | A6 | Pasa | Producción a87fd9c con `ORIGIN_SECRET` en Vercel y Render: directo a Render 403 (también con IP falsificada), `/healthz` 200; humo Pam 11/11 (USUARIO y ADMIN); login con Google OK (humano). WAF Vercel: regla 300/60 s por IP en `/api`. |
 
 Decisiones: cabeceras `x-origin-secret` y `x-reservaya-client-ip`, IP derivada del edge de Vercel en proxy/SSR, SHA-256 + comparación constante, sin dependencias nuevas. Los límites siguen en memoria por instancia. `b2b-api` hereda el envío por `server-fetch` sin duplicarlo. Las zonas existentes de `proxy.ts` conservan su lógica. Se añadieron `/api/:path*` al matcher y una rama de forwarding previa a las guardas del panel.
 
