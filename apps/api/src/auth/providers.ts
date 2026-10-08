@@ -67,6 +67,10 @@ export class MailProvider {
   queueReclamo(message:EmailMessage,numero:string){
     return this.background(()=>this.deliver(message,true),`No se pudo enviar el correo del reclamo ${numero}`);
   }
+  // Booking mail (spec 66): same transport-only rule as the reclamo; the log carries only the code, never addresses.
+  queueReserva(message:EmailMessage,codigo:string){
+    return this.background(()=>this.deliver(message,true),`No se pudo enviar el correo de la reserva ${codigo}`);
+  }
   private background(job:()=>Promise<void>,error:string){
     if(this.pending>=500)return false;
     this.pending++;

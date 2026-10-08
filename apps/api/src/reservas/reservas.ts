@@ -8,6 +8,7 @@ import { databaseError, foreignKeyError } from '../management/errors';
 import { DbService } from '../public/db.service';
 import { fail, money, parseDay, quote, utc } from '../public/format';
 import { newId } from '../auth/crypto';
+import { CorreosReserva } from './correos';
 type Tx=Prisma.TransactionClient;
 type Row=Prisma.ReservaGetPayload<{include:{canchaByCanchaId:true;usuarioByUsuarioId:true}}>;
 type CreateBody={canchaId?:string;fecha?:string;horaInicio?:number;horaFin?:number;notas?:string};
@@ -19,7 +20,7 @@ const shape=(r:Row,user:boolean)=>({id:r.id,codigo:r.codigo,usuarioId:r.usuarioI
 const serial=(e:unknown)=>databaseError(e,'P2034')||databaseError(e,'40001')||(e instanceof Error&&/\bcode\s*:\s*"40001"/.test(e.message));
 @Injectable()
 export class Reservas {
- constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access){}
+ constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access,@Inject(CorreosReserva)private correos:CorreosReserva){}
  private get db(){return this.store.db;}
  private async member(a:Actor,id:string,tx:Tx){if(a.rol==='TECNICO')return Boolean(await tx.complejo.findUnique({where:{id}}));return Boolean(await tx.complejo.findFirst({where:{id,AND:[{id:{in:await this.access.enabled(tx)}}],OR:[{duenoId:a.id},{complejoMiembroByComplejoId:{some:{usuarioId:a.id,activo:true}}}]}}));}
  private async scope(a:Actor,row:Pick<Row,'complejoId'|'canchaByCanchaId'>,tx:Tx){if(a.rol==='TECNICO')return true;const id=row.complejoId??row.canchaByCanchaId?.complejoId;return !id||await this.member(a,id,tx);}
@@ -45,14 +46,16 @@ export class Reservas {
    return tx.reserva.create({data:{id:newId(),codigo:'RF-'+newId().slice(0,4).toUpperCase(),usuarioId:a.id,canchaId:court!.id,fecha:fecha!,horaInicio:inicio,horaFin:fin,estado:'PENDIENTE',total:quote(court!.precioPorHora,promos,fecha!,inicio,fin).total,notas:b.notas?.trim()||null,creadoEn:new Date()},include:{canchaByCanchaId:true,usuarioByUsuarioId:true}});
   },{isolationLevel:'Serializable',timeout:15000});break;}catch(e){if(foreignKeyError(e))fail(409,'La cancha ya no está disponible');if(serial(e))fail(409,'El horario acaba de ser reservado. Elige otro horario.');if(databaseError(e,'P2002')){if(attempt===2)fail(409,'La reserva no pudo registrarse. Intenta de nuevo.');continue;}throw e;}}
   if(result?.canchaByCanchaId.complejoId){try{const center=result.canchaByCanchaId.complejoId;await this.db.$transaction(async tx=>{if(!await tx.horarioOperativo.findFirst({where:{complejoId:center,canchaId:null}}))await tx.horarioOperativo.createMany({data:days.map((_,diaSemana)=>({id:newId(),complejoId:center,diaSemana,aperturaMin:480,cierreMin:1260,activo:true,creadoEn:new Date()}))});});}catch{/* legacy best effort */}}
+  void this.correos.avisar([result!.id],'creada',{dueno:true});
   return {ok:true,reserva:shape(result!,false)};
  }
- async patch(id:string,b:PatchBody,r:FastifyRequest){const a=await this.access.actor(r);try{return await this.db.$transaction(async tx=>{
+ async patch(id:string,b:PatchBody,r:FastifyRequest){const a=await this.access.actor(r);let aviso=null as 'confirmada'|'cancelada'|null,rivales:string[]=[];try{const response=await this.db.$transaction(async tx=>{aviso=null;rivales=[];
   const found=await tx.reserva.findUnique({where:{id},include:{canchaByCanchaId:true}});if(!found)fail(404,'No encontrada');await tx.$queryRaw`SELECT "id" FROM "Cancha" WHERE "id" = ${found!.canchaId} FOR UPDATE`;
   const row=await tx.reserva.findUnique({where:{id},include:{canchaByCanchaId:true}});if(!row)fail(404,'No encontrada');if(a.rol==='USUARIO'){if(row!.usuarioId!==a.id)fail(403,'Sin permisos');if(b.estado&&b.estado!=='CANCELADA')fail(403,'Solo puedes cancelar tu reserva');}else if(!await this.scope(a,row!,tx))fail(403,'Sin permisos');
-  const data:Prisma.ReservaUpdateInput={};if(b.estado){const estado=parseEnum(states,b.estado);if(!estado)fail(400,'Estado inválido');if(estado==='CONFIRMADA'){const where={id:{not:id},canchaId:row!.canchaId,fecha:row!.fecha,...overlaps(row!.horaInicio,row!.horaFin)};if(await tx.reserva.findFirst({where:{...where,estado:'CONFIRMADA'}}))fail(409,'Ya existe una reserva confirmada en ese horario');await tx.reserva.updateMany({where:{...where,estado:'PENDIENTE'},data:{estado:'CANCELADA'}});}data.estado=estado!;}
+  const data:Prisma.ReservaUpdateInput={};if(b.estado){const estado=parseEnum(states,b.estado);if(!estado)fail(400,'Estado inválido');if(estado==='CONFIRMADA'){const where={id:{not:id},canchaId:row!.canchaId,fecha:row!.fecha,...overlaps(row!.horaInicio,row!.horaFin)};if(await tx.reserva.findFirst({where:{...where,estado:'CONFIRMADA'}}))fail(409,'Ya existe una reserva confirmada en ese horario');rivales=(await tx.reserva.findMany({where:{...where,estado:'PENDIENTE'},select:{id:true}})).map(x=>x.id);await tx.reserva.updateMany({where:{...where,estado:'PENDIENTE'},data:{estado:'CANCELADA'}});}if(estado!==row!.estado&&(estado==='CONFIRMADA'||estado==='CANCELADA'))aviso=estado==='CONFIRMADA'?'confirmada':'cancelada';data.estado=estado!;}
   if(b.notas!=null)data.notas=b.notas.trim()||null;const updated=await tx.reserva.update({where:{id},data,include:{canchaByCanchaId:true,usuarioByUsuarioId:true}});return {ok:true,reserva:shape(updated,a.rol!=='USUARIO')};
- },{isolationLevel:'Serializable',timeout:15000});}catch(e){if(serial(e))fail(409,'El horario acaba de ser confirmado por otra solicitud');throw e;}}
+ },{isolationLevel:'Serializable',timeout:15000});
+  if(aviso)void this.correos.avisar([id],aviso);if(rivales.length)void this.correos.avisar(rivales,'cancelada');return response;}catch(e){if(serial(e))fail(409,'El horario acaba de ser confirmado por otra solicitud');throw e;}}
  async delete(id:string,r:FastifyRequest){const a=await this.access.actor(r,managementRoles),row=await this.db.reserva.findUnique({where:{id},include:{canchaByCanchaId:true}});if(!row)return {ok:true};if(!await this.scope(a,row,this.db))fail(403,'Sin permisos');await this.db.reserva.delete({where:{id}});return {ok:true};}
 }
 @Controller('api/reservas')

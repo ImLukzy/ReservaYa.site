@@ -170,3 +170,13 @@ Una reseña por usuario y complejo (`Resena`, sin cambios de esquema). En públi
 | POST / PUT | `/api/resenas/{id}/responder` | dueño del complejo o TECNICO | `{ respuesta ≤ 500 }` | `{ ok, resena }`; POST responde, PUT edita · 400 · 403 · 404 |
 
 El promedio (redondeo a un decimal, mitad hacia arriba) y el total de `/api/complejos/publico/{slug}` y de `/api/resenas/publicas` salen de la misma función (`apps/api/src/resenas/publico.ts`), así que coinciden en `/canchas` y en el perfil.
+
+## Correos de reserva (spec 66)
+
+Sin cambios en endpoints ni respuestas. Tras el commit, la API encola correos (Resend, mismo transporte que el reclamo: `EMAIL_PROVIDER=resend`, `RESEND_API_KEY`, `EMAIL_FROM`; no exige `PASSWORD_RESET_URL`):
+
+- `POST /api/reservas` 201 → jugador «Reserva recibida» y dueño del complejo «Nueva reserva» (no, si el dueño reservó para sí).
+- `PATCH /api/reservas/{id}` con cambio real a `CONFIRMADA` → jugador «Reserva confirmada»; las pendientes solapadas que se cancelan → «Reserva cancelada». Cambio a `CANCELADA` → jugador «Reserva cancelada».
+- Recordatorio: cada 5 min (en proceso, solo con transporte configurado) las reservas `CONFIRMADA` que empiezan en ≤ 2 h y aún no empezaron reciben uno; `Reserva.recordatorioEnviadoEn` (migración `3_recordatorio_reserva`) lo hace único. Si la API estuvo dormida y el partido ya empezó, no se envía.
+
+Contenido: complejo, cancha, fecha y hora de Perú, total, código, estado, enlace al panel y «Cómo llegar» si el complejo tiene coordenadas. Un fallo de correo no cambia la respuesta y el log solo lleva el código de reserva.

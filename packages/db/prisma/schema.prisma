@@ -449,6 +449,7 @@ model Reserva {
   promocionId String?
   validadaEn DateTime? @db.Timestamp(3)
   validadaPorId String?
+  recordatorioEnviadoEn DateTime? @db.Timestamp(3)
 
   movimientoCajaByReservaId MovimientoCaja[] @relation("MovimientoCaja_reservaId_fkey")
   canchaByCanchaId Cancha @relation("Reserva_canchaId_fkey", fields: [canchaId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "Reserva_canchaId_fkey")
