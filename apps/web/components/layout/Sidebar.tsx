@@ -213,7 +213,7 @@ export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
         type="button"
         aria-label={pendientes > 0 ? 'Abrir menú (tienes invitaciones pendientes)' : 'Abrir menú'}
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-40 rounded-md bg-noche p-2 text-tiza shadow-lg lg:hidden"
+        className="fixed left-4 top-4 z-40 inline-flex min-h-11 min-w-11 items-center justify-center rounded-md bg-noche p-2 text-tiza shadow-lg lg:hidden"
       >
         <Menu size={ICON.size} strokeWidth={ICON.strokeWidth} aria-hidden="true" />
         {pendientes > 0 && (
@@ -247,7 +247,7 @@ export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
             type="button"
             aria-label="Cerrar menú"
             onClick={() => setOpen(false)}
-            className="ml-auto rounded-md p-2 text-niebla hover:text-tiza lg:hidden"
+            className="ml-auto inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md p-2 text-niebla hover:text-tiza lg:hidden"
           >
             <X size={18} strokeWidth={2} aria-hidden="true" />
           </button>
@@ -258,7 +258,7 @@ export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
           <Link
             href={`${publicAppUrl}/`}
             onClick={() => setOpen(false)}
-            className="mx-3 flex items-center gap-3 border-l-[0.1875rem] border-transparent px-3 py-2.5 text-sm font-medium text-niebla transition-colors hover:text-tiza"
+            className="mx-3 flex min-h-11 items-center gap-3 border-l-[0.1875rem] border-transparent px-3 py-2.5 text-sm font-medium text-niebla transition-colors hover:text-tiza"
           >
             <House size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" aria-hidden="true" />
             Página principal
@@ -283,7 +283,7 @@ export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
                         onClick={() => setOpen(false)}
                         aria-current={active ? 'page' : undefined}
                         className={cn(
-                          'flex items-center gap-3 rounded-r-md border-l-[0.1875rem] px-3 py-2.5 text-sm transition-colors',
+                          'flex min-h-11 items-center gap-3 rounded-r-md border-l-[0.1875rem] px-3 py-2.5 text-sm transition-colors',
                           active
                             ? 'border-cesped-vivo bg-cesped/20 font-semibold text-tiza'
                             : 'border-transparent font-medium text-niebla hover:bg-tiza/5 hover:text-tiza'

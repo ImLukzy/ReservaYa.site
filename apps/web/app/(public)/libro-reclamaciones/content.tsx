@@ -96,7 +96,7 @@ export default function PublicContent() {
     <p className="mt-3 max-w-2xl text-base leading-relaxed text-pizarra sm:text-lg">Presenta tu queja o reclamo sobre ReservaYa. El plazo máximo de respuesta es de 15 días hábiles improrrogables desde su recepción, conforme a la Ley N.º 29571 y al D.S. N.º 011-2011-PCM y sus modificatorias.</p>
 
     <div className="mt-6 text-sm text-pizarra">
-      <p><strong>Contacto:</strong> <a href={`mailto:${EMPRESA.email}`} className="underline">{EMPRESA.email}</a></p>
+      <p><strong>Contacto:</strong> <a href={`mailto:${EMPRESA.email}`} className="inline-block min-h-11 min-w-11 py-3 -my-3 underline">{EMPRESA.email}</a></p>
       <p className="mt-2">Última actualización: {ACTUALIZACION_LEGAL}.</p>
     </div>
     <form data-libro-reclamaciones className="card-tactil mt-8 space-y-4 bg-tiza p-5 shadow-suave sm:p-7" noValidate>
@@ -132,12 +132,12 @@ export default function PublicContent() {
       <p className="text-sm text-pizarra">Queja: malestar por la atención. Reclamo: desacuerdo con el servicio o el cobro.</p>
       <Field apariencia="publica" id="lr-detalle" name="detalle" etiqueta="Qué pasó" multilinea filas={5} required minLength={10} placeholder="Fecha, complejo y lo que ocurrió."/>
       <Field apariencia="publica" id="lr-pedido" name="pedido" etiqueta="Qué pides" multilinea filas={3} required minLength={5}/>
-      <p className="text-sm text-pizarra">La presentación es gratuita y no impide acudir al Indecopi. Los datos se utilizan para atender esta solicitud conforme a la <Link href="/legal/privacy" className="underline">Política de privacidad</Link>.</p>
+      <p className="text-sm text-pizarra">La presentación es gratuita y no impide acudir al Indecopi. Los datos se utilizan para atender esta solicitud conforme a la <Link href="/legal/privacy" className="inline-block min-h-11 min-w-11 py-3 -my-3 underline">Política de privacidad</Link>.</p>
       <p data-status hidden role="status"></p>
       <pre data-constancia hidden aria-label="Constancia del reclamo" className="whitespace-pre-wrap break-words text-sm text-pizarra"></pre>
       <a data-copia hidden download="solicitud-reclamacion-reservaya.txt" className="inline-flex min-h-11 items-center font-semibold text-cesped-hondo underline">Descargar constancia</a>
       <Button apariencia="publica" type="submit" data-submit className="w-full shadow-suave-sm">Enviar reclamo</Button>
-      <p className="text-center text-sm text-pizarra">También puedes escribir a <a href={`mailto:${EMAIL}`} className="font-semibold text-cesped-hondo underline">{EMAIL}</a>.</p>
+      <p className="text-center text-sm text-pizarra">También puedes escribir a <a href={`mailto:${EMAIL}`} className="inline-block min-h-11 min-w-11 py-3 -my-3 font-semibold text-cesped-hondo underline">{EMAIL}</a>.</p>
     </form>
   </section>
     </>

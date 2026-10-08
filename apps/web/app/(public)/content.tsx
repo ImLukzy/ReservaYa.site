@@ -56,7 +56,7 @@ export default function PublicContent() {
       </ol>
       <div className="pasos-marcador__acciones">
         <a href="#buscar" className="btn-tactil min-h-12 bg-cancha-noche px-6 text-base font-bold text-blanco hover:bg-cancha-noche/85">Buscar cancha</a>
-        <a href="/jugar#equipos" className="enlace-vivo">¿Son muchos? Arma los equipos en Jugar</a>
+        <a href="/jugar#equipos" className="enlace-vivo inline-flex min-h-11 min-w-11 items-center py-2.5 -my-2.5">¿Son muchos? Arma los equipos en Jugar</a>
       </div>
     </div>
   </section>
@@ -67,7 +67,7 @@ export default function PublicContent() {
       <div>
         <h2 id="preguntas-titulo" className="gigante">Preguntas frecuentes</h2>
         <p className="bajada-viva">Lo esencial sobre tu cuenta, la confirmación y el pago.</p>
-        <a href="/ayuda" className="enlace-vivo mt-5 inline-flex">¿Otra duda? Revisa la ayuda</a>
+        <a href="/ayuda" className="enlace-vivo mt-2.5 -mb-2.5 inline-flex min-h-11 min-w-11 items-center py-2.5">¿Otra duda? Revisa la ayuda</a>
       </div>
       <PreguntasTactiles preguntas={PREGUNTAS_JUGADOR}/>
     </div>

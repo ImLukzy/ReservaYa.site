@@ -29,7 +29,7 @@ export default function CookieConsent() {
   }
   return <section role="region" aria-labelledby="cookie-title" aria-describedby="cookie-description" className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-texto rounded-surface border border-cal bg-tiza p-4 shadow-suave">
     <h2 id="cookie-title" className="font-sans text-lg font-bold text-basalto [font-variation-settings:normal]">Cookies de análisis</h2>
-    <p id="cookie-description" className="mt-1 text-sm text-pizarra">Usamos cookies necesarias para tu sesión. Google Analytics solo se activa si aceptas; puedes cambiar tu decisión en el pie. <Link href="/legal/privacy" className="font-semibold underline">Privacidad</Link>.</p>
+    <p id="cookie-description" className="mt-1 text-sm text-pizarra">Usamos cookies necesarias para tu sesión. Google Analytics solo se activa si aceptas; puedes cambiar tu decisión en el pie. <Link href="/legal/privacy" className="inline-block min-h-11 min-w-11 py-3 -my-3 font-semibold underline">Privacidad</Link>.</p>
     <div className="mt-3 flex flex-wrap gap-3">
       <Button apariencia="publica" variante="secundario" onClick={() => choose('rejected')}>Rechazar</Button>
       <Button apariencia="publica" variante="secundario" onClick={() => choose('accepted')}>Aceptar</Button>

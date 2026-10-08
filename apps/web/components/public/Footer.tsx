@@ -13,7 +13,7 @@ export default function Footer() {
 
 
 
-const enlaceLegal = "inline-flex min-h-11 items-center text-pizarra hover:text-basalto hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped rounded px-1";
+const enlaceLegal = "inline-flex min-h-11 min-w-11 items-center text-pizarra hover:text-basalto hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped rounded px-1";
 
 return (<>
 
