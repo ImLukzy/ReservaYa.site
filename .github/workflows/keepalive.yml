@@ -1,0 +1,20 @@
+# Mantiene despierta la API gratuita de Render (spec 67).
+# Render free duerme la API sin tráfico (~30-50 s de arranque en frío);
+# este ping a /healthz (sin secreto de origen, spec 59) cada 10 minutos
+# la mantiene caliente. Gratis: repo público, sin minutos de pago.
+# Nota: GitHub desactiva los cron tras 60 días sin actividad en el repo
+# (ver DEPLOY_GRATIS.md); basta cualquier commit para reactivarlos.
+name: Keepalive API
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ping:
+    name: ping /healthz
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: curl -fsS --retry 3 --retry-delay 10 --max-time 60 https://reservaya-api-va.onrender.com/healthz

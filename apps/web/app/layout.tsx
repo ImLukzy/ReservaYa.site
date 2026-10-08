@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   description: 'Busca, reserva y juega. Sistema de reservas de canchas deportivas',
   // Mismo icono en público y panel; app/favicon.ico es su versión .ico para /favicon.ico.
   icons: { icon: '/favicon.svg' },
+  // PWA instalable (spec 67): app/manifest.ts sirve /manifest.webmanifest.
+  manifest: '/manifest.webmanifest',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

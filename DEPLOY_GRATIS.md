@@ -94,3 +94,7 @@ Para evitar cortar tráfico durante la activación:
 4. Si hay rollback, desactivar primero la exigencia de origen en Render antes de restaurar una web que aún no envíe las cabeceras.
 
 La IP sale de las cabeceras fijadas por el edge de Vercel; no anteponer un proxy externo sin revisar esta confianza. Nunca imprimir el secreto ni guardarlo en logs/comandos versionados. Los topes globales son 300 peticiones y 60 escrituras por minuto/IP; 429 incluye `Retry-After: 60`. Cuentas en memoria por instancia: reinicios y múltiples réplicas tienen contadores separados.
+
+## Keepalive de la API (spec 67)
+
+Render free duerme la API sin tráfico y el primer arranque tarda 30–50 s. El workflow `.github/workflows/keepalive.yml` hace `curl` a `https://reservaya-api-va.onrender.com/healthz` cada 10 minutos (más botón manual `workflow_dispatch`); no usa secretos porque `/healthz` no exige origen (spec 59). Gratis en repo público. Ojo: GitHub desactiva los cron tras 60 días sin actividad en el repo; cualquier commit los reactiva.
