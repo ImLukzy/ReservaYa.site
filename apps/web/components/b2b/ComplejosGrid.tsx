@@ -31,6 +31,9 @@ export interface ComplejoCard {
   fotos?: string[];
   latitud?: number | null;
   longitud?: number | null;
+  anticipacionMinMin?: number;
+  cancelacionMinMin?: number;
+  politica?: string | null;
   telefono?: string;
   direccion?: string;
   publicado?: boolean;
@@ -56,6 +59,9 @@ function normalizar(raw: Record<string, unknown>, i: number): ComplejoCard {
     fotos: Array.isArray(raw.fotos) ? raw.fotos.filter((f): f is string => typeof f === 'string') : [],
     latitud: typeof raw.latitud === 'number' ? raw.latitud : null,
     longitud: typeof raw.longitud === 'number' ? raw.longitud : null,
+    anticipacionMinMin: typeof raw.anticipacionMinMin === 'number' ? raw.anticipacionMinMin : 0,
+    cancelacionMinMin: typeof raw.cancelacionMinMin === 'number' ? raw.cancelacionMinMin : 0,
+    politica: typeof raw.politica === 'string' ? raw.politica : null,
     imagen: Array.isArray(raw.fotos) && raw.fotos[0] ? String(raw.fotos[0]) : raw.imagen != null && raw.imagen !== '' ? String(raw.imagen) : undefined,
     telefono: raw.telefono != null && raw.telefono !== '' ? String(raw.telefono) : undefined,
     direccion: raw.direccion != null && raw.direccion !== '' ? String(raw.direccion) : undefined,
@@ -82,9 +88,12 @@ interface FormState {
   fotos: string[];
   latitud: number | null;
   longitud: number | null;
+  anticipacionMinMin: number;
+  cancelacionMinMin: number;
+  politica: string;
 }
 
-const FORM_VACIO: FormState = { nombre: '', direccion: '', distrito: '', ciudad: CIUDAD_UNICA, telefono: '', publicado: true, fotos: [], latitud: null, longitud: null };
+const FORM_VACIO: FormState = { nombre: '', direccion: '', distrito: '', ciudad: CIUDAD_UNICA, telefono: '', publicado: true, fotos: [], latitud: null, longitud: null, anticipacionMinMin: 0, cancelacionMinMin: 0, politica: '' };
 
 export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
   const [lista, setLista] = useState<ComplejoCard[]>(complejos);
@@ -154,7 +163,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
   }
 
   function abrirEditar(c: ComplejoCard) {
-    setForm({ nombre: c.nombre, direccion: c.direccion ?? '', distrito: c.distrito, ciudad: c.ciudad ?? CIUDAD_UNICA, telefono: c.telefono ?? '', publicado: c.publicado ?? false, fotos: c.fotos ?? [], latitud: c.latitud ?? null, longitud: c.longitud ?? null });
+    setForm({ nombre: c.nombre, direccion: c.direccion ?? '', distrito: c.distrito, ciudad: c.ciudad ?? CIUDAD_UNICA, telefono: c.telefono ?? '', publicado: c.publicado ?? false, fotos: c.fotos ?? [], latitud: c.latitud ?? null, longitud: c.longitud ?? null, anticipacionMinMin: c.anticipacionMinMin ?? 0, cancelacionMinMin: c.cancelacionMinMin ?? 0, politica: c.politica ?? '' });
     setErrorForm(null);
     setModal({ modo: 'editar', id: c.id });
   }
@@ -179,6 +188,7 @@ export function ComplejosGrid({ complejos }: { complejos: ComplejoCard[] }) {
         telefono: form.telefono.trim(),
         publicado: form.publicado,
         fotos: form.fotos, latitud: form.latitud, longitud: form.longitud,
+        anticipacionMinMin: form.anticipacionMinMin, cancelacionMinMin: form.cancelacionMinMin, politica: form.politica,
       };
       if (modal?.modo === 'editar') {
         const id = modal.id;
@@ -628,6 +638,13 @@ function ModalComplejo({
               />
             </div>
           </div>
+          <fieldset className="space-y-3 rounded-control border border-cal p-3">
+            <legend className="font-semibold text-basalto">Reglas de reserva</legend>
+            <div><label htmlFor="complejo-anticipacion" className={labelCls}>Anticipación mínima (horas, 0–48)</label><input id="complejo-anticipacion" type="number" min={0} max={48} step={0.5} value={form.anticipacionMinMin / 60} onChange={e => setForm({ ...form, anticipacionMinMin: Math.round(Number(e.target.value) * 60) })} className={inputCls} /></div>
+            <div><label htmlFor="complejo-cancelacion" className={labelCls}>Cancelar al menos antes (horas, 0–72)</label><input id="complejo-cancelacion" type="number" min={0} max={72} step={0.5} value={form.cancelacionMinMin / 60} onChange={e => setForm({ ...form, cancelacionMinMin: Math.round(Number(e.target.value) * 60) })} className={inputCls} /></div>
+            <div><label htmlFor="complejo-politica" className={labelCls}>Política de reserva y cancelación</label><textarea id="complejo-politica" maxLength={300} rows={3} value={form.politica} onChange={e => setForm({ ...form, politica: e.target.value })} className={inputCls} /><p className="text-xs text-pizarra">{form.politica.length}/300 caracteres</p></div>
+            <p className="text-sm text-pizarra">Cero mantiene las reglas actuales. Los plazos se aplican al jugador; el dueño y el personal autorizado pueden gestionar la reserva.</p>
+          </fieldset>
           <FotosEditor fotos={form.fotos} onBusy={setSubiendo} onChange={fotos => setForm(prev => ({ ...prev, fotos }))} />
           <UbicacionEditor direccion={form.direccion} punto={form.latitud !== null && form.longitud !== null ? { latitud: form.latitud, longitud: form.longitud } : null} onChange={p => setForm(prev => ({ ...prev, latitud: p?.latitud ?? null, longitud: p?.longitud ?? null }))} onDistrito={distrito => setForm(prev => ({ ...prev, distrito }))} />
           {(!form.fotos.length || form.latitud === null) && <p className="text-sm text-pizarra">Completa fotos y ubicación para mejorar tu perfil. Puedes publicar sin ellas.</p>}

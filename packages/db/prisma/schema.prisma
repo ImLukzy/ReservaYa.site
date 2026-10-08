@@ -175,6 +175,9 @@ model Complejo {
   fotos String[] @default([])
   latitud Float?
   longitud Float?
+  anticipacionMinMin Int @default(0)
+  cancelacionMinMin Int @default(0)
+  politica String?
   publicado Boolean @default(false)
   slug String
   duenoId String

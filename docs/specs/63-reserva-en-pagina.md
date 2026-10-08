@@ -53,3 +53,4 @@ Pago en línea (hoy la reserva queda `PENDIENTE` o `CONFIRMADA` según la regla 
 | 2026-10-08 | Gate sin build | Pasa |Node22 turbo typecheck/lint/test16/16; ejecución nativa web+runner+motion en un proceso111/111; diffcheck limpio. |
 | 2026-10-08 | A1 | Pendiente (god) |Gate con build18/18 fuera sandbox. |
 | 2026-10-08 | A4 | Pendiente (god) |Script preparado spec63-reserva-qa.mjs en carpeta privada del agente, node--checkPASS. Requiere servidorlocalhostQA, SPEC63_SLUG y QA_USUARIO_EMAIL/PASSWORD; simula agenda/POST para no escribir DB. Valida login/retorno/código/409+recarga. Confirmar una PENDIENTE antes de repetir para conflicto real (regla vigente: solo CONFIRMADA ocupa). |
+| 2026-10-08 | A1 / A4 | Pasa (god) |God confirmó gate18/18, script E2E pasa y agenda real QA26franjas; integrado en b8b5317 (inbox16:53). |

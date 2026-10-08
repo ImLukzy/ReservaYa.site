@@ -190,3 +190,11 @@ GET `/api/canchas/:id/agenda?fecha=AAAA-MM-DD` es anónimo tras protección de o
 `ReservaWidget` en `/c/[slug]`: cancha,14días de Perú, franjas contiguas de1–3h, total y POST existente con `{canchaId,fecha,horaInicio,horaFin}`. Muestra código/estado/total devueltos. Sin sesión o401, vuelve vía `/login?returnUrl=...` al perfil con `cancha,fecha,inicio,fin` y `#reservar`; revalida selección contra agenda recién cargada y nunca envía POST automáticamente.409 avisa, limpia selección y recarga agenda. Hoja inferior móvil y aside fijo en escritorio; bloque agenda de384px reservado durante carga.
 
 La regla de anticipación del complejo se integra en spec69 (hasta entonces cero). Las reservas PENDIENTE siguen sin bloquear otras solicitudes; una repetición produce409 cuando ya existe una CONFIRMADA. E2E con conflicto real necesita confirmarla primero o simular409 para verificar la interfaz.
+
+## Reglas de reserva del complejo (spec 69)
+
+POST/PUT `/api/complejos` aceptan `anticipacionMinMin` (entero0–2880), `cancelacionMinMin` (entero0–4320), `politica` (texto≤300 caracteres o null para quitar). Defaults0/0/null; mismas restricciones de dueño/TECNICO para editar. Panel muestra horas, persiste minutos y permite guardar política opcional. Listado/detalle privado, perfil público y agenda exponen estos tres campos públicos.
+
+Para USUARIO, crear reserva con menos anticipación devuelve409: «Este complejo acepta reservas con al menos3 h de anticipación». Cancelar con menos plazo devuelve409: «Solo puedes cancelar hasta24 h antes; contacta al complejo». El límite exacto sí se acepta; fecha local+minutos convertidos a instante de Perú (UTC−5) y reloj inyectable. Comprobación dentro de la transacción, antes de escribir o enviar correos. ADMIN/SUPERADMIN/TECNICO conservan permisos y pueden gestionar sin restricciones temporales. Cero desactiva la nueva comprobación y conserva el comportamiento previo. No afecta precios, pagos, confirmación ni reglas de ocupación.
+
+Perfil y widget muestran plazos/política; agenda marca ANTICIPACION antes del mínimo y refresca409. Migración `4_reglas_complejo`: dos enteros NOT NULL DEFAULT0 y política nullable, exclusivamente en Complejo. QA aplicada/status al día por god2026-10-08; producción solo con aprobación humana explícita.

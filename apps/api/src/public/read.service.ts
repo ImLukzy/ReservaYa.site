@@ -154,10 +154,11 @@ export class PublicReadService {
     if (!horarios.length && cancha!.complejoId) horarios = await this.db.horarioOperativo.findMany({ where: { complejoId: cancha!.complejoId, canchaId: null } });
     // Igual que Reservas.slot: si existe calendario, un día ausente es cerrado.
     const horario = horarios.find(h => h.diaSemana === fecha.getUTCDay());
-    if (horarios.length && !horario?.activo) return { fecha: raw, canchaId: id, anticipacionMinMin: 0, franjas: [] };
+    const anticipacion = cancha!.complejoByComplejoId?.anticipacionMinMin ?? 0;
+    const reglas = { anticipacionMinMin: anticipacion, cancelacionMinMin: cancha!.complejoByComplejoId?.cancelacionMinMin ?? 0, politica: cancha!.complejoByComplejoId?.politica ?? null };
+    if (horarios.length && !horario?.activo) return { fecha: raw, canchaId: id, ...reglas, franjas: [] };
     const reservas = await this.db.reserva.findMany({ where: { canchaId: id, fecha, estado: 'CONFIRMADA' }, select: { horaInicio: true, horaFin: true } });
-    const anticipacion = (cancha!.complejoByComplejoId as { anticipacionMinMin?: number } | null)?.anticipacionMinMin ?? 0;
-    return { fecha: raw, canchaId: id, anticipacionMinMin: anticipacion,
+    return { fecha: raw, canchaId: id, ...reglas,
       franjas: agendaFranjas({ fecha, apertura: horario?.aperturaMin ?? 480, cierre: horario?.cierreMin ?? 1260,
         reservas, ahora: this.clock.now(), anticipacion, base: cancha!.precioPorHora, promos: await this.promos([cancha!]) }) };
   }
@@ -175,7 +176,7 @@ export class PublicReadService {
     const visible = await this.visibleIds();
     const complejo = await this.db.complejo.findFirst({
       where: { slug, publicado: true, id: { in: visible } },
-      select: { id: true, slug: true, nombre: true, direccion: true, distrito: true, ciudad: true, telefono: true, descripcion: true, fotos: true, latitud: true, longitud: true },
+      select: { id: true, slug: true, nombre: true, direccion: true, distrito: true, ciudad: true, telefono: true, descripcion: true, fotos: true, latitud: true, longitud: true, anticipacionMinMin: true, cancelacionMinMin: true, politica: true },
     });
     if (!complejo) return fail(404, 'No encontrado');
     const [canchas, valoracion] = await Promise.all([
@@ -189,6 +190,7 @@ export class PublicReadService {
       complejo: { slug: complejo.slug, nombre: complejo.nombre, direccion: complejo.direccion, distrito: complejo.distrito,
         ciudad: complejo.ciudad, telefono: complejo.telefono, descripcion: complejo.descripcion,
         fotos: complejo.fotos, latitud: complejo.latitud, longitud: complejo.longitud,
+        anticipacionMinMin: complejo.anticipacionMinMin, cancelacionMinMin: complejo.cancelacionMinMin, politica: complejo.politica,
         imagen: complejo.fotos[0] ?? canchas.find(c => c.imagen)?.imagen ?? null },
       canchas: canchas.map(c => ({ id: c.id, nombre: c.nombre, tipo: c.tipo, precioPorHora: money(c.precioPorHora),
         imagen: c.imagen, techada: c.techada, superficie: c.superficie, capacidad: c.capacidad })),

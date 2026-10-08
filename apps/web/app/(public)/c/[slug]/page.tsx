@@ -87,6 +87,11 @@ export default async function Page({ params, searchParams }: Props) {
         <section className="rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="detalles-titulo">
           <h2 id="detalles-titulo" className="text-xl font-semibold">Detalles del complejo</h2>
           <dl className="mt-5 grid grid-cols-1 gap-5 min-[390px]:grid-cols-2 sm:grid-cols-3">{detalles.map(({ Icono, titulo, texto }) => <div key={titulo} className="flex min-w-0 gap-3"><Icono className="mt-1 h-5 w-5 shrink-0 text-cesped-hondo" /><div className="min-w-0"><dt className="text-sm text-pizarra">{titulo}</dt><dd className="break-words font-semibold">{texto}</dd></div></div>)}</dl>
+          <div className="mt-5 space-y-2 text-sm text-pizarra">
+            {complejo.anticipacionMinMin > 0 && <p>Este complejo acepta reservas con al menos {Number((complejo.anticipacionMinMin / 60).toFixed(2))} h de anticipación.</p>}
+            {complejo.cancelacionMinMin > 0 && <p>Solo puedes cancelar hasta {Number((complejo.cancelacionMinMin / 60).toFixed(2))} h antes; contacta al complejo.</p>}
+            {complejo.politica && <p className="break-words">{complejo.politica}</p>}
+          </div>
           <p className="mt-5 break-words text-pizarra">{complejo.direccion}</p>{complejo.descripcion && <p className="mt-3 break-words text-pizarra">{complejo.descripcion}</p>}
         </section>
         <section id="fotos" className="scroll-mt-24 rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="fotos-titulo"><h2 id="fotos-titulo" className="mb-4 text-xl font-semibold">Fotos de {complejo.nombre} ({fotos.length})</h2><GaleriaComplejo fotos={fotos} nombre={complejo.nombre} /></section>
@@ -95,7 +100,7 @@ export default async function Page({ params, searchParams }: Props) {
         <section aria-labelledby="canchas-titulo" className="rounded-surface border border-cal bg-tiza p-4 sm:p-6"><h2 id="canchas-titulo" className="mb-4 text-xl font-semibold">Canchas de este complejo</h2><CanchasPerfil datos={datos} /></section>
         <ResenasSeccion slug={complejo.slug} complejoNombre={complejo.nombre} />
       </div>
-      <aside id="reservar" className="min-w-0 rounded-surface border border-cal bg-tiza p-4 lg:sticky lg:top-24" aria-labelledby="reservar-titulo"><h2 id="reservar-titulo" className="mb-3 flex items-center gap-2 text-xl font-semibold"><CalendarDays size={22} />Reservar horario</h2><ReservaWidget slug={complejo.slug} canchas={canchas} dias={fechasReserva()} sesion={Boolean(sesion)} inicial={inicial} /></aside>
+      <aside id="reservar" className="min-w-0 rounded-surface border border-cal bg-tiza p-4 lg:sticky lg:top-24" aria-labelledby="reservar-titulo"><h2 id="reservar-titulo" className="mb-3 flex items-center gap-2 text-xl font-semibold"><CalendarDays size={22} />Reservar horario</h2><ReservaWidget slug={complejo.slug} canchas={canchas} dias={fechasReserva()} sesion={Boolean(sesion)} inicial={inicial} reglas={complejo} /></aside>
     </div>
 
   </div>

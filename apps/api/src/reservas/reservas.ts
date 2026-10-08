@@ -5,7 +5,8 @@ import { Access, managementRoles, type Actor } from '../management/access';
 import { canchaShape } from '../management/canchas';
 import { parseEnum } from '../management/legacy';
 import { databaseError, foreignKeyError } from '../management/errors';
-import { DbService } from '../public/db.service';
+import { cumplePlazo, horasPlazo } from './reglas';
+import { Clock, DbService } from '../public/db.service';
 import { fail, money, parseDay, quote, utc } from '../public/format';
 import { newId } from '../auth/crypto';
 import { CorreosReserva } from './correos';
@@ -20,7 +21,7 @@ const shape=(r:Row,user:boolean)=>({id:r.id,codigo:r.codigo,usuarioId:r.usuarioI
 const serial=(e:unknown)=>databaseError(e,'P2034')||databaseError(e,'40001')||(e instanceof Error&&/\bcode\s*:\s*"40001"/.test(e.message));
 @Injectable()
 export class Reservas {
- constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access,@Inject(CorreosReserva)private correos:CorreosReserva){}
+ constructor(@Inject(DbService)private store:DbService,@Inject(Access)private access:Access,@Inject(CorreosReserva)private correos:CorreosReserva,@Inject(Clock)private clock:Clock=new Clock()){}
  private get db(){return this.store.db;}
  private async member(a:Actor,id:string,tx:Tx){if(a.rol==='TECNICO')return Boolean(await tx.complejo.findUnique({where:{id}}));return Boolean(await tx.complejo.findFirst({where:{id,AND:[{id:{in:await this.access.enabled(tx)}}],OR:[{duenoId:a.id},{complejoMiembroByComplejoId:{some:{usuarioId:a.id,activo:true}}}]}}));}
  private async scope(a:Actor,row:Pick<Row,'complejoId'|'canchaByCanchaId'>,tx:Tx){if(a.rol==='TECNICO')return true;const id=row.complejoId??row.canchaByCanchaId?.complejoId;return !id||await this.member(a,id,tx);}
@@ -39,7 +40,9 @@ export class Reservas {
   for(let attempt=0;attempt<3;attempt++){try{result=await this.db.$transaction(async tx=>{
    await tx.$queryRaw`SELECT "id" FROM "Cancha" WHERE "id" = ${b.canchaId!} FOR UPDATE`;
    const court=await tx.cancha.findUnique({where:{id:b.canchaId}});if(!court?.activa)fail(400,'Cancha no disponible');const center=court!.complejoId;
-   if(a.rol==='USUARIO'){if(center&&(!await tx.complejo.findFirst({where:{id:center,publicado:true,AND:[{id:{in:await this.access.enabled(tx)}}]}})))fail(400,'Cancha no disponible');}else if(a.rol!=='TECNICO'&&center&&!await this.member(a,center,tx))fail(403,'Sin permisos');
+   if(a.rol==='USUARIO'){
+    if(center){const complejo=await tx.complejo.findFirst({where:{id:center,publicado:true,AND:[{id:{in:await this.access.enabled(tx)}}]},select:{id:true,anticipacionMinMin:true}});if(!complejo)fail(400,'Cancha no disponible');const minimo=complejo?.anticipacionMinMin??0;if(!cumplePlazo(fecha!,inicio,minimo,this.clock.now()))fail(409,`Este complejo acepta reservas con al menos ${horasPlazo(minimo)} h de anticipación`);}
+   }else if(a.rol!=='TECNICO'&&center&&!await this.member(a,center,tx))fail(403,'Sin permisos');
    if(center&&await tx.sancion.findFirst({where:{activa:true,nivel:'BLOQUEO',usuarioId:a.id,complejoId:center}}))fail(403,'Este local restringió tu acceso. Contacta al administrador.');
    if(await tx.reserva.findFirst({where:{canchaId:court!.id,fecha:fecha!,estado:'CONFIRMADA',...overlaps(inicio,fin)}}))fail(409,'Ya existe una reserva en ese horario');await this.slot(tx,center,court!.id,fecha!,inicio,fin);
    const promos=await tx.promocion.findMany({where:{activa:true,tipo:'PRECIO_ESPECIAL',OR:[{canchaId:court!.id},...(center?[{complejoId:center}]:[]),{canchaId:null,complejoId:null}]}});promos.sort((x,y)=>Number(y.canchaId!==null)-Number(x.canchaId!==null)||Number(y.complejoId!==null)-Number(x.complejoId!==null)||y.creadoEn.getTime()-x.creadoEn.getTime());
@@ -51,7 +54,7 @@ export class Reservas {
  }
  async patch(id:string,b:PatchBody,r:FastifyRequest){const a=await this.access.actor(r);let aviso=null as 'confirmada'|'cancelada'|null,rivales:string[]=[];try{const response=await this.db.$transaction(async tx=>{aviso=null;rivales=[];
   const found=await tx.reserva.findUnique({where:{id},include:{canchaByCanchaId:true}});if(!found)fail(404,'No encontrada');await tx.$queryRaw`SELECT "id" FROM "Cancha" WHERE "id" = ${found!.canchaId} FOR UPDATE`;
-  const row=await tx.reserva.findUnique({where:{id},include:{canchaByCanchaId:true}});if(!row)fail(404,'No encontrada');if(a.rol==='USUARIO'){if(row!.usuarioId!==a.id)fail(403,'Sin permisos');if(b.estado&&b.estado!=='CANCELADA')fail(403,'Solo puedes cancelar tu reserva');}else if(!await this.scope(a,row!,tx))fail(403,'Sin permisos');
+  const row=await tx.reserva.findUnique({where:{id},include:{canchaByCanchaId:true}});if(!row)fail(404,'No encontrada');if(a.rol==='USUARIO'){if(row!.usuarioId!==a.id)fail(403,'Sin permisos');if(b.estado&&b.estado!=='CANCELADA')fail(403,'Solo puedes cancelar tu reserva');if(b.estado==='CANCELADA'){const center=row!.complejoId??row!.canchaByCanchaId.complejoId;if(center){const reglas=await tx.complejo.findUnique({where:{id:center},select:{cancelacionMinMin:true}});const minimo=reglas?.cancelacionMinMin??0;if(!cumplePlazo(row!.fecha,row!.horaInicio,minimo,this.clock.now()))fail(409,`Solo puedes cancelar hasta ${horasPlazo(minimo)} h antes; contacta al complejo`);}}}else if(!await this.scope(a,row!,tx))fail(403,'Sin permisos');
   const data:Prisma.ReservaUpdateInput={};if(b.estado){const estado=parseEnum(states,b.estado);if(!estado)fail(400,'Estado inválido');if(estado==='CONFIRMADA'){const where={id:{not:id},canchaId:row!.canchaId,fecha:row!.fecha,...overlaps(row!.horaInicio,row!.horaFin)};if(await tx.reserva.findFirst({where:{...where,estado:'CONFIRMADA'}}))fail(409,'Ya existe una reserva confirmada en ese horario');rivales=(await tx.reserva.findMany({where:{...where,estado:'PENDIENTE'},select:{id:true}})).map(x=>x.id);await tx.reserva.updateMany({where:{...where,estado:'PENDIENTE'},data:{estado:'CANCELADA'}});}if(estado!==row!.estado&&(estado==='CONFIRMADA'||estado==='CANCELADA'))aviso=estado==='CONFIRMADA'?'confirmada':'cancelada';data.estado=estado!;}
   if(b.notas!=null)data.notas=b.notas.trim()||null;const updated=await tx.reserva.update({where:{id},data,include:{canchaByCanchaId:true,usuarioByUsuarioId:true}});return {ok:true,reserva:shape(updated,a.rol!=='USUARIO')};
  },{isolationLevel:'Serializable',timeout:15000});

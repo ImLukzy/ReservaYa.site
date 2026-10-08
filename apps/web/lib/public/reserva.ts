@@ -1,6 +1,6 @@
 export type EstadoFranja = 'LIBRE' | 'OCUPADA' | 'PASADA' | 'ANTICIPACION'
 export interface Franja { inicio: number; fin: number; estado: EstadoFranja; precio: string }
-export interface Agenda { canchaId: string; fecha: string; anticipacionMinMin: number; franjas: Franja[] }
+export interface Agenda { canchaId: string; fecha: string; anticipacionMinMin: number; cancelacionMinMin?: number; politica?: string | null; franjas: Franja[] }
 export function horaMinutos(m: number): string { return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}` }
 export function fechasReserva(ahora: Date = new Date()): string[] {
   const hoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Lima', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora)

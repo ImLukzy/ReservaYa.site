@@ -7,8 +7,9 @@ import { ApiError } from '@/lib/api-types'
 import { soles } from '@/lib/public/horario'
 import { cambiarSeleccion, horaMinutos, resumenSeleccion, vueltaReserva, type Agenda } from '@/lib/public/reserva'
 interface Cancha { id: string; nombre: string; precioPorHora: string }
+interface Reglas { anticipacionMinMin: number; cancelacionMinMin: number; politica: string | null }
 interface Inicial { cancha?: string; fecha?: string; inicio?: number; fin?: number }
-export function ReservaWidget({ slug, canchas, dias, sesion, inicial }: { slug: string; canchas: Cancha[]; dias: string[]; sesion: boolean; inicial: Inicial }) {
+export function ReservaWidget({ slug, canchas, dias, sesion, inicial, reglas }: { slug: string; canchas: Cancha[]; dias: string[]; sesion: boolean; inicial: Inicial; reglas: Reglas }) {
   const [cancha, setCancha] = useState(canchas.some(c => c.id === inicial.cancha) ? inicial.cancha! : canchas[0]?.id ?? '')
   const [fecha, setFecha] = useState(dias.includes(inicial.fecha ?? '') ? inicial.fecha! : dias[0])
   const [agenda, setAgenda] = useState<Agenda | null>(null)
@@ -46,6 +47,9 @@ export function ReservaWidget({ slug, canchas, dias, sesion, inicial }: { slug: 
     media.addEventListener('change', cerrar)
     return () => media.removeEventListener('change', cerrar)
   }, [])
+  const anticipacion = agenda?.anticipacionMinMin ?? reglas.anticipacionMinMin
+  const cancelacion = agenda?.cancelacionMinMin ?? reglas.cancelacionMinMin
+  const politica = agenda?.politica ?? reglas.politica
   const resumen = agenda && resumenSeleccion(agenda.franjas, seleccion)
   const precio = canchas.length ? Math.min(...canchas.map(c => Number(c.precioPorHora))) : 0
   function reiniciar(id: string, dia: string) { setCancha(id); setFecha(dia); setSeleccion([]); setAgenda(null); setCargando(true); setError(''); setReserva(null) }
@@ -70,7 +74,9 @@ export function ReservaWidget({ slug, canchas, dias, sesion, inicial }: { slug: 
     <p className="text-sm text-pizarra">Día</p>
     <div className="flex gap-1 overflow-x-auto pb-2" aria-label="Elegir día">{dias.map((dia, n) => <button key={dia} type="button" disabled={guardando} aria-pressed={fecha === dia} onClick={() => reiniciar(cancha, dia)} className={`min-h-16 min-w-14 shrink-0 rounded-control border px-2 text-sm ${fecha === dia ? 'border-cesped bg-cesped-suave text-basalto' : 'border-cal text-pizarra'}`}><span className="block text-xs">{n === 0 ? 'Hoy' : n === 1 ? 'Mañana' : new Date(`${dia}T00:00:00Z`).toLocaleDateString('es-PE', { timeZone: 'UTC', weekday: 'short' })}</span><span className="block font-display text-lg">{dia.slice(8)}</span></button>)}</div>
     <p className="text-sm text-pizarra">Elige franjas seguidas de 30 min (entre 1 y 3 horas).</p>
-    {agenda && agenda.anticipacionMinMin > 0 && <p className="text-sm text-alerta-hondo">Se reserva con al menos {agenda.anticipacionMinMin / 60} h de anticipación.</p>}
+    {anticipacion > 0 && <p className="text-sm text-alerta-hondo">Se reserva con al menos {Number((anticipacion / 60).toFixed(2))} h de anticipación.</p>}
+    {cancelacion > 0 && <p className="text-sm text-pizarra">Solo puedes cancelar hasta {Number((cancelacion / 60).toFixed(2))} h antes; contacta al complejo.</p>}
+    {politica && <p className="break-words text-sm text-pizarra">{politica}</p>}
     <div className="h-96 overflow-y-auto overscroll-contain" aria-busy={cargando}>
       {cargando ? <div className="grid grid-cols-3 gap-2" aria-label="Cargando agenda">{Array.from({ length: 12 }, (_, n) => <div key={n} className="esqueleto min-h-20 rounded-control" />)}</div> : agenda?.franjas.length ? <div className="grid grid-cols-3 gap-2">{agenda.franjas.map(f => {
         const elegida = seleccion.includes(f.inicio)

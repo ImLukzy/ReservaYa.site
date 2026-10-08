@@ -40,3 +40,8 @@ describe('Complejo photos and coordinates (spec62)',()=>{
   it('does not grant media writes across owners',async()=>{const {db,service}=fixture('ADMIN','other');await expect(service.update('complex',{fotos:[own]},request)).rejects.toMatchObject({status:403});expect(db.complejo.update).not.toHaveBeenCalled();});
   it('allows the technician to update a complex',async()=>{const {service}=fixture('TECNICO','other');expect((await service.update('complex',{fotos:[own]},request)).complejo.fotos).toEqual([own]);});
 });
+
+describe('Complex timing rule editing (spec69)',()=>{
+ it.each([{anticipacionMinMin:-1},{anticipacionMinMin:2881},{anticipacionMinMin:0.5},{anticipacionMinMin:'180'},{cancelacionMinMin:-1},{cancelacionMinMin:4321},{cancelacionMinMin:null},{politica:'x'.repeat(301)},{politica:42}])('rejects invalid rules %o',async body=>{const {db,service}=fixture();await expect(service.update('complex',body as never,request)).rejects.toMatchObject({status:400});expect(db.complejo.update).not.toHaveBeenCalled();});
+ it('persists maximum deadlines and trims optional policy; null clears it',async()=>{const {service}=fixture();expect((await service.update('complex',{anticipacionMinMin:2880,cancelacionMinMin:4320,politica:' Fixture policy '},request)).complejo).toMatchObject({anticipacionMinMin:2880,cancelacionMinMin:4320,politica:'Fixture policy'});expect((await service.update('complex',{politica:null},request)).complejo.politica).toBeNull();});
+});
