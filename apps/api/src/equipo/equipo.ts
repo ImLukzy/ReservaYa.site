@@ -14,7 +14,7 @@ type MiembroBody={complejoId?:string;email?:string;nombre?:string;rolSede?:strin
 const shape=(m:Miembro)=>{const u=m.usuarioByUsuarioId;return {id:m.id,complejoId:m.complejoId,rolSede:m.rolSede,activo:m.activo,estado:m.activo?'ACTIVO':'PENDIENTE',creadoEn:utc(m.creadoEn),usuario:u?{id:u.id,nombre:u.nombre,email:u.email,rol:u.rol,activo:u.activo}:null};};
 const invalidRole='rolSede inválido (solo ADMIN: el equipo opera con rol admin)';
 // Public web origin from PASSWORD_RESET_URL, as Uri.GetLeftPart(Authority).
-export function publicOrigin(){try{const u=new URL(process.env.PASSWORD_RESET_URL||'');return `${u.protocol}//${u.host}`;}catch{return 'https://reservaya.site';}}
+function publicOrigin(){try{const u=new URL(process.env.PASSWORD_RESET_URL||'');return `${u.protocol}//${u.host}`;}catch{return 'https://reservaya.site';}}
 const button=(link:string,text:string)=>`<p><a href="${htmlEncode(link)}" style="display:inline-block;background:#22C55E;color:#060C08;font-weight:bold;padding:12px 20px;border-radius:10px;text-decoration:none">${htmlEncode(text)}</a></p>`;
 const wrap=(body:string)=>`<div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;color:#101613">${body}</div>`;
 export function noticeEmail(email:string,nombre:string,invitador:string,complejo:string,base:string):EmailMessage{

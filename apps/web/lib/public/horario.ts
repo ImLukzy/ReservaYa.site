@@ -6,15 +6,15 @@ export const APERTURA = 8;
 export const ULTIMA = 21;
 const ZONA = "America/Lima";
 
-export function fechaEnLima(d: Date = new Date()): string {
+function fechaEnLima(d: Date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: ZONA, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
 }
 
-export function horaEnLima(d: Date = new Date()): number {
+function horaEnLima(d: Date = new Date()): number {
   return Number(new Intl.DateTimeFormat("en-GB", { timeZone: ZONA, hour: "2-digit", hourCycle: "h23" }).format(d));
 }
 
-export function sumarDias(fecha: string, dias: number): string {
+function sumarDias(fecha: string, dias: number): string {
   const t = Date.parse(`${fecha}T00:00:00Z`) + dias * 86_400_000;
   return new Date(t).toISOString().slice(0, 10);
 }

@@ -2,17 +2,17 @@ export type Rol = 'USUARIO' | 'ADMIN' | 'SUPERADMIN' | 'TECNICO'
 export type NivelSancion = 'ADVERTENCIA' | 'BLOQUEO'
 export type EstadoReserva = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'COMPLETADA'
 export type TipoCancha = 'FUTBOL' | 'FUTBOL5' | 'FUTBOL7' | 'PADEL' | 'TENIS' | 'BASQUET' | 'VOLLEYBALL' | 'LOZA'
-export type TipoPlan = 'MENSUAL' | 'TRIMESTRAL' | 'ANUAL'
-export type EstadoSuscripcion = 'PENDIENTE' | 'ACTIVA' | 'VENCIDA' | 'CANCELADA' | 'RECHAZADA'
+type TipoPlan = 'MENSUAL' | 'TRIMESTRAL' | 'ANUAL'
+type EstadoSuscripcion = 'PENDIENTE' | 'ACTIVA' | 'VENCIDA' | 'CANCELADA' | 'RECHAZADA'
 
-export interface CanchaComplejo {
+interface CanchaComplejo {
   id: string
   nombre: string
   distrito: string
   ciudad: string
 }
 
-export interface CanchaDueno {
+interface CanchaDueno {
   id: string
   nombre: string
 }
@@ -63,12 +63,6 @@ export interface OpcionesBusqueda {
   sugerencias: string[]
 }
 
-export interface Cotizacion {
-  total: string
-  moneda: string
-  regla: string | null
-}
-
 export interface Suscripcion {
   id: string
   complejoId: string
@@ -79,18 +73,6 @@ export interface Suscripcion {
   fechaFin: string
   diasRestantes: number
   vigente: boolean
-  creadoEn: string
-}
-
-export interface Sancion {
-  id: string
-  complejoId: string
-  complejo: string
-  usuarioId: string
-  usuario: { id: string; nombre: string; email: string } | null
-  nivel: NivelSancion
-  motivo: string
-  activa: boolean
   creadoEn: string
 }
 
@@ -194,12 +176,12 @@ export interface DashboardSuperadmin {
   ingresos: string
 }
 
-export interface ReservasPorEstado {
+interface ReservasPorEstado {
   estado: EstadoReserva
   cantidad: number
 }
 
-export interface CanchaReporte {
+interface CanchaReporte {
   id: string
   nombre: string
   tipo: TipoCancha
@@ -209,7 +191,7 @@ export interface CanchaReporte {
   ingresos: string
 }
 
-export interface TopCancha {
+interface TopCancha {
   id: string
   nombre: string
   tipo: TipoCancha
@@ -260,7 +242,7 @@ export interface MisPartidos {
 }
 
 // Spec 55 — solicitud jugador→dueño (SolicitudesController). id = complejoId.
-export type EstadoSolicitud = 'PENDIENTE' | 'APROBADA'
+type EstadoSolicitud = 'PENDIENTE' | 'APROBADA'
 
 export interface Solicitud {
   id: string

@@ -14,7 +14,7 @@ const escapeUri=(v:string)=>encodeURIComponent(v).replace(/[!'()*]/g,c=>'%'+c.ch
 const invalid='Enlace inválido o vencido';
 const summary=(u:User)=>({id:u.id,nombre:u.nombre,email:u.email,rol:u.rol});
 const ip=(r:FastifyRequest)=>String(r.headers['x-forwarded-for']||r.ip||'unknown').split(',')[0].trim();
-export const cookieOptions=(r:FastifyRequest)=>({httpOnly:true,secure:r.protocol==='https'||process.env.COOKIE_SECURE==='true',sameSite:process.env.COOKIE_SECURE==='true'?'none' as const:'lax' as const,path:'/'});
+const cookieOptions=(r:FastifyRequest)=>({httpOnly:true,secure:r.protocol==='https'||process.env.COOKIE_SECURE==='true',sameSite:process.env.COOKIE_SECURE==='true'?'none' as const:'lax' as const,path:'/'});
 const plainDate=(d:Date|null)=>d?utc(d).replace(/Z$/,''):null;
 const birthday=(value?:string)=>{
   const d=parseDay(value);if(!d)fail(400,'La fecha de nacimiento es obligatoria');

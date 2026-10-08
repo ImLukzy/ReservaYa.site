@@ -9,7 +9,7 @@ import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 import { solicitarSuscripcion } from '@/lib/suscripciones-client';
 
-export interface SuscripcionCard {
+interface SuscripcionCard {
   estado: string
   plan: string
   fechaFin: string

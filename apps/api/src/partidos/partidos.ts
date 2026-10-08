@@ -16,7 +16,7 @@ const fields=['titulo','descripcion','formato','nivel','cuposTotales','fecha','d
 type Form=Partial<Record<typeof fields[number],string>>&{foto?:Buffer};
 const time=(n:number)=>`${String(Math.trunc(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;
 const person={select:{id:true,nombre:true}} as const;
-export function partidoShape(p:Partido,anotados:number,anotado:boolean,today:Date,inscritos:string[]=[]){
+function partidoShape(p:Partido,anotados:number,anotado:boolean,today:Date,inscritos:string[]=[]){
   const f=day(p.fecha),delta=(p.fecha.getTime()-today.getTime())/86400000,fechaCorta=delta===0?'Hoy':delta===1?'Mañana':`${f.slice(8,10)}/${f.slice(5,7)}`,desde=time(p.desdeMin);
   return {id:p.id,titulo:p.titulo,descripcion:p.descripcion,formato:p.formato,nivel:p.nivel,cuposTotales:p.cuposTotales,cuposLibres:Math.max(0,p.cuposTotales-anotados),distrito:p.distrito,cancha:p.cancha,superficie:p.superficie,precio:p.precio.toNumber(),fecha:f,desde,hasta:time(p.hastaMin),cuando:`${fechaCorta} ${desde}`,fechaCorta,horaCorta:desde,fotoUrl:p.fotoUrl,anotado,inscritos,organizador:p.usuarioByOrganizadorId?{id:p.usuarioByOrganizadorId.id,nombre:p.usuarioByOrganizadorId.nombre}:null,creadoEn:utc(p.creadoEn)};
 }

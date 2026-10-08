@@ -7,7 +7,7 @@ import { getMisInvitaciones } from '@/lib/invitaciones-client';
 
 const SONDEO_MS = 60_000;
 // Avisa a las demás bandejas montadas (campana + tarjeta) que la lista cambió.
-export const EVENTO_INVITACIONES = 'ry:invitaciones';
+const EVENTO_INVITACIONES = 'ry:invitaciones';
 
 export function avisarCambioInvitaciones() {
   window.dispatchEvent(new Event(EVENTO_INVITACIONES));

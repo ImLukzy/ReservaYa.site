@@ -26,7 +26,6 @@ export type {
   NivelSancion,
   Cancha,
   CanchaInput,
-  CanchaDisponible,
   Suscripcion,
   ClienteResumen,
   UsuarioReserva,

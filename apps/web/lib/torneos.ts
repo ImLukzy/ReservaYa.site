@@ -1,13 +1,13 @@
 // Contrato de TorneosController (.NET): lista con _count, detalle con inscripciones y partidos.
 // Funciones puras para que el panel y los tests lean exactamente las mismas formas.
 
-export interface Inscripcion {
+interface Inscripcion {
   id: string;
   equipo: string;
   telefono: string | null;
 }
 
-export interface Partido {
+interface Partido {
   id: string;
   equipoA: string;
   equipoB: string;

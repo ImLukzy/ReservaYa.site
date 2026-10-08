@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-export function inicialesDe(nombre: string | null | undefined): string {
+function inicialesDe(nombre: string | null | undefined): string {
   const iniciales = (nombre ?? '')
     .trim()
     .split(/\s+/)

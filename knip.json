@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreIssues": {
+    "apps/web/lib/whatsapp.ts": [
+      "exports"
+    ]
+  },
+  "ignoreFiles": [
+    "apps/web/scripts/cls.mjs",
+    "scripts/motion-tokens.test.mjs"
+  ],
+  "ignoreDependencies": [
+    "playwright"
+  ]
+}

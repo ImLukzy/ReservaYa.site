@@ -9,7 +9,7 @@ interface FotoEscena {
   foco?: string
 }
 
-export const FOTOS_JUGADOR: FotoEscena[] = [
+const FOTOS_JUGADOR: FotoEscena[] = [
   { archivo: 'pichanga-sintetica', rotulo: 'Pichanga en sintética', foco: '38% 50%' },
   { archivo: 'futsal-luz', rotulo: 'Fulbito bajo techo', foco: '55% 50%' },
   { archivo: 'voley-remate', rotulo: 'Vóley, el remate', foco: '62% 40%' },

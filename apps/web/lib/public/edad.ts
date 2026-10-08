@@ -1,4 +1,4 @@
-export const EDAD_MINIMA = 14
+const EDAD_MINIMA = 14
 export const MENSAJE_EDAD = 'Debes tener al menos 14 años para crear una cuenta.'
 
 // Mismo día UTC y corte de cumpleaños que DateTime.UtcNow.Date.AddYears(-14).

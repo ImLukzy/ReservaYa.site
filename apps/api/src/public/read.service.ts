@@ -16,7 +16,7 @@ function canchaDto(c: FullCancha) {
   return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad }, dueno: x?.usuarioByDuenoId ?? null };
 }
 // ApiController nullable binding: empty query values mean null.
-export function integer(q: Query, key: string): number | null {
+function integer(q: Query, key: string): number | null {
   const v = text(q, key);
   if (v === undefined || !v.trim()) return null;
   const result = Number(v);

@@ -12,8 +12,8 @@ export const paymentMethods=['EFECTIVO','YAPE','CULQI','TARJETA','TRANSFERENCIA'
 const movementTypes=['RESERVA','SNACK','ALQUILER','ABONO','EGRESO','AJUSTE'] as const;
 const income=new Set<string>(['RESERVA','SNACK','ALQUILER','ABONO']),categories=['SNACK','ALQUILER','SERVICIO'];
 const noComplex='Primero crea tu complejo para operar la caja',badCategory='Categoría inválida: usa SNACK, ALQUILER o SERVICIO';
-export const movShape=(m:Mov)=>({id:m.id,descripcion:m.descripcion,monto:money(m.monto),metodoPago:m.metodoPago,tipo:m.tipo,creadoEn:utc(m.creadoEn)});
-export const cajaShape=(c:Caja)=>({id:c.id,estado:c.estado,montoInicial:money(c.montoInicial),montoFinal:c.montoFinal===null?null:money(c.montoFinal),abiertaEn:utc(c.abiertaEn),cerradaEn:c.cerradaEn===null?null:utc(c.cerradaEn)});
+const movShape=(m:Mov)=>({id:m.id,descripcion:m.descripcion,monto:money(m.monto),metodoPago:m.metodoPago,tipo:m.tipo,creadoEn:utc(m.creadoEn)});
+const cajaShape=(c:Caja)=>({id:c.id,estado:c.estado,montoInicial:money(c.montoInicial),montoFinal:c.montoFinal===null?null:money(c.montoFinal),abiertaEn:utc(c.abiertaEn),cerradaEn:c.cerradaEn===null?null:utc(c.cerradaEn)});
 const productShape=(p:Producto)=>({id:p.id,nombre:p.nombre,categoria:p.categoria,precio:money(p.precio),stock:p.stock,activo:p.activo});
 const sum=(ms:Mov[],inc:boolean)=>ms.filter(m=>income.has(m.tipo)===inc).reduce((t,m)=>t.plus(m.monto),zero());
 function summary(c:Caja,ms:Mov[]){const i=sum(ms,true),e=sum(ms,false);return {montoInicial:money(c.montoInicial),ingresos:money(i),egresos:money(e),esperado:money(c.montoInicial.plus(i).minus(e)),movimientos:ms.length};}
