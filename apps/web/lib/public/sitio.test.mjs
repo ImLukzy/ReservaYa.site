@@ -6,7 +6,7 @@ import ts from 'typescript'
 const source = readFileSync(new URL('./metadata.ts', import.meta.url), 'utf8')
 const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText.replace("'./sitio'", JSON.stringify(new URL('./sitio.ts', import.meta.url).href))
 const { publicMetadata } = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`)
-import { reservaPublicaHref } from './complejo-publico.ts'
+import { reservaCanchaHref } from './complejo-publico.ts'
 import { whatsappUrl } from '../whatsapp.ts'
 test('profile, QR and WhatsApp share URL use the canonical domain and encode the slug', () => {
   assert.equal(SITIO, 'https://reservaya.site')
@@ -19,12 +19,12 @@ test('profile, QR and WhatsApp share URL use the canonical domain and encode the
   assert.equal(metadata.openGraph.url, linkPublico('centro-arequipa'))
   assert.equal(metadata.openGraph.images[0], `${SITIO}/og-default.png`)
 })
-test('reserve links use the existing authenticated search and preserve filters', () => {
-  const url = new URL(reservaPublicaHref('Cancha & Uno', 'Cayma', 'FUTBOL'), SITIO)
-  assert.equal(url.pathname, '/dashboard/canchas')
-  assert.equal(url.searchParams.get('q'), 'Cancha & Uno')
-  assert.equal(url.searchParams.get('distrito'), 'Cayma')
-  assert.equal(url.searchParams.get('tipo'), 'FUTBOL')
+test('profile card reservation selects the court in the same profile and encodes identifiers', () => {
+  const url = new URL(reservaCanchaHref('centro/uno', 'cancha & dos'), SITIO)
+  assert.equal(url.pathname, '/c/centro%2Funo')
+  assert.equal(url.searchParams.get('cancha'), 'cancha & dos')
+  assert.equal(url.hash, '#reservar')
+  assert.equal(url.searchParams.has('q'), false)
 })
 test('complex WhatsApp number overrides support and local mobile numbers use Peru code', () => {
   assert.equal(whatsappUrl('Reserva', '987 654 321'), 'https://wa.me/51987654321?text=Reserva')

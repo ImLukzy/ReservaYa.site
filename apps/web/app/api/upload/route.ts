@@ -8,12 +8,12 @@ import { MEDIA_TIPOS, TIPOS_IMAGEN, TOPE_IMAGEN_BYTES, type MediaTipo } from '@/
 
 // Firma de subida directa a Cloudflare R2 (PUT prefirmado, 5 min). Este route
 // handler estático se sirve antes del rewrite /api/:path* → BACKEND_URL
-// (afterFiles), así que no llega a la API .NET. La URL pública resultante se
+// (afterFiles), así que no llega a la API NestJS. La URL pública resultante se
 // persiste después con los endpoints PUT de la API, que validan MEDIA_PUBLIC_URL.
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Cancha: mismos roles que POST /api/canchas/{id}/imagen; la propiedad de la
+// Cancha: mismos roles que POST/PUT /api/canchas; la propiedad de la
 // cancha la vuelve a decidir la API al persistir la URL.
 const ROLES_POR_TIPO: Record<MediaTipo, readonly string[] | null> = {
   cancha: ['ADMIN', 'SUPERADMIN', 'TECNICO'],

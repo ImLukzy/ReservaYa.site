@@ -1,7 +1,7 @@
 import { quote } from './format';
 import { Prisma } from '@reservaya/db';
 type Promo=Prisma.PromocionGetPayload<object>;
-export type EstadoFranja='LIBRE'|'OCUPADA'|'PASADA'|'ANTICIPACION';
+type EstadoFranja='LIBRE'|'OCUPADA'|'PASADA'|'ANTICIPACION';
 export interface Franja { inicio:number;fin:number;estado:EstadoFranja;precio:string }
 export function agendaFranjas({fecha,apertura,cierre,reservas,ahora,anticipacion=0,base,promos}:{fecha:Date;apertura:number;cierre:number;reservas:{horaInicio:number;horaFin:number}[];ahora:Date;anticipacion?:number;base:Prisma.Decimal;promos:Promo[]}):Franja[]{
  const franjas:Franja[]=[];

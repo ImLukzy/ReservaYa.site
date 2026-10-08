@@ -4,7 +4,7 @@ import { createApp } from '../app';
 import { DbService, Clock } from './db.service';
 const now = new Date('2026-10-08T12:00:00Z');
 const complejo = { id: 'internal-complex', slug: 'centro-fixture', nombre: 'Centro fixture', direccion: 'Dirección fixture', distrito: 'Cayma', ciudad: 'Arequipa', telefono: '987654321', descripcion: null, latitud: -16.4, longitud: -71.53, anticipacionMinMin: 180, cancelacionMinMin: 1440, politica: 'Política fixture', fotos: ['https://media.example.com/fixture.webp'], publicado: true, creadoEn: new Date('2026-01-01'), duenoId: 'private-owner', email: 'private@example.invalid', rol: 'ADMIN' };
-const cancha = { id: 'fixture-cancha', nombre: 'Cancha fixture', tipo: 'FUTBOL', precioPorHora: new Prisma.Decimal('40.10'), imagen: null, techada: true, superficie: 'Sintética', capacidad: 10, activa: true, complejoId: complejo.id, creadoEn: now };
+const cancha = { id: 'fixture-cancha', nombre: 'Cancha fixture', tipo: 'FUTBOL', precioPorHora: new Prisma.Decimal('40.10'), imagen: null, fotos: ['https://media.example.com/court-one.webp','https://media.example.com/court-two.webp'], techada: true, superficie: 'Sintética', capacidad: 10, activa: true, complejoId: complejo.id, creadoEn: now };
 afterEach(() => vi.unstubAllEnvs());
 async function fixture(options: { exists?: boolean; published?: boolean; subscription?: 'active' | 'expired' | 'absent'; created?: Date; role?: string; photo?: boolean; courts?: boolean } = {}) {
   vi.stubEnv('ORIGIN_SECRET', undefined);
@@ -36,7 +36,8 @@ describe('GET /api/complejos/publico/:slug', () => {
       const body = response.json();
       expect(Object.keys(body).sort()).toEqual(['canchas', 'complejo', 'valoracion']);
       expect(Object.keys(body.complejo).sort()).toEqual(['anticipacionMinMin', 'cancelacionMinMin', 'ciudad', 'descripcion', 'direccion', 'distrito', 'fotos', 'imagen', 'latitud', 'longitud', 'nombre', 'politica', 'slug', 'telefono']);
-      expect(Object.keys(body.canchas[0]).sort()).toEqual(['capacidad', 'id', 'imagen', 'nombre', 'precioPorHora', 'superficie', 'techada', 'tipo']);
+      expect(Object.keys(body.canchas[0]).sort()).toEqual(['capacidad', 'fotos', 'id', 'imagen', 'nombre', 'precioPorHora', 'superficie', 'techada', 'tipo']);
+      expect(body.canchas[0].fotos).toEqual(cancha.fotos);
       expect(body.canchas[0].precioPorHora).toBe('40.10');
       expect(body.complejo).toMatchObject({anticipacionMinMin:180,cancelacionMinMin:1440,politica:'Política fixture'});
       expect(body.complejo.fotos).toEqual(complejo.fotos);

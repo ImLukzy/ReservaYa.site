@@ -10,8 +10,6 @@ export class CanchasWriteController {
   @Post() @HttpCode(201) create(@Body()b:CanchaBody,@Req()r:FastifyRequest){return this.service.create(b,r);}
   @Put(':id') update(@Param('id')id:string,@Body()b:CanchaBody,@Req()r:FastifyRequest){return this.service.update(id,b,r);}
   @Delete(':id') delete(@Param('id')id:string,@Req()r:FastifyRequest){return this.service.delete(id,r);}
-  @Put(':id/imagen') image(@Param('id')id:string,@Body()b:{url?:string},@Req()r:FastifyRequest){return this.service.image(id,b,r);}
-  @Post(':id/imagen') @HttpCode(200) upload(@Param('id')id:string,@Req()r:FastifyRequest,@Res({passthrough:true})s:FastifyReply){return this.service.upload(id,r,s);}
 }
 @Controller('api/horarios')
 export class HorariosController {

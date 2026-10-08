@@ -2,7 +2,7 @@
 // Sin DOM ni imports para que los tests la carguen directo con node --test.
 
 export type OrdenResenas = "recientes" | "mejor" | "peor";
-export type Distribucion = Record<"1" | "2" | "3" | "4" | "5", number>;
+type Distribucion = Record<"1" | "2" | "3" | "4" | "5", number>;
 
 export interface ResenaPublica {
   id: string;

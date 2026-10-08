@@ -73,6 +73,44 @@ function foto(url: string | null): HTMLDivElement {
   return caja;
 }
 
+/** Carrusel sin dependencias: altura reservada, desplazamiento táctil y botones accesibles. */
+function fotosCancha(urls: string[], portada: string | null, nombre: string): HTMLDivElement {
+  const fotos = [...new Set(urls.filter(esImagenPropia))].slice(0, 5);
+  if (fotos.length < 2) return foto(fotos[0] ?? portada);
+  const caja = el('div', CLASE_FOTO);
+  caja.setAttribute('role', 'group');
+  caja.setAttribute('aria-label', `Fotos de ${nombre}`);
+  const pista = el('div', 'absolute inset-0 flex overflow-x-auto overscroll-x-contain snap-x snap-mandatory');
+  for (const [n, url] of fotos.entries()) {
+    const marco = foto(url);
+    marco.classList.add('snap-center');
+    marco.querySelector('img')?.setAttribute('alt', `Foto ${n + 1} de ${nombre}`);
+    pista.append(marco);
+  }
+  const controles = el('div', 'absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-cancha-noche/90 px-2 text-blanco');
+  const cuenta = el('span', 'text-sm tabular-nums', `1 / ${fotos.length}`);
+  cuenta.setAttribute('aria-live', 'polite');
+  let actual = 0;
+  function boton(paso: number) {
+    const b = el('button', 'min-h-11 min-w-11 rounded-control px-3');
+    b.append(icono(TRAZO_FLECHA, `h-5 w-5 ${paso < 0 ? 'rotate-180' : ''}`));
+    b.type = 'button';
+    b.setAttribute('aria-label', `${paso < 0 ? 'Foto anterior' : 'Foto siguiente'} de ${nombre}`);
+    b.addEventListener('click', () => { const destino = Math.max(0, Math.min(fotos.length - 1, actual + paso)); pista.scrollTo({ left: destino * pista.clientWidth, behavior: 'instant' }); });
+    return b;
+  }
+  const anterior = boton(-1), siguiente = boton(1);
+  anterior.disabled = true;
+  pista.addEventListener('scroll', () => {
+    actual = Math.max(0, Math.min(fotos.length - 1, Math.round(pista.scrollLeft / Math.max(1, pista.clientWidth))));
+    cuenta.textContent = `${actual + 1} / ${fotos.length}`;
+    anterior.disabled = actual === 0; siguiente.disabled = actual === fotos.length - 1;
+  });
+  controles.append(anterior, cuenta, siguiente);
+  caja.append(pista, controles);
+  return caja;
+}
+
 function estrellas(promedio: number): HTMLSpanElement {
   const fila = el("span", "inline-flex items-center gap-px");
   fila.setAttribute("aria-hidden", "true");
@@ -133,6 +171,7 @@ function lineaDistancia(d: number | null | undefined): HTMLParagraphElement | nu
 }
 
 interface OpcionesTarjeta {
+  fotos?: string[];
   hora?: number;
   reservarHref: string;
   valoracion?: Valoracion;
@@ -147,7 +186,7 @@ export function tarjetaCancha(item: ItemDisponible, op: OpcionesTarjeta): HTMLLI
   const li = el("li", CLASE_TARJETA);
   li.dataset.deporte = cancha.tipo;
 
-  const cabeza = foto(cancha.imagen);
+  const cabeza = op.fotos ? fotosCancha(op.fotos, cancha.imagen, cancha.nombre) : foto(cancha.imagen);
   cabeza.append(el("span", `${CLASE_INSIGNIA} left-3 bg-cesped text-tiza`, etiquetaTipo(cancha.tipo)));
   if (cancha.techada) cabeza.append(el("span", `${CLASE_INSIGNIA} right-3 border border-cal bg-tiza text-basalto`, "Techada"));
   li.append(cabeza);

@@ -40,12 +40,12 @@ describe('Public media ownership contracts',()=>{
 describe('Mutation safety',()=>{
  it('deletes the replaced object only after the database save succeeds',async()=>{
   const events:string[]=[];const before={id:'court',imagen:'https://media.example.test/base/uploads/cancha/owner/old.png',complejoId:'a'};
-  const db={cancha:{findUnique:async()=>before,update:async()=>{events.push('save');return {...before,imagen:'https://media.example.test/base/uploads/cancha/owner/new.png',precioPorHora:{toFixed:()=> '80.00'},creadoEn:new Date('2026-01-01Z')};}}};
+  const db={ $transaction:async(fn:(tx:unknown)=>Promise<unknown>)=>fn(db),cancha:{findUnique:async()=>before,update:async()=>{events.push('save');return {...before,imagen:'https://media.example.test/base/uploads/cancha/owner/new.png',precioPorHora:{toFixed:()=> '80.00'},creadoEn:new Date('2026-01-01Z')};}}};
   const access={actor:async()=>({id:'owner',rol:'SUPERADMIN'}),owner:async()=>true};const media={remove:async()=>{events.push('delete');}};
   const service=new Canchas({db} as unknown as DbService,access as unknown as Access,media as unknown as Media);
-  await service.image('court',{url:'https://media.example.test/base/uploads/cancha/owner/new.png'},{} as FastifyRequest);expect(events).toEqual(['save','delete']);
+  await service.update('court',{fotos:['https://media.example.test/base/uploads/cancha/owner/new.png']},{} as FastifyRequest);expect(events).toEqual(['save','delete']);
   db.cancha.update=async()=>{throw new Error('database unavailable');};events.length=0;
-  await expect(service.image('court',{url:'https://media.example.test/base/uploads/cancha/owner/new.png'},{} as FastifyRequest)).rejects.toThrow('database unavailable');expect(events).toEqual([]);
+  await expect(service.update('court',{fotos:['https://media.example.test/base/uploads/cancha/owner/new.png']},{} as FastifyRequest)).rejects.toThrow('database unavailable');expect(events).toEqual([]);
  });
  it('uses the transaction connection for ownership and subscription checks',async()=>{
   const leaked=()=>{throw new Error('Attempted second pool connection inside transaction');};

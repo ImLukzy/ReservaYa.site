@@ -5,7 +5,7 @@ Reservas de canchas deportivas en Arequipa (29 distritos whitelist). Web públic
 ## Trabajo
 
 - Español. Entregar resultado verificable, archivos cambiados y comandos/salidas. No commit/push/tag sin instrucción explícita.
-- Implementar desde una nueva spec aprobada en `docs/specs`, creada desde `_TEMPLATE.md`; sin spec vigente. Historia en `archivo`, última [70 — Reservar abre la ficha del complejo](docs/specs/archivo/70-reservar-a-ficha.md). En la oficina god asigna cards y Pam registra §7.
+- Implementar desde una nueva spec aprobada en `docs/specs`, creada desde `_TEMPLATE.md`; sin spec vigente. Historia en `archivo`, última [71 — fotos por cancha](docs/specs/archivo/71-fotos-cancha.md). En la oficina god asigna cards y Pam registra §7.
 - Antes de frontend leer `docs/skills/panel-next.md`. Contrato API: `docs/api.md`; arquitectura: `docs/architecture.md`; deploy: `DEPLOY_GRATIS.md`.
 - BLOQUEO-API: endpoint, payload y respuesta; no parchear ausencia de datos o permisos.
 - Spec, exploración y revisión describen trabajos del equipo; no asumir slash commands ni aliases de agentes instalados. Seguir las herramientas/skills realmente disponibles en la sesión.

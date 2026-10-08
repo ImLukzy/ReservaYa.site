@@ -28,6 +28,7 @@ export interface Cancha {
   superficie: string | null
   activa: boolean
   imagen: string | null
+  fotos: string[]
   complejoId: string | null
   creadoEn: string
   complejo: CanchaComplejo | null
@@ -44,7 +45,7 @@ export interface CanchaInput {
   complejoId?: string | null
   techada?: boolean
   superficie?: string | null
-  imagen?: string | null
+  fotos?: string[]
 }
 
 export interface CanchaDisponible {

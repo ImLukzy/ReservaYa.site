@@ -16,7 +16,7 @@ type FullCancha = Prisma.CanchaGetPayload<{ include: typeof canchaInclude }>;
 const compare = new Intl.Collator('en').compare;
 function canchaDto(c: FullCancha) {
   const x = c.complejoByComplejoId;
-  return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, slug: x.slug, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad, fotos: x.fotos }, dueno: x?.usuarioByDuenoId ?? null };
+  return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, fotos: c.fotos ?? [], complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, slug: x.slug, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad, fotos: x.fotos }, dueno: x?.usuarioByDuenoId ?? null };
 }
 // ApiController nullable binding: empty query values mean null.
 function integer(q: Query, key: string): number | null {
@@ -182,7 +182,7 @@ export class PublicReadService {
     const [canchas, valoracion] = await Promise.all([
       this.db.cancha.findMany({
         where: { complejoId: complejo.id, activa: true }, orderBy: { nombre: 'asc' },
-        select: { id: true, nombre: true, tipo: true, precioPorHora: true, imagen: true, techada: true, superficie: true, capacidad: true },
+        select: { id: true, nombre: true, tipo: true, precioPorHora: true, imagen: true, fotos: true, techada: true, superficie: true, capacidad: true },
       }),
       resumen(this.db, complejo.id),
     ]);
@@ -193,7 +193,7 @@ export class PublicReadService {
         anticipacionMinMin: complejo.anticipacionMinMin, cancelacionMinMin: complejo.cancelacionMinMin, politica: complejo.politica,
         imagen: complejo.fotos[0] ?? canchas.find(c => c.imagen)?.imagen ?? null },
       canchas: canchas.map(c => ({ id: c.id, nombre: c.nombre, tipo: c.tipo, precioPorHora: money(c.precioPorHora),
-        imagen: c.imagen, techada: c.techada, superficie: c.superficie, capacidad: c.capacidad })),
+        imagen: c.imagen, fotos: c.fotos ?? [], techada: c.techada, superficie: c.superficie, capacidad: c.capacidad })),
       valoracion: { promedio: valoracion.promedio, total: valoracion.total },
     };
   }

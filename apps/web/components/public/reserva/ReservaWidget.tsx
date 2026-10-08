@@ -1,8 +1,9 @@
 'use client'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { apiRequest } from '@/lib/http'
+import { SELECCION_CANCHA_PERFIL } from '@/lib/public/complejo-publico'
 import { ApiError } from '@/lib/api-types'
 import { soles } from '@/lib/public/horario'
 import { cambiarSeleccion, horaMinutos, resumenSeleccion, vueltaReserva, type Agenda } from '@/lib/public/reserva'
@@ -65,7 +66,16 @@ export function ReservaWidget({ slug, canchas, dias, sesion, inicial, reglas }: 
   const politica = agenda?.politica ?? reglas.politica
   const resumen = agenda && resumenSeleccion(agenda.franjas, seleccion)
   const precio = canchas.length ? Math.min(...canchas.map(c => Number(c.precioPorHora))) : 0
-  function reiniciar(id: string, dia: string) { setCancha(id); setFecha(dia); setSeleccion([]); setAgenda(null); setCargando(true); setError(''); setReserva(null) }
+  const reiniciar = useCallback((id: string, dia: string) => { setCancha(id); setFecha(dia); setSeleccion([]); setAgenda(null); setCargando(true); setError(''); setReserva(null) }, [])
+  useEffect(() => {
+    const elegirCancha = (event: Event) => {
+      if (!(event instanceof CustomEvent) || typeof event.detail !== 'string' || !canchas.some(c => c.id === event.detail)) return
+      if (event.detail !== cancha) reiniciar(event.detail, fecha)
+      if (window.matchMedia('(max-width: 1023px)').matches) setMovil(true)
+    }
+    window.addEventListener(SELECCION_CANCHA_PERFIL, elegirCancha)
+    return () => window.removeEventListener(SELECCION_CANCHA_PERFIL, elegirCancha)
+  }, [canchas, cancha, fecha, reiniciar])
   function elegir(inicio: number) { if (!agenda) return; setReserva(null); const siguiente = cambiarSeleccion(agenda.franjas, seleccion, inicio); setSeleccion(siguiente.seleccion); setError(siguiente.error) }
   async function reservar() {
     if (!resumen || !agenda || guardando) return

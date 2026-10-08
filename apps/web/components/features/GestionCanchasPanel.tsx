@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
+import { FotosEditor } from '@/components/complejos/FotosEditor'
 import { Badge } from '@/components/ui/Badge'
-import { createCancha, deleteCancha, subirImagenCancha, updateCancha } from '@/lib/api-client'
+import { createCancha, deleteCancha, updateCancha } from '@/lib/api-client'
 import { apiRequest } from '@/lib/http';
 import type { EstadoConvenio } from '@/lib/convenio';
 import type { Cancha, CanchaInput, TipoCancha } from '@/lib/api'
@@ -27,7 +28,7 @@ interface ComplejoOpcion {
 const formVacio = {
   nombre: '', tipo: 'FUTBOL', descripcion: '',
   precioPorHora: '', capacidad: '', activa: true,
-  complejoId: '', techada: false, superficie: '', imagen: '',
+  complejoId: '', techada: false, superficie: '', fotos: [] as string[],
 }
 
 const flabel = 'mb-1.5 block font-display text-[0.8125rem] font-bold text-basalto'
@@ -59,11 +60,9 @@ export function GestionCanchasPanel({
   const [modalOpen, setModalOpen] = useState(false)
   const [editando, setEditando] = useState<Cancha | null>(null)
   const [form, setForm] = useState(formVacio)
-  const [archivo, setArchivo] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  const [subiendoFotos, setSubiendoFotos] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const fileRef = useRef<HTMLInputElement | null>(null)
   const [fq, setFq] = useState('')
   const [fdistrito, setFdistrito] = useState('')
   const [fciudad, setFciudad] = useState('')
@@ -95,24 +94,9 @@ export function GestionCanchasPanel({
     setFtipo('')
   }
 
-  useEffect(() => {
-    return () => {
-      if (preview && preview.startsWith('blob:')) URL.revokeObjectURL(preview)
-    }
-  }, [preview])
-
-  function fijarPreview(url: string | null, file: File | null = null) {
-    setPreview((prev) => {
-      if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev)
-      return url
-    })
-    setArchivo(file)
-  }
-
   function abrirCrear() {
     setEditando(null)
     setForm(formVacio)
-    fijarPreview(null)
     setError('')
     setModalOpen(true)
   }
@@ -129,31 +113,14 @@ export function GestionCanchasPanel({
       complejoId: cancha.complejoId ?? '',
       techada: cancha.techada,
       superficie: cancha.superficie ?? '',
-      imagen: cancha.imagen ?? '',
+      fotos: cancha.fotos?.length ? cancha.fotos : cancha.imagen ? [cancha.imagen] : [],
     })
-    fijarPreview(cancha.imagen ?? null)
     setError('')
     setModalOpen(true)
   }
 
-  function elegirArchivo(file: File | null) {
-    if (!file) {
-      fijarPreview(editando?.imagen ?? null)
-      return
-    }
-    if (!file.type.startsWith('image/')) {
-      setError('El archivo debe ser una imagen (JPG, PNG, WEBP o GIF).')
-      return
-    }
-    if (file.size > 3 * 1024 * 1024) {
-      setError('La imagen no puede superar 3 MB.')
-      return
-    }
-    setError('')
-    fijarPreview(URL.createObjectURL(file), file)
-  }
-
   async function guardar() {
+    if (loading || subiendoFotos) return
     setError('')
     const precio = Number(form.precioPorHora)
     const capacidad = Number(form.capacidad)
@@ -170,8 +137,6 @@ export function GestionCanchasPanel({
     // complejoId: en creación '' = global; en edición solo se envía si cambió
     // ('' explícito = desasignar del complejo).
     const complejoIdInicial = editando?.complejoId ?? ''
-    // imagen: la foto viaja por archivo; aquí solo se indica quitar ('' = limpiar).
-    const quitarFoto = editando?.imagen != null && editando.imagen !== '' && preview === null && archivo === null
     const input: CanchaInput = {
       nombre: form.nombre.trim(),
       tipo: form.tipo as TipoCancha,
@@ -181,21 +146,14 @@ export function GestionCanchasPanel({
       activa: form.activa,
       techada: form.techada,
       superficie: form.superficie || null,
-      ...(quitarFoto ? { imagen: '' } : {}),
+      fotos: form.fotos,
       ...(editando
         ? (form.complejoId !== complejoIdInicial ? { complejoId: form.complejoId } : {})
         : { complejoId: form.complejoId === '' ? null : form.complejoId }),
     }
     try {
-      if (editando) {
-        await Promise.all([
-          updateCancha(editando.id, input),
-          ...(archivo ? [subirImagenCancha(editando.id, archivo)] : []),
-        ])
-      } else {
-        const id = (await createCancha(input)).cancha.id
-        if (archivo) await subirImagenCancha(id, archivo)
-      }
+      if (editando) await updateCancha(editando.id, input)
+      else await createCancha(input)
     } catch (error) {
       setLoading(false)
       setError(error instanceof Error ? error.message : 'No se pudo guardar la cancha')
@@ -359,7 +317,7 @@ export function GestionCanchasPanel({
 
       <Modal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => { if (!loading && !subiendoFotos) setModalOpen(false) }}
         title={editando ? 'Editar Cancha' : 'Nueva Cancha'}
         tono="claro"
       >
@@ -428,57 +386,7 @@ export function GestionCanchasPanel({
             </div>
           </section>
 
-          <section aria-label="Foto" className="space-y-3">
-            <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">FOTO</p>
-            {preview ? (
-              <div className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={preview}
-                  alt="Foto de la cancha"
-                  className="h-44 w-full rounded-xl border border-cal object-cover"
-                  style={{ maxHeight: 176 }}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    fijarPreview(null)
-                    if (fileRef.current) fileRef.current.value = ''
-                  }}
-                  className="btn-tactil absolute top-2 right-2 bg-cesped-hondo px-3 py-1.5 text-xs font-bold text-tiza hover:bg-cesped-hover"
-                >
-                  Quitar
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-cal bg-piedra/50 px-4 py-8 text-center transition hover:bg-piedra"
-              >
-                <span className="text-3xl" aria-hidden>📷</span>
-                <span className="font-display text-sm font-bold text-basalto">Subir foto desde mis archivos</span>
-                <span className="text-xs text-pizarra">JPG, PNG, WEBP o GIF · máximo 3 MB</span>
-              </button>
-            )}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              className="hidden"
-              aria-label="Elegir foto de la cancha"
-              onChange={(e) => elegirArchivo(e.target.files?.[0] ?? null)}
-            />
-            {preview && (
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="font-display text-xs font-bold text-cesped-hondo hover:underline"
-              >
-                Cambiar foto…
-              </button>
-            )}
-          </section>
+          <FotosEditor key={editando?.id ?? 'nueva'} fotos={form.fotos} max={5} tipo="cancha" onChange={fotos => setForm(prev => ({ ...prev, fotos }))} onBusy={setSubiendoFotos} />
 
           <section aria-label="Características" className="space-y-3">
             <p className="font-display text-[0.6875rem] font-bold tracking-[0.12em] text-pizarra">CARACTERÍSTICAS</p>
@@ -551,10 +459,10 @@ export function GestionCanchasPanel({
           {error && <p role="alert" className="rounded-xl border border-error/40 bg-error-suave px-4 py-3 text-sm font-semibold text-error">{error}</p>}
 
           <div className="flex gap-3 pt-1">
-            <Button variant="secondary" className="flex-1" onClick={() => setModalOpen(false)}>
+            <Button variant="secondary" className="flex-1" disabled={loading || subiendoFotos} onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
-            <Button className="flex-1" loading={loading} onClick={guardar}>
+            <Button className="flex-1" loading={loading} disabled={subiendoFotos} onClick={guardar}>
               {editando ? 'Guardar cambios' : 'Crear cancha'}
             </Button>
           </div>

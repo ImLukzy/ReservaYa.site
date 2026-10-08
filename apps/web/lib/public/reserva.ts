@@ -1,4 +1,4 @@
-export type EstadoFranja = 'LIBRE' | 'OCUPADA' | 'PASADA' | 'ANTICIPACION'
+type EstadoFranja = 'LIBRE' | 'OCUPADA' | 'PASADA' | 'ANTICIPACION'
 export interface Franja { inicio: number; fin: number; estado: EstadoFranja; precio: string }
 export interface Agenda { canchaId: string; fecha: string; anticipacionMinMin: number; cancelacionMinMin?: number; politica?: string | null; franjas: Franja[] }
 export function horaMinutos(m: number): string { return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}` }

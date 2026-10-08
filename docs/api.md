@@ -34,21 +34,20 @@ Nunca `DATABASE_URL` ni secretos aquí: todo `NEXT_PUBLIC_*` puede terminar en e
 
 ## Imágenes en Cloudflare R2
 
-Flujo: `uploadToR2(file, tipo)` (`apps/web/lib/upload-r2.ts`) → `POST /api/upload` (route handler de Next, estático: se sirve antes del rewrite `/api/:path*`, no llega a la API .NET) → `PUT` directo del navegador a R2 → endpoint PUT de la API con la URL pública. La API solo acepta URLs que empiezan por `MEDIA_PUBLIC_URL` + `/`.
+Flujo: `uploadToR2(file, tipo)` (`apps/web/lib/upload-r2.ts`) → `POST /api/upload` (route handler de Next, estático: se sirve antes del rewrite `/api/:path*`, no llega a la API NestJS) → `PUT` directo del navegador a R2 → endpoint PUT de la API con la URL pública. La API solo acepta URLs que empiezan por `MEDIA_PUBLIC_URL` + `/`.
 
 | M | Ruta | Sesión | Body | Respuesta |
 |---|---|---|---|---|
-| POST | `/api/upload` (Next) | sí (cookie; 401 si no) | `{ filename, contentType, size, tipo: 'cancha'\|'perfil'\|'partido' }`; JPG/PNG/WEBP/GIF, ≤3 MB; `cancha` solo ADMIN/SUPERADMIN/TECNICO | `{ uploadUrl, publicUrl, key }`, firma 300 s con `Content-Type` y `Content-Length` firmados; clave `uploads/<tipo>/<userId>/<ms>-<uuid8>-<slug>.<ext>` · 400 datos · 403 rol · 503 sin variables R2 |
-| PUT | `/api/canchas/{id}/imagen` | ADMIN/SUPERADMIN/TECNICO con permiso sobre la cancha | `{ url }` | `{ ok, cancha }` · 400 URL inválida · 403 · 404 · 503 sin `MEDIA_PUBLIC_URL` |
+| POST | `/api/upload` (Next) | sí (cookie; 401 si no) | `{ filename, contentType, size, tipo: 'cancha'\|'perfil'\|'partido'\|'complejo' }`; JPG/PNG/WEBP/GIF, ≤3 MB; `cancha` solo ADMIN/SUPERADMIN/TECNICO | `{ uploadUrl, publicUrl, key }`, firma 300 s con `Content-Type` y `Content-Length` firmados; clave `uploads/<tipo>/<userId>/<ms>-<uuid8>-<slug>.<ext>` · 400 datos · 403 rol · 503 sin variables R2 |
 | PUT | `/api/usuarios/me/foto` | sí | `{ url }` | `{ ok, fotoUrl }` · 400 · 503 |
 | PUT | `/api/partidos/{id}/foto` | organizador o TECNICO | `{ url }` | `{ ok, partido }` · 400 · 403 · 404 · 503 |
 | POST | `/api/partidos` | sí | multipart; campo `fotoUrl` (R2) en lugar de `foto` | 201; 400 `URL de imagen inválida` |
 
-Al reemplazar una imagen (PUT `{url}` o multipart) o al eliminar una cancha o un partido, la API borra del bucket el objeto anterior si su URL empieza por `MEDIA_PUBLIC_URL/uploads/` (`Services/AlmacenR2.cs`, `DeleteObject`). Se hace después de guardar en BD y es mejor esfuerzo: si R2 falla o faltan `R2_*` en la API, solo queda un aviso en el log (`R2 no se pudo borrar {Clave}` / `R2 sin configurar`) y el objeto huérfano. Las rutas `/uploads/...` locales se siguen borrando del disco como antes.
+Al retirar fotos de una cancha o reemplazar la foto de un partido, la API borra los objetos retirados del bucket después de guardar en la base de datos. La eliminación es de mejor esfuerzo: si R2 falla o faltan `R2_*`, el objeto puede quedar huérfano. Las rutas `/uploads/...` locales se siguen borrando del disco como antes.
 
-Propiedad: una URL R2 **nueva** (distinta de la guardada) solo se acepta si su clave es de la carpeta del usuario: `uploads/perfil/<userId>/` en `PUT /api/usuarios/me/foto`; `uploads/partido/<userId>/` en `POST /api/partidos` (`fotoUrl`) y `PUT /api/partidos/{id}/foto`; `uploads/cancha/<userId>/` en `PUT /api/canchas/{id}/imagen`, `PUT`/`POST /api/canchas` (`imagen`) y `POST /api/solicitudes`. TECNICO puede usar cualquier `uploads/partido/` o `uploads/cancha/`. Si no, 400. Reenviar la URL ya guardada (p. ej. al editar otros campos de la cancha) no se revalida. Además el borrado solo actúa sobre claves `uploads/<tipo>/` del tipo de la entidad. Así nadie puede adoptar la URL de otro y provocar que la API borre ese objeto.
+Propiedad: una URL R2 **nueva** (distinta de la guardada) solo se acepta si su clave es de la carpeta del usuario: `uploads/perfil/<userId>/` en `PUT /api/usuarios/me/foto`; `uploads/partido/<userId>/` en `POST /api/partidos` (`fotoUrl`) y `PUT /api/partidos/{id}/foto`; `uploads/cancha/<userId>/` en `PUT`/`POST /api/canchas` (`fotos`) y `POST /api/solicitudes` (`imagen`). TECNICO puede usar cualquier `uploads/partido/` o `uploads/cancha/`. Si no, 400. Reenviar la URL ya guardada (p. ej. al editar otros campos de la cancha) no se revalida. Además el borrado solo actúa sobre claves `uploads/<tipo>/` del tipo de la entidad. Así nadie puede adoptar la URL de otro y provocar que la API borre ese objeto.
 
-Los POST multipart heredados (`/api/canchas/{id}/imagen`, `/api/usuarios/me/foto`, `foto` en `/api/partidos`) siguen funcionando por compatibilidad, pero escriben en `wwwroot/uploads` de Render (efímero). Responden con la cabecera `Deprecation: true` y registran `LegacyUploadUsed {Endpoint} {UserId}` (warning). La web ya no los usa: todo pasa por `lib/upload-r2.ts`.
+Los POST multipart heredados (`/api/usuarios/me/foto`, `foto` en `/api/partidos`) siguen funcionando por compatibilidad, pero escriben en `wwwroot/uploads` de Render (efímero). Responden con la cabecera `Deprecation: true` y registran `LegacyUploadUsed {Endpoint} {UserId}` (warning). La web ya no los usa: todo pasa por `lib/upload-r2.ts`.
 
 ### Plan de retiro de /uploads
 
@@ -140,7 +139,7 @@ Cada `RateLimiter` conserva como máximo 10.000 claves y purga las vencidas dura
 
 `GET /api/complejos/publico/:slug` no requiere sesión; conserva la protección de origen y los límites globales. Devuelve 404 si el slug no existe, no está publicado o no pertenece a `visibleIds`: suscripción ACTIVA vigente o gracia de 30 días para dueños con rol distinto de USUARIO, igual que el catálogo.
 
-Respuesta 200: `{complejo:{slug,nombre,direccion,distrito,ciudad,telefono,descripcion,imagen},canchas:[{id,nombre,tipo,precioPorHora,imagen,techada,superficie,capacidad}],valoracion:{promedio,total}}`. Solo canchas activas; `precioPorHora` es cadena decimal con dos posiciones. Foto del complejo, primera cancha con foto como respaldo o null. No incluye dueño, email, suscripciones ni identificador interno del complejo.
+Respuesta 200: `{complejo:{slug,nombre,direccion,distrito,ciudad,telefono,descripcion,imagen},canchas:[{id,nombre,tipo,precioPorHora,imagen,fotos,techada,superficie,capacidad}],valoracion:{promedio,total}}`. Solo canchas activas; `precioPorHora` es cadena decimal con dos posiciones. Foto del complejo, primera cancha con foto como respaldo o null. No incluye dueño, email, suscripciones ni identificador interno del complejo.
 
 La página `/c/[slug]` usa `serverFetch` con revalidación de 60 segundos, metadatos canónicos de `https://reservaya.site` y foto para Open Graph. Reservar abre la búsqueda existente `/dashboard/canchas` filtrada por nombre, distrito y deporte; la autenticación conserva el destino. El contacto oficial es `lukas.melgar@tecsup.edu.pe`; se retiró el Instagram inexistente.
 
@@ -202,3 +201,7 @@ Perfil y widget muestran plazos/política; agenda marca ANTICIPACION antes del m
 ### Navegación pública de reservas (spec 70)
 
 `GET /api/canchas/disponibles` incluye `cancha.complejo.slug`. Catálogo y tablero por horas usan `/c/<slug>?cancha=<id>&fecha=<ISO>&inicio=<minutos>&fin=<minutos>#reservar`; la vista de complejos usa `/c/<slug>#reservar`. El widget valida la cancha contra el perfil y fecha/rango contra su calendario; parámetros inválidos restauran primera cancha y hoy. Canchas sin complejo conservan `/dashboard/canchas`. La ficha mantiene la portada y omite la galería de fotos.
+
+### Fotos de canchas (spec 71)
+
+POST/PUT `/api/canchas` acepta `fotos: string[]` con hasta cinco URLs JPG/PNG/WebP del bucket propio y carpeta del usuario (TECNICO puede gestionar otras carpetas de cancha). Se valida el dueño dentro de la transacción; `imagen = fotos[0] ?? null`. Fotos omitidas en una edición se conservan, `[]` limpia fotos y portada. Catálogo, gestión y perfil público devuelven `fotos`. Solo una imagen histórica ya guardada puede conservarse sin cumplir la nueva regla del bucket; no se aceptan nuevas URLs externas. Los endpoints de una foto de cancha fueron retirados. El panel comprime a WebP y permite reordenar, elegir portada y quitar con confirmación; la ficha muestra un carrusel táctil con tamaño reservado y contador.

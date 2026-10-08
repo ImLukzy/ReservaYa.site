@@ -2,7 +2,7 @@ import type { Prisma, PrismaClient } from '@reservaya/db';
 import { fail, utc } from '../public/format';
 // Lectura pública de reseñas (spec 64): una sola fuente para el resumen de /canchas y del perfil.
 export type Orden = 'recientes' | 'mejor' | 'peor';
-export type Distribucion = Record<'1' | '2' | '3' | '4' | '5', number>;
+type Distribucion = Record<'1' | '2' | '3' | '4' | '5', number>;
 const LIMITE_MAX = 20;
 const ordenes: Record<Orden, Prisma.ResenaOrderByWithRelationInput[]> = {
   recientes: [{ creadoEn: 'desc' }, { id: 'desc' }],

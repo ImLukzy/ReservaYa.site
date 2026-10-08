@@ -52,12 +52,3 @@ export async function subirFotoPerfil(file: File): Promise<{ ok: boolean; fotoUr
     body: JSON.stringify({ url }),
   })
 }
-
-export async function subirImagenCancha(id: string, file: File): Promise<{ ok: boolean; cancha: Cancha }> {
-  const url = await uploadToR2(file, 'cancha')
-  return request<{ ok: boolean; cancha: Cancha }>(`/api/canchas/${encodeURIComponent(id)}/imagen`, {
-    method: 'PUT',
-    body: JSON.stringify({ url }),
-  })
-}
-
