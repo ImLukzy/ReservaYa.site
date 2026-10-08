@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "pnpm --filter @reservaya/web dev",
     "dev:all": "node scripts/start-dev.mjs",
-    "dev:api": "dotnet run --project apps/api-dotnet/ReservaFacil.Api.csproj --launch-profile http",
+    "dev:api": "pnpm --filter @reservaya/api dev",
+    "dev:api-dotnet": "dotnet run --project apps/api-dotnet/ReservaFacil.Api.csproj --launch-profile http",
     "dev:api:ts": "pnpm --filter @reservaya/api dev",
     "dev:next": "pnpm --filter @reservaya/web dev",
     "build": "turbo run build",

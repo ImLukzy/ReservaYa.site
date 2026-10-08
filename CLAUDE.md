@@ -30,8 +30,8 @@ scripts/                   runner Node y checker/tests motion
 
 ## Comandos desde raíz
 
-- `npm run dev:all`: runner Node, API :5000 saludable antes de web :3000; Ctrl+C limpia hijos propios. Carga entorno local apps/web/.env en ejecución; no imprime secretos.
-- `pnpm dev`, `dev:next`, `build:next`, `preview`: web; `pnpm build`: paquetes y web. `dev:api`: API sola con variables en el entorno del shell.
+- `npm run dev:all`: runner Node, API NestJS :5200 saludable antes de web :3000; Ctrl+C limpia hijos propios. Carga entorno local apps/web/.env en ejecución; no imprime secretos.
+- `pnpm dev`, `dev:next`, `build:next`, `preview`: web; `pnpm build`: paquetes y web. `dev:api`: API NestJS sola con variables en el entorno del shell; `dev:api-dotnet`: rollback .NET hasta 2026-10-21.
 - `npm --prefix apps/web run typecheck`, `run lint`, `test`, `run build`, `run db:check` (solo lectura).
 - Dentro de apps/web: `npm exec -- next typegen` si faltan tipos generados. CI lo ejecuta antes de typecheck.
 - `dotnet build apps/api-dotnet/ReservaFacil.Api.csproj`; `node --test scripts/start-dev.test.mjs`.

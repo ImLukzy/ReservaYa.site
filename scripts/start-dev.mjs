@@ -8,13 +8,13 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SERVICES = [
-  { name: 'API', port: 5000 },
+  { name: 'API', port: 5200 },
   { name: 'Web', port: 3000 },
 ];
 
 export function launchCommand(service, platform) {
-  if (service.name === 'API') return { command: 'dotnet', args: ['run', '--project', 'apps/api-dotnet/ReservaFacil.Api.csproj', '--launch-profile', 'http'], shell: false };
-  // Todos los argumentos son constantes: cmd solo se usa para ejecutar el .cmd de npm.
+  if (service.name === 'API') return { command: platform === 'win32' ? 'pnpm.cmd' : 'pnpm', args: ['--filter', '@reservaya/api', 'dev'], shell: platform === 'win32' };
+  // Todos los argumentos son constantes: cmd solo se usa para ejecutar los .cmd de pnpm/npm.
   return { command: platform === 'win32' ? 'npm.cmd' : 'npm', args: ['--prefix', 'apps/web', 'run', 'dev', '--', '--port', '3000'], shell: platform === 'win32' };
 }
 
@@ -39,7 +39,7 @@ export async function serviceHealthy(service, signal) {
     });
     if (!response.ok) return false;
     if (service.name === 'API') {
-      return response.headers.get('server')?.includes('Kestrel') === true && (await response.json()).ok === true;
+      return (await response.json()).ok === true;
     }
     const html = await response.text();
     return html.includes('ReservaYa') && /\/_next\/static\//.test(html) && /<html[^>]*lang="es"/.test(html);
@@ -71,7 +71,7 @@ export async function runDev({
   repoRoot = ROOT, platform = process.platform, timeoutMs = 90_000,
   spawnProcess = spawn, occupied = portOccupied, healthy = serviceHealthy,
   pause = delay, now = Date.now, stopTree = stopChildTree, signals = process,
-  log = console.log,
+  log = console.log, shellBackend,
 } = {}) {
   const children = [];
   const controller = new AbortController();
@@ -98,7 +98,10 @@ export async function runDev({
         continue;
       }
       const { command, args, shell } = launchCommand(service, platform);
-      const child = spawnProcess(command, args, { cwd: repoRoot, env: process.env, stdio: 'inherit', detached: platform !== 'win32', shell });
+      const env = service.name === 'API'
+        ? { ...process.env, PORT: String(service.port) }
+        : { ...process.env, BACKEND_URL: shellBackend ?? `http://localhost:${SERVICES[0].port}` };
+      const child = spawnProcess(command, args, { cwd: repoRoot, env, stdio: 'inherit', detached: platform !== 'win32', shell });
       children.push(child);
       child.once('error', () => end(1, `No se pudo iniciar ${service.name}`));
       child.once('exit', (code) => { if (!stopping) end(1, `${service.name} terminó antes de la parada (código ${code ?? 'señal'})`); });
@@ -112,7 +115,7 @@ export async function runDev({
       if (!ready) throw new Error(`${service.name} no respondió correctamente en ${timeoutMs / 1000} s`);
       log(`${service.name} listo (:${service.port})`);
     }
-    if (!result) log('API :5000 | Web :3000. Ctrl+C termina los procesos iniciados aquí.');
+    if (!result) log('API :5200 | Web :3000. Ctrl+C termina los procesos iniciados aquí.');
     await done;
   } catch (error) {
     if (!result) end(1, error.message);
@@ -127,8 +130,9 @@ export async function runDev({
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const shellBackend = process.env.BACKEND_URL;
   // Solo el runtime carga el entorno local; no se imprime ni copia su contenido.
   try { loadEnvFile(join(ROOT, 'apps/web/.env')); }
   catch (error) { if (error.code !== 'ENOENT') throw error; }
-  process.exitCode = await runDev();
+  process.exitCode = await runDev({ shellBackend });
 }
