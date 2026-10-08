@@ -1,9 +1,7 @@
-import { backendRewrites } from './lib/backend-routing.mjs';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Sin Turbopack en Windows: `next dev --webpack` (ver package.json).
-  // El backend es ASP.NET Core; /api/* se proxya del lado servidor.
+  // El backend es NestJS; /api/* se proxya del lado servidor.
   async redirects() {
     return [
       { source: '/completar-cuadro', destination: '/jugar', statusCode: 301 },
@@ -17,7 +15,8 @@ const nextConfig = {
     ];
   },
   async rewrites() {
-    return backendRewrites();
+    const backend = process.env.BACKEND_URL ?? 'http://localhost:5200';
+    return [{ source: '/api/:path*', destination: `${backend}/api/:path*` }];
   },
   async headers() {
     return [

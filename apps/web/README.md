@@ -2,23 +2,9 @@
 
 ## Regla de oro: 0 migraciones pendientes
 
-La DB (Neon), `prisma/schema.prisma` y el modelo EF Core
-(`../api/Models/Entities.cs` + `../api/Data/AppDbContext.cs`) deben estar
-idénticos. Toda la deriva pasada rompió el dashboard con 500s.
+Neon y el esquema Prisma existente deben permanecer coherentes. No editar el esquema ni ejecutar migraciones o seed en esta tarea. `npm run db:check` comprueba deriva sin escribir datos.
 
-El dueño del DDL es EF Core (`../api/Migrations`, baseline registrado
-en `__EFMigrationsHistory`). Prisma es espejo de lectura (seed, Studio,
-`db:check`): `prisma/schema.prisma` es espejo protegido. No editarlo ni ejecutar migraciones en esta tarea.
-
-```powershell
-npm run db:check   # exit 0 = limpio · exit 1 = hay deriva
-```
-
-El script compara las 17 tablas/columnas mapeadas en EF, los nombres
-explícitos de PKs/índices/FKs y las etiquetas de enum (`MapEnum<>`) contra
-la DB real, sin tocar datos.
-
-Las instrucciones antiguas de cambios de esquema se conservan solo como historia en [el README anterior](../../docs/specs/archivo/web-readme-previo-f4.md). En esta tarea no se ejecuta ninguna migración ni seed; los archivos protegidos conservan los bytes previos.
+Rollback: `git revert` o redeploy de un commit anterior en Render; no revertir la base automáticamente.
 
 ## Desarrollo local
 
@@ -28,9 +14,8 @@ Copy-Item .env.example .env   # pide DATABASE_URL de Neon
 corepack pnpm --filter @reservaya/web dev                   # panel en http://localhost:3000
 ```
 
-La API corre en `http://localhost:5000` (desde la raíz: `corepack pnpm --filter @reservaya/web dev:api`;
-el proyecto es `apps/api-dotnet/ReservaFacil.Api.csproj`, nombre conservado a propósito) y Next proxya `/api/*`.
-Desde la raíz: `corepack pnpm --filter @reservaya/web dev:all` levanta API + web pública/panel.
+La API NestJS corre en `http://localhost:5200` (desde la raíz: `pnpm dev:api`) y Next proxya `/api/*` a `BACKEND_URL`.
+Desde la raíz: `npm run dev:all` levanta API + web pública/panel; usa `:5200` salvo que el shell defina otro `BACKEND_URL`.
 
 ## Marketplace: suscripción, buscador y precios por franja
 
@@ -45,7 +30,7 @@ Desde la raíz: `corepack pnpm --filter @reservaya/web dev:all` levanta API + we
 - **Precios por franja**: `Promocion` tipo `PRECIO_ESPECIAL` con
   precioDia/Tarde/Noche + umbrales (def. 17:00/20:00). El total (cotizar,
   disponibles y crear reserva) se calcula por hora en el backend
-  (`Services/PrecioCancha`); el frontend solo estima. Prioridad por hora:
+  (API NestJS); el frontend solo estima. Prioridad por hora:
   cancha > complejo > global.
 
 ## Horario operativo + roles
@@ -92,4 +77,4 @@ Desde la raíz: `corepack pnpm --filter @reservaya/web dev:all` levanta API + we
 
 ## Proyecto unificado
 
-Web pública y panel usan el mismo origen y la misma UI en `components/ui`; API .NET en `../api`. Los comandos completos y el runner multiplataforma están en [README raíz](../../README.md). Desde la raíz, `corepack pnpm --filter @reservaya/web dev:all` inicia API y web; desde esta carpeta, `corepack pnpm --filter @reservaya/web dev` conserva webpack. No leer JWT cliente ni editar secretos.
+Web pública y panel usan el mismo origen y la misma UI en `components/ui`; API NestJS en `../api`. Los comandos completos y el runner multiplataforma están en [README raíz](../../README.md). Desde la raíz, `npm run dev:all` inicia API y web; desde esta carpeta, `corepack pnpm --filter @reservaya/web dev` conserva webpack. No leer JWT cliente ni editar secretos.

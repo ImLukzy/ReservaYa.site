@@ -9,7 +9,8 @@ La web pública y el panel comparten Next.js 16 (:3000). El navegador llama a `/
 - `apps/web/components/ui`: componentes compartidos con props de apariencia pública/panel.
 - `apps/web/lib`: cliente/servidor API y utilidades públicas; contrato en [api.md](./api.md).
 - `apps/api`: API NestJS de producción (todas las rutas).
-- `apps/api-dotnet`: API .NET solo rollback hasta 2026-10-21.
+
+Rollback: `git revert` o redeploy de un commit anterior en Render; no revertir la base automáticamente.
 
 ## Rutas vigentes
 

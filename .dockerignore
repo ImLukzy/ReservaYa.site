@@ -1,8 +1,6 @@
 .git/
 node_modules/
 **/node_modules/
-**/bin/
-**/obj/
 **/.next/
 **/dist/
 **/.astro/
@@ -13,8 +11,6 @@ hive/
 .claude/
 .turbo/
 .pnpm-store/
-apps/api/wwwroot/uploads/
-apps/api-dotnet/wwwroot/uploads/
 
 **/.env*
 !**/.env.example

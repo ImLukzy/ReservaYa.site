@@ -7,11 +7,6 @@ dist/
 out/
 coverage/
 
-# .NET
-**/bin/
-**/obj/
-**/TestResults/
-
 # env — nunca subir
 .env
 .env*.local
@@ -21,13 +16,6 @@ coverage/
 # TS / Next artifacts
 *.tsbuildinfo
 next-env.d.ts
-
-# Uploads de usuarios (fotos de canchas) — no versionar, sí la carpeta
-# (se ignora el contenido pero no los directorios, para que el !.gitkeep aplique)
-apps/api-dotnet/wwwroot/uploads/*
-!apps/api-dotnet/wwwroot/uploads/*/
-apps/api-dotnet/wwwroot/uploads/*/*
-!apps/api-dotnet/wwwroot/uploads/*/.gitkeep
 
 # OS / editor
 .DS_Store
@@ -52,12 +40,15 @@ restore-gate.json
 .pnpm-store/
 packages/db/prisma/generated/
 
-# Artefactos/uploads de servicios legacy todavía en ejecución
-apps/api/wwwroot/uploads/
-
 # QA y secretos de cualquier carpeta
 *.env
 qa.env
 .qa-env
 !.env.example
 !**/.env.example
+
+# Artefactos de compilación antiguos (.NET) que pueden quedar en disco
+**/bin/
+**/obj/
+**/TestResults/
+apps/api/wwwroot/uploads/
