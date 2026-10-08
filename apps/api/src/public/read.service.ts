@@ -4,6 +4,7 @@ type Cancha = Prisma.CanchaGetPayload<object>;
 import { Clock, DbService } from './db.service';
 import { day, fail, quote, slot, utc, money } from './format';
 import { districts } from './districts';
+import { limite, orden, pagina, resumen } from '../resenas/publico';
 export type Query = Record<string, string | string[] | undefined>;
 export const text = (q: Query, key: string) => { const value = q[key]; return Array.isArray(value) ? value[0] : value; };
 const clean = (s?: string) => s?.trim() || null;
@@ -141,7 +142,7 @@ export class PublicReadService {
         where: { complejoId: complejo.id, activa: true }, orderBy: { nombre: 'asc' },
         select: { id: true, nombre: true, tipo: true, precioPorHora: true, imagen: true, techada: true, superficie: true, capacidad: true },
       }),
-      this.db.resena.aggregate({ where: { complejoId: complejo.id }, _avg: { puntuacion: true }, _count: true }),
+      resumen(this.db, complejo.id),
     ]);
     return {
       complejo: { slug: complejo.slug, nombre: complejo.nombre, direccion: complejo.direccion, distrito: complejo.distrito,
@@ -150,18 +151,19 @@ export class PublicReadService {
         imagen: complejo.fotos[0] ?? canchas.find(c => c.imagen)?.imagen ?? null },
       canchas: canchas.map(c => ({ id: c.id, nombre: c.nombre, tipo: c.tipo, precioPorHora: money(c.precioPorHora),
         imagen: c.imagen, techada: c.techada, superficie: c.superficie, capacidad: c.capacidad })),
-      valoracion: { promedio: Math.round((valoracion._avg.puntuacion ?? 0) * 10) / 10, total: valoracion._count },
+      valoracion: { promedio: valoracion.promedio, total: valoracion.total },
     };
   }
+  // Acepta complejoId (tarjetas de /canchas) o slug (perfil /c/[slug], que no expone el id interno).
   async resenas(q: Query) {
-    const id = text(q, 'complejoId');
-    if (!id?.trim()) fail(400, 'complejoId es requerido');
-    if (!(await this.visibleIds()).includes(id!)) fail(404, 'No encontrado');
-    const resenas = await this.db.resena.findMany({ where: { complejoId: id }, include: { usuarioByUsuarioId: { select: personSelect } }, orderBy: { creadoEn: 'desc' } });
-    const avg = resenas.length ? resenas.reduce((sum,r) => sum + r.puntuacion, 0) / resenas.length : 0;
-    const scaled = avg * 10, floor = Math.floor(scaled);
-    const promedio = (scaled - floor === 0.5 ? floor % 2 ? floor + 1 : floor : Math.round(scaled)) / 10;
-    return { ok: true, promedio, total: resenas.length, resenas: resenas.map(r => ({ id: r.id, puntuacion: r.puntuacion, comentario: r.comentario, respuestaDueno: r.respuestaDueno, creadoEn: utc(r.creadoEn), usuario: r.usuarioByUsuarioId })) };
+    const id = clean(text(q, 'complejoId')), slug = clean(text(q, 'slug'));
+    if (!id && !slug) fail(400, 'complejoId o slug es requerido');
+    const o = orden(text(q, 'orden')), n = limite(text(q, 'limite')), cursor = clean(text(q, 'cursor')) ?? undefined;
+    const visible = await this.visibleIds();
+    const complejoId = id ?? (await this.db.complejo.findFirst({ where: { slug: slug!, publicado: true }, select: { id: true } }))?.id;
+    if (!complejoId || !visible.includes(complejoId)) fail(404, 'No encontrado');
+    const [r, p] = await Promise.all([resumen(this.db, complejoId!), pagina(this.db, complejoId!, o, n, cursor)]);
+    return { ok: true, ...r, orden: o, ...p };
   }
   async partidos(q: Query, user: { id: string; rol: string } | null) {
     const now = this.clock.now();

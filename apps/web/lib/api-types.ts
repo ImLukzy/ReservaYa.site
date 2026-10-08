@@ -259,6 +259,18 @@ export interface SolicitudInput {
   aceptaConvenio: true
 }
 
+/** Reseña tal como la ve el panel del dueño (GET /api/resenas). */
+export interface ResenaPanel {
+  id: string
+  complejoId: string
+  puntuacion: number
+  comentario: string | null
+  respuestaDueno: string | null
+  creadoEn: string
+  autor: string
+  usuario: { id: string; nombre: string; email: string } | null
+}
+
 export class ApiError extends Error {
   status: number
 

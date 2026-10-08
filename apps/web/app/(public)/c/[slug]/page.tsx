@@ -16,6 +16,7 @@ import { reservaPublicaHref, type ComplejoPublico } from '@/lib/public/complejo-
 import { tipoCanchaLabel } from '@/components/features/etiquetasJugador'
 import { whatsappUrl } from '@/lib/whatsapp'
 import { Button } from '@/components/ui/Button'
+import { ResenasSeccion } from '@/components/public/resenas/ResenasSeccion'
 
 type Props = { params: Promise<{ slug: string }> }
 const perfil = cache(async (slug: string): Promise<ComplejoPublico> => {
@@ -86,8 +87,7 @@ export default async function Page({ params }: Props) {
         <section id="fotos" className="scroll-mt-24 rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="fotos-titulo"><h2 id="fotos-titulo" className="mb-4 text-xl font-semibold">Fotos de {complejo.nombre} ({fotos.length})</h2><GaleriaComplejo fotos={fotos} nombre={complejo.nombre} /></section>
         <section className="rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="ubicacion-titulo"><h2 id="ubicacion-titulo" className="mb-4 text-xl font-semibold">Ubicación</h2>{punto ? <><MapaUbicacion punto={punto} /><Button apariencia="publica" variante="secundario" href={`https://www.google.com/maps/dir/?api=1&destination=${punto.latitud},${punto.longitud}`} target="_blank" rel="noopener noreferrer"><MapPin size={18} />Cómo llegar · Abrir en Maps</Button></> : <p className="text-pizarra">El complejo aún no ha marcado su ubicación en el mapa.</p>}<p className="my-3 break-words text-pizarra">{complejo.direccion}</p><AccionesPerfil direccion={complejo.direccion} url={linkPublico(complejo.slug)} /></section>
         <section className="rounded-surface border border-cal bg-tiza p-4 sm:p-6" aria-labelledby="contacto-titulo"><h2 id="contacto-titulo" className="flex items-center gap-2 text-xl font-semibold"><Phone size={22} />¿Un problema con tu reserva?</h2><p className="my-3 text-pizarra">Contacta directamente con {complejo.nombre}.</p><div className="mb-2 flex flex-wrap gap-2">{whatsapp && <Button apariencia="publica" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</Button>}{telefono && <Button apariencia="publica" variante="secundario" href={`tel:${telefono}`}><Phone size={18} />{complejo.telefono}</Button>}</div>{telefono ? <AccionesPerfil telefono={complejo.telefono ?? telefono} /> : <p className="text-pizarra">Este complejo aún no tiene teléfono público.</p>}</section>
-        {/* Punto de montaje de ResenasSeccion (spec 64, trabajo paralelo). */}
-        <section id="resenas" aria-label="Reseñas del complejo" />
+        <ResenasSeccion slug={complejo.slug} complejoNombre={complejo.nombre} />
       </div>
       <aside id="reservar" className="min-w-0 rounded-surface border border-cal bg-tiza p-4 lg:sticky lg:top-24" aria-labelledby="reservar-titulo"><h2 id="reservar-titulo" className="mb-3 flex items-center gap-2 text-xl font-semibold"><CalendarDays size={22} />Reservar horario</h2><p className="mb-4 text-sm text-pizarra">Canchas de este complejo. Elige una cancha y continúa para consultar sus horarios.</p>{canchas.length ? <CanchasPerfil datos={datos} /> : <p className="text-pizarra">Aún no hay canchas activas.</p>}</aside>
     </div>

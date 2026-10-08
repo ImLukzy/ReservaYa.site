@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { logout as apiLogout } from '@/lib/api-client';
+import { logout as apiLogout, resenasDelPanel } from '@/lib/api-client';
 import { publicAppUrl } from '@/lib/public-app';
 import { Marca } from '@/components/ui/Marca';
 import { Avatar } from '@/components/ui/Avatar';
@@ -169,7 +169,20 @@ export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [pendientes, setPendientes] = useState(0);
+  const [sinResponder, setSinResponder] = useState(0);
   const groups = MENU[rol];
+  const conOpiniones = groups.some((g) => g.items.some((i) => i.href === '/admin/resenas'));
+
+  // Contador de reseñas sin responder junto a «Opiniones» (spec 64); se refresca al navegar.
+  useEffect(() => {
+    if (!conOpiniones) return;
+    let vivo = true;
+    void resenasDelPanel().then(
+      (r) => { if (vivo) setSinResponder(r.resenas.filter((x) => !x.respuestaDueno).length); },
+      () => undefined
+    );
+    return () => { vivo = false; };
+  }, [conOpiniones, pathname]);
 
   // El panel puede volver desde la caché del router (Atrás tras ir al landing) o desde el bfcache:
   // en ambos casos se confirma la sesión y, si ya no existe, se sale a /login.
@@ -291,6 +304,12 @@ export function Sidebar({ rol, nombre, email, fotoUrl }: SidebarProps) {
                       >
                         <Icon size={ICON.size} strokeWidth={ICON.strokeWidth} className="h-5 w-5 shrink-0" aria-hidden="true" />
                         <span className="truncate">{label}</span>
+                        {href === '/admin/resenas' && sinResponder > 0 && (
+                          <span className="ml-auto rounded-full bg-sol px-2 py-0.5 font-display text-xs font-bold tabular-nums text-noche">
+                            {sinResponder}
+                            <span className="sr-only"> sin responder</span>
+                          </span>
+                        )}
                         {beta && (
                           <span className="ml-auto rounded-md bg-cesped/20 px-1.5 py-0.5 font-display text-xs font-semibold text-cesped-suave">
                             BETA

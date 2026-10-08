@@ -14,9 +14,7 @@ interface Resena {
     puntuacion: number;
     comentario?: string | null;
     respuestaDueno?: string | null;
-    usuario?: {
-        nombre?: string;
-    } | null;
+    autor?: string;
 }
 interface RespuestaResenas extends Valoracion {
     resenas: Resena[];
@@ -233,7 +231,7 @@ async function abrirOpiniones(it: ItemDisponible) {
         const cabeza = document.createElement("p");
         cabeza.className = "flex justify-between gap-3 font-semibold";
         const quien = document.createElement("span");
-        quien.textContent = r.usuario?.nombre || "Jugador";
+        quien.textContent = r.autor || "Jugador";
         const puntos = document.createElement("span");
         puntos.className = "shrink-0 font-display tabular-nums";
         puntos.textContent = `${r.puntuacion} de 5`;

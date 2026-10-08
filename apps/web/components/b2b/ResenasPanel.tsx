@@ -1,9 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { MessageCircleReply, Star, X } from 'lucide-react';
+import { MessageCircleReply, Pencil, Star, X } from 'lucide-react';
 import { WhatsAppFloat } from '@/components/ui/WhatsAppFloat';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { resenasDelPanel, responderResena } from '@/lib/api-client';
+import type { ResenaPanel } from '@/lib/api-types';
 
 interface Resena {
   id: string;
@@ -11,36 +13,21 @@ interface Resena {
   comentario: string;
   jugador: string;
   fecha: string;
-  respuesta?: string | null;
+  respuesta: string | null;
 }
 
-function parseResenas(body: unknown): Resena[] {
-  const pick = (arr: unknown[]): Resena[] =>
-    arr.map((r) => {
-      const x = r as Record<string, unknown>;
-      return {
-        id: String(x.id ?? crypto.randomUUID()),
-        estrellas: Number(x.estrellas ?? x.puntaje ?? x.rating ?? 0),
-        comentario: String(x.comentario ?? x.texto ?? x.mensaje ?? ''),
-        jugador: String(
-          (x.jugador as Record<string, unknown> | undefined)?.nombre ??
-            x.jugadorNombre ??
-            x.usuarioNombre ??
-            x.autor ??
-            'Jugador'
-        ),
-        fecha: String(x.fecha ?? x.creadoEn ?? x.createdAt ?? ''),
-        respuesta: (x.respuesta ?? x.respuestaDueno ?? null) as string | null,
-      };
-    });
-  if (Array.isArray(body)) return pick(body);
-  if (body && typeof body === 'object') {
-    const b = body as Record<string, unknown>;
-    if (Array.isArray(b.resenas)) return pick(b.resenas);
-    if (Array.isArray(b.reviews)) return pick(b.reviews);
-    if (Array.isArray(b.data)) return pick(b.data);
-  }
-  return [];
+const MAX_RESPUESTA = 500;
+
+// GET /api/resenas devuelve puntuacion/usuario/respuestaDueno (spec 64).
+function aVista(r: ResenaPanel): Resena {
+  return {
+    id: r.id,
+    estrellas: r.puntuacion,
+    comentario: r.comentario ?? '',
+    jugador: r.usuario?.nombre || r.autor || 'Jugador',
+    fecha: r.creadoEn,
+    respuesta: r.respuestaDueno,
+  };
 }
 
 function Estrellas({ n }: { n: number }) {
@@ -65,12 +52,8 @@ function fechaCorta(f: string): string {
   return d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// GET /api/resenas (404 = aún sin reseñas). Lanza si la API falla.
 async function obtenerResenas(): Promise<Resena[]> {
-  const res = await fetch('/api/resenas', { credentials: 'include', cache: 'no-store' });
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error(`Error ${res.status}`);
-  return parseResenas(await res.json().catch(() => null));
+  return (await resenasDelPanel()).resenas.map(aVista);
 }
 
 export function ResenasPanel() {
@@ -119,10 +102,11 @@ export function ResenasPanel() {
     return () => document.removeEventListener('keydown', onKey);
   }, [respondiendo]);
 
-  const { promedio, total } = useMemo(() => {
-    if (resenas.length === 0) return { promedio: 0, total: 0 };
+  const { promedio, total, sinResponder } = useMemo(() => {
+    const sinResponder = resenas.filter((r) => !r.respuesta).length;
+    if (resenas.length === 0) return { promedio: 0, total: 0, sinResponder };
     const suma = resenas.reduce((acc, r) => acc + (Number.isFinite(r.estrellas) ? r.estrellas : 0), 0);
-    return { promedio: suma / resenas.length, total: resenas.length };
+    return { promedio: suma / resenas.length, total: resenas.length, sinResponder };
   }, [resenas]);
 
   async function responder(e: React.FormEvent) {
@@ -130,18 +114,11 @@ export function ResenasPanel() {
     if (!respondiendo || !texto.trim()) return;
     setEnviando(true);
     try {
-      const res = await fetch(`/api/resenas/${respondiendo.id}/responder`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ respuesta: texto.trim() }),
-      });
-      const body = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(body?.error ?? `Error ${res.status}`);
+      const { resena } = await responderResena(respondiendo.id, texto.trim(), Boolean(respondiendo.respuesta));
       setResenas((prev) =>
-        prev.map((r) => (r.id === respondiendo.id ? { ...r, respuesta: texto.trim() } : r))
+        prev.map((r) => (r.id === respondiendo.id ? { ...r, respuesta: resena.respuestaDueno } : r))
       );
-      setToast('Respuesta publicada.');
+      setToast(respondiendo.respuesta ? 'Respuesta actualizada.' : 'Respuesta publicada.');
       setRespondiendo(null);
       setTexto('');
     } catch (err) {
@@ -185,6 +162,11 @@ export function ResenasPanel() {
               <p className="mt-1 text-xs text-pizarra">
                 {total > 0 ? `${total} reseña${total === 1 ? '' : 's'} en total` : 'Sin calificaciones aún'}
               </p>
+              {sinResponder > 0 && (
+                <p className="mt-1 text-xs font-bold text-alerta-hondo">
+                  {sinResponder} sin responder
+                </p>
+              )}
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-basalto">Tu reputación</p>
@@ -242,12 +224,22 @@ export function ResenasPanel() {
                 <Estrellas n={r.estrellas} />
                 <time className="text-xs text-pizarra">{fechaCorta(r.fecha)}</time>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-basalto">{r.comentario || 'Sin comentario.'}</p>
+              <p className="mt-2 whitespace-pre-line break-words text-sm leading-relaxed text-basalto">{r.comentario || 'Sin comentario.'}</p>
               <p className="mt-2 text-xs font-semibold text-pizarra">— {r.jugador}</p>
               {r.respuesta ? (
                 <div className="mt-3 rounded-xl border border-cal bg-sillar p-3">
                   <p className="text-[0.6875rem] font-bold tracking-wide text-cesped-hondo">TU RESPUESTA</p>
-                  <p className="mt-1 text-sm text-basalto">{r.respuesta}</p>
+                  <p className="mt-1 whitespace-pre-line break-words text-sm text-basalto">{r.respuesta}</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRespondiendo(r);
+                      setTexto(r.respuesta ?? '');
+                    }}
+                    className="btn-tactil mt-2 inline-flex items-center gap-1.5 border border-cal bg-tiza px-3 py-2 text-sm font-bold text-basalto hover:bg-piedra hover:text-cesped-hondo"
+                  >
+                    <Pencil size={16} strokeWidth={2} aria-hidden="true" /> Editar respuesta
+                  </button>
                 </div>
               ) : (
                 <button
@@ -276,7 +268,7 @@ export function ResenasPanel() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[0.6875rem] font-bold tracking-[0.14em] text-alerta-hondo">RESEÑA</p>
-                <h2 className="mt-1 text-xl font-black text-basalto">Responder a {respondiendo.jugador}</h2>
+                <h2 className="mt-1 text-xl font-black text-basalto">{respondiendo.respuesta ? 'Editar respuesta a' : 'Responder a'} {respondiendo.jugador}</h2>
               </div>
               <button
                 type="button"
@@ -295,6 +287,7 @@ export function ResenasPanel() {
               <textarea
                 value={texto}
                 onChange={(e) => setTexto(e.target.value)}
+                maxLength={MAX_RESPUESTA}
                 rows={4}
                 placeholder="Ej. ¡Gracias por jugar con nosotros! Te esperamos pronto."
                 className="mt-1.5 w-full rounded-xl border border-borde bg-tiza px-3 py-2.5 text-sm font-normal text-basalto placeholder:text-pizarra focus:border-cesped focus:outline-none focus:ring-2 focus:ring-cesped/25"
@@ -313,12 +306,10 @@ export function ResenasPanel() {
                 disabled={enviando || !texto.trim()}
                 className="btn-tactil flex-1 bg-cesped px-4 py-2.5 text-sm font-bold text-tiza hover:bg-cesped-hover disabled:opacity-50"
               >
-                {enviando ? 'Publicando…' : 'Publicar respuesta'}
+                {enviando ? 'Guardando…' : respondiendo.respuesta ? 'Guardar cambios' : 'Publicar respuesta'}
               </button>
             </div>
-            <p className="mt-3 font-mono text-[0.6875rem] text-pizarra">
-              POST /api/resenas/{respondiendo.id}/responder
-            </p>
+            <p className="mt-2 text-right text-xs text-pizarra tabular-nums">{texto.length}/{MAX_RESPUESTA}</p>
           </form>
         </div>
       )}

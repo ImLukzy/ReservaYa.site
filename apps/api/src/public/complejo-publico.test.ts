@@ -19,7 +19,7 @@ async function fixture(options: { exists?: boolean; published?: boolean; subscri
       findFirst: vi.fn(async ({ where }: { where: { slug: string; id: { in: string[] }; publicado: boolean } }) => options.exists !== false && where.slug === row.slug && row.publicado === where.publicado && where.id.in.includes(row.id) ? row : null),
     },
     cancha: { findMany: vi.fn(async (query: unknown) => { void query; return options.courts === false ? [] : [{ ...cancha, imagen: options.photo === false ? 'https://media.example.com/court.webp' : null }]; }) },
-    resena: { aggregate: vi.fn(async () => ({ _avg: { puntuacion: 4.25 }, _count: 2 })) },
+    resena: { groupBy: vi.fn(async () => [{ puntuacion: 5, _count: { _all: 1 } }, { puntuacion: 4, _count: { _all: 3 } }]) },
   };
   const app = await createApp();
   vi.spyOn(app.get(DbService), 'db', 'get').mockReturnValue(db as never);
@@ -40,7 +40,7 @@ describe('GET /api/complejos/publico/:slug', () => {
       expect(body.canchas[0].precioPorHora).toBe('40.10');
       expect(body.complejo.fotos).toEqual(complejo.fotos);
       expect(body.complejo.latitud).toBe(-16.4); expect(body.complejo.longitud).toBe(-71.53);
-      expect(body.valoracion).toEqual({ promedio: 4.3, total: 2 });
+      expect(body.valoracion).toEqual({ promedio: 4.3, total: 4 });
       expect(JSON.stringify(body)).not.toMatch(/private-owner|private@example|internal-complex/);
       expect(db.cancha.findMany.mock.calls[0][0]).toMatchObject({ where: { complejoId: complejo.id, activa: true } });
       expect(db.complejo.findMany.mock.calls[0][0]).toMatchObject({ where: { OR: [{}, { suscripcionByComplejoId: { some: { estado: 'ACTIVA', fechaInicio: { lte: expect.any(Date) }, fechaFin: { gte: expect.any(Date) } } } }] } });
@@ -51,7 +51,7 @@ describe('GET /api/complejos/publico/:slug', () => {
     try {
       expect((await app.inject({ url: '/api/complejos/publico/centro-fixture' })).statusCode).toBe(404);
       expect(db.cancha.findMany).not.toHaveBeenCalled();
-      expect(db.resena.aggregate).not.toHaveBeenCalled();
+      expect(db.resena.groupBy).not.toHaveBeenCalled();
     } finally { await app.close(); }
   });
   it('preserves catalog grace for newly created centers', async () => {

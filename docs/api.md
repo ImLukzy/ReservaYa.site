@@ -21,7 +21,7 @@ Nunca `DATABASE_URL` ni secretos aquí: todo `NEXT_PUBLIC_*` puede terminar en e
 | POST | `/api/auth/forgot-password` `{ email }` | — | forgot-password: 200 `{ ok }` exista o no la cuenta · 400 correo inválido · 429 límite (spec 15) |
 | POST | `/api/auth/reset-password` `{ token, password }` | — | reset-password: 200 `{ ok }` y cierra todas las sesiones · 400 `Enlace inválido o vencido` / contraseña < 6 · 429 (enlace de 30 min, un solo uso, token en `#t=`) |
 | GET | `/api/canchas/disponibles` · `/api/canchas/opciones` | — | canchas |
-| GET | `/api/resenas/publicas` | — | canchas |
+| GET | `/api/resenas/publicas` | — | canchas, perfil `/c/[slug]` (ver «Reseñas») |
 | GET | `/api/reservas` | sí | perfil |
 | PATCH | `/api/usuarios/me` | sí | perfil |
 | PUT | `/api/usuarios/me/foto` `{ url }` | sí | perfil (URL ya subida a R2) |
@@ -155,3 +155,18 @@ GET `/api/ubicacion?q=...` o `?latitud=...&longitud=...` requiere rol de gestió
 `NOMINATIM_URL` permite cambiar proveedor sin actualizar código. La cola es global **por proceso**: con el servicio público Nominatim se requiere una única instancia API (Render actual). Para escalar hay que usar un proxy único o proveedor propio; no distribuir esta cola entre réplicas. [Política de Nominatim](https://operations.osmfoundation.org/policies/nominatim/): prohibido autocompletado y máximo1 consulta/s por aplicación. Tiles OSM con atribución visible, carga Leaflet al entrar en pantalla y altura320 px reservada. Google Maps solo se abre al pulsar Cómo llegar.
 
 Migración `2_ubicacion_complejo`: solo dos columnas nullable DOUBLE PRECISION en Complejo; aplicada y status al día en qa-migracion-ts por god. Producción requiere aprobación humana explícita antes de migrate deploy. No editar migraciones aplicadas ni ejecutar seed.
+
+## Reseñas (spec 64)
+
+Una reseña por usuario y complejo (`Resena`, sin cambios de esquema). En público el autor sale como «Nombre I.» (`autor`), nunca el email ni el id de usuario. El comentario y la respuesta son texto plano (la web no los interpreta como HTML).
+
+| M | Ruta | Sesión | Body / query | Respuesta |
+|---|---|---|---|---|
+| GET | `/api/resenas/publicas` | — | `complejoId` o `slug`; `orden` = `recientes` (defecto) · `mejor` · `peor`; `limite` 1–20 (defecto 10); `cursor` = id de la última reseña recibida | `{ ok, promedio, total, distribucion: {1..5}, orden, resenas: [{ id, puntuacion, comentario, respuestaDueno, creadoEn, autor }], siguiente }`; `siguiente` null al final · 400 parámetros · 404 complejo no visible |
+| GET | `/api/resenas/mia` | sí | `complejoId` o `slug` | `{ ok, complejoId, puedeCalificar, motivo, resena }`; `motivo` = `SIN_RESERVA_COMPLETADA` o null · 401 · 404 |
+| POST | `/api/resenas` | sí | `{ complejoId, puntuacion: 1..5 entero, comentario? ≤ 500 }` | `{ ok, resena }` con `autor` y `usuario`; si ya existía la edita · 400 · 403 sin reserva `COMPLETADA` en el complejo · 429 más de 10 envíos por hora |
+| DELETE | `/api/resenas/{id}` | autor; ADMIN/SUPERADMIN dueño del complejo; TECNICO | — | `{ ok }` · 403 ajena · 404 |
+| GET | `/api/resenas` | ADMIN/SUPERADMIN/TECNICO (panel) | `complejoId?` | `{ ok, resenas }` de sus complejos, con `usuario` completo |
+| POST / PUT | `/api/resenas/{id}/responder` | dueño del complejo o TECNICO | `{ respuesta ≤ 500 }` | `{ ok, resena }`; POST responde, PUT edita · 400 · 403 · 404 |
+
+El promedio (redondeo a un decimal, mitad hacia arriba) y el total de `/api/complejos/publico/{slug}` y de `/api/resenas/publicas` salen de la misma función (`apps/api/src/resenas/publico.ts`), así que coinciden en `/canchas` y en el perfil.
