@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Marca } from "@/components/ui/Marca";
 import Icon from "./ui/Icon";
 import Misti from "./ui/Misti";
-import { EMAIL, INSTAGRAM, whatsappUrl } from "../../lib/public/contacto";
+import { EMAIL, whatsappUrl } from "../../lib/public/contacto";
 
 
 export default function Footer() {
@@ -46,17 +46,6 @@ return (<>
             className="flex min-h-11 min-w-11 items-center justify-center rounded-control hover:bg-piedra focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped"
           >
             <Icon nombre="correo" className="h-5 w-5 text-pizarra" />
-          </a>
-        </li>
-        <li>
-          <a
-            href={INSTAGRAM}
-            target="_blank"
-            rel="noopener"
-            aria-label="Instagram"
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-control hover:bg-piedra focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped"
-          >
-            <Icon nombre="instagram" className="h-5 w-5 text-pizarra" />
           </a>
         </li>
       </ul>

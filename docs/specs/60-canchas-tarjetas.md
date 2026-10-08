@@ -63,3 +63,6 @@ Estado: aprobada 2026-10-08 (humano: "mejora la pestaña de canchas, quiero que 
 | 2026-10-08 | A5 | pasa | Misma corrida con API local NestJS: orden menor/mayor precio y en URL; filtro deporte; diálogo de opiniones abre y cierra con Escape; "Reservar" → `/dashboard/canchas?fecha&horaInicio&horaFin&complejoId`; "Por complejos" → `vista=complejos`; "Ver canchas" filtra `q` y vuelve a "Por canchas" — worker-canchas-tarjetas |
 | 2026-10-08 | A3 | pendiente humano | Capturas en `hive/agents/worker-canchas-tarjetas/qa/capturas/canchas-{canchas,complejos}-{360,768,1280}.png` |
 | 2026-10-08 | A2, A6 | pendiente god | Gate turbo y CLS fuera del sandbox |
+| 2026-10-08 | A2 | Pasa | god en main con spec 61: gate 18/18 (API 126, web 80). |
+| 2026-10-08 | A3 | Pasa | Humano: "sí, apruebo el diseño". |
+| 2026-10-08 | A6 | Pasa | god local, Chrome: CLS de `/canchas` 0,0000 a 360 y 1280; desborde 0 px. |

@@ -4,9 +4,11 @@ const numero = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\D/g, ''
 
 export const whatsappDisponible = numero.length >= 8;
 
-export function whatsappUrl(texto?: string): string | null {
-  if (!whatsappDisponible) return null;
-  return `https://wa.me/${numero}${texto ? `?text=${encodeURIComponent(texto)}` : ''}`;
+export function whatsappUrl(texto?: string, telefono?: string): string | null {
+  const limpio = telefono === undefined ? numero : telefono.replace(/\D/g, '');
+  const destino = telefono !== undefined && limpio.length === 9 ? `51${limpio}` : limpio;
+  if (destino.length < 8) return null;
+  return `https://wa.me/${destino}${texto ? `?text=${encodeURIComponent(texto)}` : ''}`;
 }
 
 // "51987654321" → "987 654 321" (sin el código de país de Perú).

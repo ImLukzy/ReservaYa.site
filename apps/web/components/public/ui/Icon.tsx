@@ -11,7 +11,6 @@ const TRAZOS = {
   salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
   correo: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
   mensaje: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
-  instagram: '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
   ok: '<path d="M20 6 9 17l-5-5"/>',
   alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
   ojo: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12"/><circle cx="12" cy="12" r="3"/>',

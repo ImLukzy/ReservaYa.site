@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { inputCls, labelCls, btnPrimary } from '@/lib/b2b-theme';
 import { cn } from '@/lib/utils';
 import { solicitarSuscripcion } from '@/lib/suscripciones-client';
+import { linkPublico } from '@/lib/public/sitio';
 
 interface SuscripcionCard {
   estado: string
@@ -61,10 +62,6 @@ function normalizar(raw: Record<string, unknown>, i: number): ComplejoCard {
         }
       : null,
   };
-}
-
-function linkPublico(slug: string): string {
-  return `https://reservaya.pe/c/${slug}`;
 }
 
 interface FormState {

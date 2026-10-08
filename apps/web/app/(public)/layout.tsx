@@ -1,14 +1,15 @@
+import { SITIO } from '@/lib/public/sitio'
 import type { ReactNode } from 'react'
 import Header from '@/components/public/Header'
 import Footer from '@/components/public/Footer'
 import Effects from '@/components/public/Effects'
 import Analytics from '@/components/public/Analytics'
 import CookieConsent from '@/components/public/CookieConsent'
-import { EMAIL, INSTAGRAM } from '@/lib/public/contacto'
+import { EMAIL } from '@/lib/public/contacto'
 
-const site = 'https://reservaya.com'
+const site = SITIO
 const structuredData = [
-  { '@context': 'https://schema.org', '@type': 'Organization', name: 'ReservaYa', url: site, logo: `${site}/favicon.svg`, sameAs: [INSTAGRAM], contactPoint: { '@type': 'ContactPoint', email: EMAIL, contactType: 'customer service', areaServed: 'PE', availableLanguage: 'Spanish' } },
+  { '@context': 'https://schema.org', '@type': 'Organization', name: 'ReservaYa', url: site, logo: `${site}/favicon.svg`, contactPoint: { '@type': 'ContactPoint', email: EMAIL, contactType: 'customer service', areaServed: 'PE', availableLanguage: 'Spanish' } },
   { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ReservaYa', url: site },
   { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'ReservaYa', url: site, description: 'Reserva de canchas deportivas en Arequipa: fútbol, vóley, básquet, pádel y tenis en los distritos de la ciudad.', applicationCategory: 'SportsApplication', operatingSystem: 'Web', areaServed: { '@type': 'City', name: 'Arequipa', addressCountry: 'PE' } },
 ]

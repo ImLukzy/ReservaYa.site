@@ -129,6 +129,29 @@ export class PublicReadService {
     const price = quote(c!.precioPorHora, await this.promos([c!]), s.fecha, s.inicio, s.fin);
     return { ok: true, total: price.total, moneda: 'PEN', regla: price.regla };
   }
+  async complejoPublico(slug: string) {
+    const visible = await this.visibleIds();
+    const complejo = await this.db.complejo.findFirst({
+      where: { slug, publicado: true, id: { in: visible } },
+      select: { id: true, slug: true, nombre: true, direccion: true, distrito: true, ciudad: true, telefono: true, descripcion: true, fotos: true },
+    });
+    if (!complejo) return fail(404, 'No encontrado');
+    const [canchas, valoracion] = await Promise.all([
+      this.db.cancha.findMany({
+        where: { complejoId: complejo.id, activa: true }, orderBy: { nombre: 'asc' },
+        select: { id: true, nombre: true, tipo: true, precioPorHora: true, imagen: true, techada: true, superficie: true, capacidad: true },
+      }),
+      this.db.resena.aggregate({ where: { complejoId: complejo.id }, _avg: { puntuacion: true }, _count: true }),
+    ]);
+    return {
+      complejo: { slug: complejo.slug, nombre: complejo.nombre, direccion: complejo.direccion, distrito: complejo.distrito,
+        ciudad: complejo.ciudad, telefono: complejo.telefono, descripcion: complejo.descripcion,
+        imagen: complejo.fotos[0] ?? canchas.find(c => c.imagen)?.imagen ?? null },
+      canchas: canchas.map(c => ({ id: c.id, nombre: c.nombre, tipo: c.tipo, precioPorHora: money(c.precioPorHora),
+        imagen: c.imagen, techada: c.techada, superficie: c.superficie, capacidad: c.capacidad })),
+      valoracion: { promedio: Math.round((valoracion._avg.puntuacion ?? 0) * 10) / 10, total: valoracion._count },
+    };
+  }
   async resenas(q: Query) {
     const id = text(q, 'complejoId');
     if (!id?.trim()) fail(400, 'complejoId es requerido');

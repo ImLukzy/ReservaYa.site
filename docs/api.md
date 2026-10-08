@@ -135,3 +135,11 @@ Con protección activa, origen ausente/incorrecto o IP inválida devuelve 403 `{
 Para todo `/api`: 300 peticiones/min por IP, con un sublímite de 60 escrituras/min (POST/PUT/PATCH/DELETE). Al superar un límite: 429 y `Retry-After: 60`; otra IP conserva su cupo. Los límites específicos de login, registro, búsqueda y reclamos mantienen sus topes. El conteo es una ventana móvil en memoria por instancia, sin Redis ni coste externo.
 
 Cada `RateLimiter` conserva como máximo 10.000 claves y purga las vencidas durante la siguiente petición, como máximo cada 30 segundos de actividad. A capacidad rechaza nuevas claves, sin expulsar límites activos; nunca almacena intentos ya bloqueados. Reiniciar la instancia reinicia el conteo; no es un límite distribuido.
+
+## Perfil público de complejo (spec 61)
+
+`GET /api/complejos/publico/:slug` no requiere sesión; conserva la protección de origen y los límites globales. Devuelve 404 si el slug no existe, no está publicado o no pertenece a `visibleIds`: suscripción ACTIVA vigente o gracia de 30 días para dueños con rol distinto de USUARIO, igual que el catálogo.
+
+Respuesta 200: `{complejo:{slug,nombre,direccion,distrito,ciudad,telefono,descripcion,imagen},canchas:[{id,nombre,tipo,precioPorHora,imagen,techada,superficie,capacidad}],valoracion:{promedio,total}}`. Solo canchas activas; `precioPorHora` es cadena decimal con dos posiciones. Foto del complejo, primera cancha con foto como respaldo o null. No incluye dueño, email, suscripciones ni identificador interno del complejo.
+
+La página `/c/[slug]` usa `serverFetch` con revalidación de 60 segundos, metadatos canónicos de `https://reservaya.site` y foto para Open Graph. Reservar abre la búsqueda existente `/dashboard/canchas` filtrada por nombre, distrito y deporte; la autenticación conserva el destino. El contacto oficial es `lukas.melgar@tecsup.edu.pe`; se retiró el Instagram inexistente.

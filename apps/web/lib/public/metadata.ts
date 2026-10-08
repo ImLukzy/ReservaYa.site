@@ -1,6 +1,7 @@
+import { SITIO } from './sitio'
 import type { Metadata } from 'next'
 
-const site = 'https://reservaya.com'
+const site = SITIO
 export function publicMetadata(title: string, description: string, path: string, robots = 'index, follow'): Metadata {
   const canonical = new URL(path, site).href
   const image = new URL('/og-default.png', site).href
