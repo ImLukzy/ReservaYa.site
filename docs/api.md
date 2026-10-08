@@ -198,3 +198,7 @@ POST/PUT `/api/complejos` aceptan `anticipacionMinMin` (entero0–2880), `cancel
 Para USUARIO, crear reserva con menos anticipación devuelve409: «Este complejo acepta reservas con al menos3 h de anticipación». Cancelar con menos plazo devuelve409: «Solo puedes cancelar hasta24 h antes; contacta al complejo». El límite exacto sí se acepta; fecha local+minutos convertidos a instante de Perú (UTC−5) y reloj inyectable. Comprobación dentro de la transacción, antes de escribir o enviar correos. ADMIN/SUPERADMIN/TECNICO conservan permisos y pueden gestionar sin restricciones temporales. Cero desactiva la nueva comprobación y conserva el comportamiento previo. No afecta precios, pagos, confirmación ni reglas de ocupación.
 
 Perfil y widget muestran plazos/política; agenda marca ANTICIPACION antes del mínimo y refresca409. Migración `4_reglas_complejo`: dos enteros NOT NULL DEFAULT0 y política nullable, exclusivamente en Complejo. QA aplicada/status al día por god2026-10-08; producción solo con aprobación humana explícita.
+
+### Navegación pública de reservas (spec 70)
+
+`GET /api/canchas/disponibles` incluye `cancha.complejo.slug`. Catálogo y tablero por horas usan `/c/<slug>?cancha=<id>&fecha=<ISO>&inicio=<minutos>&fin=<minutos>#reservar`; la vista de complejos usa `/c/<slug>#reservar`. El widget valida la cancha contra el perfil y fecha/rango contra su calendario; parámetros inválidos restauran primera cancha y hoy. Canchas sin complejo conservan `/dashboard/canchas`. La ficha mantiene la portada y omite la galería de fotos.

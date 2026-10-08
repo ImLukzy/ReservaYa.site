@@ -7,9 +7,9 @@ const now = new Date('2026-10-08T12:00:00Z');
 const dueno = { id: 'dueno-1', nombre: 'Dueño' };
 const base = { tipo: 'FUTBOL', descripcion: null, precioPorHora: new Prisma.Decimal('50'), capacidad: 10, techada: false, superficie: 'Sintética', activa: true, imagen: null, creadoEn: now };
 const canchas = [
-  { ...base, id: 'lejos', nombre: 'Cancha lejos', complejoId: 'c-lejos', complejoByComplejoId: { id: 'c-lejos', nombre: 'Complejo lejos', distrito: 'Cayma', ciudad: 'Arequipa', fotos: [], latitud: -16.33, longitud: -71.52, usuarioByDuenoId: dueno } },
-  { ...base, id: 'cerca', nombre: 'Cancha cerca', complejoId: 'c-cerca', complejoByComplejoId: { id: 'c-cerca', nombre: 'Complejo cerca', distrito: 'Yanahuara', ciudad: 'Arequipa', fotos: [], latitud: -16.39, longitud: -71.54, usuarioByDuenoId: dueno } },
-  { ...base, id: 'sincorde', nombre: 'Cancha sin coordenadas', complejoId: 'c-sincorde', complejoByComplejoId: { id: 'c-sincorde', nombre: 'Complejo sin coordenadas', distrito: 'Cercado', ciudad: 'Arequipa', fotos: [], latitud: null, longitud: null, usuarioByDuenoId: dueno } },
+  { ...base, id: 'lejos', nombre: 'Cancha lejos', complejoId: 'c-lejos', complejoByComplejoId: { id: 'c-lejos', slug: 'complejo-lejos', nombre: 'Complejo lejos', distrito: 'Cayma', ciudad: 'Arequipa', fotos: [], latitud: -16.33, longitud: -71.52, usuarioByDuenoId: dueno } },
+  { ...base, id: 'cerca', nombre: 'Cancha cerca', complejoId: 'c-cerca', complejoByComplejoId: { id: 'c-cerca', slug: 'complejo-cerca', nombre: 'Complejo cerca', distrito: 'Yanahuara', ciudad: 'Arequipa', fotos: [], latitud: -16.39, longitud: -71.54, usuarioByDuenoId: dueno } },
+  { ...base, id: 'sincorde', nombre: 'Cancha sin coordenadas', complejoId: 'c-sincorde', complejoByComplejoId: { id: 'c-sincorde', slug: 'complejo-sin-coordenadas', nombre: 'Complejo sin coordenadas', distrito: 'Cercado', ciudad: 'Arequipa', fotos: [], latitud: null, longitud: null, usuarioByDuenoId: dueno } },
 ];
 
 afterEach(() => vi.unstubAllEnvs());
@@ -46,6 +46,14 @@ describe('GET /api/canchas/disponibles con lat/lng (spec 68)', () => {
     }
   });
 
+  it('includes public complex slug for profile navigation (spec70)', async () => {
+    const { app } = await fixture();
+    try {
+      const response = await app.inject({ url: '/api/canchas/disponibles' });
+      expect(response.statusCode).toBe(200);
+      expect(response.json().canchas.find((it: { cancha: { id: string } }) => it.cancha.id === 'cerca').cancha.complejo.slug).toBe('complejo-cerca');
+    } finally { await app.close(); }
+  });
   it('sin lat/lng no ordena por distancia y distanciaKm es null', async () => {
     const { app } = await fixture();
     try {

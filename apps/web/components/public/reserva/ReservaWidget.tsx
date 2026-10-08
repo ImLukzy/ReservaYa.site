@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { apiRequest } from '@/lib/http'
@@ -9,9 +9,21 @@ import { cambiarSeleccion, horaMinutos, resumenSeleccion, vueltaReserva, type Ag
 interface Cancha { id: string; nombre: string; precioPorHora: string }
 interface Reglas { anticipacionMinMin: number; cancelacionMinMin: number; politica: string | null }
 interface Inicial { cancha?: string; fecha?: string; inicio?: number; fin?: number }
+export function normalizarInicial(canchas: Cancha[], dias: string[], inicial: Inicial): Inicial {
+  const defecto = { cancha: canchas[0]?.id ?? '', fecha: dias[0] };
+  if (inicial.cancha !== undefined && !canchas.some(c => c.id === inicial.cancha)) return defecto;
+  if (inicial.fecha !== undefined && !dias.includes(inicial.fecha)) return defecto;
+  if (inicial.inicio !== undefined || inicial.fin !== undefined) {
+    const { inicio, fin } = inicial;
+    if (inicio === undefined || fin === undefined || !Number.isInteger(inicio) || !Number.isInteger(fin)
+      || inicio < 0 || fin > 1440 || inicio % 30 || fin % 30 || fin - inicio < 60 || fin - inicio > 180) return defecto;
+  }
+  return { ...inicial, cancha: inicial.cancha ?? defecto.cancha, fecha: inicial.fecha ?? defecto.fecha };
+}
 export function ReservaWidget({ slug, canchas, dias, sesion, inicial, reglas }: { slug: string; canchas: Cancha[]; dias: string[]; sesion: boolean; inicial: Inicial; reglas: Reglas }) {
-  const [cancha, setCancha] = useState(canchas.some(c => c.id === inicial.cancha) ? inicial.cancha! : canchas[0]?.id ?? '')
-  const [fecha, setFecha] = useState(dias.includes(inicial.fecha ?? '') ? inicial.fecha! : dias[0])
+  const propuesta = useMemo(() => normalizarInicial(canchas, dias, inicial), [canchas, dias, inicial])
+  const [cancha, setCancha] = useState(propuesta.cancha!)
+  const [fecha, setFecha] = useState(propuesta.fecha!)
   const [agenda, setAgenda] = useState<Agenda | null>(null)
   const [seleccion, setSeleccion] = useState<number[]>([])
   const [error, setError] = useState('')
@@ -31,15 +43,16 @@ export function ReservaWidget({ slug, canchas, dias, sesion, inicial, reglas }: 
         setAgenda(datos); setCargando(false)
         if (!restaurada.current) {
           restaurada.current = true
-          const puntos = datos.franjas.filter(f => inicial.inicio !== undefined && inicial.fin !== undefined && f.inicio >= inicial.inicio && f.fin <= inicial.fin).map(f => f.inicio)
-          if (cancha === inicial.cancha && fecha === inicial.fecha && inicial.inicio !== undefined && inicial.fin !== undefined) {
+          if (window.location.hash === '#reservar' && window.matchMedia('(max-width: 1023px)').matches) setMovil(true)
+          const puntos = datos.franjas.filter(f => propuesta.inicio !== undefined && propuesta.fin !== undefined && f.inicio >= propuesta.inicio && f.fin <= propuesta.fin).map(f => f.inicio)
+          if (cancha === propuesta.cancha && fecha === propuesta.fecha && propuesta.inicio !== undefined && propuesta.fin !== undefined) {
             if (resumenSeleccion(datos.franjas, puntos)) { setSeleccion(puntos); if (window.matchMedia('(max-width: 1023px)').matches) setMovil(true) }
             else setError('La selección anterior ya no está disponible. Elige otro horario.')
           }
         }
       }).catch(e => { if (!controller.signal.aborted) { setError(e instanceof Error ? e.message : 'No se pudo cargar la agenda.'); setCargando(false) } })
     return () => controller.abort()
-  }, [cancha, fecha, reload, inicial])
+  }, [cancha, fecha, reload, propuesta])
   useEffect(() => () => cancelar.current?.abort(), [])
   useEffect(() => {
     const media = window.matchMedia('(min-width: 1024px)')
@@ -78,7 +91,7 @@ export function ReservaWidget({ slug, canchas, dias, sesion, inicial, reglas }: 
     {cancelacion > 0 && <p className="text-sm text-pizarra">Solo puedes cancelar hasta {Number((cancelacion / 60).toFixed(2))} h antes; contacta al complejo.</p>}
     {politica && <p className="break-words text-sm text-pizarra">{politica}</p>}
     <div className="h-96 overflow-y-auto overscroll-contain" aria-busy={cargando}>
-      {cargando ? <div className="grid grid-cols-3 gap-2" aria-label="Cargando agenda">{Array.from({ length: 12 }, (_, n) => <div key={n} className="esqueleto min-h-20 rounded-control" />)}</div> : agenda?.franjas.length ? <div className="grid grid-cols-3 gap-2">{agenda.franjas.map(f => {
+      {cargando ? <div className="grid grid-cols-[repeat(auto-fit,minmax(5rem,1fr))] gap-2" aria-label="Cargando agenda">{Array.from({ length: 12 }, (_, n) => <div key={n} className="esqueleto min-h-20 rounded-control" />)}</div> : agenda?.franjas.length ? <div className="grid grid-cols-[repeat(auto-fit,minmax(5rem,1fr))] gap-2">{agenda.franjas.map(f => {
         const elegida = seleccion.includes(f.inicio)
         return <button key={f.inicio} type="button" disabled={guardando || f.estado !== 'LIBRE'} aria-pressed={elegida} aria-label={`${horaMinutos(f.inicio)} a ${horaMinutos(f.fin)}, ${soles(f.precio)}, ${elegida ? 'Elegido' : f.estado === 'LIBRE' ? 'Libre' : f.estado === 'OCUPADA' ? 'Ocupado' : 'No disponible'}`} onClick={() => elegir(f.inicio)} className={`flex min-h-20 min-w-11 flex-col items-center justify-center rounded-control border px-1 py-2 text-sm ${elegida ? 'border-cesped bg-cesped-suave font-semibold' : f.estado === 'LIBRE' ? 'border-cal hover:border-cesped' : 'border-cal bg-piedra text-pizarra opacity-60'}`}><span>{horaMinutos(f.inicio)}</span><span className="text-xs">–{horaMinutos(f.fin)}</span><span className="text-xs">{f.estado === 'LIBRE' ? soles(f.precio) : f.estado === 'OCUPADA' ? 'Ocupado' : f.estado === 'ANTICIPACION' ? 'Muy pronto' : 'Pasada'}</span></button>
       })}</div> : <p className="text-pizarra">{agenda ? 'No hay horarios de atención este día.' : 'No se pudo cargar la agenda.'}</p>}

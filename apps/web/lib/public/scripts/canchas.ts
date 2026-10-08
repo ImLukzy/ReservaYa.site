@@ -1,6 +1,6 @@
 import { API, APP } from "../entorno";
 import { APERTURA, ULTIMA, diasProximos, etiquetaHora, franjasProximas, nombreDia, resolverFecha } from "../horario";
-import { avisoTablero, precioDe, urlReservar, type ItemDisponible, type Valoracion } from "./filas";
+import { avisoTablero, precioDe, urlFicha, urlReservar, type ItemDisponible, type Valoracion } from "./filas";
 import { tarjetaCancha, tarjetaComplejo, tarjetaPromo, tarjetasEsqueleto } from "./tarjetas";
 import { agruparPorComplejo, distanciaDeGrupo, intercalarPromos, ordenarGrupos, textoConteo, textoDistancia, type Celda } from "../tarjetas";
 import type { PuntoMapa } from "../../../components/complejos/MapaCanchas";
@@ -192,13 +192,28 @@ async function cargar() {
         if (vista === "complejos") {
             // En "cerca" los grupos ya llegan ordenados por distancia (llegada); reordenarlos por precio rompería el orden.
             const ordenados = cerca ? grupos : ordenarGrupos(grupos, f.orden, (g) => nota(g.items[0])?.promedio ?? 0);
-            lista?.replaceChildren(...pintar(intercalarPromos(ordenados), (g) => tarjetaComplejo(g, {
+            lista?.replaceChildren(...pintar(intercalarPromos(ordenados), (g) => {
+                const ficha = urlFicha(APP, g.items[0].cancha);
+                const tarjeta = tarjetaComplejo(g, {
                 valoracion: nota(g.items[0]),
                 onValoracion: () => abrirOpiniones(g.items[0]),
-                verHref: urlVerComplejo(g.nombre),
+                verHref: ficha ?? urlVerComplejo(g.nombre),
                 onVer: () => verComplejo(g.nombre),
                 distanciaKm: cerca ? distanciaDeGrupo(g) : undefined,
-            })));
+                });
+                if (ficha) {
+                    // Sustituir el enlace elimina el listener de filtrado de la tarjeta
+                    // y conserva navegación nativa (incluye abrir en otra pestaña).
+                    const anterior = tarjeta.querySelector<HTMLAnchorElement>('a[href]');
+                    if (anterior) {
+                        const reservar = anterior.cloneNode(true) as HTMLAnchorElement;
+                        reservar.setAttribute('aria-label', `Reservar en ${g.nombre}`);
+                        reservar.firstChild?.replaceWith(document.createTextNode('Reservar'));
+                        anterior.replaceWith(reservar);
+                    }
+                }
+                return tarjeta;
+            }));
             return;
         }
         lista?.replaceChildren(...pintar(intercalarPromos(libres), (it) => tarjetaCancha(it, {

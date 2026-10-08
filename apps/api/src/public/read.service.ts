@@ -16,7 +16,7 @@ type FullCancha = Prisma.CanchaGetPayload<{ include: typeof canchaInclude }>;
 const compare = new Intl.Collator('en').compare;
 function canchaDto(c: FullCancha) {
   const x = c.complejoByComplejoId;
-  return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad, fotos: x.fotos }, dueno: x?.usuarioByDuenoId ?? null };
+  return { id: c.id, nombre: c.nombre, tipo: c.tipo, descripcion: c.descripcion, precioPorHora: money(c.precioPorHora), capacidad: c.capacidad, techada: c.techada, superficie: c.superficie, activa: c.activa, imagen: c.imagen, complejoId: c.complejoId, creadoEn: utc(c.creadoEn), complejo: x && { id: x.id, slug: x.slug, nombre: x.nombre, distrito: x.distrito, ciudad: x.ciudad, fotos: x.fotos }, dueno: x?.usuarioByDuenoId ?? null };
 }
 // ApiController nullable binding: empty query values mean null.
 function integer(q: Query, key: string): number | null {

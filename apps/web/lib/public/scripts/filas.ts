@@ -14,7 +14,7 @@ export interface CanchaApi {
   techada?: boolean;
   superficie?: string | null;
   complejoId: string | null;
-  complejo: { id: string; nombre: string; distrito: string; ciudad: string; fotos?: string[]; latitud?: number | null; longitud?: number | null } | null;
+  complejo: { id: string; slug?: string | null; nombre: string; distrito: string; ciudad: string; fotos?: string[]; latitud?: number | null; longitud?: number | null } | null;
 }
 
 export interface ItemDisponible {
@@ -161,7 +161,16 @@ export function avisoTablero(titulo: string, texto: string, accion?: { etiqueta:
   return caja;
 }
 
+export function urlFicha(app: string, cancha: CanchaApi): string | null {
+  return cancha.complejo?.slug ? `${app}/c/${encodeURIComponent(cancha.complejo.slug)}#reservar` : null;
+}
+
 export function urlReservar(app: string, cancha: CanchaApi, fecha: string, hora: number): string {
+  const ficha = urlFicha(app, cancha);
+  if (ficha) {
+    const q = new URLSearchParams({ cancha: cancha.id, fecha, inicio: String(hora * 60), fin: String((hora + 1) * 60) });
+    return `${ficha.replace('#reservar', '')}?${q.toString()}#reservar`;
+  }
   const q = new URLSearchParams({ fecha, horaInicio: String(hora * 60), horaFin: String((hora + 1) * 60) });
   if (cancha.complejoId) q.set("complejoId", cancha.complejoId);
   return `${app}/dashboard/canchas?${q.toString()}`;
