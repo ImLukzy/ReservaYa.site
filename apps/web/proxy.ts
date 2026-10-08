@@ -3,6 +3,7 @@ import { config as appConfig } from '@/lib/config'
 import { fallbackPorRol } from '@/lib/permissions'
 import type { Rol } from '@/lib/api-types'
 import { jwtVerify } from 'jose'
+import { originHeaders } from '@/lib/origin-headers'
 
 // Zonas del panel y roles que pueden entrar (el resto va a su inicio).
 const ZONAS: ReadonlyArray<[prefijo: string, roles: readonly Rol[]]> = [
@@ -20,6 +21,9 @@ function sinCache(response: NextResponse) {
 }
 
 export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === '/api' || request.nextUrl.pathname.startsWith('/api/')) {
+    return NextResponse.next({ request: { headers: originHeaders(request.headers, request.headers) } })
+  }
   const token = request.cookies.get(appConfig.jwtCookieName)?.value
   if (!token) {
     const loginUrl = new URL('/login', request.url)
@@ -51,5 +55,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/tecnico/:path*'],
+  matcher: ['/api/:path*', '/dashboard/:path*', '/admin/:path*', '/tecnico/:path*'],
 }

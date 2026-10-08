@@ -123,3 +123,15 @@ Una invitación es un `ComplejoMiembro` con `Activo=false` (= **pendiente**); `A
 | `POST /api/invitaciones/{id}/rechazar` | solo el invitado | — | `200 {ok:true}`; borra la invitación. `404` si ya no existe |
 
 Los correos salen por la cola de email (Resend) y usan el origen de `PASSWORD_RESET_URL` (por defecto `https://reservaya.site`). Registros `Activo=false` creados por el flujo anterior («desactivar miembro») se leen ahora como invitaciones pendientes.
+
+## Protección de tráfico (spec 59)
+
+`ORIGIN_SECRET` es opcional; si se configura, debe tener al menos 32 caracteres y coincidir en Vercel y Render. Nunca exponerlo como `NEXT_PUBLIC_*`. Sin la variable no se exige origen y se conserva la resolución de IP anterior. `/healthz` (y `/health`) permanece abierto y sin límite global.
+
+Next sobrescribe `x-origin-secret` y `x-reservaya-client-ip` antes del rewrite `/api/*`; `server-fetch` hace lo mismo usando las cabeceras de la petición que origina el render (también cubre `b2b-api`). La IP procede del primer valor de `x-forwarded-for`, o `x-real-ip` si falta: [Vercel sobrescribe el valor recibido del cliente](https://vercel.com/docs/headers/request-headers). Esta confianza requiere entrar por Vercel, sin un proxy externo que sustituya esa identidad. Las cabeceras personalizadas enviadas por el navegador se descartan. No se usa la IP compartida del servidor Next para renders con origen activo; una IP reenviada ausente o inválida produce 403.
+
+Con protección activa, origen ausente/incorrecto o IP inválida devuelve 403 `{ "error": "Origen no autorizado" }`. La comparación del secreto usa hashes SHA-256 de longitud fija y `timingSafeEqual`. Un secreto configurado con longitud inválida impide iniciar la API.
+
+Para todo `/api`: 300 peticiones/min por IP, con un sublímite de 60 escrituras/min (POST/PUT/PATCH/DELETE). Al superar un límite: 429 y `Retry-After: 60`; otra IP conserva su cupo. Los límites específicos de login, registro, búsqueda y reclamos mantienen sus topes. El conteo es una ventana móvil en memoria por instancia, sin Redis ni coste externo.
+
+Cada `RateLimiter` conserva como máximo 10.000 claves y purga las vencidas durante la siguiente petición, como máximo cada 30 segundos de actividad. A capacidad rechaza nuevas claves, sin expulsar límites activos; nunca almacena intentos ya bloqueados. Reiniciar la instancia reinicia el conteo; no es un límite distribuido.

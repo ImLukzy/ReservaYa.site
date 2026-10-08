@@ -6,7 +6,7 @@ import { verify } from '../auth/crypto';
 import { Clock, DbService } from '../public/db.service';
 import { day, fail } from '../public/format';
 export type Actor={id:string;rol:string};
-export const ip=(r:FastifyRequest)=>String(r.headers['x-forwarded-for']||r.ip||'unknown').split(',')[0].trim();
+export { ip } from '../traffic/traffic';
 @Injectable()
 export class Access {
   constructor(@Inject(DbService)private store:DbService,@Inject(AuthService)private auth:AuthService,@Inject(Clock)private clock:Clock){}

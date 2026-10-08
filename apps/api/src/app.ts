@@ -6,10 +6,12 @@ import cookie from '@fastify/cookie';
 import multipart from '@fastify/multipart';
 import { BindingFilter } from './public/binding';
 import { AppModule } from './app.module';
+import { installTrafficProtection } from './traffic/traffic';
 
 export async function createApp(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { logger: false, rawBody: true });
   const fastify = app.getHttpAdapter().getInstance();
+  installTrafficProtection(fastify);
   const { bodyLimit, onProtoPoisoning, onConstructorPoisoning } = fastify.initialConfig;
   const parseJson = fastify.getDefaultJsonParser(onProtoPoisoning ?? 'error', onConstructorPoisoning ?? 'error');
   app.useBodyParser('application/json', { bodyLimit }, (request, body, done) => {

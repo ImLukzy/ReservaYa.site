@@ -1,7 +1,8 @@
 import 'server-only'
-import { cookies } from 'next/headers'
+import { cookies, headers as requestHeaders } from 'next/headers'
 import { config } from './config'
 import { ApiError } from './api-types'
+import { originHeaders } from './origin-headers'
 
 interface ServerFetchInit extends RequestInit {
   next?: {
@@ -15,7 +16,7 @@ interface ServerFetchInit extends RequestInit {
 export async function serverFetch(path: string, init?: ServerFetchInit): Promise<Response> {
   const cookieStore = await cookies()
   const token = cookieStore.get(config.jwtCookieName)?.value
-  const headers = new Headers(init?.headers)
+  const headers = originHeaders(await requestHeaders(), new Headers(init?.headers))
   if (init?.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json')
   const hasRevalidate = init?.next?.revalidate !== undefined
   if (token && !hasRevalidate) headers.set('Cookie', `${config.jwtCookieName}=${token}`)

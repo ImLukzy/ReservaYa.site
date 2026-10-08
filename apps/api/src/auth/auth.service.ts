@@ -5,6 +5,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { DbService } from '../public/db.service';
 import { fail, parseDay, day, utc } from '../public/format';
 import { RateLimiter } from './rate';
+import { ip } from '../traffic/traffic';
 import { GoogleProvider, MailProvider } from './providers';
 import { sign, verify, newId, resetToken, readReset, sameFingerprint } from './crypto';
 type User=Prisma.UsuarioGetPayload<object>;
@@ -13,7 +14,7 @@ const dummy='$2b$10$Qbvnz2V7d7r63v/L9yyl6uJW2VFsqnai64.tYwftiPeOwaWYOUTuu';
 const escapeUri=(v:string)=>encodeURIComponent(v).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase());
 const invalid='Enlace inválido o vencido';
 const summary=(u:User)=>({id:u.id,nombre:u.nombre,email:u.email,rol:u.rol});
-const ip=(r:FastifyRequest)=>String(r.headers['x-forwarded-for']||r.ip||'unknown').split(',')[0].trim();
+
 const cookieOptions=(r:FastifyRequest)=>({httpOnly:true,secure:r.protocol==='https'||process.env.COOKIE_SECURE==='true',sameSite:process.env.COOKIE_SECURE==='true'?'none' as const:'lax' as const,path:'/'});
 const plainDate=(d:Date|null)=>d?utc(d).replace(/Z$/,''):null;
 const birthday=(value?:string)=>{

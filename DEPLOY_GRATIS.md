@@ -81,3 +81,16 @@ La API conserva la base y el esquema existentes. Docker/Vercel no deben ejecutar
 - [ ] Revisar las imágenes de R2, sitemap, redirects y logs del deployment final. Validar producción después del despliegue.
 
 Rollback: `git revert` o redeploy de un commit anterior en Render. Conservar la referencia del deployment y la configuración previos; no revertir la base automáticamente. Las comprobaciones del repositorio no verifican las cuentas de Vercel/Render, el DNS ni la entrega real de email.
+
+## Activación de protección de origen (spec 59)
+
+Configurar `ORIGIN_SECRET` privado, idéntico y de al menos 32 caracteres en Vercel y Render. No definirlo vacío ni usar `NEXT_PUBLIC_`. La API admite peticiones sin esa cabecera mientras la variable está ausente; `/healthz` permanece abierto siempre.
+
+Para evitar cortar tráfico durante la activación:
+
+1. Desplegar primero la API con el código de protección y sin `ORIGIN_SECRET`.
+2. Configurar el secreto en Vercel y redeployar la web; comprobar que tanto rewrites como fetch de servidor envían `x-origin-secret` y `x-reservaya-client-ip`.
+3. Activar el mismo secreto en Render después de que la web nueva esté atendiendo tráfico. Verificar acceso directo rechazado (403), público/login/Google por `reservaya.site` y health check abierto.
+4. Si hay rollback, desactivar primero la exigencia de origen en Render antes de restaurar una web que aún no envíe las cabeceras.
+
+La IP sale de las cabeceras fijadas por el edge de Vercel; no anteponer un proxy externo sin revisar esta confianza. Nunca imprimir el secreto ni guardarlo en logs/comandos versionados. Los topes globales son 300 peticiones y 60 escrituras por minuto/IP; 429 incluye `Retry-After: 60`. Cuentas en memoria por instancia: reinicios y múltiples réplicas tienen contadores separados.
