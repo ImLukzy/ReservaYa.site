@@ -12,9 +12,6 @@ import { Marca } from '@/components/ui/Marca'
 import { BandejaInvitaciones } from '@/components/invitaciones/BandejaInvitaciones'
 import Icon from './ui/Icon'
 
-const menus = [
-  { titulo: 'Dueños', items: [['/duenos', 'Publicar mis canchas'], ['/duenos#planes', 'Planes y precios'], ['/login', 'Entrar al panel']] },
-]
 const linkClass = 'flex min-h-11 items-center rounded-control px-3 font-medium text-pizarra hover:bg-cesped-suave hover:text-basalto aria-[current=page]:text-cesped-hondo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cesped'
 
 export default function Header() {
@@ -76,12 +73,7 @@ export default function Header() {
       <ul className="hidden items-center gap-1 lg:flex">
         <li><Link href="/canchas" aria-current={active('/canchas')} className={linkClass}>Canchas</Link></li>
         <li><Link href="/jugar" aria-current={active('/jugar')} className={linkClass}>Jugar</Link></li>
-        {menus.map(menu => <li key={menu.titulo} className="relative">
-          <button type="button" className={linkClass} aria-expanded={abierto === menu.titulo} aria-controls={`menu-${menu.titulo}`} onClick={() => toggle(menu.titulo)}>{menu.titulo}<Icon nombre="abajo" className="ml-1 h-4 w-4" /></button>
-          <div id={`menu-${menu.titulo}`} hidden={abierto !== menu.titulo} className="card-tactil absolute left-0 top-14 min-w-56 p-2 shadow-suave-lg">
-            {menu.items.map(([href, text]) => <Link key={href} href={href} className={linkClass} aria-current={active(href)}>{text}</Link>)}
-          </div>
-        </li>)}
+        <li><Link href="/duenos" aria-current={active('/duenos')} className={linkClass}>Dueños</Link></li>
         <li><Link href="/ayuda" aria-current={active('/ayuda')} className={linkClass}>Ayuda</Link></li>
       </ul>
       <div className="flex items-center justify-end gap-2 whitespace-nowrap">
@@ -103,7 +95,7 @@ export default function Header() {
     <div id="menu-movil-principal" hidden={abierto !== 'movil'} className="border-t border-cal px-4 pb-4 lg:hidden">
       <Link href="/canchas" className={linkClass}>Canchas</Link>
       <Link href="/jugar" className={linkClass} aria-current={active('/jugar')}>Jugar</Link>
-      {menus.map(menu => <section key={menu.titulo}><h2 className="px-3 py-2 text-sm font-semibold text-pizarra">{menu.titulo}</h2>{menu.items.map(([href, text]) => <Link key={href} href={href} className={linkClass}>{text}</Link>)}</section>)}
+      <Link href="/duenos" className={linkClass} aria-current={active('/duenos')}>Dueños</Link>
       <Link href="/ayuda" className={linkClass}>Ayuda</Link>
       {!usuario && <Link href="/login" className={`${linkClass} sm:hidden`}>Iniciar sesión</Link>}{account}
     </div>
