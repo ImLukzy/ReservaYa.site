@@ -5,6 +5,7 @@ type Cancha = Prisma.CanchaGetPayload<object>;
 import { Clock, DbService } from './db.service';
 import { day, fail, parseDay, quote, slot, utc, money } from './format';
 import { districts } from './districts';
+import { distanciaKm } from '@reservaya/shared';
 import { limite, orden, pagina, resumen } from '../resenas/publico';
 export type Query = Record<string, string | string[] | undefined>;
 export const text = (q: Query, key: string) => { const value = q[key]; return Array.isArray(value) ? value[0] : value; };
@@ -23,6 +24,14 @@ function integer(q: Query, key: string): number | null {
   if (v === undefined || !v.trim()) return null;
   const result = Number(v);
   if (!/^[+-]?\d+$/.test(v.trim()) || !Number.isInteger(result) || result < -2147483648 || result > 2147483647) fail(400, `The value '${v}' is not valid.`);
+  return result;
+}
+// Coordenada opcional (spec 68): ausente = null; presente pero no finita = 400.
+function real(q: Query, key: string): number | null {
+  const v = text(q, key);
+  if (v === undefined || !v.trim()) return null;
+  const result = Number(v.trim());
+  if (!Number.isFinite(result)) fail(400, `The value '${v}' is not valid.`);
   return result;
 }
 export function boolean(q: Query, key: string): boolean | null {
@@ -108,10 +117,24 @@ export class PublicReadService {
     if (limiteAplicado) canchas = canchas.slice(0, 10);
     const occupied = new Set(dateSlot ? (await this.db.reserva.findMany({ where: { canchaId: { in: canchas.map(c => c.id) }, fecha: dateSlot.fecha, estado: 'CONFIRMADA', horaInicio: { lt: dateSlot.fin }, horaFin: { gt: dateSlot.inicio } }, select: { canchaId: true } })).map(r => r.canchaId) : []);
     const promos = dateSlot ? await this.promos(canchas) : [];
-    return { ok: true, total, limiteAplicado, canchas: canchas.map(c => {
-      const disponible = !occupied.has(c.id);
-      const price = dateSlot ? quote(c.precioPorHora, promos.filter(p => p.canchaId === c.id || p.complejoId === c.complejoId || (p.canchaId === null && p.complejoId === null)), dateSlot.fecha, dateSlot.inicio, dateSlot.fin) : null;
-      return { cancha: canchaDto(c), disponible, motivo: disponible ? null : 'Ocupada en ese horario', totalEstimado: price?.total ?? null, reglaPrecio: price?.regla ?? null };
+    // Spec 68: con lat+lng se ordena por distancia (Haversine en memoria:
+    // son pocas) y cada item trae distanciaKm; sin coordenadas van al final.
+    const lat = real(q, 'lat'), lng = real(q, 'lng');
+    if ((lat === null) !== (lng === null)) fail(400, 'Se requieren lat y lng');
+    if (lat !== null && (lat < -90 || lat > 90)) fail(400, 'Latitud inválida');
+    if (lng !== null && (lng < -180 || lng > 180)) fail(400, 'Longitud inválida');
+    const yo = lat !== null && lng !== null ? { latitud: lat, longitud: lng } : null;
+    const items = canchas.map(c => {
+      const dto = canchaDto(c);
+      const x = c.complejoByComplejoId;
+      const punto = x?.latitud != null && x?.longitud != null ? { latitud: x.latitud, longitud: x.longitud } : null;
+      return { c, dto, punto, distanciaKm: yo && punto ? distanciaKm(yo, punto) : null };
+    });
+    if (yo) items.sort((a, b) => (a.distanciaKm ?? Infinity) - (b.distanciaKm ?? Infinity));
+    return { ok: true, total, limiteAplicado, canchas: items.map(({ c, dto, punto, distanciaKm: d }) => {
+      const disponible = !occupied.has(dto.id);
+      const price = dateSlot ? quote(c.precioPorHora, promos.filter(p => p.canchaId === dto.id || p.complejoId === dto.complejoId || (p.canchaId === null && p.complejoId === null)), dateSlot.fecha, dateSlot.inicio, dateSlot.fin) : null;
+      return { cancha: { ...dto, complejo: dto.complejo && { ...dto.complejo, latitud: punto?.latitud ?? null, longitud: punto?.longitud ?? null } }, disponible, motivo: disponible ? null : 'Ocupada en ese horario', totalEstimado: price?.total ?? null, reglaPrecio: price?.regla ?? null, distanciaKm: d };
     }) };
   }
   async opciones() {

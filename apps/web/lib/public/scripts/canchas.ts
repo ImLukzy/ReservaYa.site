@@ -2,7 +2,8 @@ import { API, APP } from "../entorno";
 import { APERTURA, ULTIMA, diasProximos, etiquetaHora, franjasProximas, nombreDia, resolverFecha } from "../horario";
 import { avisoTablero, precioDe, urlReservar, type ItemDisponible, type Valoracion } from "./filas";
 import { tarjetaCancha, tarjetaComplejo, tarjetaPromo, tarjetasEsqueleto } from "./tarjetas";
-import { agruparPorComplejo, intercalarPromos, ordenarGrupos, textoConteo, type Celda } from "../tarjetas";
+import { agruparPorComplejo, distanciaDeGrupo, intercalarPromos, ordenarGrupos, textoConteo, textoDistancia, type Celda } from "../tarjetas";
+import type { PuntoMapa } from "../../../components/complejos/MapaCanchas";
 import { createScriptScope } from "../runtime";
 export function iniciarCanchas() {
 const scope = createScriptScope(); const listen = scope.listen; const fetch = scope.request;
@@ -37,6 +38,13 @@ const selects = {
 };
 const resenas = new Map<string, Promise<RespuestaResenas | null>>();
 let pedido = 0;
+// Spec 68: punto del usuario solo en memoria (nunca en la URL ni guardado);
+// a la API viaja en la consulta de disponibles.
+let punto: { latitud: number; longitud: number } | null = null;
+const botonCerca = $<HTMLButtonElement>("cerca-mi");
+const botonMapa = $<HTMLButtonElement>("ver-mapa");
+const avisoCerca = $("cerca-aviso");
+const cajaMapa = $("mapa-canchas");
 function iniciarFiltros() {
     const url = new URLSearchParams(location.search);
     const proximas = franjasProximas();
@@ -85,6 +93,36 @@ function guardarEnUrl() {
         url.set("vista", vista);
     history.replaceState(null, "", `${location.pathname}?${url.toString()}`);
 }
+function publicarMapa(libres: ItemDisponible[]) {
+    const vistos = new Set<string>();
+    const puntos: PuntoMapa[] = [];
+    for (const it of libres) {
+        const c = it.cancha.complejo;
+        const clave = it.cancha.complejoId ?? `cancha:${it.cancha.id}`;
+        if (vistos.has(clave) || c?.latitud == null || c?.longitud == null) continue;
+        vistos.add(clave);
+        puntos.push({ latitud: c.latitud, longitud: c.longitud, titulo: c.nombre, detalle: textoDistancia(it.distanciaKm) ?? undefined });
+    }
+    window.dispatchEvent(new CustomEvent<PuntoMapa[]>("ry:mapa-canchas", { detail: puntos }));
+}
+function pedirUbicacion(): void {
+    if (!("geolocation" in navigator)) {
+        if (avisoCerca) avisoCerca.textContent = "Tu navegador no da ubicación: la búsqueda sigue como hoy.";
+        cargar();
+        return;
+    }
+    if (avisoCerca) avisoCerca.textContent = "Pidiendo tu ubicación…";
+    navigator.geolocation.getCurrentPosition((pos) => {
+        punto = { latitud: pos.coords.latitude, longitud: pos.coords.longitude };
+        if (selects.orden) selects.orden.value = "cerca";
+        if (avisoCerca) avisoCerca.textContent = "";
+        cargar();
+    }, () => {
+        if (avisoCerca) avisoCerca.textContent = "Sin permiso de ubicación: la búsqueda sigue como hoy. Pulsa Cerca de mí para reintentar.";
+        // Sin punto, "cerca" ordena como hoy (precio); la lista se muestra igual.
+        cargar();
+    }, { timeout: 10000, maximumAge: 300000 });
+}
 function valoracion(complejoId: string): Promise<RespuestaResenas | null> {
     let p = resenas.get(complejoId);
     if (!p) {
@@ -112,7 +150,12 @@ async function cargar() {
         params.set("distrito", f.distrito);
     if (f.tipo)
         params.set("tipo", f.tipo);
-    const cuando = `${nombreDia(fecha)} a las ${etiquetaHora(f.hora)}${f.distrito ? ` en ${f.distrito}` : ""}`;
+    if (punto) {
+        params.set("lat", String(punto.latitud));
+        params.set("lng", String(punto.longitud));
+    }
+    const cerca = f.orden === "cerca" && punto !== null;
+    const cuando = `${nombreDia(fecha)} a las ${etiquetaHora(f.hora)}${f.distrito ? ` en ${f.distrito}` : ""}${cerca ? " cerca de ti" : ""}`;
     try {
         const res = await fetch(`${API}/api/canchas/disponibles?${params.toString()}`);
         if (!res.ok)
@@ -128,8 +171,12 @@ async function cargar() {
         if (mio !== pedido)
             return;
         const nota = (it: ItemDisponible) => (it.cancha.complejoId ? notas.get(it.cancha.complejoId) : undefined);
-        libres.sort((a, b) => f.orden === "precio-desc" ? precioDe(b) - precioDe(a) : f.orden === "valoracion" ? (nota(b)?.promedio ?? 0) - (nota(a)?.promedio ?? 0) : precioDe(a) - precioDe(b));
+        if (cerca)
+            libres.sort((a, b) => (a.distanciaKm ?? Number.POSITIVE_INFINITY) - (b.distanciaKm ?? Number.POSITIVE_INFINITY));
+        else
+            libres.sort((a, b) => f.orden === "precio-desc" ? precioDe(b) - precioDe(a) : f.orden === "valoracion" ? (nota(b)?.promedio ?? 0) - (nota(a)?.promedio ?? 0) : precioDe(a) - precioDe(b));
         const grupos = agruparPorComplejo(libres, precioDe);
+        publicarMapa(libres);
         if (conteo)
             conteo.textContent = textoConteo(grupos.length, libres.length);
         if (resumen)
@@ -143,12 +190,14 @@ async function cargar() {
         }
         const pintar = <T,>(celdas: Celda<T>[], tarjeta: (x: T) => HTMLLIElement) => celdas.map((c) => (c.tipo === "promo" ? tarjetaPromo(c.indice) : tarjeta(c.item)));
         if (vista === "complejos") {
-            const ordenados = ordenarGrupos(grupos, f.orden, (g) => nota(g.items[0])?.promedio ?? 0);
+            // En "cerca" los grupos ya llegan ordenados por distancia (llegada); reordenarlos por precio rompería el orden.
+            const ordenados = cerca ? grupos : ordenarGrupos(grupos, f.orden, (g) => nota(g.items[0])?.promedio ?? 0);
             lista?.replaceChildren(...pintar(intercalarPromos(ordenados), (g) => tarjetaComplejo(g, {
                 valoracion: nota(g.items[0]),
                 onValoracion: () => abrirOpiniones(g.items[0]),
                 verHref: urlVerComplejo(g.nombre),
                 onVer: () => verComplejo(g.nombre),
+                distanciaKm: cerca ? distanciaDeGrupo(g) : undefined,
             })));
             return;
         }
@@ -157,11 +206,13 @@ async function cargar() {
             reservarHref: urlReservar(APP, it.cancha, fecha, f.hora),
             valoracion: nota(it),
             onValoracion: () => abrirOpiniones(it),
+            distanciaKm: cerca ? it.distanciaKm : undefined,
         })));
     }
     catch {
         if (mio !== pedido)
             return;
+        publicarMapa([]);
         if (resumen)
             resumen.textContent = "No pudimos cargar las canchas";
         if (conteo)
@@ -275,7 +326,31 @@ listen(q, "input", () => {
     window.clearTimeout(espera);
     espera = window.setTimeout(cargar, 400);
 });
-Object.values(selects).forEach((s) => listen(s, "change", cargar));
+Object.values(selects).forEach((s) => listen(s, "change", () => {
+    if (s === selects.orden && selects.orden?.value === "cerca" && !punto) pedirUbicacion();
+    else cargar();
+}));
+listen(botonCerca, "click", () => {
+    if (punto) {
+        if (selects.orden) selects.orden.value = "cerca";
+        if (avisoCerca) avisoCerca.textContent = "";
+        cargar();
+    }
+    else pedirUbicacion();
+});
+listen(botonMapa, "click", () => {
+    const abierto = cajaMapa && !cajaMapa.hidden;
+    if (abierto) {
+        cajaMapa?.setAttribute("hidden", "");
+        botonMapa?.setAttribute("aria-expanded", "false");
+        if (botonMapa) botonMapa.textContent = "Ver en mapa";
+    }
+    else {
+        cajaMapa?.removeAttribute("hidden");
+        botonMapa?.setAttribute("aria-expanded", "true");
+        if (botonMapa) botonMapa.textContent = "Ocultar mapa";
+    }
+});
 botonesVista.forEach((b) => listen(b, "click", () => {
     const v: Vista = b.dataset.vista === "complejos" ? "complejos" : "canchas";
     if (v === vista)
@@ -284,7 +359,8 @@ botonesVista.forEach((b) => listen(b, "click", () => {
     cargar();
 }));
 iniciarFiltros();
-cargar();
+if (selects.orden?.value === "cerca") pedirUbicacion();
+else cargar();
 
 return scope.dispose;
 }

@@ -24,7 +24,22 @@ export interface GrupoComplejo<T extends CanchaAgrupable> {
   tipos: string[];
 }
 
-export type OrdenResultados = "precio" | "precio-desc" | "valoracion";
+export type OrdenResultados = "precio" | "precio-desc" | "valoracion" | "cerca";
+
+/** Menor distancia del grupo (spec 68); null si ningún item la trae. */
+export function distanciaDeGrupo<T extends { distanciaKm?: number | null }>(grupo: { items: T[] }): number | null {
+  let min: number | null = null;
+  for (const it of grupo.items) {
+    if (it.distanciaKm != null && Number.isFinite(it.distanciaKm) && (min === null || it.distanciaKm < min)) min = it.distanciaKm;
+  }
+  return min;
+}
+
+/** "a 1,2 km"; null si no hay distancia (la tarjeta muestra "distancia no disponible"). */
+export function textoDistancia(d: number | null | undefined): string | null {
+  if (d == null || !Number.isFinite(d) || d < 0) return null;
+  return `a ${d.toFixed(1).replace(".", ",")} km`;
+}
 
 /** Agrupa las canchas por complejo conservando el orden de llegada; una cancha sin complejo es su propio grupo. */
 export function agruparPorComplejo<T extends CanchaAgrupable>(items: T[], precio: (it: T) => number): GrupoComplejo<T>[] {

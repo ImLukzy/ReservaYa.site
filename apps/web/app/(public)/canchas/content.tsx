@@ -16,12 +16,14 @@ const orden = [
     { valor: "precio", etiqueta: "Menor precio" },
     { valor: "precio-desc", etiqueta: "Mayor precio" },
     { valor: "valoracion", etiqueta: "Mejor valoradas" },
+    { valor: "cerca", etiqueta: "Más cerca" },
 ];
 const vistas = [
     { valor: "canchas", etiqueta: "Por canchas" },
     { valor: "complejos", etiqueta: "Por complejos" },
 ];
 import { iniciarCanchas } from "@/lib/public/scripts/canchas";
+import { IslaMapaCanchas } from "@/components/complejos/IslaMapaCanchas";
 export default function PublicContent() {
     useEffect(() => iniciarCanchas(), []);
     return (<div className="pantallas pantallas-canchas">
@@ -80,6 +82,15 @@ export default function PublicContent() {
         </div>
         <Select apariencia="publica" id="f-orden" etiqueta="Ordenar por" opciones={orden} className="flex items-center gap-2 [&_label]:mb-0 [&_label]:text-xs [&_label]:font-bold [&_label]:text-pizarra"/>
       </div>
+    </div>
+    {/* Spec 68: ubicación solo en memoria del navegador; a la API viaja en la consulta. */}
+    <div className="mb-4 flex flex-wrap items-center gap-2">
+      <button id="cerca-mi" type="button" className={BOTON.secundario}>Cerca de mí</button>
+      <button id="ver-mapa" type="button" aria-expanded="false" aria-controls="mapa-canchas" className={BOTON.secundario}>Ver en mapa</button>
+    </div>
+    <p id="cerca-aviso" role="status" className="mb-4 min-h-6 text-sm text-pizarra"></p>
+    <div id="mapa-canchas" hidden className="card-tactil mb-4 h-80 overflow-hidden p-0">
+      <IslaMapaCanchas />
     </div>
     <ul id="resultados" aria-live="polite" aria-busy="true" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {[0, 1, 2, 3, 4, 5].map((index) => (<li className="card-tactil flex min-w-0 flex-col overflow-hidden p-0" aria-hidden="true" key={index}>

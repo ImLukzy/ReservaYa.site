@@ -4,7 +4,7 @@ import { BOTON } from "../estilos";
 import { etiquetaTipo } from "../arequipa";
 import { etiquetaHora, soles } from "../horario";
 import { esImagenPropia } from "../../media";
-import { fotoDeGrupo, type GrupoComplejo } from "../tarjetas";
+import { fotoDeGrupo, textoDistancia, type GrupoComplejo } from "../tarjetas";
 import { precioDe, type ItemDisponible, type Valoracion } from "./filas";
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, clase: string, texto?: string): HTMLElementTagNameMap[K] {
@@ -18,6 +18,7 @@ const SVG = "http://www.w3.org/2000/svg";
 const TRAZO_ESTRELLA = "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z";
 const TRAZO_CALENDARIO = "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z";
 const TRAZO_FLECHA = "M5 12h14M12 5l7 7-7 7";
+const TRAZO_PIN = "M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z";
 
 function icono(trazo: string, clase: string, relleno = false): SVGSVGElement {
   const svg = document.createElementNS(SVG, "svg");
@@ -120,11 +121,23 @@ function pie(precio: string, unidad: string, accion: HTMLAnchorElement): HTMLDiv
   return caja;
 }
 
+/** "a 1,2 km" o "distancia no disponible" (spec 68); se muestra solo si la API trajo distancia. */
+function lineaDistancia(d: number | null | undefined): HTMLParagraphElement | null {
+  if (d === undefined) return null;
+  const texto = textoDistancia(d) ?? "distancia no disponible";
+  const p = el("p", "flex min-w-0 items-center gap-1.5 text-sm font-semibold text-cesped-hondo");
+  const pin = icono(TRAZO_PIN, "h-4 w-4 shrink-0");
+  const t = el("span", "truncate", texto);
+  p.append(pin, t);
+  return p;
+}
+
 interface OpcionesTarjeta {
   hora?: number;
   reservarHref: string;
   valoracion?: Valoracion;
   onValoracion?: () => void;
+  distanciaKm?: number | null;
 }
 
 export function tarjetaCancha(item: ItemDisponible, op: OpcionesTarjeta): HTMLLIElement {
@@ -143,6 +156,8 @@ export function tarjetaCancha(item: ItemDisponible, op: OpcionesTarjeta): HTMLLI
   cuerpo.append(el("h3", "truncate font-bold leading-tight text-basalto", lugar));
   if (cancha.complejo) cuerpo.append(el("p", "truncate text-sm text-pizarra", cancha.nombre));
   cuerpo.append(distrito(cancha.complejo?.distrito ?? "Arequipa"));
+  const linea = lineaDistancia(op.distanciaKm);
+  if (linea) cuerpo.append(linea);
   cuerpo.append(bloqueValoracion(lugar, op.valoracion, cancha.complejoId ? op.onValoracion : undefined));
   if (cancha.superficie) {
     const chips = el("ul", "mb-3 flex flex-wrap gap-1.5");
@@ -165,6 +180,7 @@ interface OpcionesComplejo {
   onValoracion?: () => void;
   verHref: string;
   onVer: () => void;
+  distanciaKm?: number | null;
 }
 
 export function tarjetaComplejo(grupo: GrupoComplejo<ItemDisponible>, op: OpcionesComplejo): HTMLLIElement {
@@ -177,6 +193,8 @@ export function tarjetaComplejo(grupo: GrupoComplejo<ItemDisponible>, op: Opcion
   const cuerpo = el("div", "flex flex-1 flex-col gap-1 p-4");
   cuerpo.append(el("h3", "truncate font-bold leading-tight text-basalto", grupo.nombre));
   cuerpo.append(distrito(grupo.distrito));
+  const lineaGrupo = lineaDistancia(op.distanciaKm);
+  if (lineaGrupo) cuerpo.append(lineaGrupo);
   cuerpo.append(bloqueValoracion(grupo.nombre, op.valoracion, grupo.complejoId ? op.onValoracion : undefined));
   const chips = el("ul", "mb-3 flex flex-wrap gap-1.5");
   chips.setAttribute("aria-label", "Deportes");

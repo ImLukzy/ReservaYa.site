@@ -74,3 +74,12 @@ test('prefiere portada propia del complejo y conserva respaldo de cancha', () =>
   row.cancha.complejo.fotos = ['https://outside.example/photo.webp']
   assert.equal(fotoDeGrupo(grupo, valida), '/uploads/cancha.webp')
 })
+
+test('distancia de grupo: mínima, null si ninguna, texto en coma', async () => {
+  const { distanciaDeGrupo, textoDistancia } = await import('./tarjetas.ts')
+  assert.equal(distanciaDeGrupo({ items: [{ distanciaKm: 3.25 }, { distanciaKm: 1.2 }] }), 1.2)
+  assert.equal(distanciaDeGrupo({ items: [{ distanciaKm: null }, {}] }), null)
+  assert.equal(textoDistancia(1.2), 'a 1,2 km')
+  assert.equal(textoDistancia(null), null)
+  assert.equal(textoDistancia(undefined), null)
+})

@@ -14,13 +14,15 @@ export interface CanchaApi {
   techada?: boolean;
   superficie?: string | null;
   complejoId: string | null;
-  complejo: { id: string; nombre: string; distrito: string; ciudad: string; fotos?: string[] } | null;
+  complejo: { id: string; nombre: string; distrito: string; ciudad: string; fotos?: string[]; latitud?: number | null; longitud?: number | null } | null;
 }
 
 export interface ItemDisponible {
   cancha: CanchaApi;
   disponible: boolean;
   totalEstimado: string | null;
+  /** Km desde el punto pedido (spec 68); null = sin coordenadas o sin punto. */
+  distanciaKm?: number | null;
 }
 
 export interface Valoracion {
